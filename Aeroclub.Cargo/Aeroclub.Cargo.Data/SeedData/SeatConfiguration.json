@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "93AAF79F-12A3-4264-8172-756123F833B4",
+    "RowNumber": 1,
+    "ColumnNumber": 1,
+    "SeatConfigurationType": 1,
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
+  },
+  {
+    "Id": "F9078389-E087-4108-98E5-99F3A467E7DF",
+    "RowNumber": 1,
+    "ColumnNumber": 2,
+    "SeatConfigurationType": 1,
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
+  }
+]

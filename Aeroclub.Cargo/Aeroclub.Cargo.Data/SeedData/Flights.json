@@ -1,0 +1,22 @@
+﻿[
+  {
+    "Id": "D611308D-7AF3-4950-8F05-BB70AF55F4D8",
+    "FlightNumber": "AC-100",
+    "OriginAirportId": "F11DDC4F-6D03-4866-972F-1AF421C8104D",
+    "DestinationAirportId": "9F18B9E5-6AE4-429D-8BCB-10C895FF64FE",
+    "OriginAirportCode": "YYC",
+    "DestinationAirportCode": "YEG",
+    "OriginAirportName": "Calgary International Airport",
+    "DestinationAirportName": "Edmonton International Airport"
+  },
+  {
+    "Id": "F6696AC5-2D2A-41A4-AFE9-7F41B89E5E52",
+    "FlightNumber": "AC-101",
+    "OriginAirportId": "9F18B9E5-6AE4-429D-8BCB-10C895FF64FE",
+    "DestinationAirportId": "F11DDC4F-6D03-4866-972F-1AF421C8104D",
+    "OriginAirportCode": "YEG",
+    "DestinationAirportCode": "YYC",
+    "OriginAirportName": "Edmonton International Airport",
+    "DestinationAirportName": "Calgary International Airport"
+  }
+]

@@ -1,0 +1,42 @@
+﻿[
+  {
+    "Id": "8AE55489-4677-411A-802E-B74F5885F893",
+    "OriginAirportId": "F11DDC4F-6D03-4866-972F-1AF421C8104D",
+    "DestinationAirportId": "9F18B9E5-6AE4-429D-8BCB-10C895FF64FE",
+    "OriginAirportCode": "YYC",
+    "DestinationAirportCode": "YEG",
+    "OriginAirportName": "Calgary International Airport",
+    "DestinationAirportName": "Edmonton International Airport",
+    "SectorType": "1"
+  },
+  {
+    "Id": "3D0F3EDE-39BE-4626-B11F-46CB9DEDC8CD",
+    "OriginAirportId": "9F18B9E5-6AE4-429D-8BCB-10C895FF64FE",
+    "DestinationAirportId": "F11DDC4F-6D03-4866-972F-1AF421C8104D",
+    "OriginAirportCode": "YEG",
+    "DestinationAirportCode": "YYC",
+    "OriginAirportName": "Edmonton International Airport",
+    "DestinationAirportName": "Calgary International Airport",
+    "SectorType": "1"
+  },
+  {
+    "Id": "826B781D-8682-492B-8777-BE5562E203B1",
+    "OriginAirportId": "9F18B9E5-6AE4-429D-8BCB-10C895FF64FE",
+    "DestinationAirportId": "2BC5FBA0-E25E-4F65-9965-ECB901250B78",
+    "OriginAirportCode": "YEG",
+    "DestinationAirportCode": "YHZ",
+    "OriginAirportName": "Edmonton International Airport",
+    "DestinationAirportName": "Halifax Stanfield International Airport",
+    "SectorType": "1"
+  },
+  {
+    "Id": "E35FE0FC-6E76-405B-8ABB-A8EADC228795",
+    "OriginAirportId": "2BC5FBA0-E25E-4F65-9965-ECB901250B78",
+    "DestinationAirportId": "9F18B9E5-6AE4-429D-8BCB-10C895FF64FE",
+    "OriginAirportCode": "YHZ",
+    "DestinationAirportCode": "YEG",
+    "OriginAirportName": "Halifax Stanfield International Airport",
+    "DestinationAirportName": "Edmonton International Airport",
+    "SectorType": "1"
+  }
+]

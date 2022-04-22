@@ -1,0 +1,14 @@
+[
+  {
+    "Id": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
+    "AircraftCabinId": "916814CB-7631-4E14-AEC2-E1C9CFA0CBF8",
+    "MaxWeight": "5000",
+    "Name": "OA"
+  },
+  {
+    "Id": "9941A104-5DED-4BE8-BDCB-A54820635D06",
+    "AircraftCabinId": "916814CB-7631-4E14-AEC2-E1C9CFA0CBF8",
+    "MaxWeight": "5000",
+    "Name": "OB"
+  }
+]

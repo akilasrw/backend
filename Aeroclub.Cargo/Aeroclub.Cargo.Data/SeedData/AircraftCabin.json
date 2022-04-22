@@ -1,0 +1,14 @@
+[
+  {
+    "Id": "916814CB-7631-4E14-AEC2-E1C9CFA0CBF8",
+    "AircraftDeckId": "3C72981E-2F23-48DC-B757-F6E456ECD055",
+    "MaxWeight": "10000",
+    "Name": "FWD Cabin"
+  },
+  {
+    "Id": "B6A55E15-8A2F-4081-9E3E-64AC35CB877B",
+    "AircraftDeckId": "3C72981E-2F23-48DC-B757-F6E456ECD055",
+    "MaxWeight": "10000",
+    "Name": "AFT Cabin"
+  }
+]

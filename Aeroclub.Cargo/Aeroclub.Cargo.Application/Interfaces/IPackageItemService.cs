@@ -1,0 +1,15 @@
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
+
+namespace Aeroclub.Cargo.Application.Interfaces
+{
+    public interface IPackageItemService
+    {
+        Task<ServiceResponseStatus> CreateAsync(PackageItemRM packageItem);
+        Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query);
+
+    }
+}

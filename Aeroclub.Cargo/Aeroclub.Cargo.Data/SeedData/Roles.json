@@ -1,0 +1,14 @@
+﻿[
+  {
+    "Id": "A217DB55-21D3-4DDA-A99A-7724E7FCEE0C",
+    "Name": "ROOT_ADMIN",
+    "NormalizedName": "ROOT_ADMIN",
+    "ConcurrencyStamp": "1"
+  },
+  {
+    "Id": "202AF001-200D-421A-B9C3-828E198F4629",
+    "Name": "ADMIN",
+    "NormalizedName": "ADMIN",
+    "ConcurrencyStamp": "2"
+  }
+]

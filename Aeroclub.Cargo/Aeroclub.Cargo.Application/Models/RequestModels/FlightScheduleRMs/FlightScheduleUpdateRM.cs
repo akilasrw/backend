@@ -1,0 +1,19 @@
+﻿using System;
+using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
+
+namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs
+{
+    public class FlightScheduleUpdateRM : BaseRM
+    {
+        public Guid? FlightId { get; set; } 
+        public string? FlightNumber { get; set; } = null;
+        public DateTime ScheduledDepartureDateTime { get; set; }
+        public DateTime ActualDepartureDateTime { get; set; }
+        public FlightScheduleStatus FlightScheduleStatus { get; set; } = FlightScheduleStatus.None;
+        public Guid OriginAirportId { get; set; }
+        public Guid DestinationAirportId { get; set; }
+        public Guid? AircraftId { get; set; }
+        public string? AircraftRegNo { get; set; } = null; 
+    }
+}

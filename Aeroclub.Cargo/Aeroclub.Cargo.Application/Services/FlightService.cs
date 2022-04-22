@@ -1,0 +1,38 @@
+﻿using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
+using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Core.Entities;
+using Aeroclub.Cargo.Core.Interfaces;
+using AutoMapper;
+
+namespace Aeroclub.Cargo.Application.Services
+{
+    public class FlightService : BaseService,IFlightService
+    {
+        public FlightService(IUnitOfWork unitOfWork, IMapper mapper):
+            base(unitOfWork,mapper)
+        {
+     
+        }
+
+        public async Task<T> GetAsync<T>(FlightQM query)
+        {
+            var spec = new FlightSpecification(query);
+            var flight = await _unitOfWork.Repository<Flight>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<T>(flight);
+        }
+        
+        public async Task<IReadOnlyList<T>> GetListAsync<T>(FlightListQM query)
+        {
+            var spec = new FlightSpecification(query);
+            var flights = await _unitOfWork.Repository<Flight>().GetListWithSpecAsync(spec);
+            return _mapper.Map<IReadOnlyList<T>>(flights);
+        }
+
+        public async Task<string> GetFlightNumber(Guid id)
+        {
+            var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(id);
+            return flight.FlightNumber;
+        }
+    }
+}

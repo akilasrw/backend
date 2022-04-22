@@ -1,0 +1,26 @@
+﻿[
+  {
+    "Id": "9F0928DF-5D33-4E5D-AFFC-F7E2E2B72680",
+    "Name": "cm",
+    "UnitType": "1"
+  },{
+    "Id": "FE919429-80EA-4A0E-A218-5DB6E16F690C",
+    "Name": "m",
+    "UnitType": "1"
+  },
+  {
+    "Id": "11C39205-4153-49F1-AB50-BBA8913C5BB9",
+    "Name": "inch",
+    "UnitType": "1"
+  },
+  {
+    "Id": "4ACAF7D3-F859-4801-9FA7-DFCAED82A160",
+    "Name": "g",
+    "UnitType": "2"
+  },
+  {
+    "Id": "BC1E3D49-5C26-4DE5-9CD4-576BBF6E9D0C",
+    "Name": "kg",
+    "UnitType": "2"
+  }
+]

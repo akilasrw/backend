@@ -1,0 +1,22 @@
+[
+  {
+    "Id": "6062FC9C-6298-43B2-99F5-D56077AB813F",
+    "FirstName": "Sam",
+    "LastName": "Perera",
+    "PasswordHash": "$2a$04$/vT15WeVoUzXKTpKi3rK.etCJMvyIpWuF7dj6YIaMVhmYtgz5R1z.",
+    "VerificationToken": "",
+    "UserName": "samp@yopmail.com",
+    "NormalizedUserName": "",
+    "Email": "samp@yopmail.com",
+    "NormalizedEmail": "",
+    "EmailConfirmed": true,
+    "SecurityStamp": "",
+    "ConcurrencyStamp": "",
+    "PhoneNumber": "",
+    "PhoneNumberConfirmed": false,
+    "TwoFactorEnabled": false,
+    "LockoutEnd": "",
+    "LockoutEnabled": false,
+    "AccessFailedCount": "0"
+  }
+]

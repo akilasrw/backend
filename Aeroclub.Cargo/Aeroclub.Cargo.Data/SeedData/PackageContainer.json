@@ -1,0 +1,76 @@
+[
+  {
+    "Id": "BF0E8DB1-FB98-4453-A011-C146931F49C4",
+    "PackageContainerType": 4,
+    "IsCustom": false,
+    "Height": "23",
+    "Width": "36",
+    "Length": "56",
+    "MaxWaight": "30",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 1
+  },
+  {
+    "Id": "26EA2F00-E28C-4616-8920-EEF3FCC16A81",
+    "PackageContainerType": 2,
+    "IsCustom": false,
+    "Height": "60",
+    "Width": "45",
+    "Length": "45",
+    "MaxWaight": "60",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 1
+  },
+  {
+    "Id": "994330B2-CAB4-4674-BC06-EE918BB2072E",
+    "PackageContainerType": 3,
+    "IsCustom": false,
+    "Height": "23",
+    "Width": "24",
+    "Length": "56",
+    "MaxWaight": "60",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 1
+  },
+  {
+    "Id": "549A33D5-1E32-47E8-9CAA-B0EB8827DC17",
+    "PackageContainerType": 5,
+    "IsCustom": false,
+    "Height": "60",
+    "Width": "45",
+    "Length": "140",
+    "MaxWaight": "60",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 1
+  },
+  {
+    "Id": "8D462FB5-7FBC-40EA-8C9E-95B0B1485F48",
+    "MinWaight": "0",
+    "MaxWaight": "29",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 2
+  },
+  {
+    "Id": "407DC3D4-F0B9-4D9E-B646-D5FED84736E5",
+    "MinWaight": "30",
+    "MaxWaight": "44",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 2
+  },
+  {
+    "Id": "C586FB65-A6DC-41C1-B512-593F7E088396",
+    "MinWaight": "45",
+    "MaxWaight": "59",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 2
+  },
+  {
+    "Id": "A65DD21B-07C1-43BE-9917-2973CCDB0F82",
+    "MinWaight": "60",
+    "MaxWaight": "99",
+    "PackageItemCategory": 1,
+    "PackageBoxType": 2
+  }
+
+]
+
