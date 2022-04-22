@@ -30,4 +30,4 @@ stages:
   - stage: Build
     condition: and(eq(variables['Build.Reason'], 'Manual'), succeeded())
     jobs:
-      - template: dotnet-framework/azure-pipelines-dotnet-template-scs.yaml@templates
+      - template: azure-pipelines-dotnet-template-scs.yaml@templates
