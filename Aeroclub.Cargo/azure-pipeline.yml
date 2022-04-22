@@ -7,7 +7,7 @@ trigger:
 - dev
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ubuntu-18.04
 
 variables:
   solution: '**/*.sln'
