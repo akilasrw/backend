@@ -19,12 +19,12 @@ steps:
   displayName: Restore Nuget Packages
   inputs:
     command: restore
-    projects: '**/WebApp.csproj'
+    projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: Build Web App
   inputs:
-    projects: '**/WebApp.csproj'
+    projects: '**/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
