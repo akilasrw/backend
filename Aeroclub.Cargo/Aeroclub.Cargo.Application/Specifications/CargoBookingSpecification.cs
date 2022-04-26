@@ -9,8 +9,9 @@ namespace Aeroclub.Cargo.Application.Specifications
     {
         public CargoBookingSpecification(CargoBookingFilteredListQM query, bool isCount = false)
             :base(x=> (string.IsNullOrEmpty(query.BookingId) || query.BookingId == x.BookingNumber) && 
-            (string.IsNullOrEmpty(query.Destination) || (query.Destination == x.FlightScheduleSector.DestinationAirportName || query.Destination == x.FlightScheduleSector.DestinationAirportCode)) && 
-            (query.BookingDate == DateTime.MinValue || query.BookingDate == x.BookingDate))
+            (string.IsNullOrEmpty(query.Destination) || 
+            (query.Destination == x.FlightScheduleSector.DestinationAirportName || query.Destination == x.FlightScheduleSector.DestinationAirportCode)) && 
+            (query.BookingDate == null|| query.BookingDate == DateTime.MinValue || query.BookingDate == x.BookingDate))
         {
 
             AddInclude(x => x.Include(y => y.FlightScheduleSector));
