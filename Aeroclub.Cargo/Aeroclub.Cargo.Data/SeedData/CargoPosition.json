@@ -3,7 +3,8 @@
     "Id": "1928A932-3074-4FAA-A809-A2B96FE3FDA2",
     "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
     "Name": "",
-    "CargoPositionType": "1",
+    "CargoPositionType": "3",
+    "SeatId": "AF08B19F-DEAC-4186-984C-1367CFB25511",
     "MaxWeight": "2500"
   },
   {

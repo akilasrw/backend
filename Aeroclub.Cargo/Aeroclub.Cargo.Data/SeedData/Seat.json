@@ -8,5 +8,45 @@
     "SeatConfigurationId": "93AAF79F-12A3-4264-8172-756123F833B4",
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false
+  },
+  {
+    "Id": "0E9C2131-5D63-4073-BF5A-398E3BA44964",
+    "SeatNumber": "1B",
+    "RowNumber": "1",
+    "ColumnNumber": "2",
+    "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
+    "SeatConfigurationId": "F9078389-E087-4108-98E5-99F3A467E7DF",
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
+  },
+  {
+    "Id": "E658AED0-CDF6-4540-9E26-60768AD945B5",
+    "SeatNumber": "3A",
+    "RowNumber": "3",
+    "ColumnNumber": "1",
+    "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
+    "SeatConfigurationId": "CF04A08D-33B9-4C33-AF96-06D85443B860",
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
+  },
+  {
+    "Id": "0D5F37DC-EA44-4232-9D7C-A26555FF453A",
+    "SeatNumber": "3B",
+    "RowNumber": "3",
+    "ColumnNumber": "2",
+    "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
+    "SeatConfigurationId": "CF04A08D-33B9-4C33-AF96-06D85443B860",
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
+  },
+  {
+    "Id": "9310D2BE-2D22-4343-84AB-32A70D9C8207",
+    "SeatNumber": "3C",
+    "RowNumber": "3",
+    "ColumnNumber": "3",
+    "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
+    "SeatConfigurationId": "CF04A08D-33B9-4C33-AF96-06D85443B860",
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
   }
 ]

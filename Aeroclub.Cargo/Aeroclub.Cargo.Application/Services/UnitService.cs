@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.UnitQMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -22,6 +23,12 @@ namespace Aeroclub.Cargo.Application.Services
             var list = await _unitOfWork.Repository<Unit>().GetListWithSpecAsync(spec);
 
             return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
+        }
+
+        public async Task<IReadOnlyList<UnitDto>> GetListAsync()
+        {
+            var list = await _unitOfWork.Repository<Unit>().GetListAsync();
+            return _mapper.Map<IReadOnlyList<UnitDto>>(list);
         }
     }
 }

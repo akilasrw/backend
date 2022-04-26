@@ -14,5 +14,13 @@
     "SeatConfigurationType": 1,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false
+  },
+  {
+    "Id": "CF04A08D-33B9-4C33-AF96-06D85443B860",
+    "RowNumber": 3,
+    "ColumnNumber": 1,
+    "SeatConfigurationType": 3,
+    "IsOnSeatOccupied": false,
+    "IsUnderSeatOccupied": false
   }
 ]

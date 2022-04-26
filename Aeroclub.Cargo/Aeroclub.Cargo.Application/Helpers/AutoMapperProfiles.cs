@@ -91,6 +91,7 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<Unit, BaseSelectListModel>()
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.Name));
+            CreateMap<Unit, UnitDto>();   
 
             CreateMap<PackageItem, PackageListItemVM>()
                 .ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingStatus : 0))

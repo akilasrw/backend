@@ -56,6 +56,11 @@ namespace Aeroclub.Cargo.Application.Services
                     rm.OriginAirportId = flightSector.OriginAirportId;
                     rm.DestinationAirportId = flightSector.DestinationAirportId;
 
+                    if (!flightSector.FlightScheduleSectorCargoPositions.Any(x=>x.AvailableSpaceCount > 0))
+                    {
+                        return ServiceResponseStatus.ValidationError;
+                    }
+
                     // Save Cargo Booking Details
                     var response = await _cargoBookingService.CreateAsync(rm);
                     if (response == null)
