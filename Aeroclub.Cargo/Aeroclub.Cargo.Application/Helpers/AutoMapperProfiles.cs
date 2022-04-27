@@ -19,6 +19,7 @@ using AutoMapper;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -73,13 +74,10 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<PackageContainer, PackageContainerVM>().ReverseMap();
 
 
-            CreateMap<CargoBooking, CargoBookingDetailVM>()
-               .ForMember(d => d.FlightScheduleSector, o => o.MapFrom(s => s.FlightScheduleSector))
-               .ForMember(d => d.PackageItems, o => o.MapFrom(s => s.PackageItems));
+            CreateMap<CargoBooking, CargoBookingDetailVM>();
+            CreateMap<PackageItem, PackageItemVM>();
 
-            CreateMap<CargoBooking, CargoBookingLookupVM>()
-               .ForMember(d => d.FlightScheduleSector, o => o.MapFrom(s => s.FlightScheduleSector))
-               .ForMember(d => d.PackageItems, o => o.MapFrom(s => s.PackageItems));
+            CreateMap<CargoBooking, CargoBookingLookupVM>();
 
             CreateMap<PackageContainerSector, RateVM>()
                .ForMember(d => d.Width, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.Width : 0))

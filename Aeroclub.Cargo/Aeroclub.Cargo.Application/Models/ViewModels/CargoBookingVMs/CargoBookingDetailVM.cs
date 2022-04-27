@@ -10,10 +10,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
         public string BookingNumber { get; set; } = null!;
         public DateTime BookingDate { get; set; }
         public BookingStatus BookingStatus { get; set; }
-
         public FlightScheduleSectorVM FlightScheduleSector { get; set; }
-        public List<PackageItemVM> PackageItems { get; set; }
-
+        public IReadOnlyList<PackageItemVM> PackageItems { get; set; }
 
     }
 }
