@@ -43,6 +43,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IPackageItemService, PackageItemService>();
             services.AddScoped<ICargoPositionService, CargoPositionService>();
             services.AddScoped<ISeatService, SeatService>();
+            services.AddScoped<ICargoBookingLookupService, CargoBookingLookupService>();
 
             return services;
         }
