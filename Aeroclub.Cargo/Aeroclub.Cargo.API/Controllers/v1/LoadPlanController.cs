@@ -20,7 +20,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] LoadPlanDto dto)
+        public async Task<IActionResult> CreateAsync([FromBody] LoadPlanDto dto)// TODO: Need to be removed. this part should be happening with creation of flightScheduleController
         {
             await _loadPlanService.CreateAsync(dto);
             return Ok();

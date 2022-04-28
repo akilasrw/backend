@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs
@@ -14,6 +16,8 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
         public Guid? AircraftId { get; set; }
-        public string? AircraftRegNo { get; set; } = null; 
+        public string? AircraftRegNo { get; set; } = null;
+
+        public IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors { get; set; }
     }
 }
