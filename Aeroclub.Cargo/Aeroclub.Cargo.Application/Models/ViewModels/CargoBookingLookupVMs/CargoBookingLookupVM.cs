@@ -13,6 +13,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs
         public BookingStatus BookingStatus { get; set; }
 
         public FlightScheduleSectorVM FlightScheduleSector { get; set; }
-        public List<PackageItemVM> PackageItems { get; set; }
+        public IReadOnlyList<PackageItemVM> PackageItems { get; set; }
     }
 }
