@@ -12,6 +12,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public double CurrentWeight { get; set; }
         
         public virtual AircraftDeck AircraftDeck { get; set; }
-        public virtual ICollection<ZoneArea> CabinAreas { get; set; }
+        public virtual ICollection<ZoneArea> ZoneAreas { get; set; }
     }
 }

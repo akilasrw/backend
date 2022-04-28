@@ -6,5 +6,6 @@ namespace Aeroclub.Cargo.Core.Entities
     public class AircraftLayout : AuditableEntity
     {
         public virtual ICollection<AircraftDeck> AircraftDecks { get; set; }
+        public bool IsBaseLayout { get; set; } = false;
     }
 }

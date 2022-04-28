@@ -6,7 +6,9 @@ using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -131,6 +133,12 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return ServiceResponseStatus.Success;
+        }
+
+        async Task<bool> ValidateAsync(List<PackageItemRM> PackageItems, IList<FlightScheduleSectorCargoPosition> FlightScheduleSectorCargoPositions)
+        {
+
+            return true;
         }
 
         public async Task<CargoBookingDetailVM> GetBookingAsync(CargoBookingDetailQM query)
