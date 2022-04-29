@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Core.Entities;
+﻿using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+using Aeroclub.Cargo.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface ILayoutCloneService
     {
-        Task CloneLayoutAsync(FlightSchedule flightSchedule);
+        Task CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
     }
 }

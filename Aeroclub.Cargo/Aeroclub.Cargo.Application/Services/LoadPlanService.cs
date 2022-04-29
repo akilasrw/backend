@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.LoadPlanQMs;
 using Aeroclub.Cargo.Core.Entities;
@@ -21,12 +22,16 @@ namespace Aeroclub.Cargo.Application.Services
         {
         }
 
-        public async Task<ServiceResponseStatus> CreateAsync(LoadPlanDto loadPlanDto)
+        public async Task<ServiceResponseCreateStatus> CreateAsync(LoadPlanDto loadPlanDto)
         {
+            var res = new ServiceResponseCreateStatus();
             var loadPlan = _mapper.Map<LoadPlan>(loadPlanDto);
-            await _unitOfWork.Repository<LoadPlan>().CreateAsync(loadPlan);
+            
+            var result = await _unitOfWork.Repository<LoadPlan>().CreateAsync(loadPlan);
             await _unitOfWork.SaveChangesAsync();
-            return ServiceResponseStatus.Success;
+            res.Id = result.Id;
+            res.StatusCode = ServiceResponseStatus.Success;
+            return res;
         }
 
         public Task<LoadPlanDto> GetAsync(LoadPlanQM query)

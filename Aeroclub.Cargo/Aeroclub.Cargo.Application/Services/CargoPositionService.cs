@@ -30,14 +30,14 @@ namespace Aeroclub.Cargo.Application.Services
 
             // Checking Main Deck available positions
             var matchingCargoPosition = cargoPositionList.ToList().FirstOrDefault(x => 
-                x.ZoneArea.AircraftZone.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck && // Checking only Main Deck
+                x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck && // Checking only Main Deck
                 x.CargoPositionType == cargoPositionType && // Check position Type based on the package size
                 ((cargoPositionType == CargoPositionType.OnSeat && !x.Seat.IsOnSeatOccupied) || // Checking On seat available if the  type is on seat
                  (cargoPositionType == CargoPositionType.UnderSeat && !x.Seat.IsUnderSeatOccupied)) && // Checking Under seat available if the  type is under seat
                 (x.MaxWeight > (x.CurrentWeight + packageItem.Weight) && // Checking weight of cargo position
                     (x.ZoneArea.MaxWeight > (x.ZoneArea.CurrentWeight + packageItem.Weight)) &&
-                    (x.ZoneArea.AircraftZone.MaxWeight > (x.ZoneArea.AircraftZone.CurrentWeight + packageItem.Weight)) &&
-                    (x.ZoneArea.AircraftZone.AircraftDeck.MaxWeight > (x.ZoneArea.AircraftZone.AircraftDeck.CurrentWeight + packageItem.Weight)))
+                    (x.ZoneArea.AircraftCabin.MaxWeight > (x.ZoneArea.AircraftCabin.CurrentWeight + packageItem.Weight)) &&
+                    (x.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight > (x.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageItem.Weight)))
                 ); // Checking weight of Zone
             Guid? uldId = null;
             // Main Deck positions full. then checking belly for available positions
