@@ -42,7 +42,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = _userService.RefreshToken(refreshToken, ipAddress());
             
             if (response.Status == Application.Enums.ServiceResponseStatus.ValidationError)
-                return BadRequest(response.Message);
+                return Unauthorized(response.Message);
 
             setTokenCookie(response.Response.RefreshToken);
             return Ok(response.Response);

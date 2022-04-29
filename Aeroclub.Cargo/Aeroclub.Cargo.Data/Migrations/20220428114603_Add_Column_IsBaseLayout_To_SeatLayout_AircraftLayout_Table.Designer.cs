@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220428114603_Add_Column_IsBaseLayout_To_SeatLayout_AircraftLayout_Table")]
+    partial class Add_Column_IsBaseLayout_To_SeatLayout_AircraftLayout_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +67,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SeatLayoutId");
 
-                    b.ToTable("Aircrafts", (string)null);
+                    b.ToTable("Aircrafts");
 
                     b.HasData(
                         new
@@ -124,7 +126,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AircraftDeckId");
 
-                    b.ToTable("AircraftCabins", (string)null);
+                    b.ToTable("AircraftCabins");
 
                     b.HasData(
                         new
@@ -195,7 +197,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AircraftLayoutId");
 
-                    b.ToTable("AircraftDecks", (string)null);
+                    b.ToTable("AircraftDecks");
 
                     b.HasData(
                         new
@@ -242,7 +244,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AircraftLayouts", (string)null);
+                    b.ToTable("AircraftLayouts");
 
                     b.HasData(
                         new
@@ -302,7 +304,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Airports", (string)null);
+                    b.ToTable("Airports");
 
                     b.HasData(
                         new
@@ -568,148 +570,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AWBInformation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AgentAITACode")
-                        .HasColumnType("varchar(40)");
-
-                    b.Property<string>("AgentAccountInformation")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("AgentAccountNumber")
-                        .HasColumnType("varchar(40)");
-
-                    b.Property<string>("AgentCity")
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("AgentName")
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<double>("AmountOfInsurance")
-                        .HasColumnType("float");
-
-                    b.Property<string>("ConsigneeAccountNumber")
-                        .HasColumnType("varchar(40)");
-
-                    b.Property<string>("ConsigneeAddress")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ConsigneeName")
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Currency")
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<double>("DeclaredValueForCarriage")
-                        .HasColumnType("float");
-
-                    b.Property<double>("DeclaredValueForCustomer")
-                        .HasColumnType("float");
-
-                    b.Property<string>("DestinationAirportCode")
-                        .HasColumnType("varchar(3)");
-
-                    b.Property<Guid>("DestinationAirportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("RequestedFlightDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestedRouting")
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("RoutingAndDestinationBy")
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("RoutingAndDestinationTo")
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ShipperAccountNumber")
-                        .HasColumnType("varchar(40)");
-
-                    b.Property<string>("ShipperAddress")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ShipperName")
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ShippingReferenceNumber")
-                        .HasColumnType("varchar(40)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AWBInformations");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AWBProduct", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AWBInformationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ProductRefNumber")
-                        .HasColumnType("varchar(40)");
-
-                    b.Property<byte>("ProductType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("Quantity")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AWBInformationId");
-
-                    b.ToTable("AWBProducts");
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoAgent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -774,7 +634,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("CargoAgents", (string)null);
+                    b.ToTable("CargoAgents");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoBooking", b =>
@@ -829,7 +689,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("OriginAirportId");
 
-                    b.ToTable("CargoBookings", (string)null);
+                    b.ToTable("CargoBookings");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoPosition", b =>
@@ -881,7 +741,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ZoneAreaId");
 
-                    b.ToTable("CargoPositions", (string)null);
+                    b.ToTable("CargoPositions");
 
                     b.HasData(
                         new
@@ -950,7 +810,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
 
                     b.HasData(
                         new
@@ -3732,7 +3592,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
 
                     b.HasData(
                         new
@@ -5601,7 +5461,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Flights", (string)null);
+                    b.ToTable("Flights");
 
                     b.HasData(
                         new
@@ -5713,7 +5573,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("OriginAirportId");
 
-                    b.ToTable("FlightSchedules", (string)null);
+                    b.ToTable("FlightSchedules");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", b =>
@@ -5806,7 +5666,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SectorId");
 
-                    b.ToTable("FlightScheduleSectors", (string)null);
+                    b.ToTable("FlightScheduleSectors");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightSector", b =>
@@ -5824,7 +5684,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SectorId");
 
-                    b.ToTable("FlightSectors", (string)null);
+                    b.ToTable("FlightSectors");
 
                     b.HasData(
                         new
@@ -5874,7 +5734,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SeatLayoutId");
 
-                    b.ToTable("LoadPlans", (string)null);
+                    b.ToTable("LoadPlans");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageContainer", b =>
@@ -5930,7 +5790,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PackageContainers", (string)null);
+                    b.ToTable("PackageContainers");
 
                     b.HasData(
                         new
@@ -6077,7 +5937,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SectorId");
 
-                    b.ToTable("PackageContainerSectors", (string)null);
+                    b.ToTable("PackageContainerSectors");
 
                     b.HasData(
                         new
@@ -6205,7 +6065,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("WeightUnitId");
 
-                    b.ToTable("PackageItems", (string)null);
+                    b.ToTable("PackageItems");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Seat", b =>
@@ -6260,7 +6120,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ZoneAreaId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
 
                     b.HasData(
                         new
@@ -6391,7 +6251,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SeatLayoutId");
 
-                    b.ToTable("SeatConfigurations", (string)null);
+                    b.ToTable("SeatConfigurations");
 
                     b.HasData(
                         new
@@ -6470,7 +6330,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SeatLayouts", (string)null);
+                    b.ToTable("SeatLayouts");
 
                     b.HasData(
                         new
@@ -6537,7 +6397,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sectors", (string)null);
+                    b.ToTable("Sectors");
 
                     b.HasData(
                         new
@@ -6644,7 +6504,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ULDMetaDataId");
 
-                    b.ToTable("ULDs", (string)null);
+                    b.ToTable("ULDs");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>
@@ -6703,7 +6563,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ULDId");
 
-                    b.ToTable("ULDContainers", (string)null);
+                    b.ToTable("ULDContainers");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDMetaData", b =>
@@ -6744,7 +6604,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ULDMetaDatas", (string)null);
+                    b.ToTable("ULDMetaDatas");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Unit", b =>
@@ -6780,7 +6640,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
 
                     b.HasData(
                         new
@@ -6875,7 +6735,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AirportId");
 
-                    b.ToTable("Warehouses", (string)null);
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ZoneArea", b =>
@@ -6919,7 +6779,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AircraftCabinId");
 
-                    b.ToTable("ZoneAreas", (string)null);
+                    b.ToTable("ZoneAreas");
 
                     b.HasData(
                         new
@@ -7092,7 +6952,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AppUser", b =>
                 {
-                    b.OwnsMany("Aeroclub.Cargo.Core.Entities.AppUser.RefreshTokens#Aeroclub.Cargo.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("Aeroclub.Cargo.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<Guid>("AppUserId")
                                 .HasColumnType("uniqueidentifier");
@@ -7129,7 +6989,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                             b1.HasKey("AppUserId", "Id");
 
-                            b1.ToTable("RefreshToken", (string)null);
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner("AppUser")
                                 .HasForeignKey("AppUserId");
@@ -7157,15 +7017,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AWBProduct", b =>
-                {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.AWBInformation", "AWBInformation")
-                        .WithMany("PackageProducts")
-                        .HasForeignKey("AWBInformationId");
-
-                    b.Navigation("AWBInformation");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoAgent", b =>
@@ -7530,11 +7381,6 @@ namespace Aeroclub.Cargo.Data.Migrations
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AppUser", b =>
                 {
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AWBInformation", b =>
-                {
-                    b.Navigation("PackageProducts");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoBooking", b =>

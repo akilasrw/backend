@@ -1,6 +1,7 @@
 [
   {
     "Id": "DFFF4E05-1FD3-467E-ADB6-E5C75E56E482",
-    "IsCloned": false
+    "IsCloned": false,
+    "IsBaseLayout": true
   }
 ]

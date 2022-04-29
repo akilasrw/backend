@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleSectorCreateRM dto)
+        public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleSectorCreateRM dto)// TODO: Need to be removed. this part should be happening with creation of flightScheduleController
         {
             if(!ModelState.IsValid) 
                     return BadRequest(ModelState);

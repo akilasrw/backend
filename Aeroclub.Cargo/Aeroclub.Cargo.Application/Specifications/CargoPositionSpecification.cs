@@ -10,11 +10,11 @@ namespace Aeroclub.Cargo.Application.Specifications
     {
         public CargoPositionSpecification(CargoPositionListQM query)
             : base (x=> 
-                (query.AircraftLayoutId == Guid.Empty || x.ZoneArea.AircraftZone.AircraftDeck.AircraftLayoutId == query.AircraftLayoutId)
+                (query.AircraftLayoutId == Guid.Empty || x.ZoneArea.AircraftCabin.AircraftDeck.AircraftLayoutId == query.AircraftLayoutId)
             )
         {
             if(query.AircraftLayoutId != Guid.Empty)
-                AddInclude(y=> y.Include(x=> x.ZoneArea.AircraftZone.AircraftDeck));
+                AddInclude(y=> y.Include(x=> x.ZoneArea.AircraftCabin.AircraftDeck));
             
             if(query.IncludeSeat)
                 AddInclude(y=> y.Include(x=> x.Seat));

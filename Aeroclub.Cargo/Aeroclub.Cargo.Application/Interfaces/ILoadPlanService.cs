@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.LoadPlanQMs;
 using System;
@@ -11,7 +12,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface ILoadPlanService
     {
-        Task<ServiceResponseStatus> CreateAsync(LoadPlanDto loadPlanDto);
+        Task<ServiceResponseCreateStatus> CreateAsync(LoadPlanDto loadPlanDto);
         Task<LoadPlanDto> GetAsync(LoadPlanQM query);
     }
 }

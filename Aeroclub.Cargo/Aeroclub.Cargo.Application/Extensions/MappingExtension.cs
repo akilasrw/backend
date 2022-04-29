@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Core.Entities;
+﻿using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+using Aeroclub.Cargo.Core.Entities;
 
 namespace Aeroclub.Cargo.Application.Extensions
 {
@@ -19,5 +20,13 @@ namespace Aeroclub.Cargo.Application.Extensions
 
             return flightSchedule;
         }
+        
+        //public static FlightScheduleSectorCreateRM MapFlightScheduleSector(this FlightScheduleSectorCreateRM flightScheduleSectorCreate, FlightSchedule flightSchedule)
+        //{
+        //    flightScheduleSectorCreate.OriginAirportId = flightSchedule.OriginAirportId;
+        //    flightSchedule
+
+        //    return flightScheduleSectorCreate;
+        //}
     }
 }

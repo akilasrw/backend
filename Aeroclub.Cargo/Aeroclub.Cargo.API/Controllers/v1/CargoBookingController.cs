@@ -43,6 +43,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult> CreateAsync([FromBody] CargoBookingRM rm)
         {
             var res = await _bookingManagerService.CreateAsync(rm);
+            
+            if (res == null) return BadRequest();
+            
+            if(res != Application.Enums.ServiceResponseStatus.Success) return BadRequest("Saved Failed.");
+            
             return CreatedAtAction(nameof(GetAsync), rm);
         }
 

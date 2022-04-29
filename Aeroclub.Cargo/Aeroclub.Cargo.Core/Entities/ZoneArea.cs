@@ -11,7 +11,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public double MaxWeight { get; set; }
         public double CurrentWeight { get; set; }
         
-        public virtual AircraftCabin AircraftZone { get; set; }
+        public virtual AircraftCabin AircraftCabin { get; set; }
         public virtual ICollection<CargoPosition> CargoPositions { get; set; }
         public virtual ICollection<Seat> Seats { get; set; }
 

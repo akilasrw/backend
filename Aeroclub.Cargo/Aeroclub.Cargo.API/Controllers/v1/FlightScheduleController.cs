@@ -34,7 +34,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleCreateRM flightScheduleCreateRM)// Need to be removed. this part should be happening with creation of flightScheduleController
+        public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleCreateRM flightScheduleCreateRM)
         {
             var response = await _flightScheduleService.CreateAsync(flightScheduleCreateRM);
             return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, flightScheduleCreateRM);

@@ -13,6 +13,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid AircraftLayoutId { get; set; }
         
         public virtual AircraftLayout AircraftLayout { get; set; }
-        public virtual ICollection<AircraftCabin> AircraftZones { get; set; }
+        public virtual ICollection<AircraftCabin> AircraftCabins { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -15,16 +16,19 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IFlightService _flightService;
         private readonly IAircraftService _aircraftService;
+        private readonly ILayoutCloneService _layoutCloneService;
 
         public FlightScheduleService(
             IUnitOfWork unitOfWork, 
             IMapper mapper,
             IFlightService flightService,
-            IAircraftService aircraftService):
+            IAircraftService aircraftService,
+            ILayoutCloneService layoutCloneService) :
             base(unitOfWork,mapper)
         {
             _flightService = flightService;
             _aircraftService = aircraftService;
+            _layoutCloneService = layoutCloneService;
         }
 
         public async Task<FlightScheduleCreateStatusRM> CreateAsync(FlightScheduleCreateRM model)
@@ -56,7 +60,12 @@ namespace Aeroclub.Cargo.Application.Services
             responseStatus.StatusCode = ServiceResponseStatus.Success;
             return responseStatus;
         }
-        
+
+        private async Task CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
+        {                    
+              //await _layoutCloneService.CloneLayoutAsync();
+        }
+
         public async Task<ServiceResponseStatus> UpdateAsync(FlightScheduleUpdateRM model)
         {
             var entity = _mapper.Map<FlightSchedule>(model);
