@@ -44,27 +44,21 @@ namespace Aeroclub.Cargo.Application.Services
 
                 // Get AircraftLayout including all childs till Position
                 var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
-                if (aircraftLayout == null) return;
-
-                var newAircraftDecks = await CloningAircraftDeckAsync(aircraftLayout);
+                if (aircraftLayout == null) return;       
 
                 // Get SeatLayout including all childs till Seat
                 var seatLayout = await GetSeatLayoutAsync(aircraft.AircraftLayoutId);
                 if (seatLayout == null) return;
-
-                var newSeatConfigurations = await CloningSeatConfigurationAsync(seatLayout);
+                
+                var newResetLayouts = await CloningLayoutAsync(aircraftLayout, seatLayout);
 
                 foreach (var sector in FlightScheduleSectors)
                 {
                     // Create Aircraft Layout
-                    aircraftLayout.Id = Guid.NewGuid();
-                    aircraftLayout.AircraftDecks = (ICollection<AircraftDeck>)newAircraftDecks;
-                    var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(aircraftLayout);
+                    var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(newResetLayouts.Item1);
                     // Save, if not success, go with this sequence | CargoPosition <-- Zone Area <-- Aircraft Cabin <-- Aircraft Deck <-- Aircraft Layout
 
-                    seatLayout.Id = Guid.NewGuid();
-                    seatLayout.SeatConfigurations = (ICollection<SeatConfiguration>)newSeatConfigurations;
-                    var createdSeatLayout = await _unitOfWork.Repository<SeatLayout>().CreateAsync(seatLayout);
+                    var createdSeatLayout = await _unitOfWork.Repository<SeatLayout>().CreateAsync(newResetLayouts.Item2);
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
                     // Create Load Plan                    
@@ -99,38 +93,48 @@ namespace Aeroclub.Cargo.Application.Services
             return await _unitOfWork.Repository<AircraftLayout>().GetEntityWithSpecAsync(aircraftLayoutSpec);
         }
 
-        private Task<IEnumerable<AircraftDeck>> CloningAircraftDeckAsync(AircraftLayout aircraftLayout)
+        private Task<Tuple<AircraftLayout, SeatLayout>> CloningLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
         {
-            // Reset Ids, default values
-            return Task.FromResult(aircraftLayout.AircraftDecks
-                .Select(a => new AircraftDeck()
+            List<KeyValuePair<Guid, Guid>> zoneGuids = new List<KeyValuePair<Guid, Guid>>() { new KeyValuePair<Guid, Guid>() };
+
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                deck.Id = Guid.NewGuid();
+                foreach (var cabin in deck.AircraftCabins)
                 {
-                    CurrentWeight = 0,
-                    AircraftDeckType = a.AircraftDeckType,
-                    MaxWeight = a.MaxWeight,
-                    AircraftCabins = (ICollection<AircraftCabin>)a.AircraftCabins
-                    .Select(b => new AircraftCabin()
+                    cabin.AircraftDeckId = deck.Id;
+                    cabin.Id = Guid.NewGuid();
+                    foreach (var zone in cabin.ZoneAreas)
                     {
-                        MaxWeight = b.MaxWeight,
-                        CurrentWeight = 0,
-                        Name = b.Name,
-                        ZoneAreas = (ICollection<ZoneArea>)b.ZoneAreas
-                                .Select(c => new ZoneArea()
-                                {
-                                    CurrentWeight = 0,
-                                    Name = c.Name,
-                                    MaxWeight = c.MaxWeight,
-                                    CargoPositions = (ICollection<CargoPosition>)c.CargoPositions
-                                    .Select(e => new CargoPosition()
-                                    {
-                                        MaxWeight = e.MaxWeight,
-                                        Name = e.Name,
-                                        CargoPositionType = e.CargoPositionType,
-                                        CurrentWeight = 0,
-                                    })
-                                })
-                    })
-                }));
+                        var zoneId = zone.Id;
+                        zone.AircraftCabinId = cabin.Id;
+                        zone.Id = Guid.NewGuid();
+                        zoneGuids.Add(new KeyValuePair<Guid, Guid>(zoneId, zone.Id));
+
+                        foreach (var position in zone.CargoPositions)
+                        {
+                            position.ZoneAreaId = zone.Id;
+                            position.Id = Guid.NewGuid();
+                        }
+                    }
+                }
+            }
+
+            foreach (var conf in seatLayout.SeatConfigurations)
+            {
+                conf.Id = Guid.NewGuid();
+                foreach (var seat in conf.Seats)
+                {
+                    seat.SeatConfigurationId = conf.Id;
+                    seat.Id = Guid.NewGuid();
+                    seat.ZoneAreaId = zoneGuids.FirstOrDefault(x => x.Key == seat.ZoneAreaId).Value;
+                }
+            }
+
+            Tuple<AircraftLayout,SeatLayout> layouts = new Tuple<AircraftLayout, SeatLayout>(aircraftLayout, seatLayout);
+
+            // Reset Ids, default values
+            return Task.FromResult(layouts);
         }
 
         private async Task<SeatLayout> GetSeatLayoutAsync(Guid aircraftLayoutId)
