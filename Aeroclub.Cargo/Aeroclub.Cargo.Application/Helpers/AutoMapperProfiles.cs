@@ -20,6 +20,9 @@ using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AWBProductVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -97,7 +100,14 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""));
 
             CreateMap<PackageItemRM, PackageItem>(); 
-            CreateMap<Seat, SeatDto>().ReverseMap(); 
+            CreateMap<Seat, SeatDto>().ReverseMap();
+
+            CreateMap<AWBCreateRM, AWBInformation>();
+            CreateMap<AWBProductRM, AWBProduct>();
+
+            CreateMap<AWBInformation, AWBInformationVM>();
+            CreateMap<AWBProduct, AWBProductVM>();
+
 
         }
     }
