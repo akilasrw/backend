@@ -16,12 +16,12 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IAircraftService _aircraftService;
         private readonly ILoadPlanService _loadPlanService;
-        private readonly FlightScheduleSectorService _flightScheduleSectorService;
+        private readonly IFlightScheduleSectorService _flightScheduleSectorService;
 
         public LayoutCloneService(
             IAircraftService aircraftService,
             ILoadPlanService loadPlanService,
-                        FlightScheduleSectorService flightScheduleSectorService,
+            IFlightScheduleSectorService flightScheduleSectorService,
             IUnitOfWork unitOfWork,
             IMapper mapper)
             : base(unitOfWork, mapper)
