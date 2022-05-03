@@ -53,17 +53,23 @@ namespace Aeroclub.Cargo.Application.Services
                 var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
                 entity.MapDestinationAirport(destinationAirport);
             }
-            
+            var flightScheduleSectors = model.FlightScheduleSectors;
+            entity.FlightScheduleSectors.Clear();
             await _unitOfWork.Repository<FlightSchedule>().CreateAsync(entity);
             await _unitOfWork.SaveChangesAsync();
             responseStatus.Id = entity.Id;
             responseStatus.StatusCode = ServiceResponseStatus.Success;
+            if(entity.Id != Guid.Empty)
+                if(await CloneLayoutAsync(entity, flightScheduleSectors))
+                    return responseStatus;
+            responseStatus.StatusCode = ServiceResponseStatus.Failed;
             return responseStatus;
         }
 
-        private async Task CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
-        {                    
-              //await _layoutCloneService.CloneLayoutAsync();
+        private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)
+        {
+            await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
+            return true;
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(FlightScheduleUpdateRM model)

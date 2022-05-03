@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220503141449_Add_SeatLayoutIds_To_SeatConfiguration")]
+    partial class Add_SeatLayoutIds_To_SeatConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +67,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SeatLayoutId");
 
-                    b.ToTable("Aircrafts", (string)null);
+                    b.ToTable("Aircrafts");
 
                     b.HasData(
                         new
@@ -124,7 +126,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AircraftDeckId");
 
-                    b.ToTable("AircraftCabins", (string)null);
+                    b.ToTable("AircraftCabins");
 
                     b.HasData(
                         new
@@ -195,7 +197,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AircraftLayoutId");
 
-                    b.ToTable("AircraftDecks", (string)null);
+                    b.ToTable("AircraftDecks");
 
                     b.HasData(
                         new
@@ -242,7 +244,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AircraftLayouts", (string)null);
+                    b.ToTable("AircraftLayouts");
 
                     b.HasData(
                         new
@@ -302,7 +304,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Airports", (string)null);
+                    b.ToTable("Airports");
 
                     b.HasData(
                         new
@@ -660,7 +662,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AWBInformations", (string)null);
+                    b.ToTable("AWBInformations");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AWBProduct", b =>
@@ -707,7 +709,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AWBInformationId");
 
-                    b.ToTable("AWBProducts", (string)null);
+                    b.ToTable("AWBProducts");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoAgent", b =>
@@ -774,7 +776,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("CargoAgents", (string)null);
+                    b.ToTable("CargoAgents");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoBooking", b =>
@@ -829,7 +831,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("OriginAirportId");
 
-                    b.ToTable("CargoBookings", (string)null);
+                    b.ToTable("CargoBookings");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoPosition", b =>
@@ -881,7 +883,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ZoneAreaId");
 
-                    b.ToTable("CargoPositions", (string)null);
+                    b.ToTable("CargoPositions");
 
                     b.HasData(
                         new
@@ -950,7 +952,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
 
                     b.HasData(
                         new
@@ -3732,7 +3734,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
 
                     b.HasData(
                         new
@@ -5601,7 +5603,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Flights", (string)null);
+                    b.ToTable("Flights");
 
                     b.HasData(
                         new
@@ -5713,7 +5715,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("OriginAirportId");
 
-                    b.ToTable("FlightSchedules", (string)null);
+                    b.ToTable("FlightSchedules");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", b =>
@@ -5806,7 +5808,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SectorId");
 
-                    b.ToTable("FlightScheduleSectors", (string)null);
+                    b.ToTable("FlightScheduleSectors");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightSector", b =>
@@ -5824,7 +5826,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SectorId");
 
-                    b.ToTable("FlightSectors", (string)null);
+                    b.ToTable("FlightSectors");
 
                     b.HasData(
                         new
@@ -5874,7 +5876,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SeatLayoutId");
 
-                    b.ToTable("LoadPlans", (string)null);
+                    b.ToTable("LoadPlans");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageContainer", b =>
@@ -5930,7 +5932,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PackageContainers", (string)null);
+                    b.ToTable("PackageContainers");
 
                     b.HasData(
                         new
@@ -6077,7 +6079,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SectorId");
 
-                    b.ToTable("PackageContainerSectors", (string)null);
+                    b.ToTable("PackageContainerSectors");
 
                     b.HasData(
                         new
@@ -6205,7 +6207,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("WeightUnitId");
 
-                    b.ToTable("PackageItems", (string)null);
+                    b.ToTable("PackageItems");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Seat", b =>
@@ -6260,7 +6262,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ZoneAreaId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
 
                     b.HasData(
                         new
@@ -6391,7 +6393,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("SeatLayoutId");
 
-                    b.ToTable("SeatConfigurations", (string)null);
+                    b.ToTable("SeatConfigurations");
 
                     b.HasData(
                         new
@@ -6473,7 +6475,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SeatLayouts", (string)null);
+                    b.ToTable("SeatLayouts");
 
                     b.HasData(
                         new
@@ -6540,7 +6542,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sectors", (string)null);
+                    b.ToTable("Sectors");
 
                     b.HasData(
                         new
@@ -6647,7 +6649,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ULDMetaDataId");
 
-                    b.ToTable("ULDs", (string)null);
+                    b.ToTable("ULDs");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>
@@ -6706,7 +6708,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("ULDId");
 
-                    b.ToTable("ULDContainers", (string)null);
+                    b.ToTable("ULDContainers");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDMetaData", b =>
@@ -6747,7 +6749,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ULDMetaDatas", (string)null);
+                    b.ToTable("ULDMetaDatas");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Unit", b =>
@@ -6783,7 +6785,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
 
                     b.HasData(
                         new
@@ -6878,7 +6880,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AirportId");
 
-                    b.ToTable("Warehouses", (string)null);
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ZoneArea", b =>
@@ -6922,7 +6924,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("AircraftCabinId");
 
-                    b.ToTable("ZoneAreas", (string)null);
+                    b.ToTable("ZoneAreas");
 
                     b.HasData(
                         new
@@ -7095,7 +7097,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AppUser", b =>
                 {
-                    b.OwnsMany("Aeroclub.Cargo.Core.Entities.AppUser.RefreshTokens#Aeroclub.Cargo.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("Aeroclub.Cargo.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<Guid>("AppUserId")
                                 .HasColumnType("uniqueidentifier");
@@ -7132,7 +7134,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                             b1.HasKey("AppUserId", "Id");
 
-                            b1.ToTable("RefreshToken", (string)null);
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner("AppUser")
                                 .HasForeignKey("AppUserId");

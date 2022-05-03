@@ -5,7 +5,8 @@
     "ColumnNumber": 1,
     "SeatConfigurationType": 1,
     "IsOnSeatOccupied": false,
-    "IsUnderSeatOccupied": false
+    "IsUnderSeatOccupied": false,
+    "SeatLayoutId": "DFFF4E05-1FD3-467E-ADB6-E5C75E56E482"
   },
   {
     "Id": "F9078389-E087-4108-98E5-99F3A467E7DF",
@@ -13,7 +14,8 @@
     "ColumnNumber": 2,
     "SeatConfigurationType": 1,
     "IsOnSeatOccupied": false,
-    "IsUnderSeatOccupied": false
+    "IsUnderSeatOccupied": false,
+    "SeatLayoutId": "DFFF4E05-1FD3-467E-ADB6-E5C75E56E482"
   },
   {
     "Id": "CF04A08D-33B9-4C33-AF96-06D85443B860",
@@ -21,6 +23,7 @@
     "ColumnNumber": 1,
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
-    "IsUnderSeatOccupied": false
+    "IsUnderSeatOccupied": false,
+    "SeatLayoutId": "DFFF4E05-1FD3-467E-ADB6-E5C75E56E482"
   }
 ]

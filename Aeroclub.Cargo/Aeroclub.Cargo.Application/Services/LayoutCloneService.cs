@@ -47,10 +47,10 @@ namespace Aeroclub.Cargo.Application.Services
                 if (aircraftLayout == null) return;       
 
                 // Get SeatLayout including all childs till Seat
-                var seatLayout = await GetSeatLayoutAsync(aircraft.AircraftLayoutId);
+                var seatLayout = await GetSeatLayoutAsync(aircraft.SeatLayoutId);
                 if (seatLayout == null) return;
                 
-                var newResetLayouts = await CloningLayoutAsync(aircraftLayout, seatLayout);
+                var newResetLayouts = await ResetLayoutAsync(aircraftLayout, seatLayout);
 
                 foreach (var sector in FlightScheduleSectors)
                 {
@@ -93,7 +93,7 @@ namespace Aeroclub.Cargo.Application.Services
             return await _unitOfWork.Repository<AircraftLayout>().GetEntityWithSpecAsync(aircraftLayoutSpec);
         }
 
-        private Task<Tuple<AircraftLayout, SeatLayout>> CloningLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
+        private Task<Tuple<AircraftLayout, SeatLayout>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
         {
             List<KeyValuePair<Guid, Guid>> zoneGuids = new List<KeyValuePair<Guid, Guid>>() { new KeyValuePair<Guid, Guid>() };
 
@@ -143,31 +143,6 @@ namespace Aeroclub.Cargo.Application.Services
                new Models.Queries.SeatLayoutQMs.SeatLayoutQM() { Id = aircraftLayoutId, IncludeSeatConfiguration = true });
 
             return await _unitOfWork.Repository<SeatLayout>().GetEntityWithSpecAsync(seatLayoutSpec);
-        } 
-
-        private Task<IEnumerable<SeatConfiguration>> CloningSeatConfigurationAsync(SeatLayout seatLayout)
-        {
-            // Reset Ids, default values
-            return Task.FromResult(seatLayout.SeatConfigurations
-                .Select(d =>
-                new SeatConfiguration()
-                {
-                    IsOnSeatOccupied = false,
-                    IsUnderSeatOccupied = false,
-                    RowNumber = d.RowNumber,
-                    ColumnNumber = d.ColumnNumber,
-                    SeatConfigurationType = d.SeatConfigurationType,
-                    Seats = (ICollection<Seat>)d.Seats
-                    .Select(a => new Seat()
-                    {
-                        RowNumber = a.RowNumber,
-                        ColumnNumber = a.ColumnNumber,
-                        IsOnSeatOccupied = false,
-                        IsUnderSeatOccupied = false,
-                        SeatNumber = a.SeatNumber,
-                        // ZoneAreaId = a.ZoneAreaId, // TODO: Need to add this.
-                    }),
-                }));
         }
     }
 }

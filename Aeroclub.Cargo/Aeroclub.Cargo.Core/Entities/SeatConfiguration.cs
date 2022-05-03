@@ -11,7 +11,9 @@ namespace Aeroclub.Cargo.Core.Entities
         public SeatConfigurationType SeatConfigurationType { get; set; }
         public bool IsOnSeatOccupied { get; set; }
         public bool IsUnderSeatOccupied { get; set; }
-        
+        public Guid? SeatLayoutId { get; set; }
+
         public virtual ICollection<Seat> Seats { get; set; }
+        public virtual SeatLayout SeatLayout { get; set; }
     }
 }
