@@ -25,6 +25,7 @@ namespace Aeroclub.Cargo.Application.Services
             var awb = _mapper.Map<AWBInformation>(model);
 
             var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
+            await _unitOfWork.SaveChangesAsync();
 
             if (createdAWB != null)
             {
