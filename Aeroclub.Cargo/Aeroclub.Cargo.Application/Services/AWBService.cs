@@ -18,13 +18,14 @@ namespace Aeroclub.Cargo.Application.Services
         {
 
         }
-        public async Task<AWBCreateStatusVM> CreateAsync(AWBCreateRM model)
+        public async Task<AWBCreateStatusRM> CreateAsync(AWBCreateRM model)
         {
-            var response = new AWBCreateStatusVM();
+            var response = new AWBCreateStatusRM();
 
             var awb = _mapper.Map<AWBInformation>(model);
 
             var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
+            await _unitOfWork.SaveChangesAsync();
 
             if (createdAWB != null)
             {

@@ -6,7 +6,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IAWBService
     {
-        Task<AWBCreateStatusVM> CreateAsync(AWBCreateRM model);
+        Task<AWBCreateStatusRM> CreateAsync(AWBCreateRM model);
         Task<AWBInformationVM> GetAsync(AirWayBillQM Id);
 
     }

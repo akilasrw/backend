@@ -2,12 +2,14 @@
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
-   
-    public class AWBController : ControllerBase
+    [ApiVersion("1.0")]
+    [Authorize]
+    public class AWBController : BaseApiController
     {
         private readonly IAWBService _awbService;
         public AWBController(IAWBService awbService)
