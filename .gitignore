@@ -55,3 +55,4 @@ Thumbs.db
 /Aeroclub.Cargo/Aeroclub.Cargo.API/Properties/PublishProfiles
 /Aeroclub.Cargo/Aeroclub.Cargo.API/Properties/ServiceDependencies/aeroclub-skytechcargo-app-dev - Zip Deploy/profile.arm.json
 /Aeroclub.Cargo/*/bin/*
+/Aeroclub.Cargo/Aeroclub.Cargo.API/Properties/ServiceDependencies/aeroclub-skytechcargo-app-dev-002 - Web Deploy

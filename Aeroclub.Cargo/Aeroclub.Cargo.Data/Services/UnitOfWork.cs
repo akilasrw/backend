@@ -1,25 +1,30 @@
 ﻿using System;
 using System.Collections;
-using System.Threading.Tasks;
 using Aeroclub.Cargo.Core.Entities.Core;
 using Aeroclub.Cargo.Core.Interfaces;
+using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
+
 
 namespace Aeroclub.Cargo.Data.Services
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private readonly IUserResolverService _userResolverService;
         private readonly CargoContext _context;
         private Hashtable _repositories;
 
-        public UnitOfWork(CargoContext context)
+        public UnitOfWork(CargoContext context, IUserResolverService userResolverService)
         {
             _context = context;
+            _userResolverService = userResolverService;
         }
         
         public async Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+            var userid = _userResolverService.GetUserId();
+
+            return await _context.SaveAuditableChangesAsync(userid);
         }
 
         public IDbContextTransaction BeginTransaction()

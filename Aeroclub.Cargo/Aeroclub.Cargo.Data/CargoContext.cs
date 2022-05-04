@@ -98,6 +98,34 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AWBProduct> AWBProducts { get; set; } = null!;
         public DbSet<AWBInformation> AWBInformations { get; set; } = null!;
 
+        public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
+        {
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && x.State is EntityState.Added or EntityState.Modified);
+            foreach (var entity in entities)
+            {
+                switch (entity.State)
+                {
+                    case EntityState.Modified:
+                        ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow;
+                        ((AuditableEntity)entity.Entity).LastModifiedBy = userid;
+                        break;
+                    case EntityState.Added:
+                        ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow;
+                        ((AuditableEntity)entity.Entity).CreatedBy = userid;
+                        break;
+                    case EntityState.Detached:
+                        break;
+                    case EntityState.Unchanged:
+                        break;
+                    case EntityState.Deleted:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            return await base.SaveChangesAsync(true, cancellationToken);
+        }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && x.State is EntityState.Added or EntityState.Modified);
