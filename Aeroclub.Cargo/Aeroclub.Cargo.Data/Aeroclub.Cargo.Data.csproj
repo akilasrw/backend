@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Aeroclub.Cargo.Core\Aeroclub.Cargo.Core.csproj" />
+    <ProjectReference Include="..\Aeroclub.Cargo.Infrastructure\Aeroclub.Cargo.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
