@@ -24,14 +24,14 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(LoadPlanDto loadPlanDto)
         {
-            var res = new ServiceResponseCreateStatus();
-            var loadPlan = _mapper.Map<LoadPlan>(loadPlanDto);
-            
-            var result = await _unitOfWork.Repository<LoadPlan>().CreateAsync(loadPlan);
-            await _unitOfWork.SaveChangesAsync();
-            res.Id = result.Id;
-            res.StatusCode = ServiceResponseStatus.Success;
-            return res;
+                var res = new ServiceResponseCreateStatus();
+                var loadPlan = _mapper.Map<LoadPlan>(loadPlanDto);
+
+                var result = await _unitOfWork.Repository<LoadPlan>().CreateAsync(loadPlan);
+                await _unitOfWork.SaveChangesAsync();
+                res.Id = result.Id;
+                res.StatusCode = ServiceResponseStatus.Success;
+                return res;
         }
 
         public Task<LoadPlanDto> GetAsync(LoadPlanQM query)

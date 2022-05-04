@@ -53,23 +53,38 @@ namespace Aeroclub.Cargo.Application.Services
                 var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
                 entity.MapDestinationAirport(destinationAirport);
             }
-            var flightScheduleSectors = model.FlightScheduleSectors;
-            entity.FlightScheduleSectors.Clear();
-            await _unitOfWork.Repository<FlightSchedule>().CreateAsync(entity);
-            await _unitOfWork.SaveChangesAsync();
-            responseStatus.Id = entity.Id;
-            responseStatus.StatusCode = ServiceResponseStatus.Success;
-            if(entity.Id != Guid.Empty)
-                if(await CloneLayoutAsync(entity, flightScheduleSectors))
-                    return responseStatus;
-            responseStatus.StatusCode = ServiceResponseStatus.Failed;
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    var flightScheduleSectors = model.FlightScheduleSectors;
+                    entity.FlightScheduleSectors.Clear();
+                    await _unitOfWork.Repository<FlightSchedule>().CreateAsync(entity);
+                    await _unitOfWork.SaveChangesAsync();
+                    responseStatus.Id = entity.Id;
+                    responseStatus.StatusCode = ServiceResponseStatus.Success;
+                    if (entity.Id != Guid.Empty)
+                        if (!await CloneLayoutAsync(entity, flightScheduleSectors))
+                        {
+                            await transaction.RollbackAsync();
+                            responseStatus.StatusCode = ServiceResponseStatus.Failed;
+                        }
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw ex;
+                }
+            }
+                
             return responseStatus;
         }
 
         private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)
         {
-            await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
-            return true;
+           return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(FlightScheduleUpdateRM model)

@@ -31,34 +31,35 @@ namespace Aeroclub.Cargo.Application.Services
             _flightScheduleSectorService = flightScheduleSectorService;
         }
 
-        public async Task CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
+        public async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
         {
             if (FlightScheduleSectors != null)
             {
                 var aircraftId = flightSchedule.AircraftId;
-                if (aircraftId == null) return;
+                if (aircraftId == null) return false;
 
                 // Get Aircraft
                 var aircraft = await GetAircraftAsync(aircraftId.Value);
-                if (aircraft == null) return;
+                if (aircraft == null) return false;
 
                 // Get AircraftLayout including all childs till Position
                 var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
-                if (aircraftLayout == null) return;       
+                if (aircraftLayout == null) return false;       
 
                 // Get SeatLayout including all childs till Seat
                 var seatLayout = await GetSeatLayoutAsync(aircraft.SeatLayoutId);
-                if (seatLayout == null) return;
-                
-                var newResetLayouts = await ResetLayoutAsync(aircraftLayout, seatLayout);
+                if (seatLayout == null) return false;                                
 
                 foreach (var sector in FlightScheduleSectors)
                 {
+                    var newResetLayouts = await ResetLayoutAsync(aircraftLayout, seatLayout);
                     // Create Aircraft Layout
                     var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(newResetLayouts.Item1);
+                    await _unitOfWork.SaveChangesAsync();
                     // Save, if not success, go with this sequence | CargoPosition <-- Zone Area <-- Aircraft Cabin <-- Aircraft Deck <-- Aircraft Layout
 
                     var createdSeatLayout = await _unitOfWork.Repository<SeatLayout>().CreateAsync(newResetLayouts.Item2);
+                    await _unitOfWork.SaveChangesAsync();
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
                     // Create Load Plan                    
@@ -68,9 +69,7 @@ namespace Aeroclub.Cargo.Application.Services
                             AircraftLayoutId = createdAircraftLayout.Id,
                             SeatLayoutId = createdSeatLayout.Id,
                             LoadPlanStatus = Common.Enums.LoadPlanStatus.None
-                        });
-
-                    await _unitOfWork.SaveChangesAsync();
+                        });                    
 
                     // Save Flight Schedule Sector
                     sector.FlightScheduleId = flightSchedule.Id;
@@ -78,6 +77,7 @@ namespace Aeroclub.Cargo.Application.Services
                     await _flightScheduleSectorService.CreateAsync(sector);
                 }
             }
+            return true;
         }
 
         private async Task<Aircraft> GetAircraftAsync(Guid aircraftId)
@@ -95,7 +95,12 @@ namespace Aeroclub.Cargo.Application.Services
 
         private Task<Tuple<AircraftLayout, SeatLayout>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
         {
-            List<KeyValuePair<Guid, Guid>> zoneGuids = new List<KeyValuePair<Guid, Guid>>() { new KeyValuePair<Guid, Guid>() };
+            List<KeyValuePair<Guid, Guid>> zoneGuids = new List<KeyValuePair<Guid, Guid>>();
+            
+            aircraftLayout.Id = Guid.NewGuid();
+            aircraftLayout.IsBaseLayout = false;
+            seatLayout.Id = Guid.NewGuid();
+            seatLayout.IsBaseLayout = false ;
 
             foreach (var deck in aircraftLayout.AircraftDecks)
             {

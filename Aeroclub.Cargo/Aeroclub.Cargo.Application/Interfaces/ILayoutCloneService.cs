@@ -10,6 +10,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface ILayoutCloneService
     {
-        Task CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
+        Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
     }
 }
