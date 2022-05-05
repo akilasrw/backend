@@ -20,13 +20,12 @@ namespace Aeroclub.Cargo.Application.Extensions
 
             return flightSchedule;
         }
-        
-        //public static FlightScheduleSectorCreateRM MapFlightScheduleSector(this FlightScheduleSectorCreateRM flightScheduleSectorCreate, FlightSchedule flightSchedule)
-        //{
-        //    flightScheduleSectorCreate.OriginAirportId = flightSchedule.OriginAirportId;
-        //    flightSchedule
 
-        //    return flightScheduleSectorCreate;
-        //}
+        public static CargoPosition MapCargoPosition(this CargoPosition position, Guid positionId, Guid seatId)
+        {
+            position.SeatId = seatId;
+            position.Id = positionId;
+            return position;
+        }
     }
 }
