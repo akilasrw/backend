@@ -2,13 +2,11 @@
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
     public class CargoAgentController : BaseApiController
     {
         private readonly ICargoAgentService cargoAgentService;
