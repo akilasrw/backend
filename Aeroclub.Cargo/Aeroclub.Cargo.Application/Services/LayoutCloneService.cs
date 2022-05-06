@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Extensions;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -62,6 +63,18 @@ namespace Aeroclub.Cargo.Application.Services
                     await _unitOfWork.SaveChangesAsync();
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
+                    
+                    // Update Position - Seat Id after saving Seats
+                    foreach (var item in newResetLayouts.Item3)
+                        if (item != null)
+                        {
+                            var position = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(item.Id);
+                            position.SeatId = item.SeatId;
+                            _unitOfWork.Repository<CargoPosition>().Update(position);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<CargoPosition>().Detach(position);
+                        }                           
+
                     // Create Load Plan                    
                     var createdLoadPlanStatus = await _loadPlanService.CreateAsync(
                         new Models.Dtos.LoadPlanDto()
@@ -93,14 +106,15 @@ namespace Aeroclub.Cargo.Application.Services
             return await _unitOfWork.Repository<AircraftLayout>().GetEntityWithSpecAsync(aircraftLayoutSpec);
         }
 
-        private Task<Tuple<AircraftLayout, SeatLayout>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
+        private Task<Tuple<AircraftLayout, SeatLayout, List<CargoPosition>>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
         {
-            List<KeyValuePair<Guid, Guid>> zoneGuids = new List<KeyValuePair<Guid, Guid>>();
-            
+            List<KeyValuePair<Guid, Guid>> zoneIDs = new List<KeyValuePair<Guid, Guid>>();
+            List<KeyValuePair<Guid, Guid>> seatIDs = new List<KeyValuePair<Guid, Guid>>();
+
             aircraftLayout.Id = Guid.NewGuid();
             aircraftLayout.IsBaseLayout = false;
             seatLayout.Id = Guid.NewGuid();
-            seatLayout.IsBaseLayout = false ;
+            seatLayout.IsBaseLayout = false;
 
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
@@ -114,7 +128,7 @@ namespace Aeroclub.Cargo.Application.Services
                         var zoneId = zone.Id;
                         zone.AircraftCabinId = cabin.Id;
                         zone.Id = Guid.NewGuid();
-                        zoneGuids.Add(new KeyValuePair<Guid, Guid>(zoneId, zone.Id));
+                        zoneIDs.Add(new KeyValuePair<Guid, Guid>(zoneId, zone.Id));
 
                         foreach (var position in zone.CargoPositions)
                         {
@@ -130,13 +144,33 @@ namespace Aeroclub.Cargo.Application.Services
                 conf.Id = Guid.NewGuid();
                 foreach (var seat in conf.Seats)
                 {
+                    var seatID = seat.Id;   
                     seat.SeatConfigurationId = conf.Id;
                     seat.Id = Guid.NewGuid();
-                    seat.ZoneAreaId = zoneGuids.FirstOrDefault(x => x.Key == seat.ZoneAreaId).Value;
+                    seat.ZoneAreaId = zoneIDs.FirstOrDefault(x => x.Key == seat.ZoneAreaId).Value;
+                    if(!seatIDs.Any(x=>x.Key == seatID))
+                        seatIDs.Add(new KeyValuePair<Guid, Guid>(seatID, seat.Id));
                 }
             }
 
-            Tuple<AircraftLayout,SeatLayout> layouts = new Tuple<AircraftLayout, SeatLayout>(aircraftLayout, seatLayout);
+            List<CargoPosition> cargoPositionsList = new List<CargoPosition>();
+
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                foreach (var cabin in deck.AircraftCabins)
+                {
+                    foreach (var zone in cabin.ZoneAreas)
+                    {
+                        foreach (var position in zone.CargoPositions)
+                        {
+                            var pos = new CargoPosition().MapCargoPosition(position.Id, seatIDs.FirstOrDefault(x => x.Key == position.SeatId).Value);
+                            cargoPositionsList.Add(pos);
+                        }
+                    }
+                }
+            }
+
+            Tuple<AircraftLayout, SeatLayout, List<CargoPosition>> layouts = new Tuple<AircraftLayout, SeatLayout, List<CargoPosition>>(aircraftLayout, seatLayout, cargoPositionsList);
 
             // Reset Ids, default values
             return Task.FromResult(layouts);
