@@ -3,13 +3,16 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
+using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using System.Transactions;
@@ -69,7 +72,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         transaction.Rollback();
                         return ServiceResponseStatus.Failed;
-                    }                        
+                    }
 
                     // Get Available/ Matching Cargo Positions.
                     foreach (var package in packages)
@@ -77,7 +80,7 @@ namespace Aeroclub.Cargo.Application.Services
                         // TODO: Local Binding it default PackageContainerType
                         // if(item.PackageContainerType == PackageContainerType.None)
                         //    continue; 
-                        
+
                         var matchedCargoPosition = await _cargoPositionService.GetMatchingCargoPosition(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType); // Return Tuple.
 
                         // Save ULD - No need - Lelanga will handle this.
@@ -121,7 +124,18 @@ namespace Aeroclub.Cargo.Application.Services
                             }
                         }
 
-                        // TO DO: Update Current Weights.
+                        // Update Current Weights.
+                        var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(new CargoPositionSpecification(new CargoPositionQM() { Id = matchedCargoPosition.Item1.Id } ));
+                        position.CurrentWeight += package.Weight;
+                        position.ZoneArea.CurrentWeight += package.Weight;
+                        position.ZoneArea.AircraftCabin.CurrentWeight += package.Weight;
+                        position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight += package.Weight;
+                        _unitOfWork.Repository<CargoPosition>().Update(position);
+                        _unitOfWork.Repository<ZoneArea>().Update(position.ZoneArea);
+                        _unitOfWork.Repository<AircraftCabin>().Update(position.ZoneArea.AircraftCabin);
+                        _unitOfWork.Repository<AircraftDeck>().Update(position.ZoneArea.AircraftCabin.AircraftDeck);
+                        await _unitOfWork.SaveChangesAsync();
+
                     }
                     transaction.Commit();
                 }
