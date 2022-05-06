@@ -19,5 +19,15 @@ namespace Aeroclub.Cargo.Application.Specifications
             if(query.IncludeSeat)
                 AddInclude(y=> y.Include(x=> x.Seat));
         }
+        
+        public CargoPositionSpecification(CargoPositionQM query)
+            : base (x=> 
+                (query.Id == Guid.Empty || x.Id == query.Id)
+            )
+        {
+            if(query.Id != Guid.Empty)
+                AddInclude(y=> y.Include(x=> x.ZoneArea.AircraftCabin.AircraftDeck));
+            
+        }
     }
 }
