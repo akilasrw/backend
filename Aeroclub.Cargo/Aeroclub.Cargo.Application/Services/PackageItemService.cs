@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -33,6 +34,13 @@ namespace Aeroclub.Cargo.Application.Services
             await _unitOfWork.SaveChangesAsync();
 
             return ServiceResponseStatus.Success;
+        }
+
+        public async Task<PackageItemMobileVM> GetAsync(PackageItemQM query)
+        {
+            var spec = new PackageItemSpecification(query);
+            var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<PackageItem, PackageItemMobileVM>(package);
         }
 
         public async Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query)
