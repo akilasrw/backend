@@ -13,6 +13,15 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
+        public PackageItemSpecification(PackageItemQM query)
+               : base(x => query.PackageRefNumber == null || x.PackageRefNumber.ToLower() == query.PackageRefNumber.ToLower())
+        {
+            AddInclude(x => x.Include(y => y.VolumeUnit));
+            AddInclude(x => x.Include(y => y.WeightUnit));
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.FlightScheduleSector));
+            AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(y => y.CargoPosition));
+        }
+
         public PackageItemSpecification(PackageListQM query, bool isCount = false)
             :base()
         {
