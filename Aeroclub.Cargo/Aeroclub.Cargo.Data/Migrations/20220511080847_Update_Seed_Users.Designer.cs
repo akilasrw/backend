@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20220511075521_Update_Seed_Users")]
+    [Migration("20220511080847_Update_Seed_Users")]
     partial class Update_Seed_Users
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -530,7 +530,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9e8b079e-991c-4f75-8384-6f840a7b973c",
+                            ConcurrencyStamp = "ebc5958b-089d-4572-8b28-1f7e99877304",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -546,13 +546,13 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "422d6be3-7563-4698-861d-f592351435b6",
+                            ConcurrencyStamp = "1a17e21f-dd34-4421-9571-b05c20326193",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
                             LastName = "Admin",
                             LockoutEnabled = false,
-                            PasswordHash = "$2a$12$fwVMxgyrBXCohpga0rUVGuVqZ7mUS2k7C5fj28MemdVp9kxhA019a",
+                            PasswordHash = "$2a$12$.Dc32QrZ6Ndp/ln/FXxfIOUX6JxP7cVC.y1udYrOOiC.kpfDRyWeu",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "backofficeadmin@yopmail.com",
