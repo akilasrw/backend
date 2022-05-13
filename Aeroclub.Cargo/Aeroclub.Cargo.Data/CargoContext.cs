@@ -55,6 +55,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new PackageContainerSectorConfiguration());
             modelBuilder.ApplyConfiguration(new AWBProductConfiguration());
             modelBuilder.ApplyConfiguration(new AWBInformationConfigration());
+            modelBuilder.ApplyConfiguration(new OverheadPositionConfiguration());
             
             
             
@@ -97,6 +98,9 @@ namespace Aeroclub.Cargo.Data
         public DbSet<PackageContainerSector> PackageContainerSectors { get; set; } = null!;
         public DbSet<AWBProduct> AWBProducts { get; set; } = null!;
         public DbSet<AWBInformation> AWBInformations { get; set; } = null!;
+        public DbSet<OverheadLayout> OverheadLayouts { get; set; } = null!;
+        public DbSet<OverheadCompartment> OverheadCompartments { get; set; } = null!;
+        public DbSet<OverheadPosition> OverheadPositions { get; set; } = null!;
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
         {

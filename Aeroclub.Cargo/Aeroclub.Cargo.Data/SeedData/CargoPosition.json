@@ -1,18 +1,890 @@
 [
   {
-    "Id": "1928A932-3074-4FAA-A809-A2B96FE3FDA2",
-    "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
-    "Name": "",
-    "CargoPositionType": "3",
-    "SeatId": "AF08B19F-DEAC-4186-984C-1367CFB25511",
-    "MaxWeight": "2500"
-  },
-  {
-    "Id": "0FC9F3CE-5275-4C29-8FCE-446A32A5C8EC",
-    "ZoneAreaId": "B68DF202-7D6C-443B-B41F-386212A2D2CA",
+    "Id": "C6A3A6A1-6044-46C1-B186-FBF496704548",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
     "Name": "",
     "CargoPositionType": "2",
-    "SeatId": "AF08B19F-DEAC-4186-984C-1367CFB25511",
-    "MaxWeight": "2500"
+    "SeatId": "29E80353-123D-4D8C-9E40-653AAE42737F",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "01B305E4-54B3-40C1-ABFF-5241D44F4340",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "29E80353-123D-4D8C-9E40-653AAE42737F",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "F665E2AF-44CC-471A-83FC-DC1A8B1DD223",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "0FB5901C-7471-4091-930D-BFA71F0237E7",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "0D8B21BC-7406-4304-9CBF-7B0489CB0335",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "0FB5901C-7471-4091-930D-BFA71F0237E7",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "B85A5128-045B-4A12-B66A-B60DC55353ED",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "8135717E-02AB-4162-A714-97F52A5C548D",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "6EE6F9C1-640F-469E-9CE4-46168BE548E7",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "8135717E-02AB-4162-A714-97F52A5C548D",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "6118B2D2-38BC-45F3-AFDD-0F3B35963843",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "8C3D5966-A3CA-41C2-8DFB-A11CD87038A6",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "F08051BC-F0F9-47ED-88A7-FE99DA20BD43",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "8C3D5966-A3CA-41C2-8DFB-A11CD87038A6",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "90226198-3D6D-4886-9737-67F261049ADD",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "9907ECB2-F93E-4A07-B320-E9F46ACC60D1",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "AFDEC263-4E72-4111-8A64-C1A4376A2B37",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "9907ECB2-F93E-4A07-B320-E9F46ACC60D1",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "5FC1128A-A363-4610-8919-456A31241961",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "F6B61D71-4A08-4BCA-9C3A-A56CE4BF3556",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "42E211E8-45E5-4E32-84BF-38A65523F983",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "F6B61D71-4A08-4BCA-9C3A-A56CE4BF3556",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "16864A15-BA14-4AB1-B8E2-7C1D44E679F5",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "6C710F60-CC13-4968-A17E-2332B2693D28",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "EA89792C-E996-47B6-B4C3-C29A7DE88738",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "6C710F60-CC13-4968-A17E-2332B2693D28",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "31A254C9-E328-4EC6-AF14-E6BD67710D92",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "5599797C-7863-4A82-8C28-AC91FBD5B6E9",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "67B27247-CC54-4000-B05C-7C064A596BE9",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "5599797C-7863-4A82-8C28-AC91FBD5B6E9",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "4D138643-4C55-4635-9B5A-9AA864E304E4",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "61F71143-453E-4F33-A762-9558E3E43524",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "CE1BDC1F-7CDA-41E2-B6C5-4F4898D808B2",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "61F71143-453E-4F33-A762-9558E3E43524",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "03345728-CFC5-4C16-9F0B-FC4669995C43",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "E98FB03A-D625-4AB4-B113-C0CBE83DE27D",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "860A0B69-4BF9-4996-A75C-AF30EAA6FCE0",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "E98FB03A-D625-4AB4-B113-C0CBE83DE27D",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "798980CB-C8B0-4BA4-84B3-F1C1746F5373",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "C3BC1FDA-0862-4B08-8E6C-4ADCE141D305",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "F54705FA-7CED-44A7-8F87-784C93487958",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "C3BC1FDA-0862-4B08-8E6C-4ADCE141D305",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "28B0DD28-D68F-43FE-9539-FDF34C37C3EE",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "FA88DBD9-8755-4668-BED7-42DDA4FFA1FF",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "EE3FF687-0633-446C-B7E6-55F97FFAE38C",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "FA88DBD9-8755-4668-BED7-42DDA4FFA1FF",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "4FEC5393-82BE-46D8-B990-D3D109000020",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "8D020EF8-A330-4B53-89A9-569BD3CE3AA2",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "9078ACEB-0F5C-430C-8431-27DEAD3B6C00",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "8D020EF8-A330-4B53-89A9-569BD3CE3AA2",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "4E7F116D-5F70-4202-8A43-431D35D54628",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "884F7E69-5F53-4BC4-9DA4-AB47B33FE4BC",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "91F04EAF-DE62-4486-A875-FF0251B745C0",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "884F7E69-5F53-4BC4-9DA4-AB47B33FE4BC",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "D01C6ACD-AD70-4FC4-AFBF-4664737F542A",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "144C2683-E60D-437B-9834-C628CD9D2E1A",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "3FD03D4B-C835-465D-9413-3B3C2D1C7ABC",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "144C2683-E60D-437B-9834-C628CD9D2E1A",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "90CF17DA-89B7-4FB2-BFB0-855E498EA195",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "82AD83DB-3CF5-4700-A04D-362427627298",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "DB796BCA-A669-49E7-95B5-A9A41EE4B8C6",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "82AD83DB-3CF5-4700-A04D-362427627298",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "1338086C-EE72-4FCD-B4B2-6D708E314886",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "95E962BD-0449-4F77-BCE2-42E1645BF26E",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "FA963C69-35F8-4635-966C-A2F650405433",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "95E962BD-0449-4F77-BCE2-42E1645BF26E",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "18F0C505-73F3-44E0-9C08-89601852C49D",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "D3E1ECF4-CCF9-4C17-9F76-5EE46F3B1C0B",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "CE79B16A-5625-4973-AD3F-9437B7144B48",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "D3E1ECF4-CCF9-4C17-9F76-5EE46F3B1C0B",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "376B53A4-598A-4DD8-836D-48695114E0C1",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "8D8661E8-F3DB-4E81-8807-3F5A2ACD584B",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "5A83733C-D715-4539-8DE4-54F5BD09A4E6",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "8D8661E8-F3DB-4E81-8807-3F5A2ACD584B",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "E33235EA-1FB0-4965-BA16-7354A30BF764",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "3093EEFE-C2FC-4FDF-9076-9547918AD12E",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "5FE2D21C-1EC8-4D44-8327-A0943EF2C035",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "3093EEFE-C2FC-4FDF-9076-9547918AD12E",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "2B769F88-47E0-4322-A03F-DE399183C975",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "85458746-0F2A-4CD3-9FC3-99601073AE2D",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "6D66B0EA-EBAA-4747-AB48-8A6FB03F8E5F",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "85458746-0F2A-4CD3-9FC3-99601073AE2D",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "4E6A324B-1364-43EC-9547-14AA1C3B57C2",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "A2ECDC1F-FB45-443F-8279-B5027EDF9E68",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "599444E6-FAE2-4AA0-8374-27AFB26E3580",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "A2ECDC1F-FB45-443F-8279-B5027EDF9E68",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "D549F710-3AF3-485D-8E3D-D72375FCC90A",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "0A20756C-BE54-40A2-816A-4A68F02491CC",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "45A91F55-6394-4E9F-A0E4-1C3428811735",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "0A20756C-BE54-40A2-816A-4A68F02491CC",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "F3E5EF35-B5D3-4418-B682-E6FB20C3EC3C",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "F62A939C-AC83-4CBB-B118-CE1000AECBFE",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "BB7411F3-4E7C-4DDE-8575-242910A267D1",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "F62A939C-AC83-4CBB-B118-CE1000AECBFE",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "7376DEB8-CBCE-4EBF-8734-379AD41C2FAC",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "E49E115A-F4CB-4067-931C-FB71818979E5",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "30F1EBAC-6254-444B-BB1E-012AC09A13C7",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "E49E115A-F4CB-4067-931C-FB71818979E5",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "B9DFAFA0-FA54-488D-9BC8-CD40FA7746CD",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "D53BE4BF-AE9B-4B01-8A15-D0296860D5E1",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "1963F6E3-2AEB-468A-B6AD-E3D736773069",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "D53BE4BF-AE9B-4B01-8A15-D0296860D5E1",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "F5E19D69-6257-41C1-8E8E-FEBF5E17B0C9",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "0FA9BA07-2009-47BA-8461-027FBFA15C45",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "E5EBD4A2-DAD8-48E2-84C6-AD0B587E1DEC",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "0FA9BA07-2009-47BA-8461-027FBFA15C45",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "10B5FE1D-B961-4481-8997-9C5A27B3EA98",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "F5B4F7F2-D1E6-4D94-B87B-5B8EAFC5D740",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "71430CD3-39F1-4DA4-871D-9306386C353A",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "F5B4F7F2-D1E6-4D94-B87B-5B8EAFC5D740",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "5C6BFCB4-C65D-4478-B6D9-F14EC0A32D0F",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "EA6D8DB3-1F00-4A40-8CC8-8583D19752C5",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "C4D51279-BCCC-43E1-A3F9-0A45A0128714",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "EA6D8DB3-1F00-4A40-8CC8-8583D19752C5",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "AB953C96-4748-432F-A677-BE562E48653C",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "C601B7DA-11F0-48A0-9D42-F242AEB3B16A",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "AE2388B1-BC1E-4BAB-9A16-C3185BF00943",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "C601B7DA-11F0-48A0-9D42-F242AEB3B16A",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "17F1F267-D3FE-4F8C-A76F-57CC8303960D",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "D82B38B6-9A16-4643-B09A-A9E7F6AF211F",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "0903136F-0AB6-4ED1-AF32-FC2DF15D5B22",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "D82B38B6-9A16-4643-B09A-A9E7F6AF211F",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "61D573A1-AA08-4903-B043-5780D7525763",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "870D28EE-2152-47D4-B0CD-2B278F0775A7",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "2D8346D6-C46C-4BF9-8C0A-341AFF781744",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "870D28EE-2152-47D4-B0CD-2B278F0775A7",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "8DED055B-221B-4AE9-AA87-2637B7A50AE2",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "792DB330-4A86-4DA2-822E-D8F59FFAA36D",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "A048A549-F37B-4DAD-AE84-BB2DE2328821",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "792DB330-4A86-4DA2-822E-D8F59FFAA36D",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "C059A767-E258-43AF-9FB0-669CD4EF1711",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "B8EEBBA1-5FB1-494E-B8D8-1F9AD08D38D4",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "FA4434A2-874B-4AFE-B8D5-90092E113A35",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "B8EEBBA1-5FB1-494E-B8D8-1F9AD08D38D4",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "67E1EC75-7D21-4FD2-948B-DCD03C680B3F",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "3B94462B-3005-4AD3-9493-65EC3FD31CB6",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "F0F0374C-FA41-4FDB-B93F-F32B95EA80E0",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "3B94462B-3005-4AD3-9493-65EC3FD31CB6",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "739FC12D-6B6B-4CF3-AA61-E7E268505AFB",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "8A59BA63-E693-4310-8F3E-DA5374B0D536",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "57AFDBB7-CC36-46A7-A567-D5A51BBED637",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "8A59BA63-E693-4310-8F3E-DA5374B0D536",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "29259F1D-D3B0-4834-96AD-83EAF5A7AD29",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "A1ECA4B6-58D5-40A5-BDD0-977BBE8F1CED",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "CA96DA3F-43F5-455F-B31D-33DE373CB3D5",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "A1ECA4B6-58D5-40A5-BDD0-977BBE8F1CED",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "F83AECDB-C621-4DBE-8C8B-319A744F30D9",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "F179A1E3-13DF-43EE-B24E-7BF774328ECB",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "83175ED6-AC4C-4A26-809D-A72CD6A04272",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "F179A1E3-13DF-43EE-B24E-7BF774328ECB",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "90DBCF46-69F4-4CE6-A064-4A1FF9730B3A",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "D55381EC-3B71-42AC-A8AD-A55340DF1FC9",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "40906838-7F90-4E6A-A70A-73684A508A15",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "D55381EC-3B71-42AC-A8AD-A55340DF1FC9",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "6A67356E-7C13-4A80-805C-89379CC73910",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "9B56F0D6-FEE5-411C-AD0F-02C0E9F24E6E",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "3FCB238E-4E8F-46C8-BF08-C52B471A7EA3",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "9B56F0D6-FEE5-411C-AD0F-02C0E9F24E6E",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "ABEF89BA-C9E4-404C-9746-B653FA930417",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "C35D5181-9EF2-4BC5-90E6-78551FE0AA4F",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "437CAF3D-CA39-4B68-AA2F-5381DD5E9D1C",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "C35D5181-9EF2-4BC5-90E6-78551FE0AA4F",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "2499AFCE-2178-43E9-869E-E60D2C09E2DD",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "7D9AA98F-B5B9-4F78-9DCC-C6BFF941A640",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "F8752D46-19D4-464B-A5ED-BEB7FE3426AE",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "7D9AA98F-B5B9-4F78-9DCC-C6BFF941A640",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "58473A7B-427A-49DE-859A-B3240C2D5EE6",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "4A8B6F8D-4134-447B-A89C-0BB15501FA14",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "677B76C6-B3FE-47C9-AC0B-6B5071738945",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "4A8B6F8D-4134-447B-A89C-0BB15501FA14",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "EE29981C-C061-42D8-B8B1-0C09A012B2A1",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "8F757628-2781-4148-AC0A-90A33D95F701",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "4A171AD3-8D7A-4BD2-A1FF-DEE33A2F47DF",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "8F757628-2781-4148-AC0A-90A33D95F701",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "17E5BE06-4DBA-4644-86EA-2A6C3FD17D0E",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "D4B51B93-ABDB-45BE-B9B9-047EADE5341D",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "3AAD13FC-9AF9-416D-88CA-07E5D1F1D170",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "D4B51B93-ABDB-45BE-B9B9-047EADE5341D",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "98EF6AFD-BCF8-4B1F-8C8D-734CF97C7B28",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "A5B93FE5-D2FF-4F3F-A52A-D44909530EAD",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "0F19E68B-9ED2-45BB-9050-8F36EE4940DF",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "A5B93FE5-D2FF-4F3F-A52A-D44909530EAD",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "53C6A1E7-E1D0-42B2-825F-54E0D4685A53",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "FDB9B7B8-EB62-4C22-A18E-1BB13A17B42A",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "7EDA3062-53DD-472E-A84B-9629E3DB7B70",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "FDB9B7B8-EB62-4C22-A18E-1BB13A17B42A",
+    "MaxWeight": "9"
+  },
+  {
+    "Id": "65A2ECE4-5EFA-4ECD-BFAC-8468416432EB",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "F1FA5634-0728-4A67-BE42-6EBCCBE03F7B",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "D5572DA1-9CA9-495E-BD7B-6D05AF0B476D",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "C2AF61F7-889B-4CE5-9E9F-EEC3F3EDD6E5",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "66A87042-060D-4972-A28D-3B60CB46B112",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "E247B36F-FD52-46E4-8346-87F024928769",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "547C1F7E-A847-4DA8-91A1-1F36C80FF3F2",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "184E3C7C-59B0-4430-9E1B-BD7AE54CDA25",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "AFBC0DAE-2D40-4600-B2FB-F30A629F6EA2",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "4A3BC38B-BA62-4B0D-9ABD-3E6C77936FC3",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "AF7C41F9-CE64-4C6E-AC7C-A7086D7B5131",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "C1D1EFEC-3AF5-4D88-A4D6-2F21BE2A62A0",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "F9854D31-B11E-415E-9B92-767634290534",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "EEE7739C-3C12-4FF8-A2C2-AE7E305EC8E7",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "32315494-3403-4D04-9CB3-910FBA1DA270",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "0ED2916A-45E3-4178-8B5B-44201CF067EB",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "E2482D50-0769-4241-8DB5-C401DFB766AB",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "95178F78-5F3E-4BCC-BF78-BE6D7DF345E6",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "7476A4F5-33C2-4A8E-98EA-2279FA73824D",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "CCFC9B94-6E07-418B-BA6D-05CC824F6351",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "4371D6CA-83B1-4D21-8C67-A5CEC989FFD9",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "425F3FC5-2631-4B6A-9734-3AE151B3F258",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "AB80FF89-08CC-404B-8CBC-7D7904D1970E",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "9F666A88-6887-42F3-AEFF-2EC1650FC7B9",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "43BC87E3-8A51-4854-AD1D-228F6C30E8E6",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "793F3313-C037-4FBA-A808-5C857E6BC970",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "8C4C5C20-03B3-4FC8-9FD0-7FE8CB711011",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "A6C8AECD-4C14-40DA-9A04-4D48FA8E8BF6",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "92F4A8A8-247B-4EF3-977C-4A166620B5AE",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "7D3BB986-5D89-4601-81FB-B06DD316B073",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "C30080A1-0BA5-4719-B027-8DDE3E9E57B3",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "4ECC77C5-FF36-4BDF-86E2-E5BE66DCA083",
+    "MaxWeight": "8"
+  },
+  {
+    "Id": "EF8FA486-B9E1-47DA-B2E5-FA6A93EFAE40",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "4",
+    "OverheadPositionId": "C8D01D74-A80F-4CED-BF07-A0C8CFFD600E",
+    "MaxWeight": "8"
   }
 ]

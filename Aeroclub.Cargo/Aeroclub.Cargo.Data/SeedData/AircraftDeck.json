@@ -1,8 +1,8 @@
 [
   {
-    "Id": "3C72981E-2F23-48DC-B757-F6E456ECD055",
+    "Id": "6E6E9CD3-29D8-422B-9BFD-0DC0751C75C7",
     "AircraftDeckType": "1",
-    "MaxWeight": "15000",
-    "AircraftLayoutId": "605EE297-42DA-4975-A072-C356CFD9AFD3"
+    "MaxWeight": 8800,
+    "AircraftLayoutId": "6C921671-64DF-42FB-BB09-291E392156FD"
   }
 ]

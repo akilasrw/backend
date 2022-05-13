@@ -1,9 +1,10 @@
 [
   {
-    "Id": "F2659D05-2507-4C36-8F1B-E84045A9AE15",
-    "RegNo": "",
-    "AircraftType": "1",
-    "AircraftLayoutId": "605EE297-42DA-4975-A072-C356CFD9AFD3",
-    "SeatLayoutId": "DFFF4E05-1FD3-467E-ADB6-E5C75E56E482"
+    "Id": "7286ADB4-1DA0-4547-AC8D-C3EA5F45C2A9",
+    "RegNo": "A320",
+    "AircraftType": "0",
+    "AircraftLayoutId": "6C921671-64DF-42FB-BB09-291E392156FD",
+    "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0"
   }
 ]

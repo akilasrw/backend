@@ -29,7 +29,10 @@ namespace Aeroclub.Cargo.Data.Extensions
             SeedAircraft(modelBuilder, basePath);
             SeedFlightSector(modelBuilder, basePath);
             SeedPackageContainer(modelBuilder, basePath);
-            SeedPackageContainerSector(modelBuilder, basePath);        
+            SeedPackageContainerSector(modelBuilder, basePath);  
+            SeedOverheadLayout(modelBuilder, basePath);
+            SeedOverheadCompartment(modelBuilder, basePath);
+            SeedOverheadPosition(modelBuilder, basePath);
         }
 
         private static void SeedCountries(ModelBuilder modelBuilder, string basePath)
@@ -198,6 +201,29 @@ namespace Aeroclub.Cargo.Data.Extensions
                 JsonConvert.DeserializeObject<PackageContainerSector[]>(File.ReadAllText(Path.Combine(basePath, "PackageContainerSector.json")));
             if (packageContainerSector != null)
                 modelBuilder.Entity<PackageContainerSector>().HasData(packageContainerSector);
+        }
+        private static void SeedOverheadLayout(ModelBuilder modelBuilder, string basePath)
+        {
+            var overheadLayout =
+                JsonConvert.DeserializeObject<OverheadLayout[]>(File.ReadAllText(Path.Combine(basePath, "OverheadLayout.json")));
+            if (overheadLayout != null)
+                modelBuilder.Entity<PackageContainerSector>().HasData(overheadLayout);
+        }
+        
+        private static void SeedOverheadCompartment(ModelBuilder modelBuilder, string basePath)
+        {
+            var overhead =
+                JsonConvert.DeserializeObject<OverheadCompartment[]>(File.ReadAllText(Path.Combine(basePath, "OverheadCompartment.json")));
+            if (overhead != null)
+                modelBuilder.Entity<PackageContainerSector>().HasData(overhead);
+        }
+        
+        private static void SeedOverheadPosition(ModelBuilder modelBuilder, string basePath)
+        {
+            var overhead =
+                JsonConvert.DeserializeObject<OverheadPosition[]>(File.ReadAllText(Path.Combine(basePath, "OverheadPosition.json")));
+            if (overhead != null)
+                modelBuilder.Entity<PackageContainerSector>().HasData(overhead);
         }
 
     }

@@ -1,0 +1,44 @@
+[
+  {
+    "Id": "16202785-603D-4261-8057-A35DAC9190BC",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0",
+    "RowNumber": "1",
+    "ColumnNumber": "1",
+    "IsOccupied": false
+  },
+  {
+    "Id": "A1F00792-EAA4-4216-A5EA-CA650EF42078",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0",
+    "RowNumber": "1",
+    "ColumnNumber": "2",
+    "IsOccupied": false
+  },
+  {
+    "Id": "A63DBF79-E791-4E60-8CEE-F8CD3D271872",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0",
+    "RowNumber": "2",
+    "ColumnNumber": "1",
+    "IsOccupied": false
+  },
+  {
+    "Id": "8FCBE5B8-5626-4023-87FA-A05CF56DF46E",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0",
+    "RowNumber": "2",
+    "ColumnNumber": "2",
+    "IsOccupied": false
+  },
+  {
+    "Id": "F20C7153-4EAD-4A47-B6C7-2E59288AA983",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0",
+    "RowNumber": "3",
+    "ColumnNumber": "1",
+    "IsOccupied": false
+  },
+  {
+    "Id": "D73021C1-9B4E-4BE9-B1D4-8F7428242709",
+    "OverheadLayoutId": "9788468F-8DA6-4573-AF43-509AF9B224B0",
+    "RowNumber": "3",
+    "ColumnNumber": "2",
+    "IsOccupied": false
+  }
+]

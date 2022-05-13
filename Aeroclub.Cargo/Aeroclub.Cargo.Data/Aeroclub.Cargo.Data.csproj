@@ -40,6 +40,15 @@
     <None Update="SeedData\AircraftCabin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="SeedData\OverheadCompartment.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\OverheadLayout.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\OverheadPosition.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SeedData\PackageContainer.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
