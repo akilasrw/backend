@@ -39,7 +39,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             // validate
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
-                return  new ServiceResponse<AuthenticateResponse>(null, "username or password is incorrect", ServiceResponseStatus.ValidationError);
+                return  new ServiceResponse<AuthenticateResponse>(null, "Username or Password is incorrect.", ServiceResponseStatus.ValidationError);
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
