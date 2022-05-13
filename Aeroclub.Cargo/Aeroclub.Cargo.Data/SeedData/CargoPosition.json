@@ -560,6 +560,22 @@
     "MaxWeight": "9"
   },
   {
+    "Id": "78996074-2609-4A0C-941F-0EA18104F175",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "2",
+    "SeatId": "4910E28D-9419-4E46-9B72-5ED18A7C91E6",
+    "MaxWeight": "22.5"
+  },
+  {
+    "Id": "1FA04E98-63B4-4705-A4B5-8D686B41ECA8",
+    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
+    "Name": "",
+    "CargoPositionType": "3",
+    "SeatId": "4910E28D-9419-4E46-9B72-5ED18A7C91E6",
+    "MaxWeight": "9"
+  },
+  {
     "Id": "739FC12D-6B6B-4CF3-AA61-E7E268505AFB",
     "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
     "Name": "",
@@ -861,14 +877,6 @@
     "Name": "",
     "CargoPositionType": "4",
     "OverheadPositionId": "A6C8AECD-4C14-40DA-9A04-4D48FA8E8BF6",
-    "MaxWeight": "8"
-  },
-  {
-    "Id": "92F4A8A8-247B-4EF3-977C-4A166620B5AE",
-    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853",
-    "Name": "",
-    "CargoPositionType": "4",
-    "OverheadPositionId": "7D3BB986-5D89-4601-81FB-B06DD316B073",
     "MaxWeight": "8"
   },
   {

@@ -98,13 +98,6 @@
     "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853"
   },
   {
-    "Id": "7D3BB986-5D89-4601-81FB-B06DD316B073",
-    "OverheadCompartmentId": "F20C7153-4EAD-4A47-B6C7-2E59288AA983",
-    "Sequence": 3,
-    "IsOccupied": false,
-    "ZoneAreaId": "AA9D13C3-7F45-4250-ABF5-54AB68A2C853"
-  },
-  {
     "Id": "4ECC77C5-FF36-4BDF-86E2-E5BE66DCA083",
     "OverheadCompartmentId": "D73021C1-9B4E-4BE9-B1D4-8F7428242709",
     "Sequence": 1,
