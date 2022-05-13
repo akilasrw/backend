@@ -21,7 +21,10 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if(dto.Password != dto.ConfirmPassword) return BadRequest("Incorrect mismatch.");
+            if(dto.Password != dto.ConfirmPassword) return BadRequest("The password confirmation does not match.");
+
+            if (dto.Password.Length < 8) return BadRequest("The password length must be eight characters.");
+
 
             var response = await cargoAgentService.CreateAsync(dto);
 
