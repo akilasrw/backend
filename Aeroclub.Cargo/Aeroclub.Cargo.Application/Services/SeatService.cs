@@ -34,8 +34,8 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<SeatDto> GetAsync(SeatQM query)
         {
             var spec = new SeatSpecification(query);
-            var sector = await _unitOfWork.Repository<Seat>().GetEntityWithSpecAsync(spec);
-            return _mapper.Map<SeatDto>(sector);
+            var overheadPosition = await _unitOfWork.Repository<Seat>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<SeatDto>(overheadPosition);
         }
     }
 }

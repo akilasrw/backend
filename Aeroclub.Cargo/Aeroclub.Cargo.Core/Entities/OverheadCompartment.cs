@@ -15,6 +15,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public bool IsOccupied { get; set; }
 
         public virtual OverheadLayout OverheadLayout { get; set; }
-        public virtual ICollection<OverheadPosition> Overheads { get; set; }
+        public virtual ICollection<OverheadPosition> OverheadPositions { get; set; }
     }
 }

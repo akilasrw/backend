@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Queries.OverheadLayoutQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -49,11 +50,15 @@ namespace Aeroclub.Cargo.Application.Services
 
                 // Get SeatLayout including all childs till Seat
                 var seatLayout = await GetSeatLayoutAsync(aircraft.SeatLayoutId);
-                if (seatLayout == null) return false;                                
+                if (seatLayout == null) return false;
+
+                // Get OverheadLayout including all childs till overheadPosition
+                var overheadLayout = await GetOverheadLayoutAsync(aircraft.OverheadLayoutId);
+                if (overheadLayout == null) return false;
 
                 foreach (var sector in FlightScheduleSectors)
                 {
-                    var newResetLayouts = await ResetLayoutAsync(aircraftLayout, seatLayout);
+                    var newResetLayouts = await ResetLayoutAsync(aircraftLayout, seatLayout, overheadLayout);
                     // Create Aircraft Layout
                     var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(newResetLayouts.Item1);
                     await _unitOfWork.SaveChangesAsync();
@@ -63,9 +68,12 @@ namespace Aeroclub.Cargo.Application.Services
                     await _unitOfWork.SaveChangesAsync();
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
-                    
+                    var createdoverheadLayout = await _unitOfWork.Repository<OverheadLayout>().CreateAsync(newResetLayouts.Item3);
+                    await _unitOfWork.SaveChangesAsync();
+                    // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
+
                     // Update Position - Seat Id after saving Seats
-                    foreach (var item in newResetLayouts.Item3)
+                    foreach (var item in newResetLayouts.Item4)
                         if (item != null)
                         {
                             var position = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(item.Id);
@@ -81,6 +89,7 @@ namespace Aeroclub.Cargo.Application.Services
                         {
                             AircraftLayoutId = createdAircraftLayout.Id,
                             SeatLayoutId = createdSeatLayout.Id,
+                            OverheadLayoutId = createdoverheadLayout.Id,
                             LoadPlanStatus = Common.Enums.LoadPlanStatus.None
                         });                    
 
@@ -106,10 +115,11 @@ namespace Aeroclub.Cargo.Application.Services
             return await _unitOfWork.Repository<AircraftLayout>().GetEntityWithSpecAsync(aircraftLayoutSpec);
         }
 
-        private Task<Tuple<AircraftLayout, SeatLayout, List<CargoPosition>>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout)
+        private Task<Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout, OverheadLayout overheadLayout)
         {
             List<KeyValuePair<Guid, Guid>> zoneIDs = new List<KeyValuePair<Guid, Guid>>();
             List<KeyValuePair<Guid, Guid>> seatIDs = new List<KeyValuePair<Guid, Guid>>();
+            List<KeyValuePair<Guid, Guid>> overheadIDs = new List<KeyValuePair<Guid, Guid>>();
 
             aircraftLayout.Id = Guid.NewGuid();
             aircraftLayout.IsBaseLayout = false;
@@ -153,6 +163,20 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            foreach (var compartment in overheadLayout.OverheadCompartments)
+            {
+                compartment.Id = Guid.NewGuid();
+                foreach (var pos in compartment.OverheadPositions)
+                {
+                    var overheadID = pos.Id;
+                    pos.OverheadCompartmentId = compartment.Id;
+                    pos.Id = Guid.NewGuid();
+                    pos.ZoneAreaId = zoneIDs.FirstOrDefault(x => x.Key == pos.ZoneAreaId).Value;
+                    if (!overheadIDs.Any(x => x.Key == overheadID))
+                        overheadIDs.Add(new KeyValuePair<Guid, Guid>(overheadID, pos.Id));
+                }
+            }
+
             List<CargoPosition> cargoPositionsList = new List<CargoPosition>();
 
             foreach (var deck in aircraftLayout.AircraftDecks)
@@ -163,14 +187,16 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         foreach (var position in zone.CargoPositions)
                         {
-                            var pos = new CargoPosition().MapCargoPosition(position.Id, seatIDs.FirstOrDefault(x => x.Key == position.SeatId).Value);
+                            var pos = new CargoPosition().MapCargoPosition(position.Id,
+                                position.SeatId != null ? seatIDs.FirstOrDefault(x => x.Key == position.SeatId).Value : null,
+                                position.OverheadPositionId != null ? overheadIDs.FirstOrDefault(x => x.Key == position.OverheadPositionId).Value : null);
                             cargoPositionsList.Add(pos);
                         }
                     }
                 }
             }
 
-            Tuple<AircraftLayout, SeatLayout, List<CargoPosition>> layouts = new Tuple<AircraftLayout, SeatLayout, List<CargoPosition>>(aircraftLayout, seatLayout, cargoPositionsList);
+            Tuple<AircraftLayout, SeatLayout,OverheadLayout, List<CargoPosition>> layouts = new Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>>(aircraftLayout, seatLayout, overheadLayout,cargoPositionsList);
 
             // Reset Ids, default values
             return Task.FromResult(layouts);
@@ -182,6 +208,14 @@ namespace Aeroclub.Cargo.Application.Services
                new Models.Queries.SeatLayoutQMs.SeatLayoutQM() { Id = aircraftLayoutId, IncludeSeatConfiguration = true });
 
             return await _unitOfWork.Repository<SeatLayout>().GetEntityWithSpecAsync(seatLayoutSpec);
+        }
+        
+        private async Task<OverheadLayout> GetOverheadLayoutAsync(Guid overheadLayoutId)
+        {
+            var overheadLayoutSpec = new OverheadLayoutSpecification(
+               new OverheadLayoutQM() { Id = overheadLayoutId, IncludeOverheadCompartment = true });
+
+            return await _unitOfWork.Repository<OverheadLayout>().GetEntityWithSpecAsync(overheadLayoutSpec);
         }
     }
 }

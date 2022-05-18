@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aeroclub.Cargo.Application.Models.Queries.SeatQMs
+namespace Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs
 {
-    public class SeatQM: BaseQM
+    public class OverheadPositionQM: BaseQM
     {
-        public bool IncludeSeatConfiguration { get; set; }
     }
 }

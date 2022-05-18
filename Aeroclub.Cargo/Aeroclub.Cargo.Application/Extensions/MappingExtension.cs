@@ -21,10 +21,11 @@ namespace Aeroclub.Cargo.Application.Extensions
             return flightSchedule;
         }
 
-        public static CargoPosition MapCargoPosition(this CargoPosition position, Guid positionId, Guid seatId)
+        public static CargoPosition MapCargoPosition(this CargoPosition position, Guid positionId, Guid? seatId, Guid? overheadId)
         {
             position.SeatId = seatId;
             position.Id = positionId;
+            position.OverheadPositionId = overheadId;
             return position;
         }
     }

@@ -49,6 +49,8 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<ILayoutCloneService, LayoutCloneService>();
             services.AddScoped<IAWBService, AWBService>();
             services.AddScoped<IUserResolverService, UserResolverService>();
+            services.AddScoped<ISeatConfigurationService, SeatConfigurationService>();
+            services.AddScoped<IOverheadService, OverheadService>();
 
 
             return services;

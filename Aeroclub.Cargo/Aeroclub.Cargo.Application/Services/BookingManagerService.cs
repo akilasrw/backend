@@ -5,6 +5,8 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
@@ -27,6 +29,8 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly ICargoPositionService _cargoPositionService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly ISeatService _seatService;
+        private readonly ISeatConfigurationService _seatConfigurationService;
+        private readonly IOverheadService _overheadService;
 
         public BookingManagerService(
             IMapper mapper,
@@ -36,7 +40,9 @@ namespace Aeroclub.Cargo.Application.Services
             IPackageItemService packageItemService,
             ICargoPositionService cargoPositionService,
             IFlightScheduleSectorService flightScheduleSectorService,
-            ISeatService seatService)
+            ISeatService seatService,
+            ISeatConfigurationService seatConfigurationService,
+            IOverheadService overheadService)
             : base(unitOfWork, mapper)
         {
             _cargoBookingService = cargoBookingService;
@@ -45,6 +51,8 @@ namespace Aeroclub.Cargo.Application.Services
             _cargoPositionService = cargoPositionService;
             _flightScheduleSectorService = flightScheduleSectorService;
             _seatService = seatService;
+            _seatConfigurationService = seatConfigurationService;
+            _overheadService = overheadService;
         }
 
         public async Task<ServiceResponseStatus> CreateAsync(CargoBookingRM rm)
@@ -61,6 +69,7 @@ namespace Aeroclub.Cargo.Application.Services
                     rm.OriginAirportId = flightSector.OriginAirportId;
                     rm.DestinationAirportId = flightSector.DestinationAirportId;
 
+                    // Check available Positions
                     if (!flightSector.FlightScheduleSectorCargoPositions.Any(x=>x.AvailableSpaceCount > 0))
                     {
                         return ServiceResponseStatus.ValidationError;
@@ -106,11 +115,45 @@ namespace Aeroclub.Cargo.Application.Services
                         if (matchedCargoPosition.Item1.SeatId != null && matchedCargoPosition.Item1.SeatId != Guid.Empty)
                         {
                             bool seatUpdated = false;
-                            var seat = await _seatService.GetAsync(new SeatQM() { Id = matchedCargoPosition.Item1.SeatId.Value });
+                            var seat = await _seatService.GetAsync(new SeatQM() { Id = matchedCargoPosition.Item1.SeatId.Value  });
                             if (matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnSeat)
                             {
-                                seatUpdated = true;
-                                seat.IsOnSeatOccupied = true;
+                                switch (package.PackageContainerType)
+                                {
+                                    case PackageContainerType.OnOneSeat:
+                                        seatUpdated = true;
+                                        seat.IsOnSeatOccupied = true;
+                                        break;
+                                    case PackageContainerType.OnThreeSeats:
+                                        seatUpdated = false;
+                                        var seatConfig = await GetSeatConfigurationAsync(seat.SeatConfigurationId); 
+
+                                        var availableSpaceCount = seatConfig.Seats.Where(x => x.IsOnSeatOccupied).Count();
+                                        if (availableSpaceCount < 3)
+                                        {
+                                            // find another free space
+                                            var available3Seats = await _unitOfWork.Repository<Seat>().GetListWithSpecAsync(new SeatSpecification(new SeatListQM() { ZoneAreaId = seat.ZoneAreaId }));
+                                            if (available3Seats.Count > 0) 
+                                            {
+                                                var seatConfigId = available3Seats.First().SeatConfigurationId;
+                                                var seatConfig2 = await GetSeatConfigurationAsync(seatConfigId);
+                                                await UpdateSeatConfigurationAsync(seatConfig2);
+                                            }
+                                            else
+                                            {
+                                                // No available 3 seats
+                                                return ServiceResponseStatus.ValidationError;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // when space available
+                                            await UpdateSeatConfigurationAsync(seatConfig);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                             else if (matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.UnderSeat)
                             {
@@ -121,6 +164,38 @@ namespace Aeroclub.Cargo.Application.Services
                             if (seatUpdated)
                             {
                                 await _seatService.UpdateAsync(seat);
+
+                                // Check all 3 seats are occupied and if it is true, SeatConfiguration should update as occupied.
+                                var config = await GetSeatConfigurationAsync(seat.SeatConfigurationId);
+                                if (config.Seats.Where(x => x.IsOnSeatOccupied).Count() == 0)
+                                {
+                                    config.IsOnSeatOccupied = true;
+                                    await UpdateSeatConfigurationAsync(config);
+                                }
+
+                                if (config.Seats.Where(x => x.IsUnderSeatOccupied).Count() == 0)
+                                {
+                                    config.IsUnderSeatOccupied = true;
+                                    await UpdateSeatConfigurationAsync(config);
+                                }
+                            }
+                        }
+
+                        // Update overhead Position.
+                        else if (matchedCargoPosition.Item1.OverheadPositionId != null && matchedCargoPosition.Item1.OverheadPositionId != Guid.Empty)
+                        {
+                            bool overheadUpdated = false;
+                            var overhead = await _overheadService.GetAsync(new OverheadPositionQM() { Id = matchedCargoPosition.Item1.OverheadPositionId.Value });
+                            if (matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.Overhead)
+                            {
+                                overheadUpdated = true;
+                                overhead.IsOccupied = true;
+                            }
+
+                            if (overheadUpdated)
+                            { 
+                                await _overheadService.UpdateAsync(overhead);
+                                // when all 3 position are occupied, OverheadCompartment should update as occupied.
                             }
                         }
 
@@ -163,6 +238,28 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query)
         {
             return await _cargoBookingService.GetFilteredListAsync(query);
+        }
+
+        private async Task<bool> UpdateSeatConfigurationAsync(SeatConfigurationDto seatConfigurationDto)
+        {
+            seatConfigurationDto.IsOnSeatOccupied = true;
+            foreach (var seat in seatConfigurationDto.Seats.ToList())
+            {
+                seat.IsOnSeatOccupied = true;
+                await _seatService.UpdateAsync(seat);
+            }
+            await _seatConfigurationService.UpdateAsync(seatConfigurationDto);
+            return true;
+        }
+
+        private async Task<SeatConfigurationDto> GetSeatConfigurationAsync(Guid seatConfigId)
+        {
+           return  await _seatConfigurationService.GetAsync(new SeatConfigurationQM()
+            {
+                Id = seatConfigId,
+                IncludeSeats = true,
+                SeatConfigurationType = SeatConfigurationType.ThreeSeats
+           });;
         }
     }
 }
