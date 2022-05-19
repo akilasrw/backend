@@ -55,7 +55,7 @@ namespace Aeroclub.Cargo.Application.Services
             _overheadService = overheadService;
         }
 
-        public async Task<ServiceResponseStatus> CreateAsync(CargoBookingRM rm)
+        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
@@ -72,7 +72,7 @@ namespace Aeroclub.Cargo.Application.Services
                     // Check available Positions
                     if (!flightSector.FlightScheduleSectorCargoPositions.Any(x=>x.AvailableSpaceCount > 0))
                     {
-                        return ServiceResponseStatus.ValidationError;
+                        return BookingServiceResponseStatus.ValidationError;
                     }
 
                     // Save Cargo Booking Details
@@ -80,7 +80,7 @@ namespace Aeroclub.Cargo.Application.Services
                     if (response == null)
                     {
                         transaction.Rollback();
-                        return ServiceResponseStatus.Failed;
+                        return BookingServiceResponseStatus.Failed;
                     }
 
                     // Get Available/ Matching Cargo Positions.
@@ -91,6 +91,12 @@ namespace Aeroclub.Cargo.Application.Services
                         //    continue; 
 
                         var matchedCargoPosition = await _cargoPositionService.GetMatchingCargoPosition(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType); // Return Tuple.
+
+                        if (matchedCargoPosition == null)
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.NoSpace;
+                        }
 
                         // Save ULD - No need - Lelanga will handle this.
 
@@ -142,7 +148,7 @@ namespace Aeroclub.Cargo.Application.Services
                                             else
                                             {
                                                 // No available 3 seats
-                                                return ServiceResponseStatus.ValidationError;
+                                                return BookingServiceResponseStatus.NoSpace;
                                             }
                                         }
                                         else
@@ -167,13 +173,13 @@ namespace Aeroclub.Cargo.Application.Services
 
                                 // Check all 3 seats are occupied and if it is true, SeatConfiguration should update as occupied.
                                 var config = await GetSeatConfigurationAsync(seat.SeatConfigurationId);
-                                if (config.Seats.Where(x => x.IsOnSeatOccupied).Count() == 0)
+                                if (config.Seats.Where(x => !x.IsOnSeatOccupied).Count() == 0)
                                 {
                                     config.IsOnSeatOccupied = true;
                                     await UpdateSeatConfigurationAsync(config);
                                 }
 
-                                if (config.Seats.Where(x => x.IsUnderSeatOccupied).Count() == 0)
+                                if (config.Seats.Where(x => !x.IsUnderSeatOccupied).Count() == 0)
                                 {
                                     config.IsUnderSeatOccupied = true;
                                     await UpdateSeatConfigurationAsync(config);
@@ -221,7 +227,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
-            return ServiceResponseStatus.Success;
+            return BookingServiceResponseStatus.Success;
         }
 
         async Task<bool> ValidateAsync(List<PackageItemRM> PackageItems, IList<FlightScheduleSectorCargoPosition> FlightScheduleSectorCargoPositions)

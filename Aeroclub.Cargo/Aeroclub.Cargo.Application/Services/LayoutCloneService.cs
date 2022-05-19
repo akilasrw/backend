@@ -77,7 +77,11 @@ namespace Aeroclub.Cargo.Application.Services
                         if (item != null)
                         {
                             var position = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(item.Id);
-                            position.SeatId = item.SeatId;
+                            if (item.SeatId != null)
+                                position.SeatId = item.SeatId;
+                            if (item.OverheadPositionId != null)
+                                position.OverheadPositionId = item.OverheadPositionId;
+
                             _unitOfWork.Repository<CargoPosition>().Update(position);
                             await _unitOfWork.SaveChangesAsync();
                             _unitOfWork.Repository<CargoPosition>().Detach(position);
@@ -125,6 +129,8 @@ namespace Aeroclub.Cargo.Application.Services
             aircraftLayout.IsBaseLayout = false;
             seatLayout.Id = Guid.NewGuid();
             seatLayout.IsBaseLayout = false;
+            overheadLayout.Id = Guid.NewGuid();
+            overheadLayout.IsBaseLayout = false;
 
             foreach (var deck in aircraftLayout.AircraftDecks)
             {

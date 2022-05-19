@@ -7,5 +7,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs
         public Guid AircraftLayoutId { get; set; }
 
         public bool IncludeSeat { get; set; }
+        public bool IncludeOverhead { get; set; }
     }
 }

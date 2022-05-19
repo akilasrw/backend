@@ -18,6 +18,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             
             if(query.IncludeSeat)
                 AddInclude(y=> y.Include(x=> x.Seat));
+            
+            if (query.IncludeOverhead)
+                AddInclude(y => y.Include(x => x.OverheadPosition));
         }
         
         public CargoPositionSpecification(CargoPositionQM query)

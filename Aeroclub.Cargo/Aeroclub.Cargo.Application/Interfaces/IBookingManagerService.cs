@@ -13,7 +13,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IBookingManagerService
     {
-        Task<ServiceResponseStatus> CreateAsync(CargoBookingRM rm);
+        Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm);
         Task<CargoBookingDetailVM> GetBookingAsync(CargoBookingDetailQM query);
         Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query);
     }

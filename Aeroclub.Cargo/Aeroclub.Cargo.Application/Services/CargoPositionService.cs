@@ -23,7 +23,7 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Tuple<CargoPosition, Guid?>> GetMatchingCargoPosition(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
         {
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-                {AircraftLayoutId = aircraftLayoutId, IncludeSeat = true});
+                { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true});
 
             var cargoPositionList =
                 await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
@@ -33,7 +33,7 @@ namespace Aeroclub.Cargo.Application.Services
                 x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck && // Checking only Main Deck
                 x.CargoPositionType == cargoPositionType && // Check position Type based on the package size
                 ((cargoPositionType == CargoPositionType.OnSeat && !x.Seat.IsOnSeatOccupied) || // Checking On seat available if the  type is on seat
-                 (cargoPositionType == CargoPositionType.UnderSeat && !x.Seat.IsUnderSeatOccupied) && // Checking Under seat available if the  type is under seat
+                 (cargoPositionType == CargoPositionType.UnderSeat && !x.Seat.IsUnderSeatOccupied) || // Checking Under seat available if the  type is under seat
                  (cargoPositionType == CargoPositionType.Overhead && !x.OverheadPosition.IsOccupied)) && // Checking overhead available.
                 (x.MaxWeight > (x.CurrentWeight + packageItem.Weight) && // Checking weight of cargo position
                     (x.ZoneArea.MaxWeight > (x.ZoneArea.CurrentWeight + packageItem.Weight)) &&

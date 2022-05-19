@@ -13,4 +13,14 @@ namespace Aeroclub.Cargo.Application.Enums
         Failed   = 2,
         
     }
+
+
+    public enum BookingServiceResponseStatus
+    {
+        Success = 0,
+        ValidationError = 1,
+        Failed = 2,
+        NoSpace = 3,
+
+    }
 }
