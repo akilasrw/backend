@@ -92,7 +92,7 @@ namespace Aeroclub.Cargo.Application.Services
             // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
 
-            var result = new AuthenticateResponse(user, jwtToken, refreshToken.Token);
+            var result = new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
             return new ServiceResponse<AuthenticateResponse>(result);
         }
 
