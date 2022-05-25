@@ -132,6 +132,7 @@ namespace Aeroclub.Cargo.Application.Services
             overheadLayout.Id = Guid.NewGuid();
             overheadLayout.IsBaseLayout = false;
 
+            // Reset Aircraft Decks, Aircraft Cabin, Zone, CargoPositions 
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
                 deck.Id = Guid.NewGuid();
@@ -144,7 +145,7 @@ namespace Aeroclub.Cargo.Application.Services
                         var zoneId = zone.Id;
                         zone.AircraftCabinId = cabin.Id;
                         zone.Id = Guid.NewGuid();
-                        zoneIDs.Add(new KeyValuePair<Guid, Guid>(zoneId, zone.Id));
+                        zoneIDs.Add(new KeyValuePair<Guid, Guid>(zoneId, zone.Id)); // mapping of zone old Id and new id 
 
                         foreach (var position in zone.CargoPositions)
                         {
@@ -155,6 +156,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            // Reset Seat Configurations,  Seats
             foreach (var conf in seatLayout.SeatConfigurations)
             {
                 conf.Id = Guid.NewGuid();
@@ -169,6 +171,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            // Reset Overhead Compartments,  Overheads
             foreach (var compartment in overheadLayout.OverheadCompartments)
             {
                 compartment.Id = Guid.NewGuid();
@@ -183,8 +186,8 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            // Reset Cargo Positions
             List<CargoPosition> cargoPositionsList = new List<CargoPosition>();
-
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
                 foreach (var cabin in deck.AircraftCabins)
@@ -203,8 +206,6 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             Tuple<AircraftLayout, SeatLayout,OverheadLayout, List<CargoPosition>> layouts = new Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>>(aircraftLayout, seatLayout, overheadLayout,cargoPositionsList);
-
-            // Reset Ids, default values
             return Task.FromResult(layouts);
         }
 
