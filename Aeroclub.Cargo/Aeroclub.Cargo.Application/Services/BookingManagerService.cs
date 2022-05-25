@@ -92,7 +92,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                         var matchedCargoPosition = await _cargoPositionService.GetMatchingCargoPosition(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType); // Return Tuple.
 
-                        if (matchedCargoPosition == null)
+                        if (matchedCargoPosition.Item1 == null || matchedCargoPosition.Item2 == null)
                         {
                             transaction.Rollback();
                             return BookingServiceResponseStatus.NoSpace;

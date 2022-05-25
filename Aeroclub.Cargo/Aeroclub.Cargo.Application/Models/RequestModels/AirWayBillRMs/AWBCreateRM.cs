@@ -26,14 +26,14 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
         public string? RequestedRouting { get; set; } = null;
         public string? RoutingAndDestinationTo { get; set; } = null;
         public string? RoutingAndDestinationBy { get; set; } = null;
-        public DateTime RequestedFlightDate { get; set; }
-        public Guid DestinationAirportId { get; set; }
+        public DateTime? RequestedFlightDate { get; set; } = null;
+        public Guid? DestinationAirportId { get; set; }
         public string? DestinationAirportCode { get; set; } = null;
         public string? ShippingReferenceNumber { get; set; } = null;
         public string? Currency { get; set; } = null;
-        public double DeclaredValueForCarriage { get; set; }
-        public double DeclaredValueForCustomer { get; set; }
-        public double AmountOfInsurance { get; set; }
+        public double? DeclaredValueForCarriage { get; set; }
+        public double? DeclaredValueForCustomer { get; set; }
+        public double? AmountOfInsurance { get; set; }
 
 
         public IReadOnlyList<AWBProductRM> PackageProducts { get; set; }

@@ -110,6 +110,8 @@ namespace Aeroclub.Cargo.Data
                 switch (entity.State)
                 {
                     case EntityState.Modified:
+                        entity.Property("Created").IsModified = false;
+                        entity.Property("CreatedBy").IsModified = false;
                         ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow;
                         ((AuditableEntity)entity.Entity).LastModifiedBy = userid;
                         break;

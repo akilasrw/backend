@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var result = await cargoBookingLookupService.GetAsync(query);
 
             if (result == null)
-                return NotFound();
+                return BadRequest("Invalid reference number.");
 
             return Ok(result);
         }
