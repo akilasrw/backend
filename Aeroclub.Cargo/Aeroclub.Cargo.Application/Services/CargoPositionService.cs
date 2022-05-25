@@ -4,7 +4,10 @@ using System.Linq.Expressions;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -16,11 +19,14 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class CargoPositionService : BaseService, ICargoPositionService
     {
-        public CargoPositionService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        private readonly IFlightScheduleSectorService _flightScheduleSectorService;
+
+        public CargoPositionService(IUnitOfWork unitOfWork, IMapper mapper, IFlightScheduleSectorService flightScheduleSectorService) : base(unitOfWork, mapper)
         {
+            _flightScheduleSectorService = flightScheduleSectorService;
         }
 
-        public async Task<Tuple<CargoPosition, Guid?>> GetMatchingCargoPosition(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
+        public async Task<Tuple<CargoPosition, Guid?>> GetMatchingCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
         {
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                 { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true});
@@ -66,6 +72,75 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        
+        public async Task<ValidateResponse> ValidateCargoPositionAsync(ValidateCargoPositionRM rm)
+        {
+
+            var response = new ValidateResponse() { IsValid=true};
+
+            var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId, IncludeLoadPlan = true });
+
+            if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
+            {
+                
+                return new ValidateResponse()
+                {
+                    IsValid = false,
+                    ValidationMessage = "No available space for this."
+                };
+            }
+
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+             { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true, IncludeOverhead = true });
+
+             var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
+
+            var isMaxWaightValid = true;
+            string messagePrefix = "";
+            double maxWaight=0;
+
+            if (cargoPositions != CargoPositionType.OnFloor  && cargoPositions != CargoPositionType.None)
+            {
+                var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
+
+                maxWaight = position.MaxWeight;
+
+                if ( rm.PackageItem.Weight > maxWaight)
+                {
+                    isMaxWaightValid = false;
+                    messagePrefix = "Position";
+
+                }
+                else if (position.ZoneArea.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.MaxWeight)
+                {
+                    isMaxWaightValid = false;
+                    messagePrefix = "Zone area";
+                }
+                else if (position.ZoneArea.AircraftCabin.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.MaxWeight)
+                {
+                    isMaxWaightValid = false;
+                    messagePrefix = "Aircraft cabin";
+
+                }
+                else if (position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight)
+                {
+                    isMaxWaightValid = false;
+                    messagePrefix = "Aircraft deck";
+                }
+            }
+           
+            if (!isMaxWaightValid)
+            {
+                return new ValidateResponse()
+                {
+                    IsValid = false,
+                    ValidationMessage = String.Format("{0} max waight({1}) exceed. ", messagePrefix, maxWaight)
+                };
+
+            }
+
+            return response;
+        }
     }
 }
