@@ -117,6 +117,9 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.CargoPositionType, o => o.MapFrom(s => s.ULDContainer != null ? s.ULDContainer.CargoPosition.CargoPositionType : 0));
 
             CreateMap<SeatConfiguration, SeatConfigurationDto>().ReverseMap();
+
+            CreateMap<OverheadPositionDto, OverheadPosition>();
+            CreateMap<OverheadPosition, OverheadPositionDto>();
         }
     }
 }

@@ -32,10 +32,10 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseStatus> UpdateAsync(OverheadPositionDto overheadPositionDto)
         {
-            var overheadPosition = _mapper.Map<Seat>(overheadPositionDto);
-            _unitOfWork.Repository<Seat>().Update(overheadPosition);
+            var overheadPosition = _mapper.Map<OverheadPosition>(overheadPositionDto);
+            _unitOfWork.Repository<OverheadPosition>().Update(overheadPosition);
             await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<Seat>().Detach(overheadPosition);
+            _unitOfWork.Repository<OverheadPosition>().Detach(overheadPosition);
             return ServiceResponseStatus.Success;
         }
     }
