@@ -135,7 +135,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return new ValidateResponse()
                 {
                     IsValid = false,
-                    ValidationMessage = String.Format("{0} max waight({1}) exceed. ", messagePrefix, maxWaight)
+                    ValidationMessage = String.Format("{0} max waight({1}Kg) exceed.", messagePrefix, maxWaight)
                 };
 
             }
