@@ -7,6 +7,8 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
+using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -20,14 +22,20 @@ namespace Aeroclub.Cargo.Application.Services
     public class CargoPositionService : BaseService, ICargoPositionService
     {
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
+        private readonly ISeatConfigurationService _seatConfigurationService;
 
-        public CargoPositionService(IUnitOfWork unitOfWork, IMapper mapper, IFlightScheduleSectorService flightScheduleSectorService) : base(unitOfWork, mapper)
+        public CargoPositionService(IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IFlightScheduleSectorService flightScheduleSectorService,
+            ISeatConfigurationService seatConfigurationService) : base(unitOfWork, mapper)
         {
             _flightScheduleSectorService = flightScheduleSectorService;
+            _seatConfigurationService = seatConfigurationService;
         }
 
-        public async Task<Tuple<CargoPosition, Guid?>> GetMatchingCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
+        public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
         {
+            List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                 { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true});
 
@@ -51,7 +59,7 @@ namespace Aeroclub.Cargo.Application.Services
             if (matchingCargoPosition == null)
             {
                 // TODO: if null, Call Nelanga's API to get Belly space
-               
+
                 //matchingCargoPosition = cargoPositionList.ToList().FirstOrDefault(x =>
                 //    x.ZoneArea.AircraftZone.AircraftDeck.AircraftDeckType == AircraftDeckType.Belly &&
                 //    (x.MaxWeight < (x.CurrentWeight + packageItem.Weight) &&
@@ -68,9 +76,56 @@ namespace Aeroclub.Cargo.Application.Services
                 //}               
             }
 
-            return new Tuple<CargoPosition, Guid?>(matchingCargoPosition, uldId);
+            matchingCargoPositions.Add(new Tuple<CargoPosition, Guid?>(matchingCargoPosition, uldId));
+            return matchingCargoPositions;
 
         }
+
+
+        public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingThreeSeatCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, SeatConfigurationType seatConfigurationType)
+        {
+            List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true });
+
+            var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            var seatSec = new SeatConfigurationSpecification(new SeatConfigurationQM() { IncludeSeats = true, SeatConfigurationType = seatConfigurationType });
+            var availableConfigurationList =
+                await _unitOfWork.Repository<SeatConfiguration>().GetListWithSpecAsync(seatSec);
+
+            var avaialbleSeatConfig = availableConfigurationList.FirstOrDefault(x => x.Seats.Where(g => !g.IsOnSeatOccupied).Count() > 2);
+
+            Guid? uldId = null;
+            int positiionCount = 0;
+
+            foreach (var seat in avaialbleSeatConfig.Seats.ToList())
+            {
+                var matchingCargoPosition = cargoPositionList.FirstOrDefault(x =>
+                x.SeatId == seat.Id &&
+                (x.MaxWeight >= (x.CurrentWeight + packageItem.Weight) &&
+                    (x.ZoneArea.MaxWeight >= (x.ZoneArea.CurrentWeight + packageItem.Weight)) &&
+                    (x.ZoneArea.AircraftCabin.MaxWeight >= (x.ZoneArea.AircraftCabin.CurrentWeight + packageItem.Weight)) &&
+                    (x.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight >= (x.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageItem.Weight))));
+
+                if (matchingCargoPosition != null) 
+                {
+                    ++positiionCount;
+                    matchingCargoPositions.Add(new Tuple<CargoPosition, Guid?>(matchingCargoPosition, uldId));
+                }
+
+                if (positiionCount >= 3)
+                    break;
+            }
+
+            if (matchingCargoPositions.Count == 0)
+            {         
+            }
+
+            return matchingCargoPositions;
+
+        }
+
 
         public async Task<ValidateResponse> ValidateCargoPositionAsync(ValidateCargoPositionRM rm)
         {
@@ -94,42 +149,49 @@ namespace Aeroclub.Cargo.Application.Services
 
              var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-            var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
-
             var isMaxWaightValid = true;
             string messagePrefix = "";
-            double maxWaight=0;
+            double maxWaight = 0;
 
-            if (cargoPositions != CargoPositionType.OnFloor  && cargoPositions != CargoPositionType.None)
+            if (rm.PackageItem.PackageContainerType != PackageContainerType.OnThreeSeats)
             {
-                var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
+                var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
 
-                maxWaight = position.MaxWeight;
+                if (cargoPositions != CargoPositionType.OnFloor && cargoPositions != CargoPositionType.None)
+                {
+                    var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
 
-                if ( rm.PackageItem.Weight > maxWaight)
-                {
-                    isMaxWaightValid = false;
-                    messagePrefix = "Position";
+                    maxWaight = position.MaxWeight;
 
-                }
-                else if (position.ZoneArea.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.MaxWeight)
-                {
-                    isMaxWaightValid = false;
-                    messagePrefix = "Zone area";
-                }
-                else if (position.ZoneArea.AircraftCabin.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.MaxWeight)
-                {
-                    isMaxWaightValid = false;
-                    messagePrefix = "Aircraft cabin";
+                    if (rm.PackageItem.Weight > maxWaight)
+                    {
+                        isMaxWaightValid = false;
+                        messagePrefix = "Position";
 
-                }
-                else if (position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight)
-                {
-                    isMaxWaightValid = false;
-                    messagePrefix = "Aircraft deck";
+                    }
+                    else if (position.ZoneArea.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.MaxWeight)
+                    {
+                        isMaxWaightValid = false;
+                        messagePrefix = "Zone area";
+                    }
+                    else if (position.ZoneArea.AircraftCabin.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.MaxWeight)
+                    {
+                        isMaxWaightValid = false;
+                        messagePrefix = "Aircraft cabin";
+
+                    }
+                    else if (position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight)
+                    {
+                        isMaxWaightValid = false;
+                        messagePrefix = "Aircraft deck";
+                    }
                 }
             }
-           
+            else
+            {
+                // TODO: Three sheet validation - Yohan
+            }
+
             if (!isMaxWaightValid)
             {
                 return new ValidateResponse()

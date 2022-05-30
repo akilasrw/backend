@@ -21,13 +21,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         public SeatSpecification(SeatListQM query)
         : base(x => true)
         {
-            if (query.ZoneAreaId.HasValue)
-            {
                 AddInclude(y => y.Include(z => z.SeatConfiguration).ThenInclude(p => p.Seats));
-                And(c => c.SeatConfiguration.Seats.Where(g => !g.IsOnSeatOccupied && g.ZoneAreaId == query.ZoneAreaId).Count() > 2);
-                And(p => p.SeatConfiguration.SeatConfigurationType == query.SeatConfigurationType);
-            }
-            
+                And(c => c.SeatConfiguration.Seats.Where(g => !g.IsOnSeatOccupied).Count() > 2);
+                And(p => p.SeatConfiguration.SeatConfigurationType == query.SeatConfigurationType);    
         }
     }
 }
