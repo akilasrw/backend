@@ -13,5 +13,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs
         //public Guid? SeatId { get; set; }
         public SeatConfigurationType SeatConfigurationType { get; set; }
         public bool IncludeSeats { get; set; }
+        public bool IncludeZones { get; set; }
     }
 }

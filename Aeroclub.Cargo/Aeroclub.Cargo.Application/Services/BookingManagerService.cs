@@ -102,25 +102,29 @@ namespace Aeroclub.Cargo.Application.Services
                         }
 
                         // Save ULD - No need - Lelanga will handle this.
-
+                        bool isFirstPosition = false;
                         foreach (var matchedCargoPosition in matchedCargoPositions)
                         {
-                            // Save Box or ULD Container Details
-                            var uldContainer = await _uLDContainerService.CreateAsync(new ULDContainerDto()
+                            if (!isFirstPosition)
                             {
-                                CargoPositionId = matchedCargoPosition.Item1.Id,
-                                LoadPlanId = flightSector.LoadPlanId.Value,
-                                ULDContainerType = matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnFloor ? ULDContainerType.ULD : ULDContainerType.Box,
-                                ULDId = matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnFloor ? matchedCargoPosition.Item2 : null, // From Neelanga's API
-                                Height = package.Height,
-                                Length = package.Length,
-                                Width = package.Width,
-                            });
+                                // Save Box or ULD Container Details
+                                var uldContainer = await _uLDContainerService.CreateAsync(new ULDContainerDto()
+                                {
+                                    CargoPositionId = matchedCargoPosition.Item1.Id,
+                                    LoadPlanId = flightSector.LoadPlanId.Value,
+                                    ULDContainerType = matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnFloor ? ULDContainerType.ULD : ULDContainerType.Box,
+                                    ULDId = matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnFloor ? matchedCargoPosition.Item2 : null, // From Neelanga's API
+                                    Height = package.Height,
+                                    Length = package.Length,
+                                    Width = package.Width,
+                                });
 
-                            // Save Package Items
-                            package.CargoBookingId = response.Id;
-                            package.ULDContainerId = uldContainer.Id;
-                            await _packageItemService.CreateAsync(package);
+                                // Save Package Items
+                                package.CargoBookingId = response.Id;
+                                package.ULDContainerId = uldContainer.Id;
+                                await _packageItemService.CreateAsync(package);
+                                isFirstPosition = true;
+                            } // TODO: Only saved one position Id,  Need to handle this.
 
                             // Update Seat/ Position.
                             if (matchedCargoPosition.Item1.SeatId != null && matchedCargoPosition.Item1.SeatId != Guid.Empty)
@@ -175,10 +179,10 @@ namespace Aeroclub.Cargo.Application.Services
                                     // when all 3 position are occupied, OverheadCompartment should update as occupied.
                                 }
                             }
-
-                            // Update Current Weights.
-                            await UpdateCurrentWeightAsyncs(matchedCargoPosition.Item1.Id, package); 
-                        }
+                            
+                            // Update Current Weights. in 3 seats, it should devide for 3 parts
+                            await UpdateCurrentWeightAsyncs(matchedCargoPosition.Item1.Id, package.PackageContainerType == PackageContainerType.OnThreeSeats? package.Weight/3: package.Weight);
+                        }                       
 
                     }
                     transaction.Commit();
@@ -193,17 +197,22 @@ namespace Aeroclub.Cargo.Application.Services
             return BookingServiceResponseStatus.Success;
         }
 
-        async Task UpdateCurrentWeightAsyncs(Guid positionId, PackageItemRM package)
+        async Task UpdateCurrentWeightAsyncs(Guid positionId, double weight)
         {
             var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(new CargoPositionSpecification(new CargoPositionQM() { Id = positionId }));
-            position.CurrentWeight += package.Weight;
-            position.ZoneArea.CurrentWeight += package.Weight;
-            position.ZoneArea.AircraftCabin.CurrentWeight += package.Weight;
-            position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight += package.Weight;
+            position.CurrentWeight += weight;
+            position.ZoneArea.CurrentWeight += weight;
+            position.ZoneArea.AircraftCabin.CurrentWeight += weight;
+            position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight += weight;
             _unitOfWork.Repository<CargoPosition>().Update(position);
             _unitOfWork.Repository<ZoneArea>().Update(position.ZoneArea);
             _unitOfWork.Repository<AircraftCabin>().Update(position.ZoneArea.AircraftCabin);
             _unitOfWork.Repository<AircraftDeck>().Update(position.ZoneArea.AircraftCabin.AircraftDeck);
+            
+            _unitOfWork.Repository<CargoPosition>().Detach(position);
+            _unitOfWork.Repository<ZoneArea>().Detach(position.ZoneArea);
+            _unitOfWork.Repository<AircraftCabin>().Detach(position.ZoneArea.AircraftCabin);
+            _unitOfWork.Repository<AircraftDeck>().Detach(position.ZoneArea.AircraftCabin.AircraftDeck);
             await _unitOfWork.SaveChangesAsync();
         }
 

@@ -13,7 +13,10 @@ namespace Aeroclub.Cargo.Application.Specifications
                 (query.SeatConfigurationType == SeatConfigurationType.None || x.SeatConfigurationType == query.SeatConfigurationType))
         {
             if (query.IncludeSeats)
-                AddInclude(z => z.Include(c => c.Seats));
+                AddInclude(z => z.Include(c => c.Seats)); 
+            
+            if (query.IncludeZones)
+                AddInclude(z => z.Include(c => c.Seats).ThenInclude(d=>d.ZoneArea).ThenInclude(e => e.AircraftCabin).ThenInclude(f => f.AircraftDeck).ThenInclude(g => g.AircraftLayout));
         }
     }
 }

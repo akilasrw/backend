@@ -85,16 +85,18 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingThreeSeatCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, SeatConfigurationType seatConfigurationType)
         {
             List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
+           
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true });
 
             var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-            var seatSec = new SeatConfigurationSpecification(new SeatConfigurationQM() { IncludeSeats = true, SeatConfigurationType = seatConfigurationType });
+            var seatSec = new SeatConfigurationSpecification(new SeatConfigurationQM() { IncludeZones = true, SeatConfigurationType = seatConfigurationType });
             var availableConfigurationList =
                 await _unitOfWork.Repository<SeatConfiguration>().GetListWithSpecAsync(seatSec);
 
-            var avaialbleSeatConfig = availableConfigurationList.FirstOrDefault(x => x.Seats.Where(g => !g.IsOnSeatOccupied).Count() > 2);
+            var avaialbleSeatConfig = availableConfigurationList.FirstOrDefault(x => (x.Seats.Where(g => !g.IsOnSeatOccupied).Count() > 2) &&
+            x.Seats.Any(y=>y.ZoneArea.AircraftCabin.AircraftDeck.AircraftLayoutId == aircraftLayoutId));
 
             Guid? uldId = null;
             int positiionCount = 0;
@@ -102,7 +104,8 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var seat in avaialbleSeatConfig.Seats.ToList())
             {
                 var matchingCargoPosition = cargoPositionList.FirstOrDefault(x =>
-                x.SeatId == seat.Id &&
+                x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck &&
+                x.SeatId == seat.Id && x.CargoPositionType == CargoPositionType.OnSeat &&
                 (x.MaxWeight >= (x.CurrentWeight + packageItem.Weight) &&
                     (x.ZoneArea.MaxWeight >= (x.ZoneArea.CurrentWeight + packageItem.Weight)) &&
                     (x.ZoneArea.AircraftCabin.MaxWeight >= (x.ZoneArea.AircraftCabin.CurrentWeight + packageItem.Weight)) &&
