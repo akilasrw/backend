@@ -115,8 +115,13 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var flightScheduleSectorCargoPosition in from groupedCargoPosition in groupedCargoPositions
                                                               let totalCount = groupedCargoPosition.Items.Count
                                                               let cargoPositionType = groupedCargoPosition.CargoPositionType
-                                                              let packedULDContainersCount = flightScheduleSector.LoadPlan.ULDContaines.Count(x =>
-                                                                  x.ULDContainerCargoPositions.Any(y=> y.CargoPosition.CargoPositionType == groupedCargoPosition.CargoPositionType))
+                                                              //let packedULDContainersCount = flightScheduleSector.LoadPlan.ULDContaines.Count(x =>
+                                                              //    x.ULDContainerCargoPositions.Any(y => y.CargoPosition.CargoPositionType == groupedCargoPosition.CargoPositionType))
+                                                              let packedULDContainersCount = flightScheduleSector.LoadPlan.ULDContaines.Select(x => new
+                                                              {
+                                                                  Count = x.ULDContainerCargoPositions.Count(y =>
+                                                                       y.CargoPosition.CargoPositionType == groupedCargoPosition.CargoPositionType)
+                                                              }).Sum(z=>z.Count)
                                                               select new FlightScheduleSectorCargoPosition
                                                               {
                                                                   CargoPositionType = groupedCargoPosition.CargoPositionType,
