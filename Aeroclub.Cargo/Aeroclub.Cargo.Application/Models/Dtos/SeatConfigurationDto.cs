@@ -15,6 +15,8 @@ namespace Aeroclub.Cargo.Application.Models.Dtos
         public SeatConfigurationType SeatConfigurationType { get; set; }
         public bool IsOnSeatOccupied { get; set; }
         public bool IsUnderSeatOccupied { get; set; }
+        public bool IsFullRowOccupied { get; set; }
+        public double MaxWeight { get; set; }
         public Guid? SeatLayoutId { get; set; }
 
         public virtual IEnumerable<SeatDto> Seats { get; set; }

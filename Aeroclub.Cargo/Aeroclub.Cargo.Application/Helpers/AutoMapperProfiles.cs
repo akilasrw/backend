@@ -120,6 +120,8 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<OverheadPositionDto, OverheadPosition>();
             CreateMap<OverheadPosition, OverheadPositionDto>();
+
+            CreateMap<ULDContainerCargoPositionDto, ULDContainerCargoPosition>();
         }
     }
 }
