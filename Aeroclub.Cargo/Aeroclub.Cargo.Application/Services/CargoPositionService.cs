@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.SeatConfigurationVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
@@ -27,7 +28,8 @@ namespace Aeroclub.Cargo.Application.Services
         public CargoPositionService(IUnitOfWork unitOfWork, 
             IMapper mapper, 
             IFlightScheduleSectorService flightScheduleSectorService,
-            ISeatConfigurationService seatConfigurationService) : base(unitOfWork, mapper)
+            ISeatConfigurationService seatConfigurationService
+            ) : base(unitOfWork, mapper)
         {
             _flightScheduleSectorService = flightScheduleSectorService;
             _seatConfigurationService = seatConfigurationService;
@@ -127,6 +129,38 @@ namespace Aeroclub.Cargo.Application.Services
 
             return matchingCargoPositions;
 
+        }
+
+
+        public async Task<SeatAvailabilityVM> GetAvailableThreeSeatAsync(FlightScheduleSectorQM qm)
+        {
+            var availableSeatCount = 0;
+            var response = new SeatAvailabilityVM() { SeatCount = availableSeatCount };
+
+            var flightSector = await _flightScheduleSectorService.GetAsync(qm);
+
+            if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
+            {
+                return response;
+            }
+
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true });
+
+            var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            foreach(var cargoPosition in cargoPositionList)
+            {
+                var seatConfiguration = await _seatConfigurationService.GetAsync(new SeatConfigurationQM() { Id = cargoPosition.Seat.SeatConfigurationId});
+                if (seatConfiguration != null && !seatConfiguration.IsFullRowOccupied)
+                {
+                    availableSeatCount += 1;
+                }
+            }
+
+            response.SeatCount = availableSeatCount;
+
+            return response;
         }
 
 
