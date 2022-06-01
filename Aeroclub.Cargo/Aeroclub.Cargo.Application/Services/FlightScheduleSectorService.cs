@@ -116,7 +116,7 @@ namespace Aeroclub.Cargo.Application.Services
                                                               let totalCount = groupedCargoPosition.Items.Count
                                                               let cargoPositionType = groupedCargoPosition.CargoPositionType
                                                               let packedULDContainersCount = flightScheduleSector.LoadPlan.ULDContaines.Count(x =>
-                                                                  x.CargoPosition.CargoPositionType == groupedCargoPosition.CargoPositionType)
+                                                                  x.ULDContainerCargoPositions.Any(y=> y.CargoPosition.CargoPositionType == groupedCargoPosition.CargoPositionType))
                                                               select new FlightScheduleSectorCargoPosition
                                                               {
                                                                   CargoPositionType = groupedCargoPosition.CargoPositionType,

@@ -110,7 +110,7 @@ namespace Aeroclub.Cargo.Application.Services
                                 // Save Box or ULD Container Details
                                 var uldContainer = await _uLDContainerService.CreateAsync(new ULDContainerDto()
                                 {
-                                    CargoPositionId = matchedCargoPosition.Item1.Id,
+                                   // CargoPositionId = matchedCargoPosition.Item1.Id,
                                     LoadPlanId = flightSector.LoadPlanId.Value,
                                     ULDContainerType = matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnFloor ? ULDContainerType.ULD : ULDContainerType.Box,
                                     ULDId = matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.OnFloor ? matchedCargoPosition.Item2 : null, // From Neelanga's API

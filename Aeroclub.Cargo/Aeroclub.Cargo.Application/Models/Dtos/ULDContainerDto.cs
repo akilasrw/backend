@@ -14,8 +14,6 @@ namespace Aeroclub.Cargo.Application.Models.Dtos
         public Guid? ULDId { get; set; }
         [Required]
         public Guid LoadPlanId { get; set; }
-        [Required]
-        public Guid CargoPositionId { get; set; }
         public ULDContainerType ULDContainerType { get; set; }
         public double TotalWeight { get; set; }
         public double Height { get; set; }

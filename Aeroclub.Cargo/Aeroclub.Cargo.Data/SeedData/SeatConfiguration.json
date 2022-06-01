@@ -6,6 +6,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -15,6 +17,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -24,6 +28,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -33,6 +39,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -42,15 +50,19 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
     "Id": "458DA1A4-15EA-471E-9C0C-49D3A4FFE7FC",
     "RowNumber": 3,
     "ColumnNumber": 2,
-    "SeatConfigurationType":3,
+    "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -60,6 +72,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -69,6 +83,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -78,6 +94,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -87,6 +105,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -96,6 +116,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -105,6 +127,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -114,6 +138,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -123,6 +149,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -132,6 +160,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   },
   {
@@ -141,6 +171,8 @@
     "SeatConfigurationType": 3,
     "IsOnSeatOccupied": false,
     "IsUnderSeatOccupied": false,
+    "IsFullRowOccupied": false,
+    "MaxWeight": 50,
     "SeatLayoutId": "8577256E-6277-4ED5-A933-5FE3E07FADF6"
   }
 ]

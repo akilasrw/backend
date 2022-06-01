@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220601055321_ULD_Container_Cargo_Position_Table_Add")]
+    partial class ULD_Container_Cargo_Position_Table_Add
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -521,7 +523,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4ddd965a-08c5-41bf-9f4f-6acba59fd6ee",
+                            ConcurrencyStamp = "744e736b-3653-42d6-9b67-b340670c5ddd",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -537,7 +539,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4722e9b8-626b-4886-8244-fdc85476af6e",
+                            ConcurrencyStamp = "203d78dc-ee9e-4799-a663-c6c4e845561d",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -9141,9 +9143,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsFullRowOccupied")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsOnSeatOccupied")
                         .HasColumnType("bit");
 
@@ -9155,9 +9154,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("MaxWeight")
-                        .HasColumnType("float");
 
                     b.Property<short>("RowNumber")
                         .HasColumnType("smallint");
@@ -9183,11 +9179,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)1,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9200,11 +9194,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)1,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9217,11 +9209,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)2,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9234,11 +9224,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)2,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9251,11 +9239,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)3,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9268,11 +9254,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)3,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9285,11 +9269,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)4,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9302,11 +9284,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)4,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9319,11 +9299,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)5,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9336,11 +9314,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)5,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9353,11 +9329,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)6,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9370,11 +9344,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)6,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9387,11 +9359,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)7,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9404,11 +9374,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)7,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9421,11 +9389,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)8,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9438,11 +9404,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
                             IsDeleted = false,
-                            IsFullRowOccupied = false,
                             IsOnSeatOccupied = false,
                             IsUnderSeatOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 50.0,
                             RowNumber = (short)8,
                             SeatConfigurationType = (byte)3,
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
@@ -9664,6 +9628,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CargoPositionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -9704,6 +9671,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CargoPositionId");
 
                     b.HasIndex("LoadPlanId");
 
@@ -10518,6 +10487,12 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>
                 {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.CargoPosition", "CargoPosition")
+                        .WithMany("ULDContainers")
+                        .HasForeignKey("CargoPositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Aeroclub.Cargo.Core.Entities.LoadPlan", "LoadPlan")
                         .WithMany("ULDContaines")
                         .HasForeignKey("LoadPlanId")
@@ -10527,6 +10502,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasOne("Aeroclub.Cargo.Core.Entities.ULD", "ULD")
                         .WithMany()
                         .HasForeignKey("ULDId");
+
+                    b.Navigation("CargoPosition");
 
                     b.Navigation("LoadPlan");
 
@@ -10649,6 +10626,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.Navigation("ULDContainerCargoPosition")
                         .IsRequired();
+
+                    b.Navigation("ULDContainers");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Country", b =>

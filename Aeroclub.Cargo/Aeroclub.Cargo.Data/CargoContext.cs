@@ -56,6 +56,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new AWBProductConfiguration());
             modelBuilder.ApplyConfiguration(new AWBInformationConfigration());
             modelBuilder.ApplyConfiguration(new OverheadPositionConfiguration());
+            modelBuilder.ApplyConfiguration(new ULDContainerCargoPositionConfiguration());
             
             
             
@@ -101,6 +102,8 @@ namespace Aeroclub.Cargo.Data
         public DbSet<OverheadLayout> OverheadLayouts { get; set; } = null!;
         public DbSet<OverheadCompartment> OverheadCompartments { get; set; } = null!;
         public DbSet<OverheadPosition> OverheadPositions { get; set; } = null!;
+        public DbSet<ULDContainerCargoPosition> ULDContainerCargoPositions { get; set; } = null!;
+
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
         {

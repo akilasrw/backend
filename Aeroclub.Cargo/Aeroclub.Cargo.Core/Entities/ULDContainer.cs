@@ -7,7 +7,6 @@ namespace Aeroclub.Cargo.Core.Entities
     public class ULDContainer : AuditableEntity
     {
         public Guid LoadPlanId { get; set; }
-        public Guid CargoPositionId { get; set; }
         public ULDContainerType ULDContainerType { get; set; }
         public double TotalWeight { get; set; }
         public double Height { get; set; }
@@ -17,8 +16,9 @@ namespace Aeroclub.Cargo.Core.Entities
 
         public virtual LoadPlan LoadPlan { get; set; }
         public virtual ULD? ULD { get; set; }
-        public virtual CargoPosition CargoPosition { get; set; }
         public virtual ICollection<PackageItem> PackageItems { get; set; }
+        public virtual ICollection<ULDContainerCargoPosition> ULDContainerCargoPositions { get; set; }
+
 
     }
 }

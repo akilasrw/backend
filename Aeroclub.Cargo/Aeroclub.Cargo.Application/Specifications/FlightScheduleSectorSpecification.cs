@@ -45,7 +45,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => (query.Id == Guid.Empty || x.Id == query.Id))
         {
             if(query.IncludeULDContaines)
-                AddInclude(y=> y.Include(x=> x.LoadPlan.ULDContaines).ThenInclude(y=>y.CargoPosition));
+                AddInclude(y=> y.Include(x=> x.LoadPlan.ULDContaines).ThenInclude(y=>y.ULDContainerCargoPositions).ThenInclude(z=>z.CargoPosition));
             
             if(query.IncludeAircraft)
                 AddInclude(y=> y.Include(x=> x.Aircraft));
