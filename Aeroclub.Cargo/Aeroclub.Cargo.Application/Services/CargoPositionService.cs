@@ -144,15 +144,15 @@ namespace Aeroclub.Cargo.Application.Services
                 return response;
             }
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true });
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoSeatPositionListQM
+            { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true, CargoPositionType = CargoPositionType.OnSeat });
 
             var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-            foreach(var cargoPosition in cargoPositionList)
+            foreach (var cargoPosition in cargoPositionList)
             {
-                var seatConfiguration = await _seatConfigurationService.GetAsync(new SeatConfigurationQM() { Id = cargoPosition.Seat.SeatConfigurationId});
-                if (seatConfiguration != null && !seatConfiguration.IsFullRowOccupied)
+                var seatConfiguration = await _seatConfigurationService.GetAsync(new SeatConfigurationQM() { Id = cargoPosition.Seat.SeatConfigurationId,IncludeSeats=true});
+                if (seatConfiguration != null  && seatConfiguration.SeatConfigurationType == SeatConfigurationType.ThreeSeats && seatConfiguration.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
                 {
                     availableSeatCount += 1;
                 }
