@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs
         public Guid DestinationAirportId { get; set; }
 
         public Guid? AircraftLayoutId { get; set; }
+        public Guid? SeatLayoutId { get; set; }
         public Guid? LoadPlanId { get; set; } = null;
 
 

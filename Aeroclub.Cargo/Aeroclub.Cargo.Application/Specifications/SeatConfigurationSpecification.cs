@@ -18,5 +18,12 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IncludeZones)
                 AddInclude(z => z.Include(c => c.Seats).ThenInclude(d=>d.ZoneArea).ThenInclude(e => e.AircraftCabin).ThenInclude(f => f.AircraftDeck).ThenInclude(g => g.AircraftLayout));
         }
+
+        public SeatConfigurationSpecification(SeatConfigurationListQM query)
+           : base(x =>  x.SeatLayoutId == query.SeatLayoutId && x.SeatConfigurationType == query.SeatConfigurationType)
+        {
+            if (query.IncludeSeats)
+                AddInclude(z => z.Include(c => c.Seats));
+        }
     }
 }
