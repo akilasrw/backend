@@ -52,6 +52,7 @@ namespace Aeroclub.Cargo.Application.Services
             else
             {
                 response.StatusCode = ServiceResponseStatus.Failed;
+                response.ErrorMessage = createdAppUser.Errors.First().Description;
             }
 
             return response;

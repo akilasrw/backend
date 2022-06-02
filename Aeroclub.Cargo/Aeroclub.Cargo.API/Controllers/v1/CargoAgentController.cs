@@ -30,8 +30,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             if (response.StatusCode == Application.Enums.ServiceResponseStatus.Success)
                 return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
+            else
+                return BadRequest(response.ErrorMessage);
 
-            return BadRequest("Cargo agent creation fail");
         }
 
 

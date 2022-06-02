@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs
     {
         public Guid Id { get; set; }
         public ServiceResponseStatus StatusCode { get; set; }
+        public string? ErrorMessage { get; set; }
 
     }
 }
