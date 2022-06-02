@@ -149,11 +149,14 @@ namespace Aeroclub.Cargo.Application.Services
 
             var seatConfigurationList = await _unitOfWork.Repository<SeatConfiguration>().GetListWithSpecAsync(seatConfigurationSpec);
 
-            foreach (var config in seatConfigurationList)
+            if(seatConfigurationList != null)
             {
-                if (config.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
+                foreach (var config in seatConfigurationList)
                 {
-                    availableSeatCount += 1;
+                    if (config.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
+                    {
+                        availableSeatCount += 1;
+                    }
                 }
             }
 
@@ -172,7 +175,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
             {
-                
                 return new ValidateResponse()
                 {
                     IsValid = false,
@@ -180,52 +182,88 @@ namespace Aeroclub.Cargo.Application.Services
                 };
             }
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-             { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true, IncludeOverhead = true });
-
-             var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-
-            var isMaxWaightValid = true;
-            string messagePrefix = "";
-            double maxWaight = 0;
-
             if (rm.PackageItem.PackageContainerType != PackageContainerType.OnThreeSeats)
             {
                 var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
 
                 if (cargoPositions != CargoPositionType.OnFloor && cargoPositions != CargoPositionType.None)
                 {
+                    var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                    { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true, IncludeOverhead = true });
+
+                    var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
                     var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
 
-                    maxWaight = position.MaxWeight;
-
-                    if (rm.PackageItem.Weight > maxWaight)
-                    {
-                        isMaxWaightValid = false;
-                        messagePrefix = "Position";
-
-                    }
-                    else if (position.ZoneArea.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.MaxWeight)
-                    {
-                        isMaxWaightValid = false;
-                        messagePrefix = "Zone area";
-                    }
-                    else if (position.ZoneArea.AircraftCabin.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.MaxWeight)
-                    {
-                        isMaxWaightValid = false;
-                        messagePrefix = "Aircraft cabin";
-
-                    }
-                    else if (position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + rm.PackageItem.Weight > position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight)
-                    {
-                        isMaxWaightValid = false;
-                        messagePrefix = "Aircraft deck";
-                    }
+                    return GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea);
+                
                 }
             }
             else
             {
-                // TODO: Three sheet validation - Yohan
+                SeatConfiguration? config = null;
+
+               var seatConfigurationSpec = new SeatConfigurationSpecification(new SeatConfigurationListQM
+                { SeatLayoutId = flightSector.SeatLayoutId.Value, IncludeSeats = true,IncludeZones = true, SeatConfigurationType = SeatConfigurationType.ThreeSeats });
+
+                var seatConfigurationList = await _unitOfWork.Repository<SeatConfiguration>().GetListWithSpecAsync(seatConfigurationSpec);
+
+                if (seatConfigurationList != null)
+                {
+                    foreach (var seatConfig in seatConfigurationList)
+                    {
+                        if (seatConfig.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
+                        {
+                            config = seatConfig;
+                            break;
+                        }
+                    }
+                }
+
+                if (config != null && config.Seats != null)
+                {
+                    return GetWeightValidationResponse(rm.PackageItem.Weight, config.MaxWeight, config.Seats.First().ZoneArea);
+                }
+                else
+                {
+                    return new ValidateResponse()
+                    {
+                        IsValid = false,
+                        ValidationMessage = "No available space for this."
+                    };
+                }
+            }
+
+            return response;
+        }
+
+
+        private ValidateResponse GetWeightValidationResponse(double packageWeight,double maxWaight,ZoneArea zoneArea)
+        {
+            var isMaxWaightValid = true;
+            string messagePrefix = "";
+
+            if (packageWeight > maxWaight)
+            {
+                isMaxWaightValid = false;
+                messagePrefix = "Position";
+
+            }
+            else if (zoneArea.CurrentWeight + packageWeight > zoneArea.MaxWeight)
+            {
+                isMaxWaightValid = false;
+                messagePrefix = "Zone area";
+            }
+            else if (zoneArea.AircraftCabin.CurrentWeight + packageWeight > zoneArea.AircraftCabin.MaxWeight)
+            {
+                isMaxWaightValid = false;
+                messagePrefix = "Aircraft cabin";
+
+            }
+            else if (zoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageWeight > zoneArea.AircraftCabin.AircraftDeck.MaxWeight)
+            {
+                isMaxWaightValid = false;
+                messagePrefix = "Aircraft deck";
             }
 
             if (!isMaxWaightValid)
@@ -237,8 +275,11 @@ namespace Aeroclub.Cargo.Application.Services
                 };
 
             }
+            else
+            {
+                return  new ValidateResponse() { IsValid = true };
+            }
 
-            return response;
         }
     }
 }
