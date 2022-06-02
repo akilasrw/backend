@@ -139,7 +139,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var flightSector = await _flightScheduleSectorService.GetAsync(qm);
 
-            if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
+            if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.CargoPositionType == CargoPositionType.OnSeat && x.AvailableSpaceCount >2))
             {
                 return response;
             }
@@ -151,8 +151,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var cargoPosition in cargoPositionList)
             {
-                var seatConfiguration = await _seatConfigurationService.GetAsync(new SeatConfigurationQM() { Id = cargoPosition.Seat.SeatConfigurationId,IncludeSeats=true});
-                if (seatConfiguration != null  && seatConfiguration.SeatConfigurationType == SeatConfigurationType.ThreeSeats && seatConfiguration.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
+                var seatConfiguration = await _seatConfigurationService.GetAsync(new SeatConfigurationQM() { Id = cargoPosition.Seat.SeatConfigurationId,IncludeSeats=true, SeatConfigurationType = SeatConfigurationType.ThreeSeats});
+                if (seatConfiguration != null && seatConfiguration.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
                 {
                     availableSeatCount += 1;
                 }
