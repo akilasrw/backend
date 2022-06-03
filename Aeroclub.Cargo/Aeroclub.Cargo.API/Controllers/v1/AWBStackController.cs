@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AWBStackQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberRMs;
@@ -21,18 +22,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost]
         public async Task<ActionResult> CreateAsync([FromBody] AWBStackRM rm)
         {
-            var lastRecord = await _AWBStackService.GetLastRecordAsync();
-            if (lastRecord != null &&
-                (lastRecord.EndSequenceNumber > rm.StartSequenceNumber ||
-                lastRecord.EndSequenceNumber > rm.EndSequenceNumber))
-                return BadRequest("Invalid sequence number.");
-
-            if (rm.StartSequenceNumber > rm.EndSequenceNumber)
-                return BadRequest("Ending sequence number less than starting sequence number.");
-
             var res = await _AWBStackService.CreateAsync(rm);
 
             if (res == null) return BadRequest();
+
+            if (res.StatusCode == ServiceResponseStatus.ValidationError) return BadRequest("Invalid sequence number.");
 
             return CreatedAtAction(nameof(GetAsync), rm);
         }

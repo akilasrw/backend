@@ -21,9 +21,23 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> CreateAsync(AWBStackRM dto)
         {
             var res = new ServiceResponseCreateStatus();
-          
-            var awbStack = _mapper.Map<AWBStack>(dto);
 
+            var lastRecord = await GetLastRecordAsync();
+            if (lastRecord != null &&
+                (lastRecord.EndSequenceNumber > dto.StartSequenceNumber ||
+                lastRecord.EndSequenceNumber > dto.EndSequenceNumber))
+            {
+                res.StatusCode = ServiceResponseStatus.ValidationError;
+                return res;
+            }
+               
+            if (dto.StartSequenceNumber > dto.EndSequenceNumber)
+            {
+                res.StatusCode = ServiceResponseStatus.ValidationError;
+                return res;
+            }
+
+            var awbStack = _mapper.Map<AWBStack>(dto);
             await _unitOfWork.Repository<AWBStack>().CreateAsync(awbStack);
             await _unitOfWork.SaveChangesAsync();
 
@@ -36,7 +50,6 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<AWBStackVM> GetAsync(AWBStackQM query)
         {
             var spec = new AWBStackSpecification(query);
-
             var entity = await _unitOfWork.Repository<AWBStack>().GetEntityWithSpecAsync(spec);
 
             var mappedEntity = _mapper.Map<AWBStackVM>(entity);
@@ -47,11 +60,9 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Pagination<AWBStackVM>> GetBookingFilteredListAsync(AWBStackListQM query)
         {
             var spec = new AWBStackSpecification(query);
-
             var stackList = await _unitOfWork.Repository<AWBStack>().GetListWithSpecAsync(spec);
 
             var countSpec = new AWBStackSpecification(query, true);
-
             var totalCount = await _unitOfWork.Repository<AWBStack>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<AWBStackVM>>(stackList);
@@ -61,7 +72,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<AWBStackVM> GetLastRecordAsync()
         {
-            var mappedEntity = new AWBStackVM() { EndSequenceNumber = 0};
+            var mappedEntity = new AWBStackVM();
 
             var entityList = await _unitOfWork.Repository<AWBStack>().GetListAsync();
 
