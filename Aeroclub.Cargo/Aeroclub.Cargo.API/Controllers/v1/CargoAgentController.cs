@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
@@ -68,6 +69,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             if (id == Guid.Empty) return BadRequest();
 
             return Ok(await cargoAgentService.DeleteAsync(id));
+        }
+
+
+        [HttpGet("getSelectList")]
+        public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetSelectListAsync()
+        {
+            return Ok(await cargoAgentService.GetSelectListAsync());
         }
 
     }

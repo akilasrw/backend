@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
@@ -14,5 +15,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<CargoAgentVM> GetAsync(CargoAgentQM Id);
 
         Task<bool> DeleteAsync(Guid Id);
+
+        Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync();
     }
 }

@@ -16,5 +16,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public Country Country { get; set; } = null!;
         public AppUser AppUser { get; set; } = null!;
 
+        public virtual ICollection<AWBStack> AWBStacks { get; set; }
     }
 }

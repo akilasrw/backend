@@ -23,6 +23,8 @@ using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBProductVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -123,6 +125,13 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<OverheadPosition, OverheadPositionDto>();
 
             CreateMap<ULDContainerCargoPositionDto, ULDContainerCargoPosition>();
+
+            CreateMap<AWBStackRM, AWBStack>();
+            CreateMap<AWBStack, AWBStackVM>();
+
+            CreateMap<CargoAgent, BaseSelectListModel>()
+               .ForMember(x => x.Value, x => x.MapFrom(c => c.AgentName));
+
         }
     }
 }

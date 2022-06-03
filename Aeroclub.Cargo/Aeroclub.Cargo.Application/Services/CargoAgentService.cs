@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Aeroclub.Cargo.Application.Specifications;
 using BC = BCrypt.Net.BCrypt;
+using Aeroclub.Cargo.Application.Models.Core;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -101,8 +102,10 @@ namespace Aeroclub.Cargo.Application.Services
             return (await _unitOfWork.SaveChangesAsync() > 0);
         }
 
-      
-
-       
+        public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
+        {
+            var list = await _unitOfWork.Repository<CargoAgent>().GetListAsync();
+            return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
+        }
     }
 }
