@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -71,7 +72,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await cargoAgentService.DeleteAsync(id));
         }
 
-
+        [Authorize]
         [HttpGet("getSelectList")]
         public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetSelectListAsync()
         {
