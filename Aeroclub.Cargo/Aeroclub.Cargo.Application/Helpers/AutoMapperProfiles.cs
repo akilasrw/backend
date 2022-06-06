@@ -127,10 +127,11 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<ULDContainerCargoPositionDto, ULDContainerCargoPosition>();
 
             CreateMap<AWBStackRM, AWBStack>();
-            CreateMap<AWBStack, AWBStackVM>();
+            CreateMap<AWBStack, AWBStackVM>()
+                .ForMember(d => d.CargoAgentName,o => o.MapFrom(s => s.CargoAgent != null? s.CargoAgent.AgentName : ""));
 
             CreateMap<CargoAgent, BaseSelectListModel>()
-               .ForMember(x => x.Value, x => x.MapFrom(c => c.AgentName));
+               .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
 
         }
     }
