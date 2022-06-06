@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AWBStackSpecification(AWBStackListQM query, bool isCount = false)
-            :base(x => !x.IsSequenceCompleted)
+            :base(x => ((string.IsNullOrEmpty(query.CargoAgentName) || x.CargoAgent.AgentName == query.CargoAgentName)) && !x.IsSequenceCompleted)
         {
             if (query.IsAgentInclude)
             {
@@ -31,6 +31,5 @@ namespace Aeroclub.Cargo.Application.Specifications
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
             }
         }
-
     }
 }
