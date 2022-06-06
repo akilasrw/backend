@@ -18,5 +18,25 @@
     "DestinationAirportCode": "YYC",
     "OriginAirportName": "Edmonton International Airport",
     "DestinationAirportName": "Calgary International Airport"
+  },
+  {
+    "Id": "476B22E2-9782-4617-B68F-594C8841C497",
+    "FlightNumber": "QI0298",
+    "OriginAirportId": "BD4487BD-65FD-4CE7-9D00-A8B8D517B680",
+    "DestinationAirportId": "C1390386-AAAA-4DB3-B1A7-0780CED0336B",
+    "OriginAirportCode": "SGN",
+    "DestinationAirportCode": "HAN",
+    "OriginAirportName": "Tan Son Nhat International Airport",
+    "DestinationAirportName": "Noi Bai International Airport"
+  },
+  {
+    "Id": "A3F78FF1-FF33-4A7F-A667-6FC993295888",
+    "FlightNumber": "QH1415",
+    "OriginAirportId": "C1390386-AAAA-4DB3-B1A7-0780CED0336B",
+    "DestinationAirportId": "BD4487BD-65FD-4CE7-9D00-A8B8D517B680",
+    "OriginAirportCode": "HAN",
+    "DestinationAirportCode": "SGN",
+    "OriginAirportName": "Noi Bai International Airport",
+    "DestinationAirportName": "Tan Son Nhat International Airport"
   }
 ]

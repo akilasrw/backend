@@ -38,5 +38,25 @@
     "OriginAirportName": "Halifax Stanfield International Airport",
     "DestinationAirportName": "Edmonton International Airport",
     "SectorType": "1"
+  },
+  {
+    "Id": "FCF72511-4DFC-412D-9FE4-C01473648907",
+    "OriginAirportId": "BD4487BD-65FD-4CE7-9D00-A8B8D517B680",
+    "DestinationAirportId": "C1390386-AAAA-4DB3-B1A7-0780CED0336B",
+    "OriginAirportCode": "SGN",
+    "DestinationAirportCode": "HAN",
+    "OriginAirportName": "Tan Son Nhat International Airport",
+    "DestinationAirportName": "Noi Bai International Airport",
+    "SectorType": "1"
+  },
+  {
+    "Id": "02F207CD-FC55-4115-AD86-FF3F50F7A49B",
+    "OriginAirportId": "C1390386-AAAA-4DB3-B1A7-0780CED0336B",
+    "DestinationAirportId": "BD4487BD-65FD-4CE7-9D00-A8B8D517B680",
+    "OriginAirportCode": "HAN",
+    "DestinationAirportCode": "SGN",
+    "OriginAirportName": "Noi Bai International Airport",
+    "DestinationAirportName": "Tan Son Nhat International Airport",
+    "SectorType": "1"
   }
 ]

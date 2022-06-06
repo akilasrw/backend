@@ -40,5 +40,17 @@
     "Name": "Montréal–Trudeau International Airport",
     "Code": "YUL",
     "CountryId": "4D24D56C-8BD2-4942-B9A4-66911F9D2496"
+  },
+  {
+    "Id": "BD4487BD-65FD-4CE7-9D00-A8B8D517B680",
+    "Name": "Tan Son Nhat International Airport",
+    "Code": "SGN",
+    "CountryId": "E8CC3768-AD4F-49E7-89B2-7C9429D4391A"
+  },
+  {
+    "Id": "C1390386-AAAA-4DB3-B1A7-0780CED0336B",
+    "Name": "Noi Bai International Airport",
+    "Code": "HAN",
+    "CountryId": "E8CC3768-AD4F-49E7-89B2-7C9429D4391A"
   }
 ]

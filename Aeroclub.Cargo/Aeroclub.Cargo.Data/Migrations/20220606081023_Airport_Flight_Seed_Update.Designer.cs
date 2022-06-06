@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220606081023_Airport_Flight_Seed_Update")]
+    partial class Airport_Flight_Seed_Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -549,7 +551,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fec51702-5787-47a9-b510-fa34f016dc6b",
+                            ConcurrencyStamp = "4c54f222-f449-4654-9e05-13a89236eb1c",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -565,7 +567,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6b521716-ba70-4d08-9cbf-5c104cb8a86c",
+                            ConcurrencyStamp = "8eb13f30-7b30-44c2-830a-787f2eae42da",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -9716,38 +9718,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             OriginAirportCode = "YHZ",
                             OriginAirportId = new Guid("2bc5fba0-e25e-4f65-9965-ecb901250b78"),
                             OriginAirportName = "Halifax Stanfield International Airport",
-                            SectorType = (byte)1
-                        },
-                        new
-                        {
-                            Id = new Guid("fcf72511-4dfc-412d-9fe4-c01473648907"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            DestinationAirportCode = "HAN",
-                            DestinationAirportId = new Guid("c1390386-aaaa-4db3-b1a7-0780ced0336b"),
-                            DestinationAirportName = "Noi Bai International Airport",
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OriginAirportCode = "SGN",
-                            OriginAirportId = new Guid("bd4487bd-65fd-4ce7-9d00-a8b8d517b680"),
-                            OriginAirportName = "Tan Son Nhat International Airport",
-                            SectorType = (byte)1
-                        },
-                        new
-                        {
-                            Id = new Guid("02f207cd-fc55-4115-ad86-ff3f50f7a49b"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            DestinationAirportCode = "SGN",
-                            DestinationAirportId = new Guid("bd4487bd-65fd-4ce7-9d00-a8b8d517b680"),
-                            DestinationAirportName = "Tan Son Nhat International Airport",
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OriginAirportCode = "HAN",
-                            OriginAirportId = new Guid("c1390386-aaaa-4db3-b1a7-0780ced0336b"),
-                            OriginAirportName = "Noi Bai International Airport",
                             SectorType = (byte)1
                         });
                 });
