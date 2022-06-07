@@ -12,6 +12,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -265,6 +266,19 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query)
         {
             return await _cargoBookingService.GetFilteredListAsync(query);
+        }
+
+        public async Task<CargoBookingSummaryVM> GetBookingSummaryAsync(BookingSummaryQuery query)
+        {
+            var spec = new CargoBookingSpecification(query);
+            var entity = await _unitOfWork.Repository<CargoBooking>().GetListWithSpecAsync(spec);
+            var flightSector = entity.FirstOrDefault();
+            if (flightSector == null)
+                return new CargoBookingSummaryVM();
+
+            return new CargoBookingSummaryVM() { 
+                CargoPositionSummary = await _cargoPositionService.GetSummeryCargoPositionAsync(flightSector.FlightScheduleSector.Aircraft.AircraftLayoutId) 
+            };
         }
 
         private async Task<bool> UpdateSeatConfigurationAsync(SeatConfigurationDto seatConfigurationDto)

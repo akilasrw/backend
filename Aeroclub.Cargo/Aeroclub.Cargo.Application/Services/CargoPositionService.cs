@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SeatConfigurationVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -237,6 +238,39 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
+
+        public async Task<CargoPositionSummaryVM> GetSummeryCargoPositionAsync(Guid aircraftLayoutId)
+        {
+            List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
+
+            var cargoPositionList =
+                await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            CargoPositionSummaryVM bookingSummaryVM = new CargoPositionSummaryVM();
+            // Checking Main Deck available positions
+            var matchingCargoPosition = cargoPositionList.ToList()
+                .Where(x => x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck);
+            
+            var cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.OnSeat);            
+            bookingSummaryVM.TotalOccupiedOnSeats =  matchingCargoPosition.Count(y => !y.Seat.IsOnSeatOccupied);
+            bookingSummaryVM.TotalOnSeats = matchingCargoPosition.Count();
+            
+            cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.UnderSeat);            
+            bookingSummaryVM.TotalOccupiedUnderSeats =  matchingCargoPosition.Count(y => !y.Seat.IsUnderSeatOccupied);
+            bookingSummaryVM.TotalUnderSeats = matchingCargoPosition.Count();
+            
+            cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.Overhead);            
+            bookingSummaryVM.TotalOccupiedOverheads =  matchingCargoPosition.Count(y => !y.OverheadPosition.IsOccupied);
+            bookingSummaryVM.TotalOverheads= matchingCargoPosition.Count();
+
+            bookingSummaryVM.TotalWeight =   matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
+            bookingSummaryVM.TotalBookedWeight = matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+
+            return bookingSummaryVM;
+
+        }
 
         private ValidateResponse GetWeightValidationResponse(double packageWeight,double maxWaight,ZoneArea zoneArea)
         {
