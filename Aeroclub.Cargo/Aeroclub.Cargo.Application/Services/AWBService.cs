@@ -2,7 +2,9 @@
 using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
+using Aeroclub.Cargo.Application.Models.Queries.AWBStackQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AWBStackRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -13,10 +15,10 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class AWBService : BaseService, IAWBService
     {
-
-        public AWBService(IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
+        private readonly IAWBStackService _awbStackService;
+        public AWBService(IAWBStackService awbStackService,IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
         {
-
+            _awbStackService = awbStackService;
         }
         public async Task<AWBCreateStatusRM> CreateAsync(AWBCreateRM model)
         {
@@ -24,12 +26,19 @@ namespace Aeroclub.Cargo.Application.Services
 
             var awb = _mapper.Map<AWBInformation>(model);
 
+            var awbNumber = await _awbStackService.GetNextAWBNumberAsync(new AWBNumberStackQM() { CargoAgentId = model.UserId});
+
+            awb.AwbTrackingNumber = awbNumber.AWBNumber;
+
             var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
             await _unitOfWork.SaveChangesAsync();
 
             if (createdAWB != null)
             {
-                response.StatusCode = ServiceResponseStatus.Success;
+                var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM() 
+                { CargoAgentId = model.UserId,LastUsedSequenceNumber = awbNumber.AWBNumber });
+
+                response.StatusCode = awbNumberUpdate;
             }
             else
             {

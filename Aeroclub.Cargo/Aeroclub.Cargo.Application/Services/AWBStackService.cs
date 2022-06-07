@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AWBStackQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AWBStackRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -57,7 +58,7 @@ namespace Aeroclub.Cargo.Application.Services
             return mappedEntity;
         }
 
-        public async Task<Pagination<AWBStackVM>> GetBookingFilteredListAsync(AWBStackListQM query)
+        public async Task<Pagination<AWBStackVM>> GetAWBStackFilteredListAsync(AWBStackListQM query)
         {
             var spec = new AWBStackSpecification(query);
             var stackList = await _unitOfWork.Repository<AWBStack>().GetListWithSpecAsync(spec);
@@ -82,5 +83,47 @@ namespace Aeroclub.Cargo.Application.Services
             return mappedEntity;
         }
 
+        public async Task<AWBNumbeStackVM> GetNextAWBNumberAsync(AWBNumberStackQM query)
+        {
+
+            var spec = new AWBStackSpecification(query);
+
+            var entity = await _unitOfWork.Repository<AWBStack>().GetEntityWithSpecAsync(spec);
+
+            var NumberStack = new AWBNumbeStackVM();
+
+            if (entity != null)
+            {
+                NumberStack.Id = entity.Id;
+
+                if (entity.LastUsedSequenceNumber != 0)
+                {
+                    if(entity.LastUsedSequenceNumber < entity.EndSequenceNumber)
+                        NumberStack.AWBNumber = entity.LastUsedSequenceNumber + 1;
+                }
+                else
+                {
+                    if (entity.StartSequenceNumber < entity.EndSequenceNumber)
+                        NumberStack.AWBNumber = entity.StartSequenceNumber;                   
+                }
+            }
+
+            return NumberStack;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateUsedAWBNumberAsync(AWBStackUpdateRM dto)
+        {
+            var spec = new AWBStackSpecification(new AWBNumberStackQM() { CargoAgentId = dto.CargoAgentId});
+
+            var entity = await _unitOfWork.Repository<AWBStack>().GetEntityWithSpecAsync(spec);
+
+            entity.LastUsedSequenceNumber = dto.LastUsedSequenceNumber;
+
+            _unitOfWork.Repository<AWBStack>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return ServiceResponseStatus.Success;
+
+        }
     }
 }

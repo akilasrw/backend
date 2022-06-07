@@ -1,23 +1,16 @@
-﻿
-
-using Aeroclub.Cargo.Application.Models.Core;
-using System.ComponentModel.DataAnnotations;
+﻿using Aeroclub.Cargo.Application.Models.Core;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
 {
     public class AWBCreateRM : BaseRM
     {
-        [Required(ErrorMessage = "Shipper name required")]
+        public Guid UserId { get; set; }
         public string ShipperName { get; set; } = null!;
         public string? ShipperAccountNumber { get; set; } = null;
         public string? ShipperAddress { get; set; } = null;
-
-        [Required(ErrorMessage = "Consignee name required")]
         public string ConsigneeName { get; set; } = null!;
         public string? ConsigneeAccountNumber { get; set; } = null;
         public string? ConsigneeAddress { get; set; } = null;
-
-        [Required(ErrorMessage = "Agent name required")]
         public string AgentName { get; set; } = null!;
         public string? AgentCity { get; set; } = null;
         public string? AgentAITACode { get; set; } = null;
@@ -34,7 +27,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
         public double? DeclaredValueForCarriage { get; set; }
         public double? DeclaredValueForCustomer { get; set; }
         public double? AmountOfInsurance { get; set; }
-
+        public Guid? PackageId { get; set; }
 
         public IReadOnlyList<AWBProductRM> PackageProducts { get; set; }
 

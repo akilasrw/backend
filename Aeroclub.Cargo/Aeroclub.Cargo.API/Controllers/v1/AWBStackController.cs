@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<AWBStackVM>>> GetFilteredListAsync([FromQuery] AWBStackListQM query)
         {
-            return Ok(await _AWBStackService.GetBookingFilteredListAsync(query));
+            return Ok(await _AWBStackService.GetAWBStackFilteredListAsync(query));
         }
 
         [HttpGet("GetLastRecord")]
@@ -61,9 +61,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return Ok(result);
         }
-
         
-
-
     }
 }

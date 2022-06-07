@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));
 
             if (query.IsIncludePackageDetail)
-                AddInclude(x => x.Include(y => y.PackageItems));
+                AddInclude(x => x.Include(y => y.PackageItems).ThenInclude(y => y.AWBInformation));
 
         }
 

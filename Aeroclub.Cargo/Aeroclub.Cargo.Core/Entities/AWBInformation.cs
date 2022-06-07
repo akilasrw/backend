@@ -26,8 +26,10 @@ namespace Aeroclub.Cargo.Core.Entities
         public double DeclaredValueForCarriage { get; set; }
         public double DeclaredValueForCustomer { get; set; }
         public double AmountOfInsurance { get; set; }
+        public int AwbTrackingNumber { get; set; }
+        public Guid PackageItemId { get; set; }
 
-
+        public virtual PackageItem PackageItem { get; set; }
         public virtual ICollection<AWBProduct> PackageProducts { get; set; }
 
     }

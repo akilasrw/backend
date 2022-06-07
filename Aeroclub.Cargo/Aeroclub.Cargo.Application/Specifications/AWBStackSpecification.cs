@@ -18,6 +18,12 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public AWBStackSpecification(AWBNumberStackQM query)
+         : base(x => x.CargoAgentId == query.CargoAgentId && !x.IsSequenceCompleted)
+        {
+         
+        }        
+
         public AWBStackSpecification(AWBStackListQM query, bool isCount = false)
             :base(x => ((string.IsNullOrEmpty(query.CargoAgentName) || x.CargoAgent.AgentName == query.CargoAgentName)) && !x.IsSequenceCompleted)
         {

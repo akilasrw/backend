@@ -21,7 +21,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
         }
 
-        public async Task<ServiceResponseStatus> CreateAsync(PackageItemRM packageItem)
+        public async Task<PackageItemCreateRM> CreateAsync(PackageItemRM packageItem)
         {
             var spec = new PackageItemSpecification(new PackageItemCountQM() { Year = DateTime.Now.Year, Month = DateTime.Now.Month });
             var packageCount = await _unitOfWork.Repository<PackageItem>().CountAsync(spec);
@@ -30,10 +30,21 @@ namespace Aeroclub.Cargo.Application.Services
             var package = _mapper.Map<PackageItem>(packageItem);
             package.PackageRefNumber = b1.GetNextRefNumber();
 
-            await _unitOfWork.Repository<PackageItem>().CreateAsync(package);
+            var createdPackage =await _unitOfWork.Repository<PackageItem>().CreateAsync(package);
             await _unitOfWork.SaveChangesAsync();
 
-            return ServiceResponseStatus.Success;
+            var response = new PackageItemCreateRM();
+            if (createdPackage != null)
+            {
+                response.StatusCode = ServiceResponseStatus.Success;
+                response.Id = createdPackage.Id;
+            }
+            else
+            {
+                response.StatusCode = ServiceResponseStatus.Failed;
+            }
+
+            return response;
         }
 
         public async Task<PackageItemMobileVM> GetAsync(PackageItemQM query)

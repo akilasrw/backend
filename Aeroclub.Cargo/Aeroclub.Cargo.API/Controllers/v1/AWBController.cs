@@ -18,18 +18,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
         }
 
-        [HttpPost()]
-        public async Task<IActionResult> CreateAsync([FromBody] AWBCreateRM dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var response = await _awbService.CreateAsync(dto);
-
-            if (response.StatusCode == Application.Enums.ServiceResponseStatus.Success)
-                return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
-
-            return BadRequest("AWB creation fail");
-        }
 
         [HttpGet()]
         [ActionName(nameof(GetAsync))]

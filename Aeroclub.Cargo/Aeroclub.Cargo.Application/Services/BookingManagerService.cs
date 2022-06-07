@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -32,6 +33,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly ISeatConfigurationService _seatConfigurationService;
         private readonly IOverheadService _overheadService;
         private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
+        private readonly IAWBService _AWBService;
 
 
         public BookingManagerService(
@@ -45,7 +47,8 @@ namespace Aeroclub.Cargo.Application.Services
             ISeatService seatService,
             ISeatConfigurationService seatConfigurationService,
             IOverheadService overheadService,
-            IULDContainerCargoPositionService uLDContainerCargoPositionService)
+            IULDContainerCargoPositionService uLDContainerCargoPositionService,
+            IAWBService aWBService)
             : base(unitOfWork, mapper)
         {
             _cargoBookingService = cargoBookingService;
@@ -57,6 +60,7 @@ namespace Aeroclub.Cargo.Application.Services
             _seatConfigurationService = seatConfigurationService;
             _overheadService = overheadService;
             _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
+            _AWBService = aWBService;
         }
 
         public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
@@ -121,11 +125,23 @@ namespace Aeroclub.Cargo.Application.Services
                             transaction.Rollback();
                             return BookingServiceResponseStatus.Failed;
                         }
-
                         // Save Package Items
                         package.CargoBookingId = response.Id;
                         package.ULDContainerId = uldContainer.Id;
-                        await _packageItemService.CreateAsync(package);
+                        var createdPackage = await _packageItemService.CreateAsync(package);
+
+                        if (createdPackage.StatusCode == ServiceResponseStatus.Failed)
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.Failed;
+                        }
+
+                        //Save AWB Details
+                        if (package.AWBDetail != null)
+                        {
+                            package.AWBDetail.PackageId = createdPackage.Id;
+                            await _AWBService.CreateAsync(package.AWBDetail); 
+                        }
 
 
                         // Save ULD - No need - Lelanga will handle this.

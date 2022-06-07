@@ -6,10 +6,8 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class PackageItem : AuditableEntity
     {
-        public Guid CargoBookingId { get; set; }
         public string PackageRefNumber { get; set; } = null!; // Auto Generated No - Format - Singleton
         public PackagePriorityType PackagePriorityType { get; set; }
-        public string? AwbTrackingNumber { get; set; }
         public double Width { get; set; }
         public double Length { get; set; }
         public double Height { get; set; }
@@ -20,8 +18,10 @@ namespace Aeroclub.Cargo.Core.Entities
         public PackageItemStatus PackageItemStatus { get; set; }
         public string Description { get; set; }
         public PackageItemCategory PackageItemCategory { get; set; }
+        public Guid CargoBookingId { get; set; }
         public Guid ULDContainerId { get; set; }
 
+        public virtual AWBInformation AWBInformation { get; set; }
         public virtual CargoBooking CargoBooking { get; set; }
         public virtual ULDContainer ULDContainer { get; set; }
         public virtual Unit VolumeUnit { get; set; }

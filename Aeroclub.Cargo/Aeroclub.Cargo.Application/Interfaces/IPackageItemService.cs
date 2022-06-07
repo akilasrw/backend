@@ -9,7 +9,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IPackageItemService
     {
-        Task<ServiceResponseStatus> CreateAsync(PackageItemRM packageItem);
+        Task<PackageItemCreateRM> CreateAsync(PackageItemRM packageItem);
         Task<PackageItemMobileVM> GetAsync(PackageItemQM query);
         Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query);
 
