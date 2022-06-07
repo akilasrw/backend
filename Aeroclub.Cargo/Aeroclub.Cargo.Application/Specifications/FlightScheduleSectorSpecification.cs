@@ -53,5 +53,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             if(query.IncludeLoadPlan)
                 AddInclude(y=> y.Include(x=> x.LoadPlan));
         }
+
+        //public FlightScheduleSectorSpecification(BookingSummaryQuery query)
+        //    : base(x => (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber == query.FlightNumber) &&
+        //    (query.FlightDate == null || query.FlightDate.Date == DateTime.MinValue || query.FlightDate.Date == x.ScheduledDepartureDateTime.Date))
+        //{
+        //    AddInclude(x => x.Include(y => y.Aircraft.AircraftLayout.AircraftDecks).ThenInclude(z => z.AircraftCabins).ThenInclude(p => p.ZoneAreas).ThenInclude(q => q.CargoPositions).ThenInclude(g => g.OverheadPosition));
+        //    AddInclude(x => x.Include((y => y.Aircraft.SeatLayout).ThenInclude(z => z.SeatConfigurations).ThenInclude(p => p.Seats));
+        //}
     }
 }

@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm);
         Task<CargoBookingDetailVM> GetBookingAsync(CargoBookingDetailQM query);
         Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query);
+        Task<CargoBookingSummaryVM> GetBookingSummaryAsync(BookingSummaryQuery query);
     }
 }

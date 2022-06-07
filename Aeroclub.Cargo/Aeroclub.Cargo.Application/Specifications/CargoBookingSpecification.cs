@@ -40,6 +40,13 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public CargoBookingSpecification(BookingSummaryQuery query)
+            :base(x=> (string.IsNullOrEmpty(query.FlightNumber) || x.FlightScheduleSector.FlightNumber == query.FlightNumber) &&
+            (query.FlightDate.Date == DateTime.MinValue || query.FlightDate == x.FlightScheduleSector.ScheduledDepartureDateTime.Date))
+        {
+            AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(y => y.Aircraft));
+        }
+
     }
 
 }
