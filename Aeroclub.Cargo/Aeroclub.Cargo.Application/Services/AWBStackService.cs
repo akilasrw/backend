@@ -119,6 +119,9 @@ namespace Aeroclub.Cargo.Application.Services
 
             entity.LastUsedSequenceNumber = dto.LastUsedSequenceNumber;
 
+            if(entity.LastUsedSequenceNumber == entity.EndSequenceNumber)
+                entity.IsSequenceCompleted = true;
+
             _unitOfWork.Repository<AWBStack>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
 
