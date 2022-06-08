@@ -19,6 +19,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
         public PackageContainerType PackageContainerType { get; set; } = PackageContainerType.None;
         public string? Description { get; set; }
         public Guid? ULDContainerId { get; set; }
-        public AWBCreateRM AWBDetail { get; set; }
+        public AWBCreateRM? AWBDetail { get; set; }
     }
 }
