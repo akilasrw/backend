@@ -117,13 +117,17 @@ namespace Aeroclub.Cargo.Application.Services
 
             var entity = await _unitOfWork.Repository<AWBStack>().GetEntityWithSpecAsync(spec);
 
-            entity.LastUsedSequenceNumber = dto.LastUsedSequenceNumber;
+            if(entity != null)
+            {
+                entity.LastUsedSequenceNumber = dto.LastUsedSequenceNumber;
 
-            if(entity.LastUsedSequenceNumber == entity.EndSequenceNumber)
-                entity.IsSequenceCompleted = true;
+                if (entity.LastUsedSequenceNumber == entity.EndSequenceNumber)
+                    entity.IsSequenceCompleted = true;
 
-            _unitOfWork.Repository<AWBStack>().Update(entity);
-            await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<AWBStack>().Update(entity);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<AWBStack>().Detach(entity);
+            }
 
             return ServiceResponseStatus.Success;
 
