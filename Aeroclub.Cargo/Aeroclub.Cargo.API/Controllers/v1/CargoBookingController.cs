@@ -52,5 +52,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return CreatedAtAction(nameof(GetAsync), rm);
         }
 
+        [HttpGet("GetSummary")]
+        public async Task<ActionResult<Pagination<CargoBookingSummaryVM>>> GetSummaryAsync([FromQuery] BookingSummaryQuery query)
+        {
+            return Ok(await _bookingManagerService.GetBookingSummaryAsync(query));
+        }
+
     }
 }
