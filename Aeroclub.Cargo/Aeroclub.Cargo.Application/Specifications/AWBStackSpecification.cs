@@ -19,9 +19,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AWBStackSpecification(AWBNumberStackQM query)
-         : base(x => x.CargoAgentId == query.CargoAgentId && !x.IsSequenceCompleted)
+         : base(x => x.CargoAgent.AppUserId == query.CargoAgentId && !x.IsSequenceCompleted)
         {
-         
+            AddInclude(x => x.Include(y => y.CargoAgent));
         }        
 
         public AWBStackSpecification(AWBStackListQM query, bool isCount = false)

@@ -18,6 +18,7 @@ using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -25,15 +26,18 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly ISeatConfigurationService _seatConfigurationService;
+        private readonly IConfiguration _configuration;
 
         public CargoPositionService(IUnitOfWork unitOfWork, 
             IMapper mapper, 
             IFlightScheduleSectorService flightScheduleSectorService,
-            ISeatConfigurationService seatConfigurationService
+            ISeatConfigurationService seatConfigurationService,
+            IConfiguration configuration
             ) : base(unitOfWork, mapper)
         {
             _flightScheduleSectorService = flightScheduleSectorService;
             _seatConfigurationService = seatConfigurationService;
+            _configuration = configuration;
         }
 
         public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
@@ -196,7 +200,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
 
-                    return GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea);
+                    return GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea,rm.PackageItem.WeightUnitId);
                 
                 }
             }
@@ -223,7 +227,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 if (config != null && config.Seats != null)
                 {
-                    return GetWeightValidationResponse(rm.PackageItem.Weight, config.MaxWeight, config.Seats.First().ZoneArea);
+                    return GetWeightValidationResponse(rm.PackageItem.Weight, config.MaxWeight, config.Seats.First().ZoneArea,rm.PackageItem.WeightUnitId);
                 }
                 else
                 {
@@ -272,12 +276,29 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        private ValidateResponse GetWeightValidationResponse(double packageWeight,double maxWaight,ZoneArea zoneArea)
+        private ValidateResponse GetWeightValidationResponse(double packageItemWeight,double maxWeight, ZoneArea zoneArea,Guid waightUnitId)
         {
+            double packageWeight = 0;
+
+            var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
+            if (waightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != waightUnitId.ToString())
+            {
+                if (packageItemWeight > 0)
+                    packageWeight = packageItemWeight / 1000;
+                else
+                    packageWeight = packageItemWeight;
+
+            }
+            else
+            {
+                packageWeight = packageItemWeight;
+            }
+
+
             var isMaxWaightValid = true;
             string messagePrefix = "";
 
-            if (packageWeight > maxWaight)
+            if (packageWeight > maxWeight)
             {
                 isMaxWaightValid = false;
                 messagePrefix = "Position";
@@ -305,7 +326,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return new ValidateResponse()
                 {
                     IsValid = false,
-                    ValidationMessage = String.Format("{0} max waight({1}Kg) exceed.", messagePrefix, maxWaight)
+                    ValidationMessage = String.Format("{0} max waight({1}Kg) exceed.", messagePrefix, maxWeight)
                 };
 
             }

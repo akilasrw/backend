@@ -140,7 +140,7 @@ namespace Aeroclub.Cargo.Application.Services
                         //Save AWB Details
                         if (package.AWBDetail != null)
                         {
-                            package.AWBDetail.PackageId = createdPackage.Id;
+                            package.AWBDetail.PackageItemId = createdPackage.Id;
                             await _AWBService.CreateAsync(package.AWBDetail); 
                         }
 
