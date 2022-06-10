@@ -18,7 +18,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
         }
 
-
         [HttpGet()]
         [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<AWBInformationVM>> GetAsync([FromQuery] AirWayBillQM query)
@@ -31,6 +30,29 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return NotFound();
 
             return Ok(result);
+        }
+
+        [HttpPost()]
+        public async Task<IActionResult> CreateAsync([FromBody] AWBCreateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _awbService.CreateAsync(dto);
+
+            if (response.StatusCode == Application.Enums.ServiceResponseStatus.Success)
+                return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
+
+            return BadRequest("AWB creation fail.");
+        }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] AWBUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _awbService.UpdateAsync(dto);
+
+            return NoContent();
         }
 
     }

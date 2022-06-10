@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             _awbStackService = awbStackService;
         }
+
         public async Task<AWBCreateStatusRM> CreateAsync(AWBCreateRM model)
         {
             var response = new AWBCreateStatusRM();
@@ -53,6 +54,15 @@ namespace Aeroclub.Cargo.Application.Services
             var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(spec);
 
             return _mapper.Map<AWBInformation, AWBInformationVM>(awb);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(AWBUpdateRM model)
+        {
+            var entity = _mapper.Map<AWBInformation>(model);
+            _unitOfWork.Repository<AWBInformation>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AWBInformation>().Detach(entity);
+            return ServiceResponseStatus.Success;
         }
     }
 }
