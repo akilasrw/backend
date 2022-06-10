@@ -16,9 +16,11 @@ using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using System.Transactions;
 
 namespace Aeroclub.Cargo.Application.Services
@@ -35,6 +37,8 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IOverheadService _overheadService;
         private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
         private readonly IAWBService _AWBService;
+        private readonly IConfiguration _configuration;
+
 
 
         public BookingManagerService(
@@ -49,7 +53,8 @@ namespace Aeroclub.Cargo.Application.Services
             ISeatConfigurationService seatConfigurationService,
             IOverheadService overheadService,
             IULDContainerCargoPositionService uLDContainerCargoPositionService,
-            IAWBService aWBService)
+            IAWBService aWBService,
+            IConfiguration configuration)
             : base(unitOfWork, mapper)
         {
             _cargoBookingService = cargoBookingService;
@@ -62,6 +67,7 @@ namespace Aeroclub.Cargo.Application.Services
             _overheadService = overheadService;
             _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
             _AWBService = aWBService;
+            _configuration = configuration;
         }
 
         public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
@@ -98,6 +104,13 @@ namespace Aeroclub.Cargo.Application.Services
                         // TODO: Local Binding it default PackageContainerType
                         // if(item.PackageContainerType == PackageContainerType.None)
                         //    continue; 
+
+                        var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
+                        if (package.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != package.WeightUnitId.ToString())
+                        {
+                            package.Weight.GramToKilogramConversion();
+                        }
+
                         List<Tuple<CargoPosition, Guid?>> matchedCargoPositions;
                         if (package.PackageContainerType == PackageContainerType.OnThreeSeats)
                             matchedCargoPositions = await _cargoPositionService.GetMatchingThreeSeatCargoPositionAsync(package, flightSector.AircraftLayoutId.Value, SeatConfigurationType.ThreeSeats);
