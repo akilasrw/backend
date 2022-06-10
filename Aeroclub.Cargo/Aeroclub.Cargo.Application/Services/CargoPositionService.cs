@@ -245,7 +245,6 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<CargoPositionSummaryVM> GetSummeryCargoPositionAsync(Guid aircraftLayoutId)
         {
-            List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
 
@@ -258,19 +257,23 @@ namespace Aeroclub.Cargo.Application.Services
                 .Where(x => x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck);
             
             var cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.OnSeat);            
-            bookingSummaryVM.TotalOccupiedOnSeats =  matchingCargoPosition.Count(y => !y.Seat.IsOnSeatOccupied);
-            bookingSummaryVM.TotalOnSeats = matchingCargoPosition.Count();
+            bookingSummaryVM.TotalOccupiedOnSeats = cargoPositions.Count(y => y.Seat.IsOnSeatOccupied);
+            bookingSummaryVM.TotalOnSeats = cargoPositions.Count();
+            bookingSummaryVM.OnSeatsPercentage = bookingSummaryVM.TotalOccupiedOnSeats/ bookingSummaryVM.TotalOnSeats;
             
             cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.UnderSeat);            
-            bookingSummaryVM.TotalOccupiedUnderSeats =  matchingCargoPosition.Count(y => !y.Seat.IsUnderSeatOccupied);
-            bookingSummaryVM.TotalUnderSeats = matchingCargoPosition.Count();
-            
+            bookingSummaryVM.TotalOccupiedUnderSeats = cargoPositions.Count(y => y.Seat.IsUnderSeatOccupied);
+            bookingSummaryVM.TotalUnderSeats = cargoPositions.Count();
+            bookingSummaryVM.UnderSeatsPercentage = bookingSummaryVM.TotalOccupiedUnderSeats / bookingSummaryVM.TotalUnderSeats;
+
             cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.Overhead);            
-            bookingSummaryVM.TotalOccupiedOverheads =  matchingCargoPosition.Count(y => !y.OverheadPosition.IsOccupied);
-            bookingSummaryVM.TotalOverheads= matchingCargoPosition.Count();
+            bookingSummaryVM.TotalOccupiedOverheads = cargoPositions.Count(y => y.OverheadPosition.IsOccupied);
+            bookingSummaryVM.TotalOverheads= cargoPositions.Count();
+            bookingSummaryVM.OverheadPercentage = bookingSummaryVM.TotalOccupiedOverheads / bookingSummaryVM.TotalOverheads;
 
             bookingSummaryVM.TotalWeight =   matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
             bookingSummaryVM.TotalBookedWeight = matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+            bookingSummaryVM.WeightPercentage = bookingSummaryVM.TotalBookedWeight / bookingSummaryVM.TotalWeight;
 
             return bookingSummaryVM;
 

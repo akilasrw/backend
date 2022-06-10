@@ -67,5 +67,6 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
         }
+        
     }
 }
