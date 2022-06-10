@@ -15,6 +15,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SeatConfigurationVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -279,22 +280,13 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        private ValidateResponse GetWeightValidationResponse(double packageItemWeight,double maxWeight, ZoneArea zoneArea,Guid waightUnitId)
+        private ValidateResponse GetWeightValidationResponse(double packageWeight, double maxWeight, ZoneArea zoneArea,Guid waightUnitId)
         {
-            double packageWeight = 0;
 
             var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
             if (waightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != waightUnitId.ToString())
             {
-                if (packageItemWeight > 0)
-                    packageWeight = packageItemWeight / 1000;
-                else
-                    packageWeight = packageItemWeight;
-
-            }
-            else
-            {
-                packageWeight = packageItemWeight;
+                packageWeight = packageWeight.GramToKilogramConversion();
             }
 
 

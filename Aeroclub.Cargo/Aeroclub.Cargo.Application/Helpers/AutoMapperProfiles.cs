@@ -79,7 +79,6 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<ULDMetaDataDto, ULDMetaData>();
             CreateMap<PackageContainer, PackageContainerVM>().ReverseMap();
 
-
             CreateMap<CargoBooking, CargoBookingDetailVM>();
             CreateMap<PackageItem, PackageItemVM>()
                 .ForMember(d => d.AwbTrackingNumber, o => o.MapFrom(s => s.AWBInformation != null? s.AWBInformation.AwbTrackingNumber:0));
@@ -134,6 +133,8 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<CargoAgent, BaseSelectListModel>()
                .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
+
+            CreateMap<AWBUpdateRM,AWBInformation>();
 
         }
     }

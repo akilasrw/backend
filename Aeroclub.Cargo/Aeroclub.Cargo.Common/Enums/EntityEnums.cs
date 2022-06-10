@@ -132,5 +132,6 @@
     {
         None = 0,
         Electronic = 1,
+        Stationery = 2
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
@@ -18,6 +19,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
         public string Description { get; set; }
         public PackageItemCategory PackageItemType { get; set; }
         public Guid ULDContainerId { get; set; }
+        public AWBInformationVM? AWBInformation { get; set; }
 
     }
 }

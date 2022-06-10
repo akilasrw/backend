@@ -1,9 +1,9 @@
-﻿using Aeroclub.Cargo.Application.Models.Core;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
 {
-    public class AWBCreateRM : BaseRM
+    public class AWBUpdateRM
     {
         public Guid UserId { get; set; }
 
@@ -37,6 +37,5 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
         public Guid? PackageItemId { get; set; }
 
         public IReadOnlyList<AWBProductRM> PackageProducts { get; set; }
-
     }
 }
