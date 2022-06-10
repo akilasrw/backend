@@ -108,7 +108,7 @@ namespace Aeroclub.Cargo.Application.Services
                         var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
                         if (package.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != package.WeightUnitId.ToString())
                         {
-                            package.Weight.GramToKilogramConversion();
+                            package.Weight = package.Weight.GramToKilogramConversion();
                         }
 
                         List<Tuple<CargoPosition, Guid?>> matchedCargoPositions;

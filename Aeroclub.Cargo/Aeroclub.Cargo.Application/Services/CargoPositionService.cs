@@ -283,7 +283,7 @@ namespace Aeroclub.Cargo.Application.Services
             var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
             if (waightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != waightUnitId.ToString())
             {
-                packageWeight.GramToKilogramConversion();
+                packageWeight = packageWeight.GramToKilogramConversion();
             }
 
 
