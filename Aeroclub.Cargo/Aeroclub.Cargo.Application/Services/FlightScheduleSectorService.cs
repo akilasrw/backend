@@ -7,8 +7,11 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -132,6 +135,47 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return flightScheduleSectorCargoPositionsList;
+        }
+
+        public async Task<CargoPositionSummaryVM> GetCargoPositionSummaryAsync(FlightScheduleSectorSearchQuery query)
+        {
+            var spec = new FlightScheduleSectorSpecification(query);
+            var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            var flightSector = entity.FirstOrDefault();
+            if (flightSector == null)
+                return new CargoPositionSummaryVM();
+
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = flightSector.Aircraft.AircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
+
+            var cargoPositionList =
+                await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            CargoPositionSummaryVM positionSummary = new CargoPositionSummaryVM();
+            // Checking Main Deck available positions
+            var matchingCargoPosition = cargoPositionList.ToList()
+                .Where(x => x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck);
+
+            var cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.OnSeat);
+            positionSummary.TotalOccupiedOnSeats = cargoPositions.Count(y => y.Seat.IsOnSeatOccupied);
+            positionSummary.TotalOnSeats = cargoPositions.Count();
+            positionSummary.OnSeatsPercentage = positionSummary.TotalOccupiedOnSeats / positionSummary.TotalOnSeats;
+
+            cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.UnderSeat);
+            positionSummary.TotalOccupiedUnderSeats = cargoPositions.Count(y => y.Seat.IsUnderSeatOccupied);
+            positionSummary.TotalUnderSeats = cargoPositions.Count();
+            positionSummary.UnderSeatsPercentage = positionSummary.TotalOccupiedUnderSeats / positionSummary.TotalUnderSeats;
+
+            cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.Overhead);
+            positionSummary.TotalOccupiedOverheads = cargoPositions.Count(y => y.OverheadPosition.IsOccupied);
+            positionSummary.TotalOverheads = cargoPositions.Count();
+            positionSummary.OverheadPercentage = positionSummary.TotalOccupiedOverheads / positionSummary.TotalOverheads;
+
+            positionSummary.TotalWeight = matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
+            positionSummary.TotalBookedWeight = matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+            positionSummary.WeightPercentage = positionSummary.TotalBookedWeight / positionSummary.TotalWeight;
+
+            return positionSummary;
         }
 
         public async Task TestMethod(FlightScheduleSectorFilteredListQM query)

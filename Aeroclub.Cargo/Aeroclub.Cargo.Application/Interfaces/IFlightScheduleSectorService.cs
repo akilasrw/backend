@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 
 namespace Aeroclub.Cargo.Application.Interfaces
@@ -14,5 +15,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 
         Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleSectorCreateRM dto);
         Task<FlightScheduleSectorVM> GetAsync(FlightScheduleSectorQM query);
+
+        Task<CargoPositionSummaryVM> GetCargoPositionSummaryAsync(FlightScheduleSectorSearchQuery query);
     }
 }
