@@ -2,7 +2,7 @@
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
 {
-    public class PackageItemCreateRM
+    public class PackageItemCreateResponseM
     {
         public Guid Id { get; set; }
         public ServiceResponseStatus StatusCode { get; set; }

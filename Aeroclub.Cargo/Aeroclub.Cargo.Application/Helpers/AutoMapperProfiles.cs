@@ -102,7 +102,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.BookingDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingDate : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""));
 
-            CreateMap<PackageItemRM, PackageItem>(); 
+            CreateMap<PackageItemCreateRM, PackageItem>(); 
             CreateMap<Seat, SeatDto>().ReverseMap();
 
             CreateMap<AWBCreateRM, AWBInformation>();
@@ -135,6 +135,9 @@ namespace Aeroclub.Cargo.Application.Helpers
                .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
 
             CreateMap<AWBUpdateRM,AWBInformation>();
+
+            CreateMap<PackageItemUpdateRM, PackageItem>();
+            CreateMap<PackageItemVM, PackageItemUpdateRM>();
 
         }
     }

@@ -265,7 +265,7 @@ namespace Aeroclub.Cargo.Application.Services
             
         }
 
-        async Task<bool> ValidateAsync(List<PackageItemRM> PackageItems, IList<FlightScheduleSectorCargoPosition> FlightScheduleSectorCargoPositions)
+        async Task<bool> ValidateAsync(List<PackageItemCreateRM> PackageItems, IList<FlightScheduleSectorCargoPosition> FlightScheduleSectorCargoPositions)
         {
 
             return true;

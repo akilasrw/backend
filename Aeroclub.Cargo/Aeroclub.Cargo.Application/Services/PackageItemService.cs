@@ -21,7 +21,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
         }
 
-        public async Task<PackageItemCreateRM> CreateAsync(PackageItemRM packageItem)
+        public async Task<PackageItemCreateResponseM> CreateAsync(PackageItemCreateRM packageItem)
         {
             var spec = new PackageItemSpecification(new PackageItemCountQM() { Year = DateTime.Now.Year, Month = DateTime.Now.Month });
             var packageCount = await _unitOfWork.Repository<PackageItem>().CountAsync(spec);
@@ -33,7 +33,7 @@ namespace Aeroclub.Cargo.Application.Services
             var createdPackage =await _unitOfWork.Repository<PackageItem>().CreateAsync(package);
             await _unitOfWork.SaveChangesAsync();
 
-            var response = new PackageItemCreateRM();
+            var response = new PackageItemCreateResponseM();
             if (createdPackage != null)
             {
                 response.StatusCode = ServiceResponseStatus.Success;
@@ -47,13 +47,28 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
-        public async Task<PackageItemMobileVM> GetAsync(PackageItemQM query)
+        public async Task<PackageItemMobileVM> GetAsync(PackageItemRefQM query)
         {
             var spec = new PackageItemSpecification(query);
             var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
             return _mapper.Map<PackageItem, PackageItemMobileVM>(package);
         }
 
+        public async Task<PackageItemVM> GetAsync(PackageItemQM query)
+        {
+            var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(query.Id);
+            return _mapper.Map<PackageItem, PackageItemVM>(package);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM model)
+        {
+            var entity = _mapper.Map<PackageItem>(model);
+            _unitOfWork.Repository<PackageItem>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<PackageItem>().Detach(entity);
+            return ServiceResponseStatus.Success;
+        }
+    
         public async Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query)
         {
             var spec = new PackageItemSpecification(query);

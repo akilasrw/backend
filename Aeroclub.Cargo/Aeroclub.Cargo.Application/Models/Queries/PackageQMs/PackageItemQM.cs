@@ -1,9 +1,8 @@
-﻿
+﻿using Aeroclub.Cargo.Application.Models.Core;
 
 namespace Aeroclub.Cargo.Application.Models.Queries.PackageQMs
 {
-    public class PackageItemQM
+    public class PackageItemQM :BaseQM
     {
-        public string? PackageRefNumber { get; set; }
     }
 }

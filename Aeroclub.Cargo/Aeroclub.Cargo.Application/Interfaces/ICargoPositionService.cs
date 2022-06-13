@@ -11,8 +11,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface ICargoPositionService
     {
-        Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType);
-        Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingThreeSeatCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, SeatConfigurationType seatConfigurationType);
+        Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType);
+        Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingThreeSeatCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, SeatConfigurationType seatConfigurationType);
         Task<ValidateResponse> ValidateCargoPositionAsync(ValidateCargoPositionRM rm);
         Task<SeatAvailabilityVM> GetAvailableThreeSeatAsync(FlightScheduleSectorQM qm);
         Task<CargoPositionSummaryVM> GetSummeryCargoPositionAsync(Guid aircraftLayoutId);
