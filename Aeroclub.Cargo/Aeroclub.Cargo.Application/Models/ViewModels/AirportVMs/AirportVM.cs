@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs
         public string? Code { get; set; } = null;
         public double Lat { get; set; }
         public double Lon { get; set; }
+        public string? CountryId { get; set; } = null;
         public string? CountryName { get; set; } = null;
     }
 }
