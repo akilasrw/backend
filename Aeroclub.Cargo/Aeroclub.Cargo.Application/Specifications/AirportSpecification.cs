@@ -11,7 +11,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public AirportSpecification(AirportListQM query, bool isCount = false)
             : base(x =>(string.IsNullOrEmpty(query.AirportName) || x.Name == query.AirportName) && 
             (string.IsNullOrEmpty(query.CountryName) || x.Country.Name == query.CountryName) &&
-            (string.IsNullOrEmpty(query.AirportCode) || x.Code == query.AirportCode))
+            (string.IsNullOrEmpty(query.AirportCode) || x.Code == query.AirportCode) && !x.IsDeleted)
         {
             if (query.IsCountryInclude)
             {
@@ -25,7 +25,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AirportSpecification(AirportQM query)
-            : base(x => x.Id == query.Id)
+            : base(x => x.Id == query.Id && !x.IsDeleted)
         {
             if (query.IsCountryInclude)
             {

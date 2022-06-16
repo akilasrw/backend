@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
@@ -56,6 +57,22 @@ namespace Aeroclub.Cargo.Application.Services
             response.Id = airport.Id;
             response.StatusCode = Enums.ServiceResponseStatus.Success;
             return response;
+        }
+
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            var entity = await _unitOfWork.Repository<Airport>().GetByIdAsync(Id, false);
+            entity.IsDeleted = true;
+            return (await _unitOfWork.SaveChangesAsync() > 0);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(AirportUpdateRM model)
+        {
+            var entity = _mapper.Map<Airport>(model);
+            _unitOfWork.Repository<Airport>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<Airport>().Detach(entity);
+            return ServiceResponseStatus.Success;
         }
     }
 }

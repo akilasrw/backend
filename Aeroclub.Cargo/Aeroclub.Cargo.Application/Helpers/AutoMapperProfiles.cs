@@ -144,6 +144,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Airport, AirportVM>()
                 .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country != null? s.Country.Name : ""));
             CreateMap<AirportCreateRM, Airport>();
+            CreateMap<AirportUpdateRM, Airport>();
 
         }
     }

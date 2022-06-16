@@ -60,5 +60,23 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return BadRequest("Airport creation fails.");
         }
 
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] AirportUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _airportService.UpdateAsync(dto);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            if (id == Guid.Empty) return BadRequest();
+
+            return Ok(await _airportService.DeleteAsync(id));
+        }
+
     }
 }
