@@ -70,12 +70,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeleteAsync(Guid id)
         {
-            if (id == Guid.Empty) return BadRequest();
+            var airport = await _airportService.GetAsync(new AirportQM() { Id = id });
+            if (airport == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(await _airportService.DeleteAsync(id));
+            var result = await _airportService.DeleteAsync(id);
+            return Ok(result);
         }
 
     }
