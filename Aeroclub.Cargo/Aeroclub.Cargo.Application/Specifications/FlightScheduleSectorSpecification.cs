@@ -59,6 +59,8 @@ namespace Aeroclub.Cargo.Application.Specifications
             (query.FlightDate.Date == DateTime.MinValue || query.FlightDate.Date == x.ScheduledDepartureDateTime.Date))
         {
             AddInclude(x => x.Include(y => y.Aircraft));
+            AddInclude(y => y.Include(x => x.LoadPlan.ULDContaines).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z => z.CargoPosition));
+            AddInclude(y => y.Include(x => x.LoadPlan.AircraftLayout.AircraftDecks));
         }
     }
 }
