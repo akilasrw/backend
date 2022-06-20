@@ -15,12 +15,14 @@ namespace Aeroclub.Cargo.Application.Specifications
             (query.BookingDate == null|| query.BookingDate == DateTime.MinValue || query.BookingDate == x.BookingDate.Date))
         {
 
-            AddInclude(x => x.Include(y => y.FlightScheduleSector));
+            
 
             if (!isCount)
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
-                AddInclude(x => x.Include(y => y.PackageItems)); 
+                AddInclude(x => x.Include(y => y.FlightScheduleSector));
+                AddInclude(x => x.Include(y => y.PackageItems));
+                AddOrderByDescending(x => x.Created);
             }     
         }
 
