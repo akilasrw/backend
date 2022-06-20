@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
 {
-    public class AWBUpdateRM
+    public class AWBUpdateRM : BaseRM
     {
         public Guid UserId { get; set; }
 

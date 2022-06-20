@@ -13,7 +13,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
-        public PackageItemSpecification(PackageItemQM query)
+
+        public PackageItemSpecification(PackageItemRefQM query)
                : base(x => query.PackageRefNumber == null || x.PackageRefNumber.ToLower() == query.PackageRefNumber.ToLower())
         {
             AddInclude(x => x.Include(y => y.VolumeUnit));

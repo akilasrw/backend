@@ -53,6 +53,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IOverheadService, OverheadService>();
             services.AddScoped<IULDContainerCargoPositionService,ULDContainerCargoPositionService>();
             services.AddScoped<IAWBStackService, AWBStackService>();
+            services.AddScoped<IAWBProductService, AWBProductService>();
 
 
             return services;

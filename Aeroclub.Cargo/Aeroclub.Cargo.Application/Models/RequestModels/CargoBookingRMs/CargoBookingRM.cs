@@ -11,6 +11,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs
         public Guid? FlightScheduleSectorId { get; set; }
         public Guid? OriginAirportId { get; set; }
         public Guid? DestinationAirportId { get; set; }
-        public List<PackageItemRM> PackageItems { get; set; }
+        public List<PackageItemCreateRM> PackageItems { get; set; }
     }
 }

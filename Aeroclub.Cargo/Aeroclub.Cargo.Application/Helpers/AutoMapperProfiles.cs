@@ -25,6 +25,8 @@ using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBProductVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -102,7 +104,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.BookingDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingDate : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""));
 
-            CreateMap<PackageItemRM, PackageItem>(); 
+            CreateMap<PackageItemCreateRM, PackageItem>(); 
             CreateMap<Seat, SeatDto>().ReverseMap();
 
             CreateMap<AWBCreateRM, AWBInformation>();
@@ -135,6 +137,14 @@ namespace Aeroclub.Cargo.Application.Helpers
                .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
 
             CreateMap<AWBUpdateRM,AWBInformation>();
+
+            CreateMap<PackageItemUpdateRM, PackageItem>();
+            CreateMap<PackageItemVM, PackageItemUpdateRM>();
+
+            CreateMap<Airport, AirportVM>()
+                .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country != null? s.Country.Name : ""));
+            CreateMap<AirportCreateRM, Airport>();
+            CreateMap<AirportUpdateRM, Airport>();
 
         }
     }

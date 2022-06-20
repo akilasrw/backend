@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
@@ -19,7 +20,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet]
-        public async Task<ActionResult<PackageItemMobileVM>> GetAsync([FromQuery] PackageItemQM query)
+        public async Task<ActionResult<PackageItemMobileVM>> GetAsync([FromQuery] PackageItemRefQM query)
         {
             if (query.PackageRefNumber == null) return BadRequest();
 

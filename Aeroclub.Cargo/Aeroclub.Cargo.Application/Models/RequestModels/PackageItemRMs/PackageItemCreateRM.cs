@@ -4,7 +4,7 @@ using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
 {
-    public class PackageItemRM
+    public class PackageItemCreateRM
     {
         public Guid? CargoBookingId { get; set; }
         public double Width { get; set; }

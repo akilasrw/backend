@@ -41,7 +41,7 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
+        public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
         {
             List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
@@ -90,7 +90,7 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
 
-        public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingThreeSeatCargoPositionAsync(PackageItemRM packageItem, Guid aircraftLayoutId, SeatConfigurationType seatConfigurationType)
+        public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingThreeSeatCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, SeatConfigurationType seatConfigurationType)
         {
             List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
            
