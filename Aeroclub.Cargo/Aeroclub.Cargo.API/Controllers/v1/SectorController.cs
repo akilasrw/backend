@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
-using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +21,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost()]
-        public async Task<IActionResult> CreateAsync([FromBody] SectorDto model)
+        public async Task<IActionResult> CreateAsync([FromBody] SectorCreateRM model)
         {
-            if (!ModelState.IsValid) return BadRequest("Some fields are missing");
-            await _sectorService.CreateAsync(model);
-            return Ok();
+            if (!ModelState.IsValid)return BadRequest(ModelState);
+
+            var response = await _sectorService.CreateAsync(model);
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, model);
+
+            return BadRequest("Sector creation fails.");
         }
 
         [HttpGet()]
@@ -38,6 +43,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<Pagination<SectorVM>>> GetFilteredListAsync([FromQuery] SectorListQM query)
         {
             return Ok(await _sectorService.GetFilteredListAsync(query));
+        }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] SectorUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _sectorService.UpdateAsync(dto);
+            if(response == ServiceResponseStatus.ValidationError)
+            {
+                return BadRequest("Given sector is already available in the system.");
+            }
+
+            return NoContent();
         }
 
         [HttpDelete]

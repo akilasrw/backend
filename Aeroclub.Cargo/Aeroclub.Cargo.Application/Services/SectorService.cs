@@ -3,8 +3,10 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -20,19 +22,55 @@ namespace Aeroclub.Cargo.Application.Services
            
         }
 
-        public async Task<ServiceResponseStatus> CreateAsync(SectorDto sectorDto)
+        public async Task<ServiceResponseCreateStatus> CreateAsync(SectorCreateRM model)
         {
-            var model = _mapper.Map<Sector>(sectorDto);
+            var response = new ServiceResponseCreateStatus();
+            bool IsSectorAvailable = await IsSectorAlreadyAvailable(model.OriginAirportId, model.DestinationAirportId, model.SectorType);
+            if (IsSectorAvailable)
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                return response;
+            }
+
+            var entity = _mapper.Map<Sector>(model);
             var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.OriginAirportId);
             var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.OriginAirportId);
 
-            model.OriginAirportCode = originAirport.Code;
-            model.OriginAirportName = originAirport.Name;
-            model.DestinationAirportCode = destinationAirport.Code;
-            model.DestinationAirportName = destinationAirport.Name;
+            entity.OriginAirportCode = originAirport.Code;
+            entity.OriginAirportName = originAirport.Name;
+            entity.DestinationAirportCode = destinationAirport.Code;
+            entity.DestinationAirportName = destinationAirport.Name;
             
-            var response = await _unitOfWork.Repository<Sector>().CreateAsync(model);
-            return ServiceResponseStatus.Success;
+            await _unitOfWork.Repository<Sector>().CreateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            response.Id = entity.Id;
+            response.StatusCode = ServiceResponseStatus.Success;
+
+
+            if (model.IsCreateReturnSector)
+            {
+                bool IsReturnSectorAvailable = await IsSectorAlreadyAvailable(model.DestinationAirportId, model.OriginAirportId, model.SectorType);
+
+                if (IsReturnSectorAvailable)
+                {
+                    return response;
+                }
+
+                var retunSector = new Sector();
+                retunSector.OriginAirportId = model.DestinationAirportId;
+                retunSector.DestinationAirportId = model.OriginAirportId;
+                retunSector.OriginAirportCode = destinationAirport.Code;
+                retunSector.OriginAirportName = destinationAirport.Name;
+                retunSector.DestinationAirportCode = originAirport.Code;
+                retunSector.DestinationAirportName = originAirport.Name;
+                retunSector.SectorType = model.SectorType;
+
+                await _unitOfWork.Repository<Sector>().CreateAsync(retunSector);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            return response;
         }
 
         public async Task<bool> DeleteAsync(Guid Id)
@@ -60,6 +98,50 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<SectorVM>>(sectorList);
 
             return new Pagination<SectorVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(SectorUpdateRM model)
+        {
+            bool IsSectorAvailable = await IsSectorAlreadyAvailable(model.OriginAirportId, model.DestinationAirportId, model.SectorType);
+            if (IsSectorAvailable)
+            {
+                return ServiceResponseStatus.ValidationError;
+            }
+
+            var entity = _mapper.Map<Sector>(model);
+
+            var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.OriginAirportId);
+            var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
+
+            entity.OriginAirportCode = originAirport.Code;
+            entity.OriginAirportName = originAirport.Name;
+            entity.DestinationAirportCode = destinationAirport.Code;
+            entity.DestinationAirportName = destinationAirport.Name;
+
+            _unitOfWork.Repository<Sector>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<Sector>().Detach(entity);
+
+            return ServiceResponseStatus.Success;
+        }
+
+        private async Task<bool> IsSectorAlreadyAvailable(Guid OriginAirportId,Guid DestinationAirportId,SectorType SectorType)
+        {
+            var sectorList = await _unitOfWork.Repository<Sector>().GetListAsync();
+            if(sectorList != null && sectorList.Count>0)
+            {
+                foreach (var sector in sectorList)
+                {
+                    if (!sector.IsDeleted && 
+                        OriginAirportId == sector.OriginAirportId && 
+                        DestinationAirportId == sector.DestinationAirportId &&
+                        SectorType == sector.SectorType)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

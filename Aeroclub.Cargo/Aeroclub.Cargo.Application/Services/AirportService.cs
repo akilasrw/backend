@@ -55,7 +55,7 @@ namespace Aeroclub.Cargo.Application.Services
             await _unitOfWork.Repository<Airport>().CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
             response.Id = airport.Id;
-            response.StatusCode = Enums.ServiceResponseStatus.Success;
+            response.StatusCode = ServiceResponseStatus.Success;
             return response;
         }
 

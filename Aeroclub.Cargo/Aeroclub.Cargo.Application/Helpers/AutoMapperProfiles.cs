@@ -28,6 +28,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -147,6 +148,9 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country != null? s.Country.Name : ""));
             CreateMap<AirportCreateRM, Airport>();
             CreateMap<AirportUpdateRM, Airport>();
+
+            CreateMap<SectorUpdateRM, Sector>();
+            CreateMap<SectorCreateRM, Sector>();
 
         }
     }
