@@ -27,6 +27,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -36,10 +37,11 @@ namespace Aeroclub.Cargo.Application.Helpers
         {
             CreateMap<RegisterRequestRM, AppUser>();
             CreateMap<Airport, BaseSelectListModel>()
-                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
+                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code +" - "+c.Name));
             CreateMap<Country, BaseSelectListModel>()
                 .ForMember(x => x.Value, x => x.MapFrom(c => c.Name));
             CreateMap<Sector, SectorDto>().ReverseMap();
+            CreateMap<Sector, SectorVM>();
             CreateMap<Currency, BaseSelectListModel>()
                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
             CreateMap<Flight, FlightVM>();
