@@ -7,4 +7,9 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs
         public CargoPositionType CargoPositionType { get; set; }
         public int AvailableSpaceCount { get; set; }
     }
+
+    public class FlightScheduleSectorCargoPositionSummery : FlightScheduleSectorCargoPosition
+    {
+        public int Total { get; set; }
+    }
 }

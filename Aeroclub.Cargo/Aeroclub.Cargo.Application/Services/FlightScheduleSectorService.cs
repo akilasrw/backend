@@ -152,28 +152,50 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
             CargoPositionSummaryVM positionSummary = new CargoPositionSummaryVM();
-            // Checking Main Deck available positions
-            var matchingCargoPosition = cargoPositionList.ToList()
-                .Where(x => x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck);
 
-            var cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.OnSeat);
-            positionSummary.TotalOccupiedOnSeats = cargoPositions.Count(y => y.Seat.IsOnSeatOccupied);
-            positionSummary.TotalOnSeats = cargoPositions.Count();
-            positionSummary.OnSeatsPercentage = positionSummary.TotalOccupiedOnSeats / positionSummary.TotalOnSeats;
+            var groupedCargoPositions = cargoPositionList.GroupBy(item => item.CargoPositionType,
+                    (key, group) => new { CargoPositionType = key, Items = group.ToList() })
+                .ToList();
 
-            cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.UnderSeat);
-            positionSummary.TotalOccupiedUnderSeats = cargoPositions.Count(y => y.Seat.IsUnderSeatOccupied);
-            positionSummary.TotalUnderSeats = cargoPositions.Count();
-            positionSummary.UnderSeatsPercentage = positionSummary.TotalOccupiedUnderSeats / positionSummary.TotalUnderSeats;
+            var flightScheduleSectorCargoPositionsList = new List<FlightScheduleSectorCargoPositionSummery>();
 
-            cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.Overhead);
-            positionSummary.TotalOccupiedOverheads = cargoPositions.Count(y => y.OverheadPosition.IsOccupied);
-            positionSummary.TotalOverheads = cargoPositions.Count();
-            positionSummary.OverheadPercentage = positionSummary.TotalOccupiedOverheads / positionSummary.TotalOverheads;
+            foreach (var flightScheduleSectorCargoPosition in from groupedCargoPosition in groupedCargoPositions
+                                                              let totalCount = groupedCargoPosition.Items.Count
+                                                              let cargoPositionType = groupedCargoPosition.CargoPositionType
+                                                              let packedULDContainersCount = flightSector.LoadPlan.ULDContaines.Select(x => new
+                                                              {
+                                                                  Count = x.ULDContainerCargoPositions.Count(y =>
+                                                                      y.CargoPosition.CargoPositionType == groupedCargoPosition.CargoPositionType)
+                                                              }).Sum(z => z.Count)
 
-            positionSummary.TotalWeight = matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
-            positionSummary.TotalBookedWeight = matchingCargoPosition.FirstOrDefault().ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
-            positionSummary.WeightPercentage = positionSummary.TotalBookedWeight / positionSummary.TotalWeight;
+                                                              select new FlightScheduleSectorCargoPositionSummery
+                                                              {
+                                                                  CargoPositionType = groupedCargoPosition.CargoPositionType,
+                                                                  AvailableSpaceCount = packedULDContainersCount,
+                                                                  Total = totalCount,
+                                                              })
+            {
+                flightScheduleSectorCargoPositionsList.Add(flightScheduleSectorCargoPosition);
+            }
+
+            var position = flightScheduleSectorCargoPositionsList.Where(y => y.CargoPositionType == CargoPositionType.OnSeat).FirstOrDefault();
+            positionSummary.TotalOccupiedOnSeats = position.AvailableSpaceCount;
+            positionSummary.TotalOnSeats = position.Total;
+            positionSummary.OnSeatsPercentage = (decimal)positionSummary.TotalOccupiedOnSeats / (decimal)positionSummary.TotalOnSeats;
+
+            position = flightScheduleSectorCargoPositionsList.Where(y => y.CargoPositionType == CargoPositionType.UnderSeat).FirstOrDefault();
+            positionSummary.TotalOccupiedUnderSeats = position.AvailableSpaceCount;
+            positionSummary.TotalUnderSeats = position.Total;
+            positionSummary.UnderSeatsPercentage = (decimal)positionSummary.TotalOccupiedUnderSeats / positionSummary.TotalUnderSeats;
+
+            position = flightScheduleSectorCargoPositionsList.Where(y => y.CargoPositionType == CargoPositionType.Overhead).FirstOrDefault();
+            positionSummary.TotalOccupiedOverheads = position.AvailableSpaceCount;
+            positionSummary.TotalOverheads = position.Total;
+            positionSummary.OverheadPercentage = (decimal)positionSummary.TotalOccupiedOverheads / positionSummary.TotalOverheads;
+
+            positionSummary.TotalWeight = flightSector.LoadPlan.AircraftLayout.AircraftDecks.First().MaxWeight;
+            positionSummary.TotalBookedWeight = flightSector.LoadPlan.AircraftLayout.AircraftDecks.First().CurrentWeight;
+            positionSummary.WeightPercentage = (decimal)positionSummary.TotalBookedWeight / (decimal)positionSummary.TotalWeight;
 
             return positionSummary;
         }
