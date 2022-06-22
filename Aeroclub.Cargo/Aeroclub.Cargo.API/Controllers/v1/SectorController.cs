@@ -27,6 +27,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             var response = await _sectorService.CreateAsync(model);
 
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest("Given sector is already available in the system.");
+            
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, model);
 
@@ -52,10 +55,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             var response = await _sectorService.UpdateAsync(dto);
             if(response == ServiceResponseStatus.ValidationError)
-            {
                 return BadRequest("Given sector is already available in the system.");
-            }
-
+           
             return NoContent();
         }
 
