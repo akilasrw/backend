@@ -25,6 +25,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             if (!ModelState.IsValid)return BadRequest(ModelState);
 
+            if (model.OriginAirportId == model.DestinationAirportId) return BadRequest("Origin and destination are same.");
+
             var response = await _sectorService.CreateAsync(model);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
@@ -37,6 +39,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet()]
+        [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<SectorVM>> GetAsync([FromQuery] SectorQM query)
         {
             return Ok(await _sectorService.GetAsync(query));
@@ -49,11 +52,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut()]
-        public async Task<IActionResult> UpdateAsync([FromBody] SectorUpdateRM dto)
+        public async Task<IActionResult> UpdateAsync([FromBody] SectorUpdateRM model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var response = await _sectorService.UpdateAsync(dto);
+            if (model.OriginAirportId == model.DestinationAirportId) return BadRequest("Origin and destination are same.");
+
+            var response = await _sectorService.UpdateAsync(model);
             if(response == ServiceResponseStatus.ValidationError)
                 return BadRequest("Given sector is already available in the system.");
            

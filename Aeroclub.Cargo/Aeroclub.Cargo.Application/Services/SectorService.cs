@@ -34,7 +34,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var entity = _mapper.Map<Sector>(model);
             var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.OriginAirportId);
-            var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.OriginAirportId);
+            var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
 
             entity.OriginAirportCode = originAirport.Code;
             entity.OriginAirportName = originAirport.Name;
