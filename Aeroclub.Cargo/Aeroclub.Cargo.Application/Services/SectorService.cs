@@ -108,7 +108,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return ServiceResponseStatus.ValidationError;
             }
 
-            var entity =  await _unitOfWork.Repository<Sector>().GetByIdAsync(model.Id);
+            var entity =  await _unitOfWork.Repository<Sector>().GetByIdAsync(model.Id,false);
             var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.OriginAirportId);
             var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
 
@@ -120,9 +120,7 @@ namespace Aeroclub.Cargo.Application.Services
             entity.DestinationAirportCode = destinationAirport.Code;
             entity.DestinationAirportName = destinationAirport.Name;
 
-            _unitOfWork.Repository<Sector>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<Sector>().Detach(entity);
             return ServiceResponseStatus.Success;
         }
 

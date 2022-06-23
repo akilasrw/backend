@@ -25,6 +25,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (!isCount)
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
             }
         }
 
