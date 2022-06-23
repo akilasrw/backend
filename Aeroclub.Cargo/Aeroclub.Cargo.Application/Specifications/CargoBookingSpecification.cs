@@ -9,7 +9,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class CargoBookingSpecification : BaseSpecification<CargoBooking>
     {
         public CargoBookingSpecification(CargoBookingFilteredListQM query, bool isCount = false)
-            :base(x=> (string.IsNullOrEmpty(query.BookingId) || query.BookingId == x.BookingNumber) && 
+            :base(x=> (query.UserId != Guid.Empty  && query.UserId == x.CreatedBy) && (string.IsNullOrEmpty(query.BookingId) || query.BookingId == x.BookingNumber) && 
             (string.IsNullOrEmpty(query.Destination) || 
             (query.Destination == x.FlightScheduleSector.DestinationAirportName || query.Destination == x.FlightScheduleSector.DestinationAirportCode)) && 
             (query.BookingDate == null|| query.BookingDate == DateTime.MinValue || query.BookingDate == x.BookingDate.Date))
@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public CargoBookingSpecification(CargoBookingDetailQM query)
-            :base(x => (x.Id == query.Id) && (!x.IsDeleted))
+            :base(x => (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && (x.Id == query.Id) && (!x.IsDeleted))
         {
             if (query.IsIncludeFlightDetail)
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));

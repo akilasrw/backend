@@ -8,6 +8,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs
 
         public string? Destination { get; set; }
 
+        public Guid? UserId { get; set; }
+
         public DateTime? BookingDate { get; set; }
 
     }
