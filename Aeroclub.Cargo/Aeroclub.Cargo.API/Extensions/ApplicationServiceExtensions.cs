@@ -25,7 +25,6 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<ISectorService, SectorService>();
             services.AddScoped<IAirportService, AirportService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
-            
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<IFlightService, FlightService>();
             services.AddScoped<IFlightScheduleService, FlightScheduleService>();
