@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
@@ -198,6 +199,24 @@ namespace Aeroclub.Cargo.Application.Services
             positionSummary.WeightPercentage = (decimal)positionSummary.TotalBookedWeight / (decimal)positionSummary.TotalWeight;
 
             return positionSummary;
+        }
+
+        public async Task<IEnumerable<SeatDto>> GetCargoPositionLayoutAsync(FlightScheduleSectorSearchQuery query)
+        {
+            var spec = new FlightScheduleSectorSpecification(query);
+            var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            var flightSector = entity.FirstOrDefault();
+            //if (flightSector == null)
+            //    return new CargoPositionSummaryVM();
+
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = flightSector.Aircraft.AircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
+
+            var cargoPositionList =
+                await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            var seats = cargoPositionList.Where(x => x.CargoPositionType == query.CargoPositionType).Select(y =>y.Seat);
+            return _mapper.Map<IEnumerable<Seat>, IEnumerable<SeatDto>>(seats);
         }
 
         public async Task TestMethod(FlightScheduleSectorFilteredListQM query)
