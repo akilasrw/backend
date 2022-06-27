@@ -58,6 +58,8 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new OverheadPositionConfiguration());
             modelBuilder.ApplyConfiguration(new ULDContainerCargoPositionConfiguration());
             modelBuilder.ApplyConfiguration(new AWBStackConfiguration());
+            modelBuilder.ApplyConfiguration(new AircraftTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AircraftSubTypeConfiguration());
             
             
             
@@ -105,6 +107,9 @@ namespace Aeroclub.Cargo.Data
         public DbSet<OverheadPosition> OverheadPositions { get; set; } = null!;
         public DbSet<ULDContainerCargoPosition> ULDContainerCargoPositions { get; set; } = null!;
         public DbSet<AWBStack> AWBStacks { get; set; } = null!;
+        public DbSet<AircraftType> AircraftTypes { get; set; } = null!;
+        public DbSet<AircraftSubType> AircraftSubTypes { get; set; } = null!;
+        public DbSet<AircraftLayoutMapping> AircraftLayoutMappings { get; set; } = null!;
 
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)

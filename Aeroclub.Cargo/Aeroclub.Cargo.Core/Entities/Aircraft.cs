@@ -7,7 +7,7 @@ namespace Aeroclub.Cargo.Core.Entities
     public class Aircraft : AuditableEntity
     {
         public string RegNo { get; set; } = null!;
-        public AircraftType AircraftType { get; set; }
+        public AircraftTypes AircraftType { get; set; }
         public Guid AircraftLayoutId { get; set; }
         public Guid SeatLayoutId { get; set; }
         public Guid OverheadLayoutId { get; set; }

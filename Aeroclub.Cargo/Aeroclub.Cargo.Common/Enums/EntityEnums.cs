@@ -1,6 +1,18 @@
 ﻿namespace Aeroclub.Cargo.Common.Enums
 {
-    public enum AircraftType
+
+    public enum AircraftSubTypes
+    {
+        None = 0,
+        Boeing777300ERTypeOne = 1,
+        Boeing777300ERTypeTwo = 2,
+        Boeing777200LRTypeOne = 3,
+        Boeing777200LRTypeTwo = 4,
+        Boeing747400ERTypeOne = 5,
+        Boeing747400ERTypeTwo = 6,
+    }
+
+    public enum AircraftTypes
     {
         None = 0,
         Boeing777300ER = 1,
