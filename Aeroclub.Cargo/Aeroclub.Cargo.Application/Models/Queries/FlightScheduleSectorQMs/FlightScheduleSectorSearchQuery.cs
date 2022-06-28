@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aeroclub.Cargo.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
     {
         public string FlightNumber { get; set; }
         public DateTime FlightDate { get; set; } = DateTime.MinValue;
+        public CargoPositionType CargoPositionType { get; set; } = CargoPositionType.None;
     }
 }
