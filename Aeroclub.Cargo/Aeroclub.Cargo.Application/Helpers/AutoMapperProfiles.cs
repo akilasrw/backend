@@ -30,6 +30,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AircraftVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AircraftRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -155,6 +156,10 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<AircraftType, AircraftTypeVM>();
             CreateMap<AircraftSubType,AircraftSubTypeVM>();
+
+            CreateMap<AircaftCreateRM, Aircraft>();
+            CreateMap<AircaftUpdateRM, Aircraft>();
+            CreateMap<Aircraft, AircraftVM>();
         }
     }
 }

@@ -8,6 +8,9 @@ namespace Aeroclub.Cargo.Core.Entities
     {
         public string RegNo { get; set; } = null!;
         public AircraftTypes AircraftType { get; set; }
+        public AircraftSubTypes AircraftSubType { get; set; }
+        public AircraftConfigType ConfigurationType { get; set; }
+        public AircraftStatus Status { get; set; }
         public Guid AircraftLayoutId { get; set; }
         public Guid SeatLayoutId { get; set; }
         public Guid OverheadLayoutId { get; set; }
