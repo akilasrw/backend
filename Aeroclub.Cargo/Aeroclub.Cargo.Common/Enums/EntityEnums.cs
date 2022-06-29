@@ -4,20 +4,17 @@
     public enum AircraftSubTypes
     {
         None = 0,
-        Boeing777300ERTypeOne = 1,
-        Boeing777300ERTypeTwo = 2,
-        Boeing777200LRTypeOne = 3,
-        Boeing777200LRTypeTwo = 4,
-        Boeing747400ERTypeOne = 5,
-        Boeing747400ERTypeTwo = 6,
+        B7879TypeOne = 1,
+        B7879TypeTwo = 2,
+        A320200TypeOne = 3,
+        A320200TypeTwo = 4,
     }
 
     public enum AircraftTypes
     {
         None = 0,
-        Boeing777300ER = 1,
-        Boeing777200LR = 2,
-        Boeing747400ER = 3
+        B7879 = 1,
+        A320200 = 2,
     }
 
     public enum AircraftConfigType
