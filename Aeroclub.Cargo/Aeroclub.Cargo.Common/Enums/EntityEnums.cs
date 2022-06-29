@@ -159,4 +159,11 @@
         Electronic = 1,
         Stationery = 2
     }
+
+    public enum AircraftActiveTypes
+    {
+        None = 0,
+        Active = 1,
+        Inactive = 2
+    }
 }
