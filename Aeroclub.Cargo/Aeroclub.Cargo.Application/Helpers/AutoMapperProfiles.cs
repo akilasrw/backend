@@ -155,7 +155,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<SectorCreateRM, Sector>();
 
             CreateMap<AircraftType, AircraftTypeVM>();
-            CreateMap<AircraftSubType,AircraftSubTypeVM>();
+            CreateMap<AircraftSubType, AircraftSubTypeVM>();
 
             CreateMap<AircaftCreateRM, Aircraft>();
             CreateMap<AircaftUpdateRM, Aircraft>();

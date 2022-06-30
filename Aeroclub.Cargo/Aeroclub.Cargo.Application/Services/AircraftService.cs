@@ -91,6 +91,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<IReadOnlyList<AircraftTypeVM>> GetAircraftTypesAsync(AircraftTypeQM query)
         {
+            query.IsIncludeSubType = true;
             var spec = new AircraftTypeSpecification(query);
             var aircraftTypes = await _unitOfWork.Repository<AircraftType>().GetListWithSpecAsync(spec);
 
