@@ -21,5 +21,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AircraftRMs
 
         [Required(ErrorMessage = "Aircraft status required.")]
         public AircraftStatus Status { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }

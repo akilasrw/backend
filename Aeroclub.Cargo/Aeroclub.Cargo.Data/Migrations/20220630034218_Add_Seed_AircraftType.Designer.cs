@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220630034218_Add_Seed_AircraftType")]
+    partial class Add_Seed_AircraftType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,56 +357,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("AircraftTypeId");
 
                     b.ToTable("AircraftSubTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aeb095ac-8223-475f-ac38-aa121701a8e5"),
-                            AircraftTypeId = new Guid("4206db7d-6bc5-4cb3-9167-619bde990e8d"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B787-9-TypeOne",
-                            Type = (short)1
-                        },
-                        new
-                        {
-                            Id = new Guid("f03deacf-9212-4f47-ad80-6b29e163dad3"),
-                            AircraftTypeId = new Guid("4206db7d-6bc5-4cb3-9167-619bde990e8d"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B787-9-TypeTwo",
-                            Type = (short)2
-                        },
-                        new
-                        {
-                            Id = new Guid("f9876fc3-8d2b-4692-b1b6-75e35d5b507e"),
-                            AircraftTypeId = new Guid("d0590732-9743-4516-83ed-9b0793606592"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "A320-200-TypeOne",
-                            Type = (short)3
-                        },
-                        new
-                        {
-                            Id = new Guid("c897cdf2-b13b-4b41-9ca8-f2e314567029"),
-                            AircraftTypeId = new Guid("d0590732-9743-4516-83ed-9b0793606592"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "A320-200-TypeTwo",
-                            Type = (short)4
-                        });
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AircraftType", b =>
@@ -451,7 +403,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B787-9",
+                            Name = "B7879",
                             Type = (short)1
                         },
                         new
@@ -462,7 +414,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "A320-200",
+                            Name = "A320200",
                             Type = (short)2
                         });
                 });
@@ -766,7 +718,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7f407655-e2d5-4700-b9a0-aca65ef77859",
+                            ConcurrencyStamp = "04e4ad07-24e0-457e-a2d3-c0a0035d4e70",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -782,7 +734,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "234189a0-db27-4a0b-9b0d-b0909a779512",
+                            ConcurrencyStamp = "1c3dda50-76f9-490e-958a-dfc9e27b1f57",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",

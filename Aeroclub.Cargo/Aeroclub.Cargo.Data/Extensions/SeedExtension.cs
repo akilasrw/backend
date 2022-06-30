@@ -32,7 +32,9 @@ namespace Aeroclub.Cargo.Data.Extensions
             SeedAircraft(modelBuilder, basePath);
             SeedFlightSector(modelBuilder, basePath);
             SeedPackageContainer(modelBuilder, basePath);
-            SeedPackageContainerSector(modelBuilder, basePath);  
+            SeedPackageContainerSector(modelBuilder, basePath);
+            SeedAircraftType(modelBuilder, basePath);
+            SeedAircraftSubType(modelBuilder, basePath);  
             
         }
 
@@ -225,6 +227,22 @@ namespace Aeroclub.Cargo.Data.Extensions
                 JsonConvert.DeserializeObject<OverheadPosition[]>(File.ReadAllText(Path.Combine(basePath, "OverheadPosition.json")));
             if (overhead != null)
                 modelBuilder.Entity<OverheadPosition>().HasData(overhead);
+        }
+
+        private static void SeedAircraftType(ModelBuilder modelBuilder, string basePath)
+        {
+            var aircraftType =
+                JsonConvert.DeserializeObject<AircraftType[]>(File.ReadAllText(Path.Combine(basePath, "AircraftType.json")));
+            if (aircraftType != null)
+                modelBuilder.Entity<AircraftType>().HasData(aircraftType);
+        }
+
+        private static void SeedAircraftSubType(ModelBuilder modelBuilder, string basePath)
+        {
+            var aircraftSubType =
+                JsonConvert.DeserializeObject<AircraftSubType[]>(File.ReadAllText(Path.Combine(basePath, "AircraftSubType.json")));
+            if (aircraftSubType != null)
+                modelBuilder.Entity<AircraftSubType>().HasData(aircraftSubType);
         }
 
     }
