@@ -16,5 +16,23 @@
     "AircraftCabinId": "95FB73BA-2285-4A32-AE20-378D2612EACC",
     "MaxWeight": "3200",
     "Name": "OC"
+  },
+  {
+    "Id": "ED1CBB31-A9E6-4C23-A639-ECE1D5EFB175",
+    "AircraftCabinId": "4FD7C6E4-D926-4998-8A8E-A8C27423C79A",
+    "MaxWeight": "2300",
+    "Name": "OA"
+  },
+  {
+    "Id": "19674C0D-278D-4951-A0EE-F672075AF1D8",
+    "AircraftCabinId": "4FD7C6E4-D926-4998-8A8E-A8C27423C79A",
+    "MaxWeight": "3100",
+    "Name": "OB"
+  },
+  {
+    "Id": "549D068D-16C6-4268-85F2-CF98EB1618B2",
+    "AircraftCabinId": "4FD7C6E4-D926-4998-8A8E-A8C27423C79A",
+    "MaxWeight": "3100",
+    "Name": "OC"
   }
 ]

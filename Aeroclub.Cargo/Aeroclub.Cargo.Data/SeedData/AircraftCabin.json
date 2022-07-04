@@ -4,5 +4,11 @@
     "AircraftDeckId": "6E6E9CD3-29D8-422B-9BFD-0DC0751C75C7",
     "MaxWeight": "8800",
     "Name": ""
+  },
+  {
+    "Id": "4FD7C6E4-D926-4998-8A8E-A8C27423C79A",
+    "AircraftDeckId": "C79CA836-0E98-4804-98A5-EB20605CA368",
+    "MaxWeight": "8500",
+    "Name": ""
   }
 ]
