@@ -6,21 +6,9 @@
     "Type": "1"
   },
   {
-    "Id": "F03DEACF-9212-4F47-AD80-6B29E163DAD3",
-    "AircraftTypeId": "4206DB7D-6BC5-4CB3-9167-619BDE990E8D",
-    "Name": "B787-9-TypeTwo",
-    "Type": "2"
-  },
-  {
     "Id": "F9876FC3-8D2B-4692-B1B6-75E35D5B507E",
     "AircraftTypeId": "D0590732-9743-4516-83ED-9B0793606592",
     "Name": "A320-200-TypeOne",
-    "Type": "3"
-  },
-  {
-    "Id": "C897CDF2-B13B-4B41-9CA8-F2E314567029",
-    "AircraftTypeId": "D0590732-9743-4516-83ED-9B0793606592",
-    "Name": "A320-200-TypeTwo",
-    "Type": "4"
+    "Type": "2"
   }
 ]

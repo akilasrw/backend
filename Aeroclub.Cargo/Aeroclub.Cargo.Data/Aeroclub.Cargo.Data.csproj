@@ -40,6 +40,9 @@
     <None Update="SeedData\AircraftCabin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="SeedData\AircraftLayoutMapping.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SeedData\AircraftSubType.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
