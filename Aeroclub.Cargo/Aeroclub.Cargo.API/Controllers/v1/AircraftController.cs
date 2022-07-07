@@ -75,7 +75,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response =  await _aircraftService.UpdateAsync(dto);
 
             if (response == ServiceResponseStatus.ValidationError)
-                return BadRequest("Aircraft is already available.");
+                return BadRequest("Registration number is already available.");
 
             if (response == ServiceResponseStatus.Failed)
                 return BadRequest("Aircraft update fails.");

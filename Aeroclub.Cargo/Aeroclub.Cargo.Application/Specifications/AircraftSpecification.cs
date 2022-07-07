@@ -23,7 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public AircraftSpecification(AircraftListQM query, bool isCount = false)
             : base(x => (string.IsNullOrEmpty(query.RegNo) || x.RegNo.ToLower() == query.RegNo.ToLower()) &&
             (query.AircraftType == AircraftTypes.None || x.AircraftType == query.AircraftType) &&
-            (query.ActiveType == AircraftActiveTypes.None || (query.ActiveType == AircraftActiveTypes.Active)?x.IsActive : !x.IsActive) && 
+            (query.ActiveType == AircraftActiveTypes.None || ((query.ActiveType == AircraftActiveTypes.Active)?x.IsActive : !x.IsActive)) && 
             !x.IsDeleted)
         {
             if (!isCount)

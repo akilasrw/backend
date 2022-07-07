@@ -1,10 +1,11 @@
 ﻿
 
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.AircraftVMs
 {
-    public class AircraftVM
+    public class AircraftVM : BaseVM
     {
         public string RegNo { get; set; } = null!;
         public AircraftTypes AircraftType { get; set; }

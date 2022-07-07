@@ -121,9 +121,9 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseStatus> UpdateAsync(AircaftUpdateRM dto)
         {
-            var aircraftList = await _unitOfWork.Repository<Aircraft>().GetListWithSpecAsync(new AircraftSpecification(new AircraftValidationQM() { RegNo = dto.RegNo }));
+            var existingAircraft = await _unitOfWork.Repository<Aircraft>().GetEntityWithSpecAsync(new AircraftSpecification(new AircraftValidationQM() { RegNo = dto.RegNo }));
 
-            if (aircraftList != null && aircraftList?.Count > 0)
+            if (existingAircraft != null && existingAircraft.Id != dto.Id)
             {
                 return ServiceResponseStatus.ValidationError;
             }
