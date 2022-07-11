@@ -32,5 +32,11 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.Country));
             }
         }
+
+        public AirportSpecification(AirportValidationQM query)
+            : base(x => !string.IsNullOrEmpty(query.AirportCode) && x.Code.ToLower() == query.AirportCode.ToLower())
+        {
+
+        }
     }
 }

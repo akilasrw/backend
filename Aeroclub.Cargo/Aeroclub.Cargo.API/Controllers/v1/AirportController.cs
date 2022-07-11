@@ -54,6 +54,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             var response = await _airportService.CreateAsync(dto);
 
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest("Airport is already available.");
+
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
 
@@ -65,7 +68,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            await _airportService.UpdateAsync(dto);
+            var response = await _airportService.UpdateAsync(dto);
+
+            if (response == ServiceResponseStatus.ValidationError)
+                return BadRequest("Airport already available.");
+
+            if (response == ServiceResponseStatus.Failed)
+                return BadRequest("Airport update fails.");
 
             return NoContent();
         }

@@ -51,6 +51,15 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> CreateAsync(AirportCreateRM dto)
         {
             var response = new ServiceResponseCreateStatus();
+
+            var airportList = await _unitOfWork.Repository<Airport>().GetListWithSpecAsync(new AirportSpecification(new AirportValidationQM() { AirportCode = dto.Code }));
+
+            if (airportList != null && airportList?.Count > 0)
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                return response;
+            }
+
             var airport = _mapper.Map<Airport>(dto);
             await _unitOfWork.Repository<Airport>().CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
@@ -68,6 +77,13 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseStatus> UpdateAsync(AirportUpdateRM model)
         {
+            var existingAirport = await _unitOfWork.Repository<Airport>().GetEntityWithSpecAsync(new AirportSpecification(new AirportValidationQM() { AirportCode = model.Code }));
+
+            if (existingAirport != null && existingAirport.Id != model.Id)
+            {
+                return ServiceResponseStatus.ValidationError;
+            }
+
             var entity = _mapper.Map<Airport>(model);
             _unitOfWork.Repository<Airport>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
