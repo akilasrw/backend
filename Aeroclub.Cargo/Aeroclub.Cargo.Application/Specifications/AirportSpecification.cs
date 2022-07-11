@@ -9,8 +9,8 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class AirportSpecification : BaseSpecification<Airport>
     {
         public AirportSpecification(AirportListQM query, bool isCount = false)
-            : base(x =>(string.IsNullOrEmpty(query.AirportName) || x.Name == query.AirportName) && 
-            (string.IsNullOrEmpty(query.CountryName) || x.Country.Name == query.CountryName) &&
+            : base(x =>(string.IsNullOrEmpty(query.AirportName) || x.Name.Contains(query.AirportName) ) && 
+            (string.IsNullOrEmpty(query.CountryName) || x.Country.Name.Contains(query.CountryName)) &&
             (string.IsNullOrEmpty(query.AirportCode) || x.Code == query.AirportCode) && !x.IsDeleted)
         {
             if (query.IsCountryInclude)
