@@ -56,7 +56,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (model.OriginAirportId == model.DestinationAirportId) return BadRequest("Origin and destination are same.");
+            if (model.OriginAirportId == model.DestinationAirportId) return BadRequest("Origin and destination cannot be the same.");
 
             var response = await _sectorService.UpdateAsync(model);
             if(response == ServiceResponseStatus.ValidationError)
