@@ -89,7 +89,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         return BookingServiceResponseStatus.ValidationError;
                     }
-
+                    
                     // Save Cargo Booking Details
                     var response = await _cargoBookingService.CreateAsync(rm);
                     if (response == null)

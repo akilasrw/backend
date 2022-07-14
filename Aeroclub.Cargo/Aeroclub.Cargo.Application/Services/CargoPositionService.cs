@@ -280,48 +280,48 @@ namespace Aeroclub.Cargo.Application.Services
 
         //}
 
-        private ValidateResponse GetWeightValidationResponse(double packageWeight, double maxWeight, ZoneArea zoneArea,Guid waightUnitId)
+        private ValidateResponse GetWeightValidationResponse(double packageWeight, double maxWeight, ZoneArea zoneArea,Guid weightUnitId)
         {
 
             var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
-            if (waightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != waightUnitId.ToString())
+            if (weightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != weightUnitId.ToString())
             {
                 packageWeight = packageWeight.GramToKilogramConversion();
             }
 
 
-            var isMaxWaightValid = true;
+            var isMaxWeightValid = true;
             string messagePrefix = "";
 
             if (packageWeight > maxWeight)
             {
-                isMaxWaightValid = false;
+                isMaxWeightValid = false;
                 messagePrefix = "Position";
 
             }
             else if (zoneArea.CurrentWeight + packageWeight > zoneArea.MaxWeight)
             {
-                isMaxWaightValid = false;
+                isMaxWeightValid = false;
                 messagePrefix = "Zone area";
             }
             else if (zoneArea.AircraftCabin.CurrentWeight + packageWeight > zoneArea.AircraftCabin.MaxWeight)
             {
-                isMaxWaightValid = false;
+                isMaxWeightValid = false;
                 messagePrefix = "Aircraft cabin";
 
             }
             else if (zoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageWeight > zoneArea.AircraftCabin.AircraftDeck.MaxWeight)
             {
-                isMaxWaightValid = false;
+                isMaxWeightValid = false;
                 messagePrefix = "Aircraft deck";
             }
 
-            if (!isMaxWaightValid)
+            if (!isMaxWeightValid)
             {
                 return new ValidateResponse()
                 {
                     IsValid = false,
-                    ValidationMessage = String.Format("{0} max waight({1}Kg) exceed.", messagePrefix, maxWeight)
+                    ValidationMessage = String.Format("{0} max weight({1}Kg) exceed.", messagePrefix, maxWeight)
                 };
 
             }
