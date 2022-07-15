@@ -256,12 +256,12 @@ namespace Aeroclub.Cargo.Application.Services
         //    // Checking Main Deck available positions
         //    var matchingCargoPosition = cargoPositionList.ToList()
         //        .Where(x => x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck);
-            
+
         //    var cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.OnSeat);            
         //    bookingSummaryVM.TotalOccupiedOnSeats = cargoPositions.Count(y => y.Seat.IsOnSeatOccupied);
         //    bookingSummaryVM.TotalOnSeats = cargoPositions.Count();
         //    bookingSummaryVM.OnSeatsPercentage = bookingSummaryVM.TotalOccupiedOnSeats/ bookingSummaryVM.TotalOnSeats;
-            
+
         //    cargoPositions = matchingCargoPosition.Where(x => x.CargoPositionType == CargoPositionType.UnderSeat);            
         //    bookingSummaryVM.TotalOccupiedUnderSeats = cargoPositions.Count(y => y.Seat.IsUnderSeatOccupied);
         //    bookingSummaryVM.TotalUnderSeats = cargoPositions.Count();
