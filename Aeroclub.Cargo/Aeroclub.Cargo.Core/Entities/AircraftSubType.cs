@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid AircraftTypeId { get; set; }
         public string Name { get; set; }
         public AircraftSubTypes Type { get; set; }
+        public AircraftConfigType ConfigType { get; set; }
 
         public virtual AircraftType AircraftType { get; set; }
 

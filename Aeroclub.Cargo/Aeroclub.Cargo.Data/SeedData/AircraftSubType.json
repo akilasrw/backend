@@ -3,12 +3,21 @@
     "Id": "AEB095AC-8223-475F-AC38-AA121701A8E5",
     "AircraftTypeId": "4206DB7D-6BC5-4CB3-9167-619BDE990E8D",
     "Name": "B787-9-TypeOne",
-    "Type": "1"
+    "Type": "1",
+    "ConfigType": "1"
   },
   {
     "Id": "F9876FC3-8D2B-4692-B1B6-75E35D5B507E",
     "AircraftTypeId": "D0590732-9743-4516-83ED-9B0793606592",
     "Name": "A320-200-TypeOne",
-    "Type": "2"
+    "Type": "2",
+    "ConfigType": "1"
+  },
+  {
+    "Id": "F3A48155-5DD6-4517-A682-28FA19B79387",
+    "AircraftTypeId": "38E09702-0304-477C-ABF5-126D78EAE873",
+    "Name": "B737-400-TypeOne",
+    "Type": "3",
+    "ConfigType": "2"
   }
 ]

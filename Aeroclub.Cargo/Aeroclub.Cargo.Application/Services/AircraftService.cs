@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AircraftVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -58,7 +59,13 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             if(aircraftLayoutMapping == null ||
-                aircraftLayoutMapping.AircraftLayoutId == null ||
+                aircraftLayoutMapping.AircraftLayoutId == null)
+            {
+                response.StatusCode = ServiceResponseStatus.Failed;
+                return response;
+            }
+
+            if(dto.ConfigurationType == AircraftConfigType.P2C && 
                 aircraftLayoutMapping.OverheadLayoutId == null ||
                 aircraftLayoutMapping.SeatLayoutId == null)
             {
@@ -70,8 +77,8 @@ namespace Aeroclub.Cargo.Application.Services
             entity.AircraftSubType = aircraftSubType.Type;
 
             entity.AircraftLayoutId = (Guid)(aircraftLayoutMapping.AircraftLayoutId);
-            entity.OverheadLayoutId = (Guid)(aircraftLayoutMapping.OverheadLayoutId);
-            entity.SeatLayoutId = (Guid)(aircraftLayoutMapping.SeatLayoutId);
+            entity.OverheadLayoutId = (dto.ConfigurationType == AircraftConfigType.P2C)?aircraftLayoutMapping.OverheadLayoutId:null;
+            entity.SeatLayoutId = (dto.ConfigurationType == AircraftConfigType.P2C)?aircraftLayoutMapping.SeatLayoutId:null;
                          
 
             await _unitOfWork.Repository<Aircraft>().CreateAsync(entity);

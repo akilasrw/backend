@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
         {
             builder.Property(p => p.Name).HasColumnType("nvarchar(80)").IsRequired();
             builder.Property(p => p.Type).HasColumnType("smallint").IsRequired();
+            builder.Property(p => p.ConfigType).HasColumnType("smallint").IsRequired();
 
             builder.HasMany(ur => ur.AircraftSubTypes)
               .WithOne(u => u.AircraftType)

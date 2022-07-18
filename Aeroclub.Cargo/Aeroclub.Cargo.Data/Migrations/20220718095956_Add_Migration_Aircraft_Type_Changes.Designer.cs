@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220718095956_Add_Migration_Aircraft_Type_Changes")]
+    partial class Add_Migration_Aircraft_Type_Changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,14 +60,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OverheadLayoutId")
+                    b.Property<Guid>("OverheadLayoutId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("RegNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<Guid?>("SeatLayoutId")
+                    b.Property<Guid>("SeatLayoutId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<short>("Status")
@@ -415,18 +417,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             OverheadLayoutId = new Guid("9788468f-8da6-4573-af43-509af9b224b0"),
                             SeatLayoutId = new Guid("8577256e-6277-4ed5-a933-5fe3e07fadf6")
-                        },
-                        new
-                        {
-                            Id = new Guid("e2de2fd8-cefb-4e0b-b506-9f48e3c95f2b"),
-                            AircraftLayoutId = new Guid("4fabebe4-0300-42ae-9a8f-3239e485f5d5"),
-                            AircraftSubTypeId = new Guid("f3a48155-5dd6-4517-a682-28fa19b79387"),
-                            AircraftTypeId = new Guid("38e09702-0304-477c-abf5-126d78eae873"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000")
                         });
                 });
 
@@ -478,7 +468,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("aeb095ac-8223-475f-ac38-aa121701a8e5"),
                             AircraftTypeId = new Guid("4206db7d-6bc5-4cb3-9167-619bde990e8d"),
-                            ConfigType = (short)1,
+                            ConfigType = (short)0,
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
@@ -491,7 +481,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("f9876fc3-8d2b-4692-b1b6-75e35d5b507e"),
                             AircraftTypeId = new Guid("d0590732-9743-4516-83ed-9b0793606592"),
-                            ConfigType = (short)1,
+                            ConfigType = (short)0,
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
@@ -499,19 +489,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "A320-200-TypeOne",
                             Type = (short)2
-                        },
-                        new
-                        {
-                            Id = new Guid("f3a48155-5dd6-4517-a682-28fa19b79387"),
-                            AircraftTypeId = new Guid("38e09702-0304-477c-abf5-126d78eae873"),
-                            ConfigType = (short)2,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B737-400-TypeOne",
-                            Type = (short)3
                         });
                 });
 
@@ -557,7 +534,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         new
                         {
                             Id = new Guid("4206db7d-6bc5-4cb3-9167-619bde990e8d"),
-                            ConfigType = (short)1,
+                            ConfigType = (short)0,
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
@@ -569,7 +546,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         new
                         {
                             Id = new Guid("d0590732-9743-4516-83ed-9b0793606592"),
-                            ConfigType = (short)1,
+                            ConfigType = (short)0,
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
@@ -577,18 +554,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "A320-200",
                             Type = (short)2
-                        },
-                        new
-                        {
-                            Id = new Guid("38e09702-0304-477c-abf5-126d78eae873"),
-                            ConfigType = (short)2,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B737-400",
-                            Type = (short)3
                         });
                 });
 
@@ -891,7 +856,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "19a4e0fc-4609-4475-b26d-3593999bb670",
+                            ConcurrencyStamp = "0799a77e-0d7d-4f2c-a606-3757495d8907",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -907,7 +872,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a9becbb0-7b6f-4889-ab1b-fffaf77e07b5",
+                            ConcurrencyStamp = "bee7a345-0e4b-42c5-932a-d2e2b4404fda",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -34310,11 +34275,15 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.OverheadLayout", "OverheadLayout")
                         .WithMany()
-                        .HasForeignKey("OverheadLayoutId");
+                        .HasForeignKey("OverheadLayoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.SeatLayout", "SeatLayout")
                         .WithMany()
-                        .HasForeignKey("SeatLayoutId");
+                        .HasForeignKey("SeatLayoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AircraftLayout");
 

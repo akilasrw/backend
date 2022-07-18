@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.OverheadLayoutQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -43,17 +44,18 @@ namespace Aeroclub.Cargo.Application.Services
                 // Get Aircraft
                 var aircraft = await GetAircraftAsync(aircraftId.Value);
                 if (aircraft == null) return false;
+                if(aircraft.ConfigurationType != AircraftConfigType.P2C) return false;
 
                 // Get AircraftLayout including all childs till Position
                 var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
                 if (aircraftLayout == null) return false;       
 
                 // Get SeatLayout including all childs till Seat
-                var seatLayout = await GetSeatLayoutAsync(aircraft.SeatLayoutId);
+                var seatLayout = (aircraft.SeatLayoutId != null)?await GetSeatLayoutAsync((Guid)aircraft.SeatLayoutId):null;
                 if (seatLayout == null) return false;
 
                 // Get OverheadLayout including all childs till overheadPosition
-                var overheadLayout = await GetOverheadLayoutAsync(aircraft.OverheadLayoutId);
+                var overheadLayout = (aircraft.OverheadLayoutId != null)?await GetOverheadLayoutAsync((Guid)aircraft.OverheadLayoutId):null;
                 if (overheadLayout == null) return false;
 
                 foreach (var sector in FlightScheduleSectors)
