@@ -7,11 +7,6 @@ using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -104,8 +99,12 @@ namespace Aeroclub.Cargo.Application.Services
                     sector.LoadPlanId = createdLoadPlanStatus.Id;
                     await _flightScheduleSectorService.CreateAsync(sector);
                 }
+                return true;
             }
-            return true;
+            else
+            {
+                return false;
+            }
         }
 
         private async Task<Aircraft> GetAircraftAsync(Guid aircraftId)
@@ -225,6 +224,34 @@ namespace Aeroclub.Cargo.Application.Services
                new OverheadLayoutQM() { Id = overheadLayoutId, IncludeOverheadCompartment = true });
 
             return await _unitOfWork.Repository<OverheadLayout>().GetEntityWithSpecAsync(overheadLayoutSpec);
+        }
+
+        public async Task<bool> CloneULDCargoLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
+        {
+            if (FlightScheduleSectors != null)
+            {
+                var aircraftId = flightSchedule.AircraftId;
+                if (aircraftId == null) return false;
+
+                // Get Aircraft
+                var aircraft = await GetAircraftAsync(aircraftId.Value);
+                if (aircraft == null) return false;
+                if (aircraft.ConfigurationType != AircraftConfigType.Freighter) return false;
+
+                // Get AircraftLayout including all childs till Position
+                var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
+                if (aircraftLayout == null) return false;
+
+
+
+
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

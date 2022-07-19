@@ -90,6 +90,12 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
+        public async Task<AircraftConfigType> GetAircraftConfigType(Guid id)
+        {
+            var flight = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(id);
+            return flight.ConfigurationType;
+        }
+
         public async Task<string> GetAircraftRegNo(Guid id)
         {
             var flight = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(id);

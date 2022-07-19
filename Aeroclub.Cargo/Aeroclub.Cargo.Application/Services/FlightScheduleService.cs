@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -84,7 +85,20 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)
         {
-           return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
+            if (flightSchedule.AircraftId.HasValue)
+            {
+                var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftId.Value);
+
+                if (aircraftConfigType == AircraftConfigType.P2C)
+                    return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
+                else
+                    return await _layoutCloneService.CloneULDCargoLayoutAsync(flightSchedule, flightScheduleSectors);
+            }
+            else
+            {
+                return false;
+            }
+           
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(FlightScheduleUpdateRM model)
