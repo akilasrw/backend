@@ -66,8 +66,8 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             if(dto.ConfigurationType == AircraftConfigType.P2C && 
-                aircraftLayoutMapping.OverheadLayoutId == null ||
-                aircraftLayoutMapping.SeatLayoutId == null)
+                (aircraftLayoutMapping.OverheadLayoutId == null ||
+                aircraftLayoutMapping.SeatLayoutId == null))
             {
                 response.StatusCode = ServiceResponseStatus.Failed;
                 return response;
