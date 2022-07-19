@@ -7,6 +7,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AircraftVMs
     {
         public string Name { get; set; }
         public AircraftTypes Type { get; set; }
+        public AircraftConfigType ConfigType { get; set; }
 
         public IReadOnlyList<AircraftSubTypeVM> AircraftSubTypes { get; set; }
     }
