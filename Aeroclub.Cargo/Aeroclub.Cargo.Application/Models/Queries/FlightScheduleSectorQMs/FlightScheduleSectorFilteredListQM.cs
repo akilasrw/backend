@@ -15,5 +15,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
         public bool OriginAirportOnly { get; set; } = false;
         [JsonIgnore]
         public bool DestinationAirportOnly { get; set; } = false;
+        [JsonIgnore]
+        public bool IncludeAircraft { get; set; } = false;
+
     }
 }

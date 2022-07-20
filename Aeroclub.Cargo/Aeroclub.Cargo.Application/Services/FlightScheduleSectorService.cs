@@ -41,6 +41,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<Pagination<FlightScheduleSectorVM>> GetFilteredListAsync(FlightScheduleSectorFilteredListQM query)
         {
+            query.IncludeAircraft = true;
             var spec = new FlightScheduleSectorSpecification(query);
             var flightScheduleSectorList =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);

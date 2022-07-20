@@ -37,6 +37,9 @@ namespace Aeroclub.Cargo.Application.Specifications
                 (!query.DestinationAirportOnly || x.DestinationAirportId == query.DestinationAirportId)
             )
         {
+            if (query.IncludeAircraft)
+                AddInclude(y => y.Include(x => x.Aircraft));
+
             if (!isCount)
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
         }

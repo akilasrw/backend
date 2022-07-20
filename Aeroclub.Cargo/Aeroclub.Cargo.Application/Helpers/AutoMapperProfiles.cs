@@ -31,6 +31,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AircraftVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftRMs;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -52,6 +53,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<FlightScheduleCreateRM, FlightSchedule>();
             CreateMap<FlightScheduleSectorCreateRM, FlightScheduleSector>();
             CreateMap<FlightScheduleSector, FlightScheduleSectorVM>()
+                .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s=> s.Aircraft != null? s.Aircraft.ConfigurationType: AircraftConfigType.None))
                 .ForMember(d => d.AircraftLayoutId, o => o.MapFrom(s=> s.LoadPlan != null? s.LoadPlan.AircraftLayoutId: Guid.Empty))
                 .ForMember(d => d.SeatLayoutId, o => o.MapFrom(s=> s.LoadPlan != null? s.LoadPlan.SeatLayoutId: Guid.Empty));
             CreateMap<FlightSchedule, FlightScheduleVM>();
