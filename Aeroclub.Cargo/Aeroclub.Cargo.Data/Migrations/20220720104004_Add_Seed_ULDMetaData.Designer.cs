@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220720104004_Add_Seed_ULDMetaData")]
+    partial class Add_Seed_ULDMetaData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -891,7 +893,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9e4f6b1b-a02a-4149-9486-af5c265aa530",
+                            ConcurrencyStamp = "c37980cf-128f-48ac-a7c2-379507996744",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -907,7 +909,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "afec93e8-5d41-4bf2-82d1-8b0dcda573bd",
+                            ConcurrencyStamp = "fbe81fb4-6859-4443-9fd4-a87353ec9a93",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -33838,138 +33840,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("ULDMetaDataId");
 
                     b.ToTable("ULDs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("3218738e-a0ee-4c85-996e-d9aa213a4d31"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)1,
-                            ULDMetaDataId = new Guid("4e7eab62-f35f-4a60-8ac2-5d4d093e00c4"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("6e280ba0-c986-4750-90ab-4d832801c374"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)2,
-                            ULDMetaDataId = new Guid("38495a67-7336-412d-a221-3267a284af64"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("6918bb04-eaa8-4e23-aff8-d2db960bcea0"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)3,
-                            ULDMetaDataId = new Guid("eb2d2df7-00af-4ad9-8964-e76bf7aa089d"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("5fd0fd46-105b-4bd6-9497-3b43519b51ef"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)4,
-                            ULDMetaDataId = new Guid("b90b9436-56bc-4254-b625-2ac7d4b8080e"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("243a356e-cfc9-4e4f-8a57-0c460a43e543"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)5,
-                            ULDMetaDataId = new Guid("030bcece-6f0b-4c33-9b67-cb669cfd9a04"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("c820b286-1edf-4c6d-93f8-45f1f34927d9"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)6,
-                            ULDMetaDataId = new Guid("4a6fba20-86e8-479c-9d2c-80b7c269c657"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("0e233c92-cb5c-482c-9307-5af6a032344e"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)7,
-                            ULDMetaDataId = new Guid("c4629465-bc25-4384-ae21-db57ac5b440b"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("a3734030-8705-4b1c-8e8f-a48b3d799842"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)8,
-                            ULDMetaDataId = new Guid("11c6c149-d702-4cdf-b842-50ec5300b656"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("4635a2cd-939b-4adf-b465-585a8e779347"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)9,
-                            ULDMetaDataId = new Guid("f648e6e3-156a-4bcb-b57b-60585895a7df"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("7a950949-d6d8-45d4-ae3a-ce7af7304c17"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)10,
-                            ULDMetaDataId = new Guid("4d79fb54-bf18-4391-9bfd-a5153a3c10c5"),
-                            ULDType = 0
-                        });
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>

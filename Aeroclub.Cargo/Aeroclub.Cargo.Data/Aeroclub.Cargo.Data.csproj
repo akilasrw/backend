@@ -64,6 +64,12 @@
     <None Update="SeedData\PackageContainerSector.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="SeedData\ULD.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\ULDMetaData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SeedData\ZoneArea.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

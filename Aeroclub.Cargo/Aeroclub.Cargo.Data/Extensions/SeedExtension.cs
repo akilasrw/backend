@@ -35,7 +35,9 @@ namespace Aeroclub.Cargo.Data.Extensions
             SeedPackageContainerSector(modelBuilder, basePath);
             SeedAircraftType(modelBuilder, basePath);
             SeedAircraftSubType(modelBuilder, basePath);
-            SeedAircraftLayoutMapping(modelBuilder, basePath);  
+            SeedAircraftLayoutMapping(modelBuilder, basePath);
+            SeedULDMetaData(modelBuilder, basePath);
+            SeedULD(modelBuilder, basePath);  
             
         }
 
@@ -252,6 +254,22 @@ namespace Aeroclub.Cargo.Data.Extensions
                 JsonConvert.DeserializeObject<AircraftLayoutMapping[]>(File.ReadAllText(Path.Combine(basePath, "AircraftLayoutMapping.json")));
             if (aircraftLayoutMapping != null)
                 modelBuilder.Entity<AircraftLayoutMapping>().HasData(aircraftLayoutMapping);
+        }
+
+        private static void SeedULDMetaData(ModelBuilder modelBuilder, string basePath)
+        {
+            var uldMetaData =
+                JsonConvert.DeserializeObject<ULDMetaData[]>(File.ReadAllText(Path.Combine(basePath, "ULDMetaData.json")));
+            if (uldMetaData != null)
+                modelBuilder.Entity<ULDMetaData>().HasData(uldMetaData);
+        }
+
+        private static void SeedULD(ModelBuilder modelBuilder, string basePath)
+        {
+               var uld =
+                   JsonConvert.DeserializeObject<ULD[]>(File.ReadAllText(Path.Combine(basePath, "ULD.json")));
+               if (uld != null)
+                   modelBuilder.Entity<ULD>().HasData(uld);
         }
 
     }
