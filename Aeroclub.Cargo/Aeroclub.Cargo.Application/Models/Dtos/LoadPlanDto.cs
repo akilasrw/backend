@@ -14,7 +14,7 @@ namespace Aeroclub.Cargo.Application.Models.Dtos
         [Required]
         public LoadPlanStatus LoadPlanStatus { get; set; }
         public Guid AircraftLayoutId { get; set; }
-        public Guid SeatLayoutId { get; set; }
-        public Guid OverheadLayoutId { get; set; }
+        public Guid? SeatLayoutId { get; set; }
+        public Guid? OverheadLayoutId { get; set; }
     }
 }

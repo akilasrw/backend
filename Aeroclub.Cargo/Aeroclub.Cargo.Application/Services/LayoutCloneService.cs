@@ -242,10 +242,28 @@ namespace Aeroclub.Cargo.Application.Services
                 var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
                 if (aircraftLayout == null) return false;
 
+                foreach (var sector in FlightScheduleSectors)
+                {
 
+                    var newResetLayouts = await ResetULDCargoLayoutAsync(aircraftLayout);
+                    // Create Aircraft Layout
+                    var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(newResetLayouts.Item1);
+                    await _unitOfWork.SaveChangesAsync();
+                    // Save, if not success, go with this sequence | CargoPosition <-- Zone Area <-- Aircraft Cabin <-- Aircraft Deck <-- Aircraft Layout
 
+                    // Create Load Plan                    
+                    var createdLoadPlanStatus = await _loadPlanService.CreateAsync(
+                        new Models.Dtos.LoadPlanDto()
+                        {
+                            AircraftLayoutId = createdAircraftLayout.Id,
+                            LoadPlanStatus = Common.Enums.LoadPlanStatus.None
+                        });
 
-
+                    // Save Flight Schedule Sector
+                    sector.FlightScheduleId = flightSchedule.Id;
+                    sector.LoadPlanId = createdLoadPlanStatus.Id;
+                    await _flightScheduleSectorService.CreateAsync(sector);
+                }
                 return true;
             }
             else
@@ -253,5 +271,41 @@ namespace Aeroclub.Cargo.Application.Services
                 return false;
             }
         }
+
+        private Task<Tuple<AircraftLayout>> ResetULDCargoLayoutAsync(AircraftLayout aircraftLayout)
+        {
+            aircraftLayout.Id = Guid.NewGuid();
+            aircraftLayout.IsBaseLayout = false;
+
+            // Reset Aircraft Decks, Aircraft Cabin, Zone, CargoPositions 
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                deck.Id = Guid.NewGuid();
+                foreach (var cabin in deck.AircraftCabins)
+                {
+                    cabin.AircraftDeckId = deck.Id;
+                    cabin.Id = Guid.NewGuid();
+                    foreach (var zone in cabin.ZoneAreas)
+                    {
+                        zone.AircraftCabinId = cabin.Id;
+                        zone.Id = Guid.NewGuid();
+
+                        foreach (var position in zone.CargoPositions)
+                        {
+                            position.ZoneAreaId = zone.Id;
+                            position.Id = Guid.NewGuid();
+                        }
+                    }
+                }
+            }
+           
+           Tuple<AircraftLayout> layouts = new Tuple<AircraftLayout>(aircraftLayout);
+            return Task.FromResult(layouts);
+        }
+
+
+
+
+
     }
 }

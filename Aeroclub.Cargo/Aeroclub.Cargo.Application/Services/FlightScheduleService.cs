@@ -91,8 +91,10 @@ namespace Aeroclub.Cargo.Application.Services
 
                 if (aircraftConfigType == AircraftConfigType.P2C)
                     return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
-                else
+                else if (aircraftConfigType == AircraftConfigType.Freighter)
                     return await _layoutCloneService.CloneULDCargoLayoutAsync(flightSchedule, flightScheduleSectors);
+                else
+                    return false;
             }
             else
             {
