@@ -9,12 +9,12 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class OverheadCompartment : AuditableEntity
     {
-        public int RowNumber { get; set; }
-        public int ColumnNumber { get; set; }
-        public Guid OverheadLayoutId { get; set; }
+        public int Sequence { get; set; }      // 1,2,3  in a compartment
         public bool IsOccupied { get; set; }
+        public Guid ZoneAreaId { get; set; }
+        public Guid OverheadCompartmentConfigurationId { get; set; }
 
-        public virtual OverheadLayout OverheadLayout { get; set; }
-        public virtual ICollection<OverheadPosition> OverheadPositions { get; set; }
+        public virtual ZoneArea ZoneArea { get; set; }
+        public virtual OverheadCompartmentConfiguration OverheadCompartmentConfigurations { get; set; }
     }
 }

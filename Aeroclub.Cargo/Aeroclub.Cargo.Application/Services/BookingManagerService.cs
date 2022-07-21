@@ -210,10 +210,10 @@ namespace Aeroclub.Cargo.Application.Services
                             }
 
                             // Update overhead Position.
-                            else if (matchedCargoPosition.Item1.OverheadPositionId != null && matchedCargoPosition.Item1.OverheadPositionId != Guid.Empty)
+                            else if (matchedCargoPosition.Item1.OverheadCompartmentId != null && matchedCargoPosition.Item1.OverheadCompartmentId != Guid.Empty)
                             {
                                 bool overheadUpdated = false;
-                                var overhead = await _overheadService.GetAsync(new OverheadPositionQM() { Id = matchedCargoPosition.Item1.OverheadPositionId.Value });
+                                var overhead = await _overheadService.GetAsync(new OverheadPositionQM() { Id = matchedCargoPosition.Item1.OverheadCompartmentId.Value });
                                 if (matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.Overhead)
                                 {
                                     overheadUpdated = true;

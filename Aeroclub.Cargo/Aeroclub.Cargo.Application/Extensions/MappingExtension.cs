@@ -25,7 +25,7 @@ namespace Aeroclub.Cargo.Application.Extensions
         {
             position.SeatId = seatId;
             position.Id = positionId;
-            position.OverheadPositionId = overheadId;
+            position.OverheadCompartmentId = overheadId;
             return position;
         }
     }

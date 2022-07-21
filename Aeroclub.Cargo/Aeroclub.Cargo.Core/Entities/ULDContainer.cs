@@ -12,6 +12,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public double Height { get; set; }
         public double Width { get; set; }
         public double Length { get; set; }
+        public int RowNumber { get; set; }
+        public int ColumnNumber { get; set; }
         public Guid? ULDId { get; set; }
 
         public virtual LoadPlan LoadPlan { get; set; }

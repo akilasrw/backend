@@ -76,8 +76,8 @@ namespace Aeroclub.Cargo.Application.Services
                             var position = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(item.Id);
                             if (item.SeatId != null)
                                 position.SeatId = item.SeatId;
-                            if (item.OverheadPositionId != null)
-                                position.OverheadPositionId = item.OverheadPositionId;
+                            if (item.OverheadCompartmentId != null)
+                                position.OverheadCompartmentId = item.OverheadCompartmentId;
 
                             _unitOfWork.Repository<CargoPosition>().Update(position);
                             await _unitOfWork.SaveChangesAsync();
@@ -176,10 +176,10 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var compartment in overheadLayout.OverheadCompartments)
             {
                 compartment.Id = Guid.NewGuid();
-                foreach (var pos in compartment.OverheadPositions)
+                foreach (var pos in compartment.OverheadCompartments)
                 {
                     var overheadID = pos.Id;
-                    pos.OverheadCompartmentId = compartment.Id;
+                    pos.OverheadCompartmentConfigurationId = compartment.Id;
                     pos.Id = Guid.NewGuid();
                     pos.ZoneAreaId = zoneIDs.FirstOrDefault(x => x.Key == pos.ZoneAreaId).Value;
                     if (!overheadIDs.Any(x => x.Key == overheadID))
@@ -199,7 +199,7 @@ namespace Aeroclub.Cargo.Application.Services
                         {
                             var pos = new CargoPosition().MapCargoPosition(position.Id,
                                 position.SeatId != null ? seatIDs.FirstOrDefault(x => x.Key == position.SeatId).Value : null,
-                                position.OverheadPositionId != null ? overheadIDs.FirstOrDefault(x => x.Key == position.OverheadPositionId).Value : null);
+                                position.OverheadCompartmentId != null ? overheadIDs.FirstOrDefault(x => x.Key == position.OverheadCompartmentId).Value : null);
                             cargoPositionsList.Add(pos);
                         }
                     }

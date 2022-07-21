@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20220720104202_Add_Seed_ULD")]
-    partial class Add_Seed_ULD
+    [Migration("20220721073924_Add_Migration_Overhead_Compatment_Rename_ULD_Changes")]
+    partial class Add_Migration_Overhead_Compatment_Rename_ULD_Changes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -893,7 +893,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9e4f6b1b-a02a-4149-9486-af5c265aa530",
+                            ConcurrencyStamp = "cb5b61b5-8ec7-4b99-9778-92d4088c274c",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -909,7 +909,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "afec93e8-5d41-4bf2-82d1-8b0dcda573bd",
+                            ConcurrencyStamp = "d7cc9fa4-2432-464f-9ab7-098043484e63",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1304,9 +1304,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid?>("SeatId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ULDId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ZoneAreaId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1315,8 +1312,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("OverheadPositionId");
 
                     b.HasIndex("SeatId");
-
-                    b.HasIndex("ULDId");
 
                     b.HasIndex("ZoneAreaId");
 
@@ -21373,7 +21368,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.ToTable("LoadPlans");
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartment", b =>
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartmentConfiguration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -21413,7 +21408,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("OverheadLayoutId");
 
-                    b.ToTable("OverheadCompartments");
+                    b.ToTable("OverheadCompartmentConfigurations");
 
                     b.HasData(
                         new
@@ -22045,7 +22040,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OverheadCompartmentId")
+                    b.Property<Guid>("OverheadCompartmentConfigurationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<short>("Sequence")
@@ -22056,7 +22051,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OverheadCompartmentId");
+                    b.HasIndex("OverheadCompartmentConfigurationId");
 
                     b.HasIndex("ZoneAreaId");
 
@@ -22072,7 +22067,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("16202785-603d-4261-8057-a35dac9190bc"),
+                            OverheadCompartmentConfigurationId = new Guid("16202785-603d-4261-8057-a35dac9190bc"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22085,7 +22080,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("16202785-603d-4261-8057-a35dac9190bc"),
+                            OverheadCompartmentConfigurationId = new Guid("16202785-603d-4261-8057-a35dac9190bc"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22098,7 +22093,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("16202785-603d-4261-8057-a35dac9190bc"),
+                            OverheadCompartmentConfigurationId = new Guid("16202785-603d-4261-8057-a35dac9190bc"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22111,7 +22106,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("a1f00792-eaa4-4216-a5ea-ca650ef42078"),
+                            OverheadCompartmentConfigurationId = new Guid("a1f00792-eaa4-4216-a5ea-ca650ef42078"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22124,7 +22119,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("a1f00792-eaa4-4216-a5ea-ca650ef42078"),
+                            OverheadCompartmentConfigurationId = new Guid("a1f00792-eaa4-4216-a5ea-ca650ef42078"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22137,7 +22132,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("a1f00792-eaa4-4216-a5ea-ca650ef42078"),
+                            OverheadCompartmentConfigurationId = new Guid("a1f00792-eaa4-4216-a5ea-ca650ef42078"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22150,7 +22145,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("a63dbf79-e791-4e60-8cee-f8cd3d271872"),
+                            OverheadCompartmentConfigurationId = new Guid("a63dbf79-e791-4e60-8cee-f8cd3d271872"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22163,7 +22158,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("a63dbf79-e791-4e60-8cee-f8cd3d271872"),
+                            OverheadCompartmentConfigurationId = new Guid("a63dbf79-e791-4e60-8cee-f8cd3d271872"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22176,7 +22171,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("a63dbf79-e791-4e60-8cee-f8cd3d271872"),
+                            OverheadCompartmentConfigurationId = new Guid("a63dbf79-e791-4e60-8cee-f8cd3d271872"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22189,7 +22184,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8fcbe5b8-5626-4023-87fa-a05cf56df46e"),
+                            OverheadCompartmentConfigurationId = new Guid("8fcbe5b8-5626-4023-87fa-a05cf56df46e"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22202,7 +22197,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8fcbe5b8-5626-4023-87fa-a05cf56df46e"),
+                            OverheadCompartmentConfigurationId = new Guid("8fcbe5b8-5626-4023-87fa-a05cf56df46e"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22215,7 +22210,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8fcbe5b8-5626-4023-87fa-a05cf56df46e"),
+                            OverheadCompartmentConfigurationId = new Guid("8fcbe5b8-5626-4023-87fa-a05cf56df46e"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22228,7 +22223,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f20c7153-4ead-4a47-b6c7-2e59288aa983"),
+                            OverheadCompartmentConfigurationId = new Guid("f20c7153-4ead-4a47-b6c7-2e59288aa983"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22241,7 +22236,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f20c7153-4ead-4a47-b6c7-2e59288aa983"),
+                            OverheadCompartmentConfigurationId = new Guid("f20c7153-4ead-4a47-b6c7-2e59288aa983"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22254,7 +22249,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f20c7153-4ead-4a47-b6c7-2e59288aa983"),
+                            OverheadCompartmentConfigurationId = new Guid("f20c7153-4ead-4a47-b6c7-2e59288aa983"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22267,7 +22262,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d73021c1-9b4e-4be9-b1d4-8f7428242709"),
+                            OverheadCompartmentConfigurationId = new Guid("d73021c1-9b4e-4be9-b1d4-8f7428242709"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22280,7 +22275,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d73021c1-9b4e-4be9-b1d4-8f7428242709"),
+                            OverheadCompartmentConfigurationId = new Guid("d73021c1-9b4e-4be9-b1d4-8f7428242709"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("aa9d13c3-7f45-4250-abf5-54ab68a2c853")
                         },
@@ -22293,7 +22288,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d73021c1-9b4e-4be9-b1d4-8f7428242709"),
+                            OverheadCompartmentConfigurationId = new Guid("d73021c1-9b4e-4be9-b1d4-8f7428242709"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22306,7 +22301,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("1bca6e23-55e5-4ef8-b31a-c9514381d82f"),
+                            OverheadCompartmentConfigurationId = new Guid("1bca6e23-55e5-4ef8-b31a-c9514381d82f"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22319,7 +22314,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("1bca6e23-55e5-4ef8-b31a-c9514381d82f"),
+                            OverheadCompartmentConfigurationId = new Guid("1bca6e23-55e5-4ef8-b31a-c9514381d82f"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22332,7 +22327,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("1bca6e23-55e5-4ef8-b31a-c9514381d82f"),
+                            OverheadCompartmentConfigurationId = new Guid("1bca6e23-55e5-4ef8-b31a-c9514381d82f"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22345,7 +22340,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("32ea293f-2b5b-4a3f-a821-cf2a25de754e"),
+                            OverheadCompartmentConfigurationId = new Guid("32ea293f-2b5b-4a3f-a821-cf2a25de754e"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22358,7 +22353,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("32ea293f-2b5b-4a3f-a821-cf2a25de754e"),
+                            OverheadCompartmentConfigurationId = new Guid("32ea293f-2b5b-4a3f-a821-cf2a25de754e"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22371,7 +22366,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("32ea293f-2b5b-4a3f-a821-cf2a25de754e"),
+                            OverheadCompartmentConfigurationId = new Guid("32ea293f-2b5b-4a3f-a821-cf2a25de754e"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22384,7 +22379,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("ede2607b-591b-461f-b8f3-faa6f138d258"),
+                            OverheadCompartmentConfigurationId = new Guid("ede2607b-591b-461f-b8f3-faa6f138d258"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22397,7 +22392,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("ede2607b-591b-461f-b8f3-faa6f138d258"),
+                            OverheadCompartmentConfigurationId = new Guid("ede2607b-591b-461f-b8f3-faa6f138d258"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22410,7 +22405,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("ede2607b-591b-461f-b8f3-faa6f138d258"),
+                            OverheadCompartmentConfigurationId = new Guid("ede2607b-591b-461f-b8f3-faa6f138d258"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22423,7 +22418,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("ede1aafe-51d1-437f-b755-e0b31c923aad"),
+                            OverheadCompartmentConfigurationId = new Guid("ede1aafe-51d1-437f-b755-e0b31c923aad"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22436,7 +22431,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("ede1aafe-51d1-437f-b755-e0b31c923aad"),
+                            OverheadCompartmentConfigurationId = new Guid("ede1aafe-51d1-437f-b755-e0b31c923aad"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22449,7 +22444,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("ede1aafe-51d1-437f-b755-e0b31c923aad"),
+                            OverheadCompartmentConfigurationId = new Guid("ede1aafe-51d1-437f-b755-e0b31c923aad"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22462,7 +22457,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d4d904e9-aff6-4f94-8007-6cedebdb7490"),
+                            OverheadCompartmentConfigurationId = new Guid("d4d904e9-aff6-4f94-8007-6cedebdb7490"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22475,7 +22470,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d4d904e9-aff6-4f94-8007-6cedebdb7490"),
+                            OverheadCompartmentConfigurationId = new Guid("d4d904e9-aff6-4f94-8007-6cedebdb7490"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22488,7 +22483,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d4d904e9-aff6-4f94-8007-6cedebdb7490"),
+                            OverheadCompartmentConfigurationId = new Guid("d4d904e9-aff6-4f94-8007-6cedebdb7490"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22501,7 +22496,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("4698a608-103e-4166-afe1-c99257c8b44d"),
+                            OverheadCompartmentConfigurationId = new Guid("4698a608-103e-4166-afe1-c99257c8b44d"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22514,7 +22509,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("4698a608-103e-4166-afe1-c99257c8b44d"),
+                            OverheadCompartmentConfigurationId = new Guid("4698a608-103e-4166-afe1-c99257c8b44d"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22527,7 +22522,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("4698a608-103e-4166-afe1-c99257c8b44d"),
+                            OverheadCompartmentConfigurationId = new Guid("4698a608-103e-4166-afe1-c99257c8b44d"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22540,7 +22535,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f95af152-4270-48d4-9190-48f01c8239d5"),
+                            OverheadCompartmentConfigurationId = new Guid("f95af152-4270-48d4-9190-48f01c8239d5"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22553,7 +22548,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f95af152-4270-48d4-9190-48f01c8239d5"),
+                            OverheadCompartmentConfigurationId = new Guid("f95af152-4270-48d4-9190-48f01c8239d5"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22566,7 +22561,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f95af152-4270-48d4-9190-48f01c8239d5"),
+                            OverheadCompartmentConfigurationId = new Guid("f95af152-4270-48d4-9190-48f01c8239d5"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22579,7 +22574,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("af6f8cbf-7d77-4c74-a838-4352788b5643"),
+                            OverheadCompartmentConfigurationId = new Guid("af6f8cbf-7d77-4c74-a838-4352788b5643"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("945454c3-c085-4c27-b596-e55bc17971cd")
                         },
@@ -22592,7 +22587,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("af6f8cbf-7d77-4c74-a838-4352788b5643"),
+                            OverheadCompartmentConfigurationId = new Guid("af6f8cbf-7d77-4c74-a838-4352788b5643"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22605,7 +22600,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("af6f8cbf-7d77-4c74-a838-4352788b5643"),
+                            OverheadCompartmentConfigurationId = new Guid("af6f8cbf-7d77-4c74-a838-4352788b5643"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22618,7 +22613,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("0862c4a4-d2b3-43e7-b257-039447e64983"),
+                            OverheadCompartmentConfigurationId = new Guid("0862c4a4-d2b3-43e7-b257-039447e64983"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22631,7 +22626,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("0862c4a4-d2b3-43e7-b257-039447e64983"),
+                            OverheadCompartmentConfigurationId = new Guid("0862c4a4-d2b3-43e7-b257-039447e64983"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22644,7 +22639,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("0862c4a4-d2b3-43e7-b257-039447e64983"),
+                            OverheadCompartmentConfigurationId = new Guid("0862c4a4-d2b3-43e7-b257-039447e64983"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22657,7 +22652,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("630980b3-4851-45c9-b324-b5888107882a"),
+                            OverheadCompartmentConfigurationId = new Guid("630980b3-4851-45c9-b324-b5888107882a"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22670,7 +22665,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("630980b3-4851-45c9-b324-b5888107882a"),
+                            OverheadCompartmentConfigurationId = new Guid("630980b3-4851-45c9-b324-b5888107882a"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22683,7 +22678,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("630980b3-4851-45c9-b324-b5888107882a"),
+                            OverheadCompartmentConfigurationId = new Guid("630980b3-4851-45c9-b324-b5888107882a"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22696,7 +22691,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("0816bf93-fbfe-49ab-a260-b65b9a103659"),
+                            OverheadCompartmentConfigurationId = new Guid("0816bf93-fbfe-49ab-a260-b65b9a103659"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22709,7 +22704,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("0816bf93-fbfe-49ab-a260-b65b9a103659"),
+                            OverheadCompartmentConfigurationId = new Guid("0816bf93-fbfe-49ab-a260-b65b9a103659"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22722,7 +22717,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("0816bf93-fbfe-49ab-a260-b65b9a103659"),
+                            OverheadCompartmentConfigurationId = new Guid("0816bf93-fbfe-49ab-a260-b65b9a103659"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22735,7 +22730,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("538c9eb2-bdfb-480a-9080-56c3b099b4c5"),
+                            OverheadCompartmentConfigurationId = new Guid("538c9eb2-bdfb-480a-9080-56c3b099b4c5"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22748,7 +22743,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("538c9eb2-bdfb-480a-9080-56c3b099b4c5"),
+                            OverheadCompartmentConfigurationId = new Guid("538c9eb2-bdfb-480a-9080-56c3b099b4c5"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22761,7 +22756,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("538c9eb2-bdfb-480a-9080-56c3b099b4c5"),
+                            OverheadCompartmentConfigurationId = new Guid("538c9eb2-bdfb-480a-9080-56c3b099b4c5"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22774,7 +22769,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5f658532-5f68-48fc-84e5-fa7f7441d71c"),
+                            OverheadCompartmentConfigurationId = new Guid("5f658532-5f68-48fc-84e5-fa7f7441d71c"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22787,7 +22782,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f2fc4660-598f-43d3-8a07-cf0488bd37b2"),
+                            OverheadCompartmentConfigurationId = new Guid("f2fc4660-598f-43d3-8a07-cf0488bd37b2"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("2d662146-21b3-476d-8053-9c5994e16637")
                         },
@@ -22800,7 +22795,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("16047f4a-e38b-4cf9-9245-8d1426198dbf"),
+                            OverheadCompartmentConfigurationId = new Guid("16047f4a-e38b-4cf9-9245-8d1426198dbf"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22813,7 +22808,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("16047f4a-e38b-4cf9-9245-8d1426198dbf"),
+                            OverheadCompartmentConfigurationId = new Guid("16047f4a-e38b-4cf9-9245-8d1426198dbf"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22826,7 +22821,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("16047f4a-e38b-4cf9-9245-8d1426198dbf"),
+                            OverheadCompartmentConfigurationId = new Guid("16047f4a-e38b-4cf9-9245-8d1426198dbf"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22839,7 +22834,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8a580aa1-3c17-4254-adf5-6a00f7684320"),
+                            OverheadCompartmentConfigurationId = new Guid("8a580aa1-3c17-4254-adf5-6a00f7684320"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22852,7 +22847,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8a580aa1-3c17-4254-adf5-6a00f7684320"),
+                            OverheadCompartmentConfigurationId = new Guid("8a580aa1-3c17-4254-adf5-6a00f7684320"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22865,7 +22860,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8a580aa1-3c17-4254-adf5-6a00f7684320"),
+                            OverheadCompartmentConfigurationId = new Guid("8a580aa1-3c17-4254-adf5-6a00f7684320"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22878,7 +22873,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("939ae7a6-24f3-49a9-958f-19c3c18f7b9a"),
+                            OverheadCompartmentConfigurationId = new Guid("939ae7a6-24f3-49a9-958f-19c3c18f7b9a"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22891,7 +22886,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("939ae7a6-24f3-49a9-958f-19c3c18f7b9a"),
+                            OverheadCompartmentConfigurationId = new Guid("939ae7a6-24f3-49a9-958f-19c3c18f7b9a"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22904,7 +22899,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("939ae7a6-24f3-49a9-958f-19c3c18f7b9a"),
+                            OverheadCompartmentConfigurationId = new Guid("939ae7a6-24f3-49a9-958f-19c3c18f7b9a"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22917,7 +22912,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d5c24a79-1ae5-43dc-bad4-063466166be3"),
+                            OverheadCompartmentConfigurationId = new Guid("d5c24a79-1ae5-43dc-bad4-063466166be3"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22930,7 +22925,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d5c24a79-1ae5-43dc-bad4-063466166be3"),
+                            OverheadCompartmentConfigurationId = new Guid("d5c24a79-1ae5-43dc-bad4-063466166be3"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22943,7 +22938,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("d5c24a79-1ae5-43dc-bad4-063466166be3"),
+                            OverheadCompartmentConfigurationId = new Guid("d5c24a79-1ae5-43dc-bad4-063466166be3"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22956,7 +22951,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5887fdd8-7a8d-4922-90f1-7d249beac12e"),
+                            OverheadCompartmentConfigurationId = new Guid("5887fdd8-7a8d-4922-90f1-7d249beac12e"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22969,7 +22964,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5887fdd8-7a8d-4922-90f1-7d249beac12e"),
+                            OverheadCompartmentConfigurationId = new Guid("5887fdd8-7a8d-4922-90f1-7d249beac12e"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22982,7 +22977,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5887fdd8-7a8d-4922-90f1-7d249beac12e"),
+                            OverheadCompartmentConfigurationId = new Guid("5887fdd8-7a8d-4922-90f1-7d249beac12e"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -22995,7 +22990,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("61785a51-43d7-471e-a5c1-1dc926f1078f"),
+                            OverheadCompartmentConfigurationId = new Guid("61785a51-43d7-471e-a5c1-1dc926f1078f"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23008,7 +23003,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("61785a51-43d7-471e-a5c1-1dc926f1078f"),
+                            OverheadCompartmentConfigurationId = new Guid("61785a51-43d7-471e-a5c1-1dc926f1078f"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23021,7 +23016,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("61785a51-43d7-471e-a5c1-1dc926f1078f"),
+                            OverheadCompartmentConfigurationId = new Guid("61785a51-43d7-471e-a5c1-1dc926f1078f"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23034,7 +23029,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8bf99391-a663-4a5b-9bbe-2b6a53348ec7"),
+                            OverheadCompartmentConfigurationId = new Guid("8bf99391-a663-4a5b-9bbe-2b6a53348ec7"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23047,7 +23042,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8bf99391-a663-4a5b-9bbe-2b6a53348ec7"),
+                            OverheadCompartmentConfigurationId = new Guid("8bf99391-a663-4a5b-9bbe-2b6a53348ec7"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23060,7 +23055,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("8bf99391-a663-4a5b-9bbe-2b6a53348ec7"),
+                            OverheadCompartmentConfigurationId = new Guid("8bf99391-a663-4a5b-9bbe-2b6a53348ec7"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23073,7 +23068,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("197faf7f-feaa-40a6-b8b0-c414309f9719"),
+                            OverheadCompartmentConfigurationId = new Guid("197faf7f-feaa-40a6-b8b0-c414309f9719"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23086,7 +23081,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("197faf7f-feaa-40a6-b8b0-c414309f9719"),
+                            OverheadCompartmentConfigurationId = new Guid("197faf7f-feaa-40a6-b8b0-c414309f9719"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23099,7 +23094,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("197faf7f-feaa-40a6-b8b0-c414309f9719"),
+                            OverheadCompartmentConfigurationId = new Guid("197faf7f-feaa-40a6-b8b0-c414309f9719"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23112,7 +23107,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("70c09f4d-51b9-4a3e-a115-d0786ff61585"),
+                            OverheadCompartmentConfigurationId = new Guid("70c09f4d-51b9-4a3e-a115-d0786ff61585"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23125,7 +23120,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("70c09f4d-51b9-4a3e-a115-d0786ff61585"),
+                            OverheadCompartmentConfigurationId = new Guid("70c09f4d-51b9-4a3e-a115-d0786ff61585"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23138,7 +23133,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("70c09f4d-51b9-4a3e-a115-d0786ff61585"),
+                            OverheadCompartmentConfigurationId = new Guid("70c09f4d-51b9-4a3e-a115-d0786ff61585"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23151,7 +23146,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("56d9f235-3a2b-416b-9694-96a0d5363dfa"),
+                            OverheadCompartmentConfigurationId = new Guid("56d9f235-3a2b-416b-9694-96a0d5363dfa"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23164,7 +23159,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("56d9f235-3a2b-416b-9694-96a0d5363dfa"),
+                            OverheadCompartmentConfigurationId = new Guid("56d9f235-3a2b-416b-9694-96a0d5363dfa"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23177,7 +23172,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("56d9f235-3a2b-416b-9694-96a0d5363dfa"),
+                            OverheadCompartmentConfigurationId = new Guid("56d9f235-3a2b-416b-9694-96a0d5363dfa"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23190,7 +23185,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("502bb6dc-1f11-4cec-8fdf-f6fa144ef2b2"),
+                            OverheadCompartmentConfigurationId = new Guid("502bb6dc-1f11-4cec-8fdf-f6fa144ef2b2"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23203,7 +23198,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("502bb6dc-1f11-4cec-8fdf-f6fa144ef2b2"),
+                            OverheadCompartmentConfigurationId = new Guid("502bb6dc-1f11-4cec-8fdf-f6fa144ef2b2"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23216,7 +23211,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("502bb6dc-1f11-4cec-8fdf-f6fa144ef2b2"),
+                            OverheadCompartmentConfigurationId = new Guid("502bb6dc-1f11-4cec-8fdf-f6fa144ef2b2"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23229,7 +23224,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("2516c270-a5d5-4551-9412-615c82902962"),
+                            OverheadCompartmentConfigurationId = new Guid("2516c270-a5d5-4551-9412-615c82902962"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23242,7 +23237,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("2516c270-a5d5-4551-9412-615c82902962"),
+                            OverheadCompartmentConfigurationId = new Guid("2516c270-a5d5-4551-9412-615c82902962"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("19674c0d-278d-4951-a0ee-f672075af1d8")
                         },
@@ -23255,7 +23250,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("2516c270-a5d5-4551-9412-615c82902962"),
+                            OverheadCompartmentConfigurationId = new Guid("2516c270-a5d5-4551-9412-615c82902962"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23268,7 +23263,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("13f71c23-b599-402a-8a25-8a4fc0678fe7"),
+                            OverheadCompartmentConfigurationId = new Guid("13f71c23-b599-402a-8a25-8a4fc0678fe7"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23281,7 +23276,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("13f71c23-b599-402a-8a25-8a4fc0678fe7"),
+                            OverheadCompartmentConfigurationId = new Guid("13f71c23-b599-402a-8a25-8a4fc0678fe7"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23294,7 +23289,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("13f71c23-b599-402a-8a25-8a4fc0678fe7"),
+                            OverheadCompartmentConfigurationId = new Guid("13f71c23-b599-402a-8a25-8a4fc0678fe7"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23307,7 +23302,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("7f740975-d048-4dc1-a82a-a599a5cc808c"),
+                            OverheadCompartmentConfigurationId = new Guid("7f740975-d048-4dc1-a82a-a599a5cc808c"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23320,7 +23315,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("7f740975-d048-4dc1-a82a-a599a5cc808c"),
+                            OverheadCompartmentConfigurationId = new Guid("7f740975-d048-4dc1-a82a-a599a5cc808c"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23333,7 +23328,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("7f740975-d048-4dc1-a82a-a599a5cc808c"),
+                            OverheadCompartmentConfigurationId = new Guid("7f740975-d048-4dc1-a82a-a599a5cc808c"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23346,7 +23341,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("53da8a9f-ea90-4e6e-b379-98330f4b4cce"),
+                            OverheadCompartmentConfigurationId = new Guid("53da8a9f-ea90-4e6e-b379-98330f4b4cce"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23359,7 +23354,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("53da8a9f-ea90-4e6e-b379-98330f4b4cce"),
+                            OverheadCompartmentConfigurationId = new Guid("53da8a9f-ea90-4e6e-b379-98330f4b4cce"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23372,7 +23367,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("53da8a9f-ea90-4e6e-b379-98330f4b4cce"),
+                            OverheadCompartmentConfigurationId = new Guid("53da8a9f-ea90-4e6e-b379-98330f4b4cce"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23385,7 +23380,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f62f2d96-e8ed-4056-9c87-c9e05d460021"),
+                            OverheadCompartmentConfigurationId = new Guid("f62f2d96-e8ed-4056-9c87-c9e05d460021"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23398,7 +23393,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f62f2d96-e8ed-4056-9c87-c9e05d460021"),
+                            OverheadCompartmentConfigurationId = new Guid("f62f2d96-e8ed-4056-9c87-c9e05d460021"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23411,7 +23406,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("f62f2d96-e8ed-4056-9c87-c9e05d460021"),
+                            OverheadCompartmentConfigurationId = new Guid("f62f2d96-e8ed-4056-9c87-c9e05d460021"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23424,7 +23419,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("e3b470fc-4099-4a97-9931-43ffab9aa014"),
+                            OverheadCompartmentConfigurationId = new Guid("e3b470fc-4099-4a97-9931-43ffab9aa014"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23437,7 +23432,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("e3b470fc-4099-4a97-9931-43ffab9aa014"),
+                            OverheadCompartmentConfigurationId = new Guid("e3b470fc-4099-4a97-9931-43ffab9aa014"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23450,7 +23445,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("e3b470fc-4099-4a97-9931-43ffab9aa014"),
+                            OverheadCompartmentConfigurationId = new Guid("e3b470fc-4099-4a97-9931-43ffab9aa014"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23463,7 +23458,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("62fe319a-6c39-40c6-a8aa-3381072fa3a4"),
+                            OverheadCompartmentConfigurationId = new Guid("62fe319a-6c39-40c6-a8aa-3381072fa3a4"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23476,7 +23471,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("62fe319a-6c39-40c6-a8aa-3381072fa3a4"),
+                            OverheadCompartmentConfigurationId = new Guid("62fe319a-6c39-40c6-a8aa-3381072fa3a4"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23489,7 +23484,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("62fe319a-6c39-40c6-a8aa-3381072fa3a4"),
+                            OverheadCompartmentConfigurationId = new Guid("62fe319a-6c39-40c6-a8aa-3381072fa3a4"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23502,7 +23497,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("c5dc8694-6ad7-469e-90e4-43e240d23504"),
+                            OverheadCompartmentConfigurationId = new Guid("c5dc8694-6ad7-469e-90e4-43e240d23504"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23515,7 +23510,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("c5dc8694-6ad7-469e-90e4-43e240d23504"),
+                            OverheadCompartmentConfigurationId = new Guid("c5dc8694-6ad7-469e-90e4-43e240d23504"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23528,7 +23523,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("c5dc8694-6ad7-469e-90e4-43e240d23504"),
+                            OverheadCompartmentConfigurationId = new Guid("c5dc8694-6ad7-469e-90e4-43e240d23504"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23541,7 +23536,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5f866475-19d2-422b-8d89-4c6f083c0ee5"),
+                            OverheadCompartmentConfigurationId = new Guid("5f866475-19d2-422b-8d89-4c6f083c0ee5"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23554,7 +23549,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5f866475-19d2-422b-8d89-4c6f083c0ee5"),
+                            OverheadCompartmentConfigurationId = new Guid("5f866475-19d2-422b-8d89-4c6f083c0ee5"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23567,7 +23562,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("5f866475-19d2-422b-8d89-4c6f083c0ee5"),
+                            OverheadCompartmentConfigurationId = new Guid("5f866475-19d2-422b-8d89-4c6f083c0ee5"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23580,7 +23575,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("598cb313-252f-4e44-bdad-8a4ba7ac0f7a"),
+                            OverheadCompartmentConfigurationId = new Guid("598cb313-252f-4e44-bdad-8a4ba7ac0f7a"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23593,7 +23588,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("598cb313-252f-4e44-bdad-8a4ba7ac0f7a"),
+                            OverheadCompartmentConfigurationId = new Guid("598cb313-252f-4e44-bdad-8a4ba7ac0f7a"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23606,7 +23601,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("598cb313-252f-4e44-bdad-8a4ba7ac0f7a"),
+                            OverheadCompartmentConfigurationId = new Guid("598cb313-252f-4e44-bdad-8a4ba7ac0f7a"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23619,7 +23614,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("1cad0800-a720-466a-9e1a-89a3671177e9"),
+                            OverheadCompartmentConfigurationId = new Guid("1cad0800-a720-466a-9e1a-89a3671177e9"),
                             Sequence = (short)1,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23632,7 +23627,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("1cad0800-a720-466a-9e1a-89a3671177e9"),
+                            OverheadCompartmentConfigurationId = new Guid("1cad0800-a720-466a-9e1a-89a3671177e9"),
                             Sequence = (short)2,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         },
@@ -23645,7 +23640,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             IsOccupied = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            OverheadCompartmentId = new Guid("1cad0800-a720-466a-9e1a-89a3671177e9"),
+                            OverheadCompartmentConfigurationId = new Guid("1cad0800-a720-466a-9e1a-89a3671177e9"),
                             Sequence = (short)3,
                             ZoneAreaId = new Guid("549d068d-16c6-4268-85f2-cf98eb1618b2")
                         });
@@ -33802,9 +33797,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<short>("ColumnNumber")
-                        .HasColumnType("smallint");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -33823,10 +33815,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<short>("RowNumber")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("SerialNumber")
+                        .IsRequired()
                         .HasColumnType("varchar(100)");
 
                     b.Property<Guid>("ULDMetaDataId")
@@ -33840,138 +33830,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("ULDMetaDataId");
 
                     b.ToTable("ULDs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("3218738e-a0ee-4c85-996e-d9aa213a4d31"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)1,
-                            ULDMetaDataId = new Guid("4e7eab62-f35f-4a60-8ac2-5d4d093e00c4"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("6e280ba0-c986-4750-90ab-4d832801c374"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)2,
-                            ULDMetaDataId = new Guid("38495a67-7336-412d-a221-3267a284af64"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("6918bb04-eaa8-4e23-aff8-d2db960bcea0"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)3,
-                            ULDMetaDataId = new Guid("eb2d2df7-00af-4ad9-8964-e76bf7aa089d"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("5fd0fd46-105b-4bd6-9497-3b43519b51ef"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)4,
-                            ULDMetaDataId = new Guid("b90b9436-56bc-4254-b625-2ac7d4b8080e"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("243a356e-cfc9-4e4f-8a57-0c460a43e543"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)5,
-                            ULDMetaDataId = new Guid("030bcece-6f0b-4c33-9b67-cb669cfd9a04"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("c820b286-1edf-4c6d-93f8-45f1f34927d9"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)6,
-                            ULDMetaDataId = new Guid("4a6fba20-86e8-479c-9d2c-80b7c269c657"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("0e233c92-cb5c-482c-9307-5af6a032344e"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)7,
-                            ULDMetaDataId = new Guid("c4629465-bc25-4384-ae21-db57ac5b440b"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("a3734030-8705-4b1c-8e8f-a48b3d799842"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)8,
-                            ULDMetaDataId = new Guid("11c6c149-d702-4cdf-b842-50ec5300b656"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("4635a2cd-939b-4adf-b465-585a8e779347"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)9,
-                            ULDMetaDataId = new Guid("f648e6e3-156a-4bcb-b57b-60585895a7df"),
-                            ULDType = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("7a950949-d6d8-45d4-ae3a-ce7af7304c17"),
-                            ColumnNumber = (short)1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RowNumber = (short)10,
-                            ULDMetaDataId = new Guid("4d79fb54-bf18-4391-9bfd-a5153a3c10c5"),
-                            ULDType = 0
-                        });
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>
@@ -33979,6 +33837,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CargoPositionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ColumnNumber")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -34007,6 +33871,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LoadPlanId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("RowNumber")
+                        .HasColumnType("int");
+
                     b.Property<double>("TotalWeight")
                         .HasColumnType("float");
 
@@ -34020,6 +33887,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CargoPositionId");
 
                     b.HasIndex("LoadPlanId");
 
@@ -34041,8 +33910,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("ULDContainerId", "CargoPositionId");
 
-                    b.HasIndex("CargoPositionId")
-                        .IsUnique();
+                    b.HasIndex("CargoPositionId");
 
                     b.ToTable("ULDContainerCargoPositions");
                 });
@@ -34086,138 +33954,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ULDMetaDatas");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("4e7eab62-f35f-4a60-8ac2-5d4d093e00c4"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 1814.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("38495a67-7336-412d-a221-3267a284af64"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 2948.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("eb2d2df7-00af-4ad9-8964-e76bf7aa089d"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 2948.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("b90b9436-56bc-4254-b625-2ac7d4b8080e"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 2948.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("030bcece-6f0b-4c33-9b67-cb669cfd9a04"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 3628.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("4a6fba20-86e8-479c-9d2c-80b7c269c657"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 3628.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("c4629465-bc25-4384-ae21-db57ac5b440b"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 2948.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("11c6c149-d702-4cdf-b842-50ec5300b656"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 2948.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("f648e6e3-156a-4bcb-b57b-60585895a7df"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 2948.0,
-                            Width = 224.0
-                        },
-                        new
-                        {
-                            Id = new Guid("4d79fb54-bf18-4391-9bfd-a5153a3c10c5"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Height = 163.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Length = 318.0,
-                            Weight = 1814.0,
-                            Width = 224.0
-                        });
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Unit", b =>
@@ -34836,10 +34572,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .WithMany()
                         .HasForeignKey("SeatId");
 
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.ULD", "ULD")
-                        .WithMany()
-                        .HasForeignKey("ULDId");
-
                     b.HasOne("Aeroclub.Cargo.Core.Entities.ZoneArea", "ZoneArea")
                         .WithMany("CargoPositions")
                         .HasForeignKey("ZoneAreaId")
@@ -34849,8 +34581,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("OverheadPosition");
 
                     b.Navigation("Seat");
-
-                    b.Navigation("ULD");
 
                     b.Navigation("ZoneArea");
                 });
@@ -34965,7 +34695,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("SeatLayout");
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartment", b =>
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartmentConfiguration", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.OverheadLayout", "OverheadLayout")
                         .WithMany("OverheadCompartments")
@@ -34978,9 +34708,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadPosition", b =>
                 {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.OverheadCompartment", "OverheadCompartment")
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.OverheadCompartmentConfiguration", "OverheadCompartmentConfigurations")
                         .WithMany("OverheadPositions")
-                        .HasForeignKey("OverheadCompartmentId")
+                        .HasForeignKey("OverheadCompartmentConfigurationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -34990,7 +34720,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OverheadCompartment");
+                    b.Navigation("OverheadCompartmentConfigurations");
 
                     b.Navigation("ZoneArea");
                 });
@@ -35090,6 +34820,10 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>
                 {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.CargoPosition", null)
+                        .WithMany("ULDContainers")
+                        .HasForeignKey("CargoPositionId");
+
                     b.HasOne("Aeroclub.Cargo.Core.Entities.LoadPlan", "LoadPlan")
                         .WithMany("ULDContaines")
                         .HasForeignKey("LoadPlanId")
@@ -35108,8 +34842,8 @@ namespace Aeroclub.Cargo.Data.Migrations
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainerCargoPosition", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.CargoPosition", "CargoPosition")
-                        .WithOne("ULDContainerCargoPosition")
-                        .HasForeignKey("Aeroclub.Cargo.Core.Entities.ULDContainerCargoPosition", "CargoPositionId")
+                        .WithMany()
+                        .HasForeignKey("CargoPositionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -35229,8 +34963,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoPosition", b =>
                 {
-                    b.Navigation("ULDContainerCargoPosition")
-                        .IsRequired();
+                    b.Navigation("ULDContainers");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Country", b =>
@@ -35261,7 +34994,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("ULDContaines");
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartment", b =>
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartmentConfiguration", b =>
                 {
                     b.Navigation("OverheadPositions");
                 });

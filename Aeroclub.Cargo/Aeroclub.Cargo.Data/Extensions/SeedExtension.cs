@@ -27,18 +27,15 @@ namespace Aeroclub.Cargo.Data.Extensions
             SeedSeat(modelBuilder, basePath);
             SeedSeatLayout(modelBuilder, basePath);
             SeedOverheadLayout(modelBuilder, basePath);
+            SeedOverheadCompartmentConfiguration(modelBuilder, basePath);
             SeedOverheadCompartment(modelBuilder, basePath);
-            SeedOverheadPosition(modelBuilder, basePath);
             SeedAircraft(modelBuilder, basePath);
             SeedFlightSector(modelBuilder, basePath);
             SeedPackageContainer(modelBuilder, basePath);
             SeedPackageContainerSector(modelBuilder, basePath);
             SeedAircraftType(modelBuilder, basePath);
             SeedAircraftSubType(modelBuilder, basePath);
-            SeedAircraftLayoutMapping(modelBuilder, basePath);
-            SeedULDMetaData(modelBuilder, basePath);
-            SeedULD(modelBuilder, basePath);  
-            
+            SeedAircraftLayoutMapping(modelBuilder, basePath);            
         }
 
         private static void SeedCountries(ModelBuilder modelBuilder, string basePath)
@@ -216,20 +213,20 @@ namespace Aeroclub.Cargo.Data.Extensions
                 modelBuilder.Entity<OverheadLayout>().HasData(overheadLayout);
         }
         
+        private static void SeedOverheadCompartmentConfiguration(ModelBuilder modelBuilder, string basePath)
+        {
+            var overhead =
+                JsonConvert.DeserializeObject<OverheadCompartmentConfiguration[]>(File.ReadAllText(Path.Combine(basePath, "OverheadCompartmentConfiguration.json")));
+            if (overhead != null)
+                modelBuilder.Entity<OverheadCompartmentConfiguration>().HasData(overhead);
+        }
+        
         private static void SeedOverheadCompartment(ModelBuilder modelBuilder, string basePath)
         {
             var overhead =
                 JsonConvert.DeserializeObject<OverheadCompartment[]>(File.ReadAllText(Path.Combine(basePath, "OverheadCompartment.json")));
             if (overhead != null)
                 modelBuilder.Entity<OverheadCompartment>().HasData(overhead);
-        }
-        
-        private static void SeedOverheadPosition(ModelBuilder modelBuilder, string basePath)
-        {
-            var overhead =
-                JsonConvert.DeserializeObject<OverheadPosition[]>(File.ReadAllText(Path.Combine(basePath, "OverheadPosition.json")));
-            if (overhead != null)
-                modelBuilder.Entity<OverheadPosition>().HasData(overhead);
         }
 
         private static void SeedAircraftType(ModelBuilder modelBuilder, string basePath)
@@ -254,22 +251,6 @@ namespace Aeroclub.Cargo.Data.Extensions
                 JsonConvert.DeserializeObject<AircraftLayoutMapping[]>(File.ReadAllText(Path.Combine(basePath, "AircraftLayoutMapping.json")));
             if (aircraftLayoutMapping != null)
                 modelBuilder.Entity<AircraftLayoutMapping>().HasData(aircraftLayoutMapping);
-        }
-
-        private static void SeedULDMetaData(ModelBuilder modelBuilder, string basePath)
-        {
-            var uldMetaData =
-                JsonConvert.DeserializeObject<ULDMetaData[]>(File.ReadAllText(Path.Combine(basePath, "ULDMetaData.json")));
-            if (uldMetaData != null)
-                modelBuilder.Entity<ULDMetaData>().HasData(uldMetaData);
-        }
-
-        private static void SeedULD(ModelBuilder modelBuilder, string basePath)
-        {
-               var uld =
-                   JsonConvert.DeserializeObject<ULD[]>(File.ReadAllText(Path.Combine(basePath, "ULD.json")));
-               if (uld != null)
-                   modelBuilder.Entity<ULD>().HasData(uld);
         }
 
     }

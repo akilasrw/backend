@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
-    public class OverheadPositionSpecification: BaseSpecification<OverheadPosition>
+    public class OverheadPositionSpecification: BaseSpecification<OverheadCompartment>
     {
         public OverheadPositionSpecification(OverheadPositionQM query)
             :base(x => query.Id == Guid.Empty || x.Id == query.Id)
         {
-            AddInclude(y => y.Include(z => z.OverheadCompartment).ThenInclude(c => c.OverheadLayout));
+            AddInclude(y => y.Include(z => z.OverheadCompartmentConfigurations).ThenInclude(c => c.OverheadLayout));
         }
     }
 }

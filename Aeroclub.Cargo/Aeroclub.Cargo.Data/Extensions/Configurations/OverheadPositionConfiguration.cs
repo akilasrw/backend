@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Data.Extensions.Configurations
 {
-    public class OverheadPositionConfiguration : IEntityTypeConfiguration<OverheadPosition>
+    public class OverheadPositionConfiguration : IEntityTypeConfiguration<OverheadCompartment>
     {
-        public void Configure(EntityTypeBuilder<OverheadPosition> builder)
+        public void Configure(EntityTypeBuilder<OverheadCompartment> builder)
         {
             builder.Property(p => p.Sequence).HasColumnType("smallint").IsRequired();
         }

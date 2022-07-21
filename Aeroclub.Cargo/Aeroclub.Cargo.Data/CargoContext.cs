@@ -103,8 +103,8 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AWBProduct> AWBProducts { get; set; } = null!;
         public DbSet<AWBInformation> AWBInformations { get; set; } = null!;
         public DbSet<OverheadLayout> OverheadLayouts { get; set; } = null!;
+        public DbSet<OverheadCompartmentConfiguration> OverheadCompartmentConfigurations { get; set; } = null!;
         public DbSet<OverheadCompartment> OverheadCompartments { get; set; } = null!;
-        public DbSet<OverheadPosition> OverheadPositions { get; set; } = null!;
         public DbSet<ULDContainerCargoPosition> ULDContainerCargoPositions { get; set; } = null!;
         public DbSet<AWBStack> AWBStacks { get; set; } = null!;
         public DbSet<AircraftType> AircraftTypes { get; set; } = null!;

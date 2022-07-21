@@ -6,9 +6,7 @@ namespace Aeroclub.Cargo.Core.Entities
     public class ULD : AuditableEntity 
     {
         public ULDType ULDType { get; set; }
-        public string? SerialNumber { get; set; }
-        public int RowNumber { get; set; }
-        public int ColumnNumber { get; set; }
+        public string SerialNumber { get; set; } = null!;
         public Guid ULDMetaDataId { get; set; }
         public ULDMetaData ULDMetaData { get; set; }
     }

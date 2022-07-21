@@ -14,7 +14,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public virtual AircraftCabin AircraftCabin { get; set; }
         public virtual ICollection<CargoPosition> CargoPositions { get; set; }
         public virtual ICollection<Seat> Seats { get; set; }
-        public virtual ICollection<OverheadPosition> OverheadPositions { get; set; }
+        public virtual ICollection<OverheadCompartment> OverheadCompartments { get; set; }
 
     }
 }

@@ -26,16 +26,16 @@ namespace Aeroclub.Cargo.Application.Services
         {
 
             var spec = new OverheadPositionSpecification(query);
-            var overheadPosition = await _unitOfWork.Repository<OverheadPosition>().GetEntityWithSpecAsync(spec);
-            return _mapper.Map<OverheadPositionDto>(overheadPosition);
+            var overheadCompartment = await _unitOfWork.Repository<OverheadCompartment>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<OverheadPositionDto>(overheadCompartment);
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(OverheadPositionDto overheadPositionDto)
         {
-            var overheadPosition = _mapper.Map<OverheadPosition>(overheadPositionDto);
-            _unitOfWork.Repository<OverheadPosition>().Update(overheadPosition);
+            var overheadCompartment = _mapper.Map<OverheadCompartment>(overheadPositionDto);
+            _unitOfWork.Repository<OverheadCompartment>().Update(overheadCompartment);
             await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<OverheadPosition>().Detach(overheadPosition);
+            _unitOfWork.Repository<OverheadCompartment>().Detach(overheadCompartment);
             return ServiceResponseStatus.Success;
         }
     }

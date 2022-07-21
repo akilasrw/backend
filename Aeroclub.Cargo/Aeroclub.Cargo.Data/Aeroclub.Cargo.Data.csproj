@@ -49,25 +49,19 @@
     <None Update="SeedData\AircraftType.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SeedData\OverheadCompartment.json">
+    <None Update="SeedData\OverheadCompartmentConfiguration.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="SeedData\OverheadLayout.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SeedData\OverheadPosition.json">
+    <None Update="SeedData\OverheadCompartment.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="SeedData\PackageContainer.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SeedData\PackageContainerSector.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SeedData\ULD.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SeedData\ULDMetaData.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SeedData\ZoneArea.json">
