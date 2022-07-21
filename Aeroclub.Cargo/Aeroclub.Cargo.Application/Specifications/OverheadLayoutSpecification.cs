@@ -16,7 +16,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(p => (query.Id == Guid.Empty || p.Id == query.Id))
         {
             if (query.IncludeOverheadCompartment)
-                AddInclude(x => x.Include(y => y.OverheadCompartments).ThenInclude(a => a.OverheadCompartments));
+                AddInclude(x => x.Include(y => y.OverheadCompartmentConfigurations).ThenInclude(a => a.OverheadCompartments));
         }
     }
 }

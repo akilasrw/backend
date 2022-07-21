@@ -1,6 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Models.Dtos;
-using Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IOverheadService
     {
-        Task<ServiceResponseStatus> UpdateAsync(OverheadPositionDto overheadPositionDto);
-        Task<OverheadPositionDto> GetAsync(OverheadPositionQM query);
+        Task<ServiceResponseStatus> UpdateAsync(OverheadCompartmentDto overheadCompartmentDto);
+        Task<OverheadCompartmentDto> GetAsync(OverheadCompartmentQM query);
     }
 }

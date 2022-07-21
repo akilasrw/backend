@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs
+namespace Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs
 {
-    public class OverheadPositionQM: BaseQM
+    public class OverheadCompartmentQM: BaseQM
     {
     }
 }

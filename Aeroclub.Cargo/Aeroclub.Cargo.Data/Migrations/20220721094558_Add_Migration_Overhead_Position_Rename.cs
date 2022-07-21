@@ -64,14 +64,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "5fb579bc-bfc9-47ea-9379-90e5ca35a073");
+                value: "324a5db4-dd8a-4aa8-9dc3-427df23d4856");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "2979d20d-73de-49c5-a5f6-b18f283b7c54");
+                value: "ddeff9ab-1faa-41fd-b6d5-2e81c582c1dd");
 
             migrationBuilder.InsertData(
                 table: "OverheadCompartments",

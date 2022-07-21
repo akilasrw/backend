@@ -173,7 +173,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             // Reset Overhead Compartments,  Overheads
-            foreach (var compartment in overheadLayout.OverheadCompartments)
+            foreach (var compartment in overheadLayout.OverheadCompartmentConfigurations)
             {
                 compartment.Id = Guid.NewGuid();
                 foreach (var pos in compartment.OverheadCompartments)

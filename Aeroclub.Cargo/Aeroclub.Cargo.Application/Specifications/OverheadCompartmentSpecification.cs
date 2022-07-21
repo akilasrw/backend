@@ -1,4 +1,4 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
-    public class OverheadPositionSpecification: BaseSpecification<OverheadCompartment>
+    public class OverheadCompartmentSpecification: BaseSpecification<OverheadCompartment>
     {
-        public OverheadPositionSpecification(OverheadPositionQM query)
+        public OverheadCompartmentSpecification(OverheadCompartmentQM query)
             :base(x => query.Id == Guid.Empty || x.Id == query.Id)
         {
             AddInclude(y => y.Include(z => z.OverheadCompartmentConfigurations).ThenInclude(c => c.OverheadLayout));

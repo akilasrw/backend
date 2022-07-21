@@ -10,7 +10,7 @@ namespace Aeroclub.Cargo.Core.Entities
     public class OverheadLayout : AuditableEntity
     {
         public bool IsBaseLayout { get; set; } = false;
-        public virtual ICollection<OverheadCompartmentConfiguration> OverheadCompartments { get; set; }
+        public virtual ICollection<OverheadCompartmentConfiguration> OverheadCompartmentConfigurations { get; set; }
 
     }
 }

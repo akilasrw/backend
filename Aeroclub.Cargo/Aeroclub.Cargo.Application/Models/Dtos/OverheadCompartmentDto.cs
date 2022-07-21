@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Models.Dtos
 {
-    public class OverheadPositionDto: BaseDto
+    public class OverheadCompartmentDto: BaseDto
     {
         public int Sequence { get; set; }      // 1,2,3  in a compartment
         public bool IsOccupied { get; set; }
         public Guid ZoneAreaId { get; set; }
-        public Guid OverheadCompartmentId { get; set; }
+        public Guid OverheadCompartmentConfigurationId { get; set; }
     }
 }

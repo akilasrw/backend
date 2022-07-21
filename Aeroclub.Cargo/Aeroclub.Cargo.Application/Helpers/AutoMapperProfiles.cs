@@ -131,8 +131,8 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<SeatConfiguration, SeatConfigurationDto>().ReverseMap();
 
-            CreateMap<OverheadPositionDto, OverheadCompartment>();
-            CreateMap<OverheadCompartment, OverheadPositionDto>();
+            CreateMap<OverheadCompartmentDto, OverheadCompartment>();
+            CreateMap<OverheadCompartment, OverheadCompartmentDto>();
 
             CreateMap<ULDContainerCargoPositionDto, ULDContainerCargoPosition>();
 

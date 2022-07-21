@@ -1,7 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Dtos;
-using Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -22,17 +22,17 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<OverheadPositionDto> GetAsync(OverheadPositionQM query)
+        public async Task<OverheadCompartmentDto> GetAsync(OverheadCompartmentQM query)
         {
 
-            var spec = new OverheadPositionSpecification(query);
+            var spec = new OverheadCompartmentSpecification(query);
             var overheadCompartment = await _unitOfWork.Repository<OverheadCompartment>().GetEntityWithSpecAsync(spec);
-            return _mapper.Map<OverheadPositionDto>(overheadCompartment);
+            return _mapper.Map<OverheadCompartmentDto>(overheadCompartment);
         }
 
-        public async Task<ServiceResponseStatus> UpdateAsync(OverheadPositionDto overheadPositionDto)
+        public async Task<ServiceResponseStatus> UpdateAsync(OverheadCompartmentDto overheadCompartmentDto)
         {
-            var overheadCompartment = _mapper.Map<OverheadCompartment>(overheadPositionDto);
+            var overheadCompartment = _mapper.Map<OverheadCompartment>(overheadCompartmentDto);
             _unitOfWork.Repository<OverheadCompartment>().Update(overheadCompartment);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<OverheadCompartment>().Detach(overheadCompartment);

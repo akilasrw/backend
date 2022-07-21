@@ -891,7 +891,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5fb579bc-bfc9-47ea-9379-90e5ca35a073",
+                            ConcurrencyStamp = "324a5db4-dd8a-4aa8-9dc3-427df23d4856",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -907,7 +907,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2979d20d-73de-49c5-a5f6-b18f283b7c54",
+                            ConcurrencyStamp = "ddeff9ab-1faa-41fd-b6d5-2e81c582c1dd",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -34715,7 +34715,7 @@ namespace Aeroclub.Cargo.Data.Migrations
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartmentConfiguration", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.OverheadLayout", "OverheadLayout")
-                        .WithMany("OverheadCompartments")
+                        .WithMany("OverheadCompartmentConfigurations")
                         .HasForeignKey("OverheadLayoutId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -34999,7 +34999,7 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadLayout", b =>
                 {
-                    b.Navigation("OverheadCompartments");
+                    b.Navigation("OverheadCompartmentConfigurations");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageContainer", b =>

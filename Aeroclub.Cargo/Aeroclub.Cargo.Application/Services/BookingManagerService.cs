@@ -5,7 +5,7 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
-using Aeroclub.Cargo.Application.Models.Queries.OverheadPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
@@ -213,7 +213,7 @@ namespace Aeroclub.Cargo.Application.Services
                             else if (matchedCargoPosition.Item1.OverheadCompartmentId != null && matchedCargoPosition.Item1.OverheadCompartmentId != Guid.Empty)
                             {
                                 bool overheadUpdated = false;
-                                var overhead = await _overheadService.GetAsync(new OverheadPositionQM() { Id = matchedCargoPosition.Item1.OverheadCompartmentId.Value });
+                                var overhead = await _overheadService.GetAsync(new OverheadCompartmentQM() { Id = matchedCargoPosition.Item1.OverheadCompartmentId.Value });
                                 if (matchedCargoPosition.Item1.CargoPositionType == CargoPositionType.Overhead)
                                 {
                                     overheadUpdated = true;
