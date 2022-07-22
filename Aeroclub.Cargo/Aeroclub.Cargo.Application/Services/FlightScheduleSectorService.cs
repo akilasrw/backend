@@ -92,7 +92,7 @@ namespace Aeroclub.Cargo.Application.Services
             return flightSSVm;
         }
 
-        private async Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId)
+        private async Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId) // Checking only Main Deck
         {
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {

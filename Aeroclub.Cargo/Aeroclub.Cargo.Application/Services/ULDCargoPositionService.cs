@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -40,6 +41,32 @@ namespace Aeroclub.Cargo.Application.Services
             res.StatusCode = ServiceResponseStatus.Success;
 
             return res;
+        }
+
+
+        public async Task<CargoPosition> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
+        {
+            List<CargoPosition> matchingCargoPositions = new List<CargoPosition>();
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = aircraftLayoutId});
+
+            var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            
+            // Checking Main Deck available positions
+            var matchingCargoPosition = cargoPositionList.ToList().FirstOrDefault(x =>
+                x.ZoneArea.AircraftCabin.AircraftDeck.AircraftDeckType == AircraftDeckType.MainDeck && // Checking only Main Deck
+                x.CargoPositionType == cargoPositionType && // Check position Type based on the package size
+                (x.MaxWeight >= (x.CurrentWeight + packageItem.Weight) && // Checking weight of cargo position
+                    (x.ZoneArea.MaxWeight >= (x.ZoneArea.CurrentWeight + packageItem.Weight)) &&
+                    (x.ZoneArea.AircraftCabin.MaxWeight >= (x.ZoneArea.AircraftCabin.CurrentWeight + packageItem.Weight)) &&
+                    (x.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight >= (x.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageItem.Weight)))
+                ); // Checking weight of Zone
+
+            //ToDo need to validate position volume
+
+            matchingCargoPositions.Add(matchingCargoPosition);
+
+            return matchingCargoPositions.First();
         }
 
         public async Task<ValidateResponse> ValidateCargoPositionAsync(ValidateCargoPositionRM rm)
