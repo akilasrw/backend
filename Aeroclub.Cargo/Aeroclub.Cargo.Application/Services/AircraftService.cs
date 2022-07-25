@@ -134,9 +134,9 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseStatus> UpdateAsync(AircaftUpdateRM dto)
         {
-            var existingAircraft = await _unitOfWork.Repository<Aircraft>().GetEntityWithSpecAsync(new AircraftSpecification(new AircraftValidationQM() { RegNo = dto.RegNo }));
+            var existingAircraft = await _unitOfWork.Repository<Aircraft>().GetEntityWithSpecAsync(new AircraftSpecification(new AircraftQM() { Id = dto.Id }));
 
-            if (existingAircraft != null && existingAircraft.Id != dto.Id)
+            if (existingAircraft != null && existingAircraft.RegNo != dto.RegNo)
             {
                 return ServiceResponseStatus.ValidationError;
             }
@@ -162,9 +162,14 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             if (aircraftLayoutMapping == null ||
-                aircraftLayoutMapping.AircraftLayoutId == null ||
-                aircraftLayoutMapping.OverheadLayoutId == null ||
-                aircraftLayoutMapping.SeatLayoutId == null)
+                aircraftLayoutMapping.AircraftLayoutId == null)
+            {
+                return ServiceResponseStatus.Failed;
+            }
+
+            if (dto.ConfigurationType == AircraftConfigType.P2C &&
+                (aircraftLayoutMapping.OverheadLayoutId == null ||
+                aircraftLayoutMapping.SeatLayoutId == null))
             {
                 return ServiceResponseStatus.Failed;
             }
@@ -173,8 +178,12 @@ namespace Aeroclub.Cargo.Application.Services
             entity.AircraftSubType = aircraftSubType.Type;
 
             entity.AircraftLayoutId = (Guid)(aircraftLayoutMapping.AircraftLayoutId);
-            entity.OverheadLayoutId = (Guid)(aircraftLayoutMapping.OverheadLayoutId);
-            entity.SeatLayoutId = (Guid)(aircraftLayoutMapping.SeatLayoutId);
+
+            if(dto.ConfigurationType == AircraftConfigType.P2C)
+            {
+                entity.OverheadLayoutId = (Guid)(aircraftLayoutMapping.OverheadLayoutId);
+                entity.SeatLayoutId = (Guid)(aircraftLayoutMapping.SeatLayoutId);
+            }
 
 
             _unitOfWork.Repository<Aircraft>().Update(entity);
