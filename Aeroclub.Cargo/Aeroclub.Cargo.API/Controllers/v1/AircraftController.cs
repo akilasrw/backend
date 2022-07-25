@@ -58,7 +58,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _aircraftService.CreateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest("Aircraft is already available.");
+                return BadRequest("Reg number is already used in the system.");
 
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
