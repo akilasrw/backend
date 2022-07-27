@@ -293,6 +293,11 @@ namespace Aeroclub.Cargo.Application.Services
             };
         }
 
+        public async Task<IEnumerable<SeatDto>> GetSeatBookingSummaryLayoutAsync(FlightScheduleSectorSearchQuery query)
+        {
+            return await _flightScheduleSectorService.GetCargoPositionLayoutAsync(query);
+        }
+
         private async Task<bool> UpdateSeatConfigurationAsync(SeatConfigurationDto seatConfigurationDto)
         {
             foreach (var seat in seatConfigurationDto.Seats.ToList())

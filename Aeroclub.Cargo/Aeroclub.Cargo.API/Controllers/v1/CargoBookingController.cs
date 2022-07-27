@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
@@ -57,6 +58,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<CargoBookingSummaryVM>> GetSummaryAsync([FromQuery] BookingSummaryQuery query)
         {
             return Ok(await _bookingManagerService.GetBookingSummaryAsync(query));
+        }
+
+        [HttpGet("GetSeatSummary")]
+        public async Task<ActionResult<IEnumerable<SeatDto>>> GetSeatSummaryAsync([FromQuery] FlightScheduleSectorSearchQuery query)
+        {
+            var result = await _bookingManagerService.GetSeatBookingSummaryLayoutAsync(query);
+            return Ok(result);
         }
 
     }
