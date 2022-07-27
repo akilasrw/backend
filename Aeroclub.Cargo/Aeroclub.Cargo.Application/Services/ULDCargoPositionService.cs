@@ -90,13 +90,59 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
 
-                    return GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea, rm.PackageItem.WeightUnitId);
+                var weightValidationResponse = GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea, rm.PackageItem.WeightUnitId);
+
+                if (weightValidationResponse.IsValid)
+                {
+                    return GetVolumeValidationResponse(rm.PackageItem,position.MaxVolume);
+                }
+                else
+                {
+                    return weightValidationResponse;
+                }
 
             }
             
             return response;
         }
 
+        private ValidateResponse GetVolumeValidationResponse(PackageItemCreateRM package,double maxVolume)
+        {
+            var cmVolumeUnitId = _configuration["BaseUnit:BaseVolumeUnitId"];
+            if (package.VolumeUnitId != Guid.Empty && cmVolumeUnitId.ToLower() != package.VolumeUnitId.ToString())
+            {
+                var inchVolumeUnitId = _configuration["VolumeUnit:InchVolumeUnitId"];
+                var meterVolumeUnitId = _configuration["VolumeUnit:MeterVolumeUnitId"];
+
+                if (meterVolumeUnitId.ToLower() == package.VolumeUnitId.ToString())
+                {
+                    package.Length = package.Length.MeterToCmConversion();
+                    package.Width = package.Width.MeterToCmConversion();
+                    package.Height = package.Height.MeterToCmConversion();
+                }
+
+                if (inchVolumeUnitId.ToLower() == package.VolumeUnitId.ToString())
+                {
+                    package.Length = package.Length.InchToCmConversion();
+                    package.Width = package.Width.InchToCmConversion();
+                    package.Height = package.Height.InchToCmConversion();
+                }
+            }
+            package.Volume = (package.Length * package.Width * package.Height);
+
+            if (package.Volume > maxVolume)
+            {
+                return new ValidateResponse()
+                {
+                    IsValid = false,
+                    ValidationMessage = String.Format("Position max volume({0}cm3) exceed.", maxVolume)
+                };
+            }
+            else
+            {
+                return new ValidateResponse() { IsValid = true };
+            }
+        }
 
         private ValidateResponse GetWeightValidationResponse(double packageWeight, double maxWeight, ZoneArea zoneArea, Guid weightUnitId)
         {
