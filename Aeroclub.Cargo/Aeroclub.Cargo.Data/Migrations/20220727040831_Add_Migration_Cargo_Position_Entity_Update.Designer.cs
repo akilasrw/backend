@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220727040831_Add_Migration_Cargo_Position_Entity_Update")]
+    partial class Add_Migration_Cargo_Position_Entity_Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -891,7 +893,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a51b064e-2845-42ca-a889-0286e2a292c2",
+                            ConcurrencyStamp = "7e301fa1-7f86-40aa-845c-204bdbb37c65",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -907,7 +909,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5dd3c624-9c55-4332-a3c2-ad077d150c01",
+                            ConcurrencyStamp = "ecd92981-5890-4812-a0cb-749508028080",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -18231,7 +18233,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 1814.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18247,7 +18249,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 2948.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18263,7 +18265,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 2948.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18279,7 +18281,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 2948.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18295,7 +18297,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 3628.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18311,7 +18313,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 3628.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18327,7 +18329,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 2948.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18343,7 +18345,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 2948.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18359,7 +18361,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 2948.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")
@@ -18375,7 +18377,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
+                            MaxVolume = 0.0,
                             MaxWeight = 1814.0,
                             Name = "",
                             ZoneAreaId = new Guid("22019ea9-d91a-4b95-835d-80b9659133cf")

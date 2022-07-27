@@ -69,6 +69,31 @@ namespace Aeroclub.Cargo.Application.Services
 
                 foreach (var package in packages)
                 {
+
+                    //Package volume calculation
+                    var cmVolumeUnitId = _configuration["BaseUnit:BaseVolumeUnitId"];
+                    if(package.VolumeUnitId != Guid.Empty && cmVolumeUnitId.ToLower() != package.VolumeUnitId.ToString())
+                    {
+                        var inchVolumeUnitId = _configuration["VolumeUnit:InchVolumeUnitId"];
+                        var meterVolumeUnitId = _configuration["VolumeUnit:MeterVolumeUnitId"];
+
+                        if(meterVolumeUnitId.ToLower() == package.VolumeUnitId.ToString())
+                        {
+                            package.Length = package.Length.MeterToCmConversion();
+                            package.Width = package.Width.MeterToCmConversion();
+                            package.Height = package.Height.MeterToCmConversion();
+                        }
+
+                        if (inchVolumeUnitId.ToLower() == package.VolumeUnitId.ToString())
+                        {
+                            package.Length = package.Length.InchToCmConversion();
+                            package.Width = package.Width.InchToCmConversion();
+                            package.Height = package.Height.InchToCmConversion();
+                        }
+                    }
+                    package.Volume = (package.Length * package.Width * package.Height);
+
+                    //Package weight calculation
                     var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
                     if (package.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != package.WeightUnitId.ToString())
                     {
@@ -124,8 +149,9 @@ namespace Aeroclub.Cargo.Application.Services
                     // Update Current Weights
                     await UpdateCurrentWeightAsyncs(matchedCargoPosition.Id,package.Weight);
 
-                    //TODo Update Current Volume
-                    
+                    // Update Current Volume
+                    await UpdateCurrentVolumeAsyncs(matchedCargoPosition.Id, package.Volume);
+
                 }
                 transaction.Commit();
             }
@@ -152,6 +178,16 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<AircraftCabin>().Detach(position.ZoneArea.AircraftCabin);
             _unitOfWork.Repository<AircraftDeck>().Detach(position.ZoneArea.AircraftCabin.AircraftDeck);
 
+        }
+
+        async Task UpdateCurrentVolumeAsyncs(Guid positionId, double volume)
+        {
+            var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(new CargoPositionSpecification(new CargoPositionQM() { Id = positionId }));
+            position.CurrentVolume += volume;
+          
+            _unitOfWork.Repository<CargoPosition>().Update(position);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<CargoPosition>().Detach(position);
         }
 
         public async Task<CargoBookingDetailVM> GetBookingAsync(CargoBookingDetailQM query)

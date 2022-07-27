@@ -25,7 +25,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             if (res == null) return BadRequest();
 
-            if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Saved Failed.");
+            if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
+            if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Save failed.");
 
             return CreatedAtAction(nameof(GetAsync), rm);
         }

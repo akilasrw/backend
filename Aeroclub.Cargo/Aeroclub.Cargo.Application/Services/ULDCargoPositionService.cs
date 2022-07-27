@@ -59,10 +59,9 @@ namespace Aeroclub.Cargo.Application.Services
                 (x.MaxWeight >= (x.CurrentWeight + packageItem.Weight) && // Checking weight of cargo position
                     (x.ZoneArea.MaxWeight >= (x.ZoneArea.CurrentWeight + packageItem.Weight)) &&
                     (x.ZoneArea.AircraftCabin.MaxWeight >= (x.ZoneArea.AircraftCabin.CurrentWeight + packageItem.Weight)) &&
-                    (x.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight >= (x.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageItem.Weight)))
-                ); // Checking weight of Zone
-
-            //ToDo need to validate position volume
+                    (x.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight >= (x.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight + packageItem.Weight))) && // Checking weight of Zone
+                    (x.MaxVolume >= (x.CurrentVolume + packageItem.Volume))// Checking volume of cargo position
+                ); 
 
             matchingCargoPositions.Add(matchingCargoPosition);
 

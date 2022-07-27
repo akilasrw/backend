@@ -21,5 +21,21 @@ namespace Aeroclub.Cargo.Common.Extentions
                 return weight / 2.2046226218;
         }
 
+        public static double MeterToCmConversion(this double volume, bool isReverse = false)
+        {
+            if (isReverse)
+                return volume / 100;
+            else
+                return volume * 100;
+        }
+
+        public static double InchToCmConversion(this double volume, bool isReverse = false)
+        {
+            if (isReverse)
+                return volume / 2.54;
+            else
+                return volume * 2.54;
+        }
+
     }
 }

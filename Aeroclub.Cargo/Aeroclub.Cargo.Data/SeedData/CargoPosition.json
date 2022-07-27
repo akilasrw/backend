@@ -7958,69 +7958,79 @@
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "1814"
+    "MaxWeight": "1814",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "47E9C885-5B58-4D34-9B35-EDF1A1FFD24C",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "2948"
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "CF2AC95F-2457-429D-87AA-13789CD6F6AB",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "2948"
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "65AF4D12-3F61-4174-ADE1-E9C1FCC8147E",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "2948"
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "575660CD-B062-47F2-903B-82B2DBC55523",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "3628"
+    "MaxWeight": "3628",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "687CEA80-09D4-45B2-B26C-5DB97EE4190F",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "3628"
+    "MaxWeight": "3628",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "9EFB973D-9D14-4790-920F-F6F6AC356CD2",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "2948"
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "F6688957-381C-4693-A396-B40592B3D2F5",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "2948"
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "6FB941A5-883F-48E3-A611-FEE21E03C8BC",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "2948"
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   },
   {
     "Id": "92085E85-70FF-4EB5-8032-3D0EB42D32BB",
     "ZoneAreaId": "22019EA9-D91A-4B95-835D-80B9659133CF",
     "Name": "",
     "CargoPositionType": "1",
-    "MaxWeight": "1814"
+    "MaxWeight": "1814",
+    "MaxVolume": "9000000"
   }
 ]
