@@ -66,7 +66,12 @@ namespace Aeroclub.Cargo.Application.Services
             {
                var flightScheduleSectorCargoPositions = await GetAircraftAvailableSpace(dto.Id);
                dto.FlightScheduleSectorCargoPositions = flightScheduleSectorCargoPositions;
-               dto.AvailableWeight = await GetAircraftAvailableWeight(dto.Id);
+
+                if(dto.AircraftConfigType == AircraftConfigType.Freighter)
+                {
+                    dto.AvailableWeight = await GetAircraftAvailableWeight(dto.Id);
+                    dto.AvailableVolume = await GetAircraftAvailableVolume(dto.Id);
+                }
             }
 
             return new Pagination<FlightScheduleSectorVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
@@ -112,6 +117,35 @@ namespace Aeroclub.Cargo.Application.Services
 
             var availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
             return availableWeight;
+        }
+
+        private async Task<double> GetAircraftAvailableVolume(Guid flightScheduleSectorId)
+        {
+            var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
+            {
+                Id = flightScheduleSectorId,
+                IncludeAircraft = true,
+            });
+
+            var flightScheduleSector =
+                await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
+
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            {
+                AircraftLayoutId = flightScheduleSector.Aircraft.AircraftLayoutId
+            });
+
+            var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+            double availableVolume = 0;
+
+            foreach (var position in positions)
+            {
+                var remainingVolume = position.MaxVolume - position.CurrentVolume;
+                availableVolume += remainingVolume;
+            }
+
+            return availableVolume;
         }
 
         private async Task<List<FlightScheduleSectorCargoPosition>> GetAircraftAvailableSpace(Guid flightScheduleSectorId)

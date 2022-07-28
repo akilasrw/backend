@@ -3,6 +3,6 @@
   <PropertyGroup>
     <Controller_SelectedScaffolderID>ApiControllerEmptyScaffolder</Controller_SelectedScaffolderID>
     <Controller_SelectedScaffolderCategoryPath>root/Common/Api</Controller_SelectedScaffolderCategoryPath>
-    <NameOfLastUsedPublishProfile>C:\Users\rajit\Source\Repos\aeroclub-scs-api\Aeroclub.Cargo\Aeroclub.Cargo.API\Properties\PublishProfiles\aeroclub-skytechcargo-app-dev - Zip Deploy.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\rajit\Source\Repos\aeroclub-scs-api\Aeroclub.Cargo\Aeroclub.Cargo.API\Properties\PublishProfiles\aeroclub-skytechcargo-app-dev-002-qa - Zip Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

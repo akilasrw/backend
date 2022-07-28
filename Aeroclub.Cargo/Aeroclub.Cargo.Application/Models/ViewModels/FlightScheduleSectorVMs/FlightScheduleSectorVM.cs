@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs
         public string DestinationAirportName { get; set; } = null!;
         public string? FlightNumber { get; set; } = null;
         public double AvailableWeight{ get; set; }
+        public double AvailableVolume{ get; set; }
         public AircraftConfigType AircraftConfigType { get; set; }
         public DateTime ScheduledDepartureDateTime { get; set; }
         public DateTime ActualDepartureDateTime { get; set; }
