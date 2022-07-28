@@ -102,7 +102,7 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
                 Id = flightScheduleSectorId,
-                IncludeAircraft = true,
+                IncludeLoadPlan = true,
             });
 
             var flightScheduleSector =
@@ -110,7 +110,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             {
-                AircraftLayoutId = flightScheduleSector.Aircraft.AircraftLayoutId
+                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
             });
 
             var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
@@ -124,7 +124,7 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
                 Id = flightScheduleSectorId,
-                IncludeAircraft = true,
+                IncludeLoadPlan = true,
             });
 
             var flightScheduleSector =
@@ -132,7 +132,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             {
-                AircraftLayoutId = flightScheduleSector.Aircraft.AircraftLayoutId
+                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
             });
 
             var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
