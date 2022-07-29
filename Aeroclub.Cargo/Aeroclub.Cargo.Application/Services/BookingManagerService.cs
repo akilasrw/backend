@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
@@ -281,13 +282,13 @@ namespace Aeroclub.Cargo.Application.Services
             return await _cargoBookingService.GetFilteredListAsync(query);
         }
 
-        public async Task<CargoBookingSummaryVM> GetBookingSummaryAsync(BookingSummaryQuery query)
+        public async Task<CargoBookingSummaryDetailVM> GetBookingSummaryAsync(BookingSummaryQuery query)
         {
             var position = await _flightScheduleSectorService.GetCargoPositionSummaryAsync(new FlightScheduleSectorSearchQuery() {
                 FlightDate = query.FlightDate, FlightNumber =  query.FlightNumber
             });
 
-            return new CargoBookingSummaryVM()
+            return new CargoBookingSummaryDetailVM()
             {
                 CargoPositionSummary = position
             };

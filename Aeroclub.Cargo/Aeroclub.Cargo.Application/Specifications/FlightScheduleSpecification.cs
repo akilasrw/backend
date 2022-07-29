@@ -1,7 +1,9 @@
 ﻿using System;
+using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
@@ -21,6 +23,19 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => (query.Id == Guid.Empty || x.Id == query.Id))
         {
 
+        }
+
+        public FlightScheduleSpecification(CargoBookingSummaryFilteredListQM query, bool isCount = false)
+           : base(x => (string.IsNullOrEmpty(query.FlightNumber) || query.FlightNumber == x.FlightNumber) &&
+           (query.FlightDate == null || query.FlightDate == DateTime.MinValue || query.FlightDate == x.ScheduledDepartureDateTime.Date))
+        {
+
+            if (!isCount)
+            {
+                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddInclude(x => x.Include(y => y.Aircraft));
+                AddOrderByDescending(x => x.Created);
+            }
         }
     }
 }

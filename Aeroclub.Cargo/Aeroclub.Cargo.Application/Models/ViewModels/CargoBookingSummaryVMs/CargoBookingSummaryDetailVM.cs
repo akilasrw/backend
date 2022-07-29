@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
+namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
 {
-    public class CargoBookingSummaryVM
+    public class CargoBookingSummaryDetailVM
     {
         public CargoPositionSummaryVM CargoPositionSummary { get; set; }
     }

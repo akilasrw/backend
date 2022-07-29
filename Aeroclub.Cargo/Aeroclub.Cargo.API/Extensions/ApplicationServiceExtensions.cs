@@ -55,6 +55,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IAWBProductService, AWBProductService>();
             services.AddScoped<IULDCargoBookingManagerService, ULDCargoBookingManagerService>();
             services.AddScoped<IULDCargoBookingService, ULDCargoBookingService>();
+            services.AddScoped<ICargoBookingSummaryService, CargoBookingSummaryService>();
 
 
             return services;

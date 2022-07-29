@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,7 +56,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetSummary")]
-        public async Task<ActionResult<CargoBookingSummaryVM>> GetSummaryAsync([FromQuery] BookingSummaryQuery query)
+        public async Task<ActionResult<CargoBookingSummaryDetailVM>> GetSummaryAsync([FromQuery] BookingSummaryQuery query)
         {
             return Ok(await _bookingManagerService.GetBookingSummaryAsync(query));
         }
