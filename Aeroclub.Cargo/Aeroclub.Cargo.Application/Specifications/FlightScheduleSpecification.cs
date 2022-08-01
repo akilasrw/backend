@@ -26,7 +26,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(CargoBookingSummaryFilteredListQM query, bool isCount = false)
-           : base(x => (string.IsNullOrEmpty(query.FlightNumber) || query.FlightNumber == x.FlightNumber) &&
+           : base(x => (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
            (query.FlightDate == null || query.FlightDate == DateTime.MinValue || query.FlightDate == x.ScheduledDepartureDateTime.Date))
         {
 

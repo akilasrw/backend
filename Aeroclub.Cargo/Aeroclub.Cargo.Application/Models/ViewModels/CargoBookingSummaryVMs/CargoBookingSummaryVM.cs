@@ -6,7 +6,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
     {
         public string FlightNumber { get; set; } = null!;
         public DateTime ScheduledDepartureDateTime { get; set; }
-        public FlightScheduleStatus FlightScheduleStatus { get; set; }
         public string OriginAirportCode { get; set; } = null!;
         public string DestinationAirportCode { get; set; } = null!;
         public string OriginAirportName { get; set; } = null!;
