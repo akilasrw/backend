@@ -37,5 +37,15 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddOrderByDescending(x => x.Created);
             }
         }
+
+        public FlightScheduleSpecification(CargoBookingSummaryDetailQM query, bool isCount = false)
+            : base(x => (query.Id == Guid.Empty || x.Id == query.Id))
+        {
+            if (query.IsIncludeAircraft)
+            {
+                AddInclude(x => x.Include(y => y.Aircraft));
+            }
+        }
+
     }
 }

@@ -18,6 +18,17 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
+        public async Task<CargoBookingSummaryVM> GetAsync(CargoBookingSummaryDetailQM query)
+        {
+            var spec = new FlightScheduleSpecification(query);
+
+            var entity = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+
+            var mappedEntity = _mapper.Map<CargoBookingSummaryVM>(entity);
+
+            return mappedEntity;
+        }
+
         public async Task<Pagination<CargoBookingSummaryVM>> GetFilteredListAsync(CargoBookingSummaryFilteredListQM query)
         {
             var spec = new FlightScheduleSpecification(query);
@@ -30,5 +41,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new Pagination<CargoBookingSummaryVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
+
     }
 }

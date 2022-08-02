@@ -18,6 +18,21 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             _cargoBookingSummaryService = cargoBookingSummaryService;
         }
 
+        
+        [HttpGet()]
+        [ActionName(nameof(GetAsync))]
+        public async Task<ActionResult<CargoBookingSummaryVM>> GetAsync([FromQuery] CargoBookingSummaryDetailQM query)
+        {
+            if (query.Id == Guid.Empty) return BadRequest();
+
+            var result = await _cargoBookingSummaryService.GetAsync(query);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
 
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<CargoBookingSummaryVM>>> GetFilteredListAsync([FromQuery] CargoBookingSummaryFilteredListQM query)
