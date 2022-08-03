@@ -1,8 +1,9 @@
-﻿using Aeroclub.Cargo.Common.Enums;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
 {
-    public class CargoBookingSummaryVM
+    public class CargoBookingSummaryVM : BaseVM
     {
         public string FlightNumber { get; set; } = null!;
         public DateTime ScheduledDepartureDateTime { get; set; }
@@ -12,6 +13,5 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
         public string DestinationAirportName { get; set; } = null!;
         public string AircraftRegNo { get; set; } = null!;
         public AircraftConfigType AircraftConfigurationType { get; set; }
-
     }
 }

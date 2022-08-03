@@ -5,5 +5,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs
     public class CargoBookingSummaryDetailQM : BaseQM
     {
         public bool IsIncludeAircraft { get; set; }
+        public bool IsIncludeFlightScheduleSectors { get; set; }
     }
 }

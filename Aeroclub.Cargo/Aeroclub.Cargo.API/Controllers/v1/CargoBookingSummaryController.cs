@@ -21,7 +21,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         
         [HttpGet()]
         [ActionName(nameof(GetAsync))]
-        public async Task<ActionResult<CargoBookingSummaryVM>> GetAsync([FromQuery] CargoBookingSummaryDetailQM query)
+        public async Task<ActionResult<CargoBookingSummaryDetailVM>> GetAsync([FromQuery] CargoBookingSummaryDetailQM query)
         {
             if (query.Id == Guid.Empty) return BadRequest();
 

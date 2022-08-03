@@ -13,6 +13,10 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs
         public double TotalWeight { get; set; }
         public decimal WeightPercentage { get; set; }
 
+        public double TotalBookedVolume { get; set; }
+        public double TotalVolume { get; set; }
+        public decimal VolumePercentage { get; set; }
+
         public int TotalOccupiedOnSeats { get; set; }
         public int TotalOnSeats { get; set; }
         public decimal OnSeatsPercentage { get; set; }

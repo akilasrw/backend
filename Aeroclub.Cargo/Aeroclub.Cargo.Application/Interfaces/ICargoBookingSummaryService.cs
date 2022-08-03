@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface ICargoBookingSummaryService
     {
         Task<Pagination<CargoBookingSummaryVM>> GetFilteredListAsync(CargoBookingSummaryFilteredListQM query);
-        Task<CargoBookingSummaryVM> GetAsync(CargoBookingSummaryDetailQM query);
+        Task<CargoBookingSummaryDetailVM> GetAsync(CargoBookingSummaryDetailQM query);
 
     }
 }
