@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
         public string DestinationAirportName { get; set; } = null!;
         public string AircraftRegNo { get; set; } = null!;
         public AircraftConfigType AircraftConfigurationType { get; set; }
+        public AircraftSubTypes AircraftSubType { get; set; }
         public CargoPositionSummaryVM CargoPositionSummary { get; set; }
         public IReadOnlyList<CargoPositionDetailVM> CargoPositions { get; set; }
     }
