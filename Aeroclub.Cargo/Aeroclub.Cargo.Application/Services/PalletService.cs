@@ -21,11 +21,10 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<IReadOnlyList<CargoPositionVM>> GetFilteredPositionListAsync(PalletPositionSearchQM query)
         {
-            var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery()
+            var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQM()
             {
                 FlightDate = query.FlightDate,
                 FlightNumber = query.FlightNumber,
-                CargoPositionType = CargoPositionType.OnFloor
             });
             var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
             var flightSector = entity.FirstOrDefault();
@@ -33,7 +32,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return  new List<CargoPositionVM>();
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            { AircraftLayoutId = flightSector.Aircraft.AircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
+            { AircraftLayoutId = flightSector.LoadPlan.AircraftLayoutId });
 
             var dtoList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 

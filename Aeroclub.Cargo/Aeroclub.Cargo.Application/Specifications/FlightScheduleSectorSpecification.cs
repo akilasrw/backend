@@ -65,5 +65,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(y => y.Include(x => x.LoadPlan.ULDContaines).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z => z.CargoPosition));
             AddInclude(y => y.Include(x => x.LoadPlan.AircraftLayout.AircraftDecks));
         }
+
+        public FlightScheduleSectorSpecification(FlightScheduleSectorSearchQM query)
+            : base(x =>  x.FlightNumber == query.FlightNumber && query.FlightDate.Date == x.ScheduledDepartureDateTime.Date)
+        {
+            AddInclude(y => y.Include(x => x.LoadPlan));
+        }
     }
 }
