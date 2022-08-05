@@ -33,6 +33,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.AircraftVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftRMs;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -168,6 +169,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<AircaftCreateRM, Aircraft>();
             CreateMap<AircaftUpdateRM, Aircraft>();
             CreateMap<Aircraft, AircraftVM>();
+            CreateMap<CargoPosition, CargoPositionVM>();
         }
     }
 }
