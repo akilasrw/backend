@@ -284,9 +284,8 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<CargoBookingSummaryDetailVM> GetBookingSummaryAsync(BookingSummaryQuery query)
         {
-            var position = await _flightScheduleSectorService.GetCargoPositionSummaryAsync(new FlightScheduleSectorSearchQuery() {
-                FlightDate = query.FlightDate, FlightNumber =  query.FlightNumber
-            });
+            var position = await _flightScheduleSectorService.GetCargoPositionSummaryAsync(
+                new FlightScheduleSectorSearchQuery() {Id = query.Id });
 
             return new CargoBookingSummaryDetailVM()
             {

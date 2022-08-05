@@ -262,8 +262,8 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<IEnumerable<SeatDto>> GetCargoPositionLayoutAsync(FlightScheduleSectorSearchQuery query)
         {
             var spec = new FlightScheduleSectorSpecification(query);
-            var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-            var flightSector = entity.FirstOrDefault();
+            var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
+            var flightSector = entity;
             //if (flightSector == null)
             //    return new CargoPositionSummaryVM();
 
