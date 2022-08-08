@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using System;
@@ -11,7 +12,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IULDService
     {
-        Task<ServiceResponseStatus> CreateAsync(ULDDto ULDDto);
+        Task<ServiceResponseCreateStatus> CreateAsync(ULDDto ULDDto);
         Task<ULDDto> GetAsync(ULDQM query);
     }
 }

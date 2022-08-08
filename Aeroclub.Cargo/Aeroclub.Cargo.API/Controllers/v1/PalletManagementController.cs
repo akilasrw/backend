@@ -1,5 +1,7 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.PalletManagementQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PalletManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +24,24 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyList<CargoPositionVM>>> GetFilteredPositionListAsync([FromQuery] PalletPositionSearchQM query)
         {
             return Ok(await _palletService.GetFilteredPositionListAsync(query));
+        }
+
+        [HttpPost()]
+        public async Task<IActionResult> CreateAsync([FromBody] PalletCreateRM dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _palletService.CreateAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest("Unable to add pallet.");
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return Ok(new { message = "Pallet added successfully." });
+         
+            return BadRequest("Pallet adding fails.");
+
         }
 
     }

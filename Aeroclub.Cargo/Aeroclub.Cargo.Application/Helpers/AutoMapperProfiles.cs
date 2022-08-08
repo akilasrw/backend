@@ -34,6 +34,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.AircraftRMs;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -89,6 +90,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<CargoBookingRM, CargoBooking>();
 
             CreateMap<ULDContainerDto, ULDContainer>();
+            CreateMap<ULDContainerUpdateRM, ULDContainer>();
             CreateMap<ULDDto, ULD>();
             CreateMap<LoadPlanDto, LoadPlan>();
             CreateMap<ULDMetaDataDto, ULDMetaData>();

@@ -3,14 +3,10 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -31,6 +27,15 @@ namespace Aeroclub.Cargo.Application.Services
             res.Id = result.Id;
             res.StatusCode = ServiceResponseStatus.Success;
             return res;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(ULDContainerUpdateRM dto)
+        {
+            var entity = _mapper.Map<ULDContainer>(dto);
+           _unitOfWork.Repository<ULDContainer>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<ULDContainer>().Detach(entity);
+            return ServiceResponseStatus.Success;
         }
 
         public Task<ULDContainerDto> GetAsync(ULDContainerQM query)
