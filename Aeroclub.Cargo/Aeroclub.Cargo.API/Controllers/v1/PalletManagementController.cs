@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.PalletManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PalletManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PalletVMs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpGet("GetFilteredPositionList")]
-        public async Task<ActionResult<IReadOnlyList<CargoPositionVM>>> GetFilteredPositionListAsync([FromQuery] PalletPositionSearchQM query)
+        public async Task<ActionResult<IReadOnlyList<PalletDetailVM>>> GetFilteredPositionListAsync([FromQuery] PalletPositionSearchQM query)
         {
             return Ok(await _palletService.GetFilteredPositionListAsync(query));
         }

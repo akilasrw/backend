@@ -36,7 +36,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly ISeatService _seatService;
         private readonly ISeatConfigurationService _seatConfigurationService;
         private readonly IOverheadService _overheadService;
-        private readonly IULDCargoPositionService _uLDContainerCargoPositionService;
+        private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
         private readonly IAWBService _AWBService;
         private readonly IConfiguration _configuration;
 
@@ -53,7 +53,7 @@ namespace Aeroclub.Cargo.Application.Services
             ISeatService seatService,
             ISeatConfigurationService seatConfigurationService,
             IOverheadService overheadService,
-            IULDCargoPositionService uLDContainerCargoPositionService,
+            IULDContainerCargoPositionService uLDContainerCargoPositionService,
             IAWBService aWBService,
             IConfiguration configuration)
             : base(unitOfWork, mapper)

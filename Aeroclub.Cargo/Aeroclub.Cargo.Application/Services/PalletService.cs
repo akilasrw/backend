@@ -5,9 +5,10 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PalletManagementQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PalletManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
-using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PalletVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -24,10 +25,12 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IULDService _uLDService;
         private readonly IULDContainerService _uLDContainerService;
         private readonly IConfiguration _configuration;
+        private readonly IULDContainerCargoPositionService _ULDContainerCargoPositionService;
         public PalletService(IUnitOfWork unitOfWork, 
             IMapper mapper,
             IULDMetaDataService uLDMetaDataService, 
-            IULDService uLDService, 
+            IULDService uLDService,
+            IULDContainerCargoPositionService uLDContainerCargoPositionService,
             IULDContainerService uLDContainerService, 
             IConfiguration configuration)
             :base(unitOfWork, mapper)
@@ -36,6 +39,7 @@ namespace Aeroclub.Cargo.Application.Services
             _uLDService = uLDService;
             _uLDContainerService = uLDContainerService;
             _configuration = configuration;
+            _ULDContainerCargoPositionService = uLDContainerCargoPositionService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(PalletCreateRM dto)
@@ -77,7 +81,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var cargoPosition = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(id: dto.PositionId);
 
-                    if (cargoPosition == null || cargoPosition.ULDContainers.Count <= 0)
+                    if (cargoPosition == null)
                     {
                         transaction.Rollback();
                         response.StatusCode = ServiceResponseStatus.Failed;
@@ -115,20 +119,31 @@ namespace Aeroclub.Cargo.Application.Services
                         return response;
                     }
 
-                    foreach (var uldContainer in cargoPosition.ULDContainers)
-                    {
-                        await _uLDContainerService.UpdateAsync(new ULDContainerUpdateRM()
-                        {
-                            ULDId = uld.Id,
-                            LoadPlanId = uldContainer.LoadPlanId,
-                            ULDContainerType = uldContainer.ULDContainerType,
-                            TotalWeight = uldContainer.TotalWeight,
-                            Height = uldContainer.Height,
-                            Width = uldContainer.Width,
-                            Length = uldContainer.Length,
-                        });
 
+                    var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
+                    {
+                        IsIncludeULDContainer = true,
+                        CargoPositionId = cargoPosition.Id
+                    });
+
+                    if (positionContainers != null && positionContainers.Count > 0)
+                    {
+                        foreach (var positionContainer in positionContainers)
+                        {
+                            await _uLDContainerService.UpdateAsync(new ULDContainerUpdateRM()
+                            {
+                                ULDId = uld.Id,
+                                LoadPlanId = positionContainer.ULDContainer.LoadPlanId,
+                                ULDContainerType = positionContainer.ULDContainer.ULDContainerType,
+                                TotalWeight = positionContainer.ULDContainer.TotalWeight,
+                                Height = positionContainer.ULDContainer.Height,
+                                Width = positionContainer.ULDContainer.Width,
+                                Length = positionContainer.ULDContainer.Length,
+                            });
+
+                        }
                     }
+
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -143,8 +158,9 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<IReadOnlyList<CargoPositionVM>> GetFilteredPositionListAsync(PalletPositionSearchQM query)
+        public async Task<IReadOnlyList<PalletDetailVM>> GetFilteredPositionListAsync(PalletPositionSearchQM query)
         {
+            var palletPositions = new List<PalletDetailVM>();
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQM()
             {
                 FlightDate = query.FlightDate,
@@ -153,16 +169,40 @@ namespace Aeroclub.Cargo.Application.Services
             var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
             var flightSector = entity.FirstOrDefault();
             if (flightSector == null)
-                return  new List<CargoPositionVM>();
+                return palletPositions;
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             { AircraftLayoutId = flightSector.LoadPlan.AircraftLayoutId });
 
-            var dtoList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-            var cargoPositionList = _mapper.Map<IReadOnlyList<CargoPositionVM>>(dtoList);
+            foreach (var cargoPosition in cargoPositions)
+            {
+                var palletPosition = new PalletDetailVM();
+                palletPosition.CargoPositionId = cargoPosition.Id;
 
-            return cargoPositionList;
+                var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
+                {
+                    IsIncludeULDContainer = true,
+                    CargoPositionId = cargoPosition.Id
+                });
+
+                if(positionContainers != null && positionContainers.Count >0)
+                {
+                    var firstContainer = positionContainers.First();
+                    if(firstContainer.ULDContainer.ULD != null)
+                    {
+                        palletPosition.IsPalletAssigned = true;
+                        palletPosition.Length = firstContainer.ULDContainer.ULD.ULDMetaData.Length;
+                        palletPosition.Width = firstContainer.ULDContainer.ULD.ULDMetaData.Width;
+                        palletPosition.Height = firstContainer.ULDContainer.ULD.ULDMetaData.Height;
+                        palletPosition.Weight = firstContainer.ULDContainer.ULD.ULDMetaData.Weight;
+                    }
+                }
+
+                palletPositions.Add(palletPosition);
+            }
+            return palletPositions;
         }
     }
 }
