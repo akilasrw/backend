@@ -1,9 +1,10 @@
-﻿using Aeroclub.Cargo.Common.Enums;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer
 {
-    public class ULDContainerUpdateRM
+    public class ULDContainerUpdateRM : BaseRM
     {
         public Guid? ULDId { get; set; }
         [Required]
@@ -13,5 +14,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer
         public double Height { get; set; }
         public double Width { get; set; }
         public double Length { get; set; }
+        public int RowNumber { get; set; }
+        public int ColumnNumber { get; set; }
     }
 }

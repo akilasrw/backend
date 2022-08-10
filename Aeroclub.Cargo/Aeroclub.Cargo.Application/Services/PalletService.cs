@@ -130,18 +130,19 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         foreach (var positionContainer in positionContainers)
                         {
-                            await _uLDContainerService.UpdateAsync(new ULDContainerUpdateRM()
+                            await _uLDContainerService.UpdateULDIdAsync(new ULDContainerUpdateRM()
                             {
+                                Id = positionContainer.ULDContainer.Id,
                                 ULDId = uld.Id,
-                                LoadPlanId = positionContainer.ULDContainer.LoadPlanId,
-                                ULDContainerType = positionContainer.ULDContainer.ULDContainerType,
-                                TotalWeight = positionContainer.ULDContainer.TotalWeight,
-                                Height = positionContainer.ULDContainer.Height,
-                                Width = positionContainer.ULDContainer.Width,
-                                Length = positionContainer.ULDContainer.Length,
                             });
 
                         }
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        response.StatusCode = ServiceResponseStatus.ValidationError;
+                        return response;
                     }
 
                     transaction.Commit();
@@ -197,6 +198,7 @@ namespace Aeroclub.Cargo.Application.Services
                         palletPosition.Width = firstContainer.ULDContainer.ULD.ULDMetaData.Width;
                         palletPosition.Height = firstContainer.ULDContainer.ULD.ULDMetaData.Height;
                         palletPosition.Weight = firstContainer.ULDContainer.ULD.ULDMetaData.Weight;
+                        palletPosition.SerialNumber = firstContainer.ULDContainer.ULD.SerialNumber;
                     }
                 }
 

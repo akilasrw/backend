@@ -29,10 +29,10 @@ namespace Aeroclub.Cargo.Application.Services
             return res;
         }
 
-        public async Task<ServiceResponseStatus> UpdateAsync(ULDContainerUpdateRM dto)
+        public async Task<ServiceResponseStatus> UpdateULDIdAsync(ULDContainerUpdateRM dto)
         {
-            var entity = _mapper.Map<ULDContainer>(dto);
-           _unitOfWork.Repository<ULDContainer>().Update(entity);
+            var entity = await _unitOfWork.Repository<ULDContainer>().GetByIdAsync(dto.Id,false);
+            entity.ULDId = dto.ULDId;
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<ULDContainer>().Detach(entity);
             return ServiceResponseStatus.Success;
