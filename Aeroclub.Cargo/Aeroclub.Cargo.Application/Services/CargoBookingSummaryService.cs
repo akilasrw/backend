@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -14,11 +15,14 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class CargoBookingSummaryService : BaseService, ICargoBookingSummaryService
     {
+        private readonly IULDContainerCargoPositionService _ULDContainerCargoPositionService;
+
         public CargoBookingSummaryService(IUnitOfWork unitOfWork,
+            IULDContainerCargoPositionService ULDContainerCargoPositionService,
             IMapper mapper)
             :base(unitOfWork,mapper)
         {
-
+            _ULDContainerCargoPositionService = ULDContainerCargoPositionService;
         }
 
         public async Task<CargoBookingSummaryDetailVM> GetAsync(CargoBookingSummaryDetailQM query)
@@ -157,6 +161,25 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var position in positions)
             {
                 var cargoPosition = new CargoPositionDetailVM();
+
+                var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
+                {
+                    IsIncludeULDContainer = true,
+                    CargoPositionId = position.Id
+                });
+
+                if (positionContainers != null && positionContainers.Count > 0)
+                {
+                    var firstContainer = positionContainers.First();
+                    if (firstContainer.ULDContainer.ULD != null)
+                    {
+                        cargoPosition.IsPalletAssigned = true;
+                       
+                        cargoPosition.ULDNumber = firstContainer.ULDContainer.ULD.SerialNumber;
+                    }
+                }
+
+                   
                 cargoPosition.MaxWeight = position.MaxWeight;
                 cargoPosition.Weight = position.CurrentWeight;
                 cargoPosition.MaxVolume = position.MaxVolume;

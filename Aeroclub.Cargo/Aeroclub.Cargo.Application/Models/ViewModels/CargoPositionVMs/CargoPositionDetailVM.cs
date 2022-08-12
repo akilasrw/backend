@@ -8,7 +8,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs
 {
     public class CargoPositionDetailVM
     {
-        public string PalletId { get; set; }
+        public bool IsPalletAssigned { get; set; }
+        public string? ULDNumber { get; set; }
         public double MaxWeight { get; set; }
         public double Weight { get; set; }
         public double Volume { get; set; }
