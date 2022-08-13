@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Core.Entities;
@@ -18,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Services
             _uLDMetaDataService = uLDMetaDataService;
         }
 
-        public async Task<ServiceResponseStatus> CreateAsync(ULDDto ULDDto)
+        public async Task<ServiceResponseCreateStatus> CreateAsync(ULDDto ULDDto)
         {
             var uld = _mapper.Map<ULD>(ULDDto);
             // TODO: Future, we can remove this If this commented part is not required and both tables are saved accordingly.
@@ -29,9 +30,11 @@ namespace Aeroclub.Cargo.Application.Services
             //{
              //   uld.ULDMetaDataId = response.Id;
 
-                await _unitOfWork.Repository<ULD>().CreateAsync(uld);
-                await _unitOfWork.SaveChangesAsync();
-                return ServiceResponseStatus.Success;
+            var entity = await _unitOfWork.Repository<ULD>().CreateAsync(uld);
+            await _unitOfWork.SaveChangesAsync();
+            var response = new ServiceResponseCreateStatus() { Id = entity.Id, StatusCode = ServiceResponseStatus.Success };
+
+            return response;
             //}
             //return ServiceResponseStatus.Failed;
         }

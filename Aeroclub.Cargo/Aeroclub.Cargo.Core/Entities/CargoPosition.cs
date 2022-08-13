@@ -20,6 +20,5 @@ namespace Aeroclub.Cargo.Core.Entities
         public virtual ZoneArea ZoneArea { get; set; }
         public virtual Seat Seat { get; set; }
         public virtual OverheadCompartment OverheadCompartment { get; set; }
-        public virtual ICollection<ULDContainer> ULDContainers { get; set; }
     }
 }

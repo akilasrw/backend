@@ -25,6 +25,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IULDContainerService _uldContainerService;
         private readonly IPackageItemService _packageItemService;
         private readonly IAWBService _AWBService;
+        private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
 
         public ULDCargoBookingManagerService(IUnitOfWork unitOfWork, 
             IMapper mapper, 
@@ -34,7 +35,8 @@ namespace Aeroclub.Cargo.Application.Services
             IULDContainerService uldcontainerService,
             IPackageItemService packageItemService,
             IAWBService AWBService,
-            IConfiguration configuration) :
+            IConfiguration configuration,
+            IULDContainerCargoPositionService uLDContainerCargoPositionService) :
             base(unitOfWork, mapper)
         {
             _uldCargoBookingService = uldCargoBookingService;
@@ -44,6 +46,7 @@ namespace Aeroclub.Cargo.Application.Services
             _uldContainerService = uldcontainerService;
             _packageItemService = packageItemService;
             _AWBService = AWBService;
+            _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
 
         }
 
@@ -145,7 +148,13 @@ namespace Aeroclub.Cargo.Application.Services
                         await _AWBService.CreateAsync(package.AWBDetail);
                     }
 
-                   
+                    // Update ULDContainer Cargo Position
+                    await _uLDContainerCargoPositionService.CreateAsync(new ULDContainerCargoPositionDto()
+                    {
+                        CargoPositionId = matchedCargoPosition.Id,
+                        ULDContainerId = uldContainer.Id
+                    });
+
                     // Update Current Weights
                     await UpdateCurrentWeightAsyncs(matchedCargoPosition.Id,package.Weight);
 
