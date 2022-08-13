@@ -9,6 +9,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs
 {
     public class BookingSummaryQuery: BaseQM
     {
-        public Guid FlightScheduleSectorId { get; set; }
+        public Guid FlightScheduleId { get; set; }
     }
 }

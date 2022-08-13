@@ -44,7 +44,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public CargoBookingSpecification(BookingSummaryQuery query)
-            :base(x=> (query.FlightScheduleSectorId == Guid.Empty || x.FlightScheduleSectorId == query.FlightScheduleSectorId))
+            :base(x=> (query.FlightScheduleId == Guid.Empty || x.FlightScheduleSectorId == query.FlightScheduleId))
         {
             AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(y => y.Aircraft));
         }

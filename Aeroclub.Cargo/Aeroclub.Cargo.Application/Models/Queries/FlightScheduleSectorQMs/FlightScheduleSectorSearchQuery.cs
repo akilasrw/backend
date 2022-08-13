@@ -11,5 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
     public class FlightScheduleSectorSearchQuery: BaseQM
     {
         public CargoPositionType CargoPositionType { get; set; } = CargoPositionType.None;
+
+        public Guid FlightScheduleId { get; set; }
     }
 }
