@@ -172,6 +172,9 @@ namespace Aeroclub.Cargo.Application.Services
             if (aircraft == null)
                 return palletPositions;
 
+            if (aircraft.ConfigurationType != AircraftConfigType.Freighter)
+                return palletPositions;
+
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQM()
             {
                 FlightDate = query.FlightDate,
