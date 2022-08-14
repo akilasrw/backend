@@ -67,7 +67,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSectorSpecification(FlightScheduleSectorSearchQM query)
-            : base(x =>  x.FlightNumber.ToLower() == query.FlightNumber.ToLower() && query.FlightDate.Date == x.ScheduledDepartureDateTime.Date)
+            : base(x =>  x.FlightNumber.ToLower() == query.FlightNumber.ToLower() && query.FlightDate.Date == x.ScheduledDepartureDateTime.Date && x.AircraftId == query.AircraftId)
         {
             AddInclude(y => y.Include(x => x.LoadPlan));
         }

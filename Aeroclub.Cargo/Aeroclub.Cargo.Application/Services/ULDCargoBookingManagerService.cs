@@ -105,7 +105,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     CargoPosition matchedCargoPosition = null;
                     if (package.PackageContainerType == PackageContainerType.OnFloor)
-                        matchedCargoPosition = await _uldcgoPositionService.GetMatchingCargoPositionAsync(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType); // Return Tuple.
+                        matchedCargoPosition = await _uldcgoPositionService.GetMatchingCargoPositionAsync(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType);
 
                     if (matchedCargoPosition == null)
                     {

@@ -14,7 +14,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AircraftSpecification(AircraftQM query)
-          : base(x => query.Id != Guid.Empty && x.Id == query.Id)
+          : base(x => (query.Id == Guid.Empty || x.Id == query.Id) && (string.IsNullOrEmpty(query.RegNo) || x.RegNo.ToLower().Contains(query.RegNo.ToLower())))
         {
 
         }

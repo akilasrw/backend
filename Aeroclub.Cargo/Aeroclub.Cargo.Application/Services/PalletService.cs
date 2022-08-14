@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.AircraftQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PalletManagementQMs;
@@ -25,13 +26,15 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IULDService _uLDService;
         private readonly IULDContainerService _uLDContainerService;
         private readonly IConfiguration _configuration;
+        private readonly IAircraftService _aircraftService;
         private readonly IULDContainerCargoPositionService _ULDContainerCargoPositionService;
         public PalletService(IUnitOfWork unitOfWork, 
             IMapper mapper,
             IULDMetaDataService uLDMetaDataService, 
             IULDService uLDService,
             IULDContainerCargoPositionService uLDContainerCargoPositionService,
-            IULDContainerService uLDContainerService, 
+            IULDContainerService uLDContainerService,
+            IAircraftService aircraftService, 
             IConfiguration configuration)
             :base(unitOfWork, mapper)
         {
@@ -40,6 +43,7 @@ namespace Aeroclub.Cargo.Application.Services
             _uLDContainerService = uLDContainerService;
             _configuration = configuration;
             _ULDContainerCargoPositionService = uLDContainerCargoPositionService;
+            _aircraftService = aircraftService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(PalletCreateRM dto)
@@ -162,18 +166,24 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<IReadOnlyList<PalletDetailVM>> GetFilteredPositionListAsync(PalletPositionSearchQM query)
         {
             var palletPositions = new List<PalletDetailVM>();
+
+            var aircraft = await _aircraftService.GetAsync(new AircraftQM() { RegNo = query.AircraftNumber });
+
+            if (aircraft == null)
+                return palletPositions;
+
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQM()
             {
                 FlightDate = query.FlightDate,
                 FlightNumber = query.FlightNumber,
+                AircraftId = aircraft.Id,
             });
-            var entity = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-            var flightSector = entity.FirstOrDefault();
-            if (flightSector == null)
+            var flightScheduleSector = await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
+            if (flightScheduleSector == null)
                 return palletPositions;
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            { AircraftLayoutId = flightSector.LoadPlan.AircraftLayoutId });
+            { AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId });
 
             var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
