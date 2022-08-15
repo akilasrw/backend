@@ -71,7 +71,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-                    var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
+                    var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions && x.CurrentWeight<x.MaxWeight);
 
                 var weightValidationResponse = GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea, rm.PackageItem.WeightUnitId);
 
