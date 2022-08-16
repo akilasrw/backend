@@ -68,6 +68,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.ConfigurationType : AircraftConfigType.None));
             CreateMap<FlightSchedule, CargoBookingSummaryDetailVM>()
                .ForMember(d => d.AircraftSubType, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.AircraftSubType : AircraftSubTypes.None))
+               .ForMember(d => d.AircraftType, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.AircraftType : AircraftTypes.None))
                .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.ConfigurationType : AircraftConfigType.None));
             CreateMap<WarehouseCreateRM, Warehouse>();
             CreateMap<WarehouseUpdateRM, Warehouse>();
