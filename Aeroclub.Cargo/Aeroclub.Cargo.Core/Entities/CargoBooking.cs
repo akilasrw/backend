@@ -13,7 +13,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid DestinationAirportId { get; set; }
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public Guid? FlightScheduleSectorId { get; set; }
-        
+
+        public virtual AWBInformation AWBInformation { get; set; }
         public virtual FlightScheduleSector FlightScheduleSector { get; set; }
         public virtual Airport OriginAirport { get; set; }
         public virtual Airport DestinationAirport { get; set; }

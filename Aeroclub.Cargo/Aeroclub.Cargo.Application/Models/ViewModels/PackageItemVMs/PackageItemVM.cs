@@ -22,8 +22,5 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
         public PackagePriorityType PackagePriorityType { get; set; }
         public PackageItemCategory PackageItemCategory { get; set; }
         public Guid CargoBookingId { get; set; }
-
-        public AWBInformationVM? AWBInformation { get; set; }
-
     }
 }

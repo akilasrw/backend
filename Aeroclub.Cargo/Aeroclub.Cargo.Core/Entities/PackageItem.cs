@@ -21,7 +21,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid CargoBookingId { get; set; }
         public Guid ULDContainerId { get; set; }
 
-        public virtual AWBInformation AWBInformation { get; set; }
         public virtual CargoBooking CargoBooking { get; set; }
         public virtual ULDContainer ULDContainer { get; set; }
         public virtual Unit VolumeUnit { get; set; }

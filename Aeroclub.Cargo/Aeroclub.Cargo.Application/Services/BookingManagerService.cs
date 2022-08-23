@@ -10,10 +10,8 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -22,7 +20,6 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using System.Transactions;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -99,6 +96,13 @@ namespace Aeroclub.Cargo.Application.Services
                         return BookingServiceResponseStatus.Failed;
                     }
 
+                    //Save AWB Details
+                    if (rm.AWBDetail != null)
+                    {
+                        rm.AWBDetail.CargoBookingId = response.Id;
+                        await _AWBService.CreateAsync(rm.AWBDetail);
+                    }
+
                     // Get Available/ Matching Cargo Positions.
                     foreach (var package in packages)
                     {
@@ -150,14 +154,6 @@ namespace Aeroclub.Cargo.Application.Services
                             transaction.Rollback();
                             return BookingServiceResponseStatus.Failed;
                         }
-
-                        //Save AWB Details
-                        if (package.AWBDetail != null)
-                        {
-                            package.AWBDetail.PackageItemId = createdPackage.Id;
-                            await _AWBService.CreateAsync(package.AWBDetail); 
-                        }
-
 
                         // Save ULD - No need - Lelanga will handle this.
 

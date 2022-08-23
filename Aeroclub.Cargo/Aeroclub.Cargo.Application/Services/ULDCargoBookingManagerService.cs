@@ -70,6 +70,14 @@ namespace Aeroclub.Cargo.Application.Services
                     return BookingServiceResponseStatus.Failed;
                 }
 
+                //Save AWB Details
+                if (rm.AWBDetail != null)
+                {
+                    rm.AWBDetail.CargoBookingId = response.Id;
+                    await _AWBService.CreateAsync(rm.AWBDetail);
+                }
+
+
                 foreach (var package in packages)
                 {
 
@@ -139,13 +147,6 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         transaction.Rollback();
                         return BookingServiceResponseStatus.Failed;
-                    }
-
-                    //Save AWB Details
-                    if (package.AWBDetail != null)
-                    {
-                        package.AWBDetail.PackageItemId = createdPackage.Id;
-                        await _AWBService.CreateAsync(package.AWBDetail);
                     }
 
                     // Update ULDContainer Cargo Position

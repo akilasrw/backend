@@ -37,8 +37,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            dto.IsUpdatePackage = true;
-
             var response = await _awbService.CreateAsync(dto);
 
             if (response.StatusCode == Application.Enums.ServiceResponseStatus.Success)

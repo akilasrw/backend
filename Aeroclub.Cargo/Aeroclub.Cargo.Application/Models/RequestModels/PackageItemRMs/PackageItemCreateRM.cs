@@ -1,6 +1,4 @@
-﻿using System;
-using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
-using Aeroclub.Cargo.Common.Enums;
+﻿using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
 {
@@ -21,6 +19,5 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
         public PackageItemStatus packageItemStatus { get; set; }
         public string? Description { get; set; }
         public Guid? ULDContainerId { get; set; }
-        public AWBCreateRM? AWBDetail { get; set; }
     }
 }

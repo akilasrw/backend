@@ -103,8 +103,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<PackageContainer, PackageContainerVM>().ReverseMap();
 
             CreateMap<CargoBooking, CargoBookingDetailVM>();
-            CreateMap<PackageItem, PackageItemVM>()
-                .ForMember(d => d.AwbTrackingNumber, o => o.MapFrom(s => s.AWBInformation != null? s.AWBInformation.AwbTrackingNumber:0));
+            CreateMap<PackageItem, PackageItemVM>();
 
             CreateMap<CargoBooking, CargoBookingLookupVM>();
 
@@ -140,7 +139,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.BookingRefNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingNumber : ""))
                 .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""))
-                .ForMember(d => d.AwbTrackingNumber, o=> o.MapFrom(s => s.AWBInformation != null? s.AWBInformation.AwbTrackingNumber:0))
+                .ForMember(d => d.AwbTrackingNumber, o=> o.MapFrom(s => s.CargoBooking != null? s.CargoBooking.AWBInformation.AwbTrackingNumber:0))
                 .ForMember(d => d.CargoPositionType, o => o.MapFrom(s => s.ULDContainer != null ? s.ULDContainer.ULDContainerCargoPositions.First().CargoPosition.CargoPositionType : 0));
 
             CreateMap<SeatConfiguration, SeatConfigurationDto>().ReverseMap();

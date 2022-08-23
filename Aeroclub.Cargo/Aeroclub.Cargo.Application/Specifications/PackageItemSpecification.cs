@@ -19,7 +19,6 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.VolumeUnit));
             AddInclude(x => x.Include(y => y.WeightUnit));
-            AddInclude(x => x.Include(y => y.AWBInformation));
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.FlightScheduleSector));
             AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z=>z.CargoPosition));
         }

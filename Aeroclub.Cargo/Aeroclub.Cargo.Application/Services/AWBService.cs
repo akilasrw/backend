@@ -3,13 +3,10 @@ using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.AWBStackQMs;
-using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AWBStackRMs;
-using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Specifications;
-using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -19,12 +16,10 @@ namespace Aeroclub.Cargo.Application.Services
     public class AWBService : BaseService, IAWBService
     {
         private readonly IAWBStackService _awbStackService;
-        private readonly IPackageItemService _packageItemService;
         private readonly IAWBProductService _aWBProductService;
-        public AWBService(IAWBStackService awbStackService, IPackageItemService packageItemService, IAWBProductService aWBProductService, IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
+        public AWBService(IAWBStackService awbStackService, IAWBProductService aWBProductService, IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
         {
             _awbStackService = awbStackService;
-            _packageItemService = packageItemService;
             _aWBProductService = aWBProductService;
         }
 
@@ -46,17 +41,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM() 
                 { CargoAgentId = model.UserId,LastUsedSequenceNumber = awbNumber.AWBNumber });
 
-                if(model.IsUpdatePackage && model.PackageItemId != null && model.PackageItemId != Guid.Empty)
-                {
-                    var packageItem = await _packageItemService.GetAsync(new PackageItemQM() { Id = (Guid)model.PackageItemId});
-                    packageItem.PackageItemStatus = PackageItemStatus.AddedAWB;
-                    var awbUpdateRM = _mapper.Map<PackageItemUpdateRM>(packageItem);
-                    response.StatusCode = await _packageItemService.UpdateAsync(awbUpdateRM);
-                }
-                else
-                {
-                    response.StatusCode = awbNumberUpdate;
-                }
+                response.StatusCode = awbNumberUpdate;
 
             }
             else
