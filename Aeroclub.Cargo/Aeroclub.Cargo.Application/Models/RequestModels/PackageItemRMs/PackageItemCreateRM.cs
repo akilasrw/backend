@@ -11,6 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
         public Guid VolumeUnitId { get; set; }
         public double Weight { get; set; }
         public double Volume { get; set; }
+        public int Pieces { get; set; }
         public Guid WeightUnitId { get; set; }
         public double DeclaredValue { get; set; }
         public PackageItemCategory PackageItemCategory { get; set; }

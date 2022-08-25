@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -77,8 +78,19 @@ namespace Aeroclub.Cargo.Application.Services
                     await _AWBService.CreateAsync(rm.AWBDetail);
                 }
 
-
+                //Packages clone based on number of pieces
+                var clonedPackages = new List<PackageItemCreateRM>();
                 foreach (var package in packages)
+                {
+                    for(int i= 0; i < package.Pieces; i++)
+                    {
+                        var clonePackage = new PackageItemCreateRM();
+                        clonePackage = package;
+                        clonedPackages.Add(clonePackage);
+                    }
+                }
+
+                foreach (var package in clonedPackages)
                 {
 
                     //Package volume calculation
