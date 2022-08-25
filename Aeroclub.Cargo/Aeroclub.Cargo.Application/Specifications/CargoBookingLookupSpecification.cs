@@ -22,6 +22,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IsIncludePackageDetail)
                 AddInclude(x => x.Include(y => y.PackageItems));
 
+            if (query.IsIncludeAWBDetail)
+                AddInclude(x => x.Include(y => y.AWBInformation));
+
         }
 
     }

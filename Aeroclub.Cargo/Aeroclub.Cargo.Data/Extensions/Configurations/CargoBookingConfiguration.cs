@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
         {
             builder.Property(p => p.BookingNumber).HasColumnType("varchar(40)").IsRequired();
             builder.Property(p => p.BookingStatus).HasColumnType("tinyint").IsRequired();
+            builder.Property(p => p.AWBStatus).HasColumnType("tinyint").IsRequired();
             builder.HasQueryFilter(p => !EF.Property<bool>(p, "IsDeleted"));
 
         }

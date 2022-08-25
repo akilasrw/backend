@@ -7,6 +7,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs
     public class CargoBookingRM
     {
         public BookingStatus BookingStatus { get; set; }
+        public AWBStatus AWBStatus { get; set; }
         public Guid? FlightScheduleSectorId { get; set; }
         public Guid? OriginAirportId { get; set; }
         public Guid? DestinationAirportId { get; set; }

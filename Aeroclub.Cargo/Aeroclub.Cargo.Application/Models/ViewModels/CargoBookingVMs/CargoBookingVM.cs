@@ -15,6 +15,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
         public int NumberOfBoxes { get; set; }
         public double TotalWeight { get; set; }
         public BookingStatus BookingStatus { get; set; }
+        public AWBStatus AWBStatus { get; set; }
 
 
     }

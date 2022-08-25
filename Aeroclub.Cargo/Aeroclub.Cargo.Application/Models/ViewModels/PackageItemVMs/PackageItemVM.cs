@@ -6,7 +6,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
 {
     public class PackageItemVM : BaseVM
     {
-        public string? AwbTrackingNumber { get; set; }
         public string? PackageRefNumber { get; set; }
         public double Width { get; set; }
         public double Length { get; set; }

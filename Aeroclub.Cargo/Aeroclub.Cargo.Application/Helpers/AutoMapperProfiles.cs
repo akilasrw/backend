@@ -105,7 +105,8 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<CargoBooking, CargoBookingDetailVM>();
             CreateMap<PackageItem, PackageItemVM>();
 
-            CreateMap<CargoBooking, CargoBookingLookupVM>();
+            CreateMap<CargoBooking, CargoBookingLookupVM>()
+               .ForMember(d => d.AwbTrackingNumber, o => o.MapFrom(s => s.AWBInformation.AwbTrackingNumber));
 
             CreateMap<PackageContainerSector, RateVM>()
                .ForMember(d => d.Width, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.Width : 0))

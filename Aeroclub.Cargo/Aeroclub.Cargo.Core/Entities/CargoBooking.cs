@@ -9,6 +9,7 @@ namespace Aeroclub.Cargo.Core.Entities
     {
         public string BookingNumber { get; set; } = null!; // Auto Generated No - Format - Singleton
         public BookingStatus BookingStatus { get; set; }
+        public AWBStatus AWBStatus { get; set; }
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
