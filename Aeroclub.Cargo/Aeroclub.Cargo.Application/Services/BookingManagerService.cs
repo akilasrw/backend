@@ -100,7 +100,13 @@ namespace Aeroclub.Cargo.Application.Services
                     if (rm.AWBDetail != null)
                     {
                         rm.AWBDetail.CargoBookingId = response.Id;
-                        await _AWBService.CreateAsync(rm.AWBDetail);
+                        var awbResponse = await _AWBService.CreateAsync(rm.AWBDetail);
+
+                        if (awbResponse.StatusCode == ServiceResponseStatus.Failed)
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.Failed;
+                        }
                     }
 
                     // Get Available/ Matching Cargo Positions.
