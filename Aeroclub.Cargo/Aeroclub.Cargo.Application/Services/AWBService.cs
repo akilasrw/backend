@@ -1,5 +1,4 @@
-﻿
-using Aeroclub.Cargo.Application.Enums;
+﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.AWBStackQMs;
@@ -17,36 +16,57 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IAWBStackService _awbStackService;
         private readonly IAWBProductService _aWBProductService;
-        public AWBService(IAWBStackService awbStackService, IAWBProductService aWBProductService, IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
+        private readonly ICargoBookingService _cargoBookingService;
+        public AWBService(ICargoBookingService cargoBookingService, IAWBStackService awbStackService, IAWBProductService aWBProductService, IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
         {
             _awbStackService = awbStackService;
             _aWBProductService = aWBProductService;
+            _cargoBookingService = cargoBookingService;
         }
 
         public async Task<AWBCreateStatusRM> CreateAsync(AWBCreateRM model)
         {
             var response = new AWBCreateStatusRM();
 
-            var awb = _mapper.Map<AWBInformation>(model);
-
-            var awbNumber = await _awbStackService.GetNextAWBNumberAsync(new AWBNumberStackQM() { CargoAgentId = model.UserId});
-
-            awb.AwbTrackingNumber = awbNumber.AWBNumber;
-
-            var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
-            await _unitOfWork.SaveChangesAsync();
-
-            if (createdAWB != null)
+            using (var transaction = _unitOfWork.BeginTransaction())
             {
-                var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM() 
-                { CargoAgentId = model.UserId,LastUsedSequenceNumber = awbNumber.AWBNumber });
+                var awb = _mapper.Map<AWBInformation>(model);
+                var awbNumber = await _awbStackService.GetNextAWBNumberAsync(new AWBNumberStackQM() { CargoAgentId = model.UserId });
+                awb.AwbTrackingNumber = awbNumber.AWBNumber;
 
-                response.StatusCode = awbNumberUpdate;
+                var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
+                await _unitOfWork.SaveChangesAsync();
 
-            }
-            else
-            {
-                response.StatusCode = ServiceResponseStatus.Failed;
+                if (createdAWB == null)
+                {
+                    transaction.Rollback();
+                    response.StatusCode = ServiceResponseStatus.Failed;
+                    return response;
+                }
+
+                var updatedAWBStatus = await _cargoBookingService.UpdateAWBStatus(model.CargoBookingId);
+
+                if (updatedAWBStatus == ServiceResponseStatus.Failed)
+                {
+                    transaction.Rollback();
+                    response.StatusCode = ServiceResponseStatus.Failed;
+                    return response;
+                }
+
+                var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM()
+                { CargoAgentId = model.UserId, LastUsedSequenceNumber = awbNumber.AWBNumber });
+
+                if (awbNumberUpdate == ServiceResponseStatus.Failed)
+                {
+                    transaction.Rollback();
+                    response.StatusCode = ServiceResponseStatus.Failed;
+                    return response;
+                }
+                else
+                {
+                    response.StatusCode = awbNumberUpdate;
+                }
+                transaction.Commit();
             }
             return response;
         }

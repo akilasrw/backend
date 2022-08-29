@@ -67,6 +67,26 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
         }
+
+        public async Task<ServiceResponseStatus> UpdateAWBStatus(Guid bookingId)
+        {
+            try
+            {
+                var entity = await _unitOfWork.Repository<CargoBooking>().GetByIdAsync(bookingId);
+                entity.AWBStatus = AWBStatus.AddedAWB;
+
+                _unitOfWork.Repository<CargoBooking>().Update(entity);
+                await _unitOfWork.SaveChangesAsync();
+
+                _unitOfWork.Repository<CargoBooking>().Detach(entity);
+                return ServiceResponseStatus.Success;
+
+            }catch (Exception ex)
+            {
+                return ServiceResponseStatus.Failed;
+            }
+
+        }
         
     }
 }
