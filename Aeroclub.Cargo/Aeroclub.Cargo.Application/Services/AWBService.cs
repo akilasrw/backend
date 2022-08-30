@@ -16,7 +16,7 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IAWBStackService _awbStackService;
         private readonly ICargoBookingService _cargoBookingService;
-        public AWBService(ICargoBookingService cargoBookingService, IAWBStackService awbStackService,IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
+        public AWBService(ICargoBookingService cargoBookingService, IAWBStackService awbStackService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
             _awbStackService = awbStackService;
             _cargoBookingService = cargoBookingService;
@@ -26,46 +26,41 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var response = new AWBCreateStatusRM();
 
-            using (var transaction = _unitOfWork.BeginTransaction())
+
+            var awb = _mapper.Map<AWBInformation>(model);
+            var awbNumber = await _awbStackService.GetNextAWBNumberAsync(new AWBNumberStackQM() { CargoAgentId = model.UserId });
+            awb.AwbTrackingNumber = awbNumber.AWBNumber;
+
+            var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (createdAWB == null)
             {
-                var awb = _mapper.Map<AWBInformation>(model);
-                var awbNumber = await _awbStackService.GetNextAWBNumberAsync(new AWBNumberStackQM() { CargoAgentId = model.UserId });
-                awb.AwbTrackingNumber = awbNumber.AWBNumber;
-
-                var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
-                await _unitOfWork.SaveChangesAsync();
-
-                if (createdAWB == null)
-                {
-                    transaction.Rollback();
-                    response.StatusCode = ServiceResponseStatus.Failed;
-                    return response;
-                }
-
-                var updatedAWBStatus = await _cargoBookingService.UpdateAWBStatus(model.CargoBookingId);
-
-                if (updatedAWBStatus == ServiceResponseStatus.Failed)
-                {
-                    transaction.Rollback();
-                    response.StatusCode = ServiceResponseStatus.Failed;
-                    return response;
-                }
-
-                var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM()
-                { CargoAgentId = model.UserId, LastUsedSequenceNumber = awbNumber.AWBNumber });
-
-                if (awbNumberUpdate == ServiceResponseStatus.Failed)
-                {
-                    transaction.Rollback();
-                    response.StatusCode = ServiceResponseStatus.Failed;
-                    return response;
-                }
-                else
-                {
-                    response.StatusCode = awbNumberUpdate;
-                }
-                transaction.Commit();
+                response.StatusCode = ServiceResponseStatus.Failed;
+                return response;
             }
+
+            var updatedAWBStatus = await _cargoBookingService.UpdateAWBStatus(model.CargoBookingId);
+
+            if (updatedAWBStatus == ServiceResponseStatus.Failed)
+            {
+                response.StatusCode = ServiceResponseStatus.Failed;
+                return response;
+            }
+
+            var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM()
+            { CargoAgentId = model.UserId, LastUsedSequenceNumber = awbNumber.AWBNumber });
+
+            if (awbNumberUpdate == ServiceResponseStatus.Failed)
+            {
+                response.StatusCode = ServiceResponseStatus.Failed;
+                return response;
+            }
+            else
+            {
+                response.StatusCode = awbNumberUpdate;
+            }
+
             return response;
         }
 
