@@ -1,5 +1,4 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
-using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +32,7 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));
 
             if (query.IsIncludeAWBDetail)
-                AddInclude(x => x.Include(y=>y.AWBInformation).ThenInclude(y=>y.PackageProducts));
+                AddInclude(x => x.Include(y=>y.AWBInformation));
 
             if (query.IsIncludePackageDetail)
                 AddInclude(x => x.Include(y => y.PackageItems));

@@ -1,7 +1,4 @@
-﻿
-
-using Aeroclub.Cargo.Application.Models.Core;
-using Aeroclub.Cargo.Application.Models.ViewModels.AWBProductVMs;
+﻿using Aeroclub.Cargo.Application.Models.Core;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs
 {
@@ -30,9 +27,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs
         public double DeclaredValueForCustomer { get; set; }
         public double AmountOfInsurance { get; set; }
         public int AwbTrackingNumber { get; set; }
-
-        public IReadOnlyList<AWBProductVM> PackageProducts { get; set; }
-
 
     }
 }

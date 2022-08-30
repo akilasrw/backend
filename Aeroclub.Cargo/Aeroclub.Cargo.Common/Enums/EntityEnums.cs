@@ -159,14 +159,6 @@
         Container = 1,
         CustomBox = 2
     }
-
-    public enum PackageProductType
-    {
-        None = 0,
-        Electronic = 1,
-        Stationery = 2
-    }
-
     public enum AircraftActiveTypes
     {
         None = 0,

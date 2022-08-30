@@ -4,7 +4,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs
 {
     public class AirWayBillQM : BaseQM
     {
-        public bool IsProductInclude { get; set; }
 
     }
 }

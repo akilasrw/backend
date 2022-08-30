@@ -30,7 +30,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid CargoBookingId { get; set; }
 
         public virtual CargoBooking CargoBooking { get; set; }
-        public virtual ICollection<AWBProduct> PackageProducts { get; set; }
 
     }
 }

@@ -22,7 +22,6 @@ using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.AWBProductVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
@@ -128,10 +127,8 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Seat, SeatDto>().ReverseMap();
 
             CreateMap<AWBCreateRM, AWBInformation>();
-            CreateMap<AWBProductRM, AWBProduct>();
 
             CreateMap<AWBInformation, AWBInformationVM>();
-            CreateMap<AWBProduct, AWBProductVM>();
 
             CreateMap<PackageItem, PackageItemMobileVM>()
                 .ForMember(d => d.WeightUnit, o => o.MapFrom(s => s.WeightUnit != null ? s.WeightUnit.Name : ""))

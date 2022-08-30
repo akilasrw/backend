@@ -1,5 +1,4 @@
-﻿using System;
-using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Data.Services;
@@ -7,7 +6,6 @@ using Aeroclub.Cargo.Infrastructure.Authorization.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Authorization.Services;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aeroclub.Cargo.API.Extensions
 {
@@ -52,7 +50,6 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IOverheadService, OverheadService>();
             services.AddScoped<IULDCargoPositionService,ULDCargoPositionService>();
             services.AddScoped<IAWBStackService, AWBStackService>();
-            services.AddScoped<IAWBProductService, AWBProductService>();
             services.AddScoped<IULDCargoBookingManagerService, ULDCargoBookingManagerService>();
             services.AddScoped<IULDCargoBookingService, ULDCargoBookingService>();
             services.AddScoped<ICargoBookingSummaryService, CargoBookingSummaryService>();

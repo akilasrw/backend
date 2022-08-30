@@ -15,12 +15,10 @@ namespace Aeroclub.Cargo.Application.Services
     public class AWBService : BaseService, IAWBService
     {
         private readonly IAWBStackService _awbStackService;
-        private readonly IAWBProductService _aWBProductService;
         private readonly ICargoBookingService _cargoBookingService;
-        public AWBService(ICargoBookingService cargoBookingService, IAWBStackService awbStackService, IAWBProductService aWBProductService, IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
+        public AWBService(ICargoBookingService cargoBookingService, IAWBStackService awbStackService,IUnitOfWork unitOfWork, IMapper mapper) :base(unitOfWork,mapper)
         {
             _awbStackService = awbStackService;
-            _aWBProductService = aWBProductService;
             _cargoBookingService = cargoBookingService;
         }
 
@@ -85,20 +83,6 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<AWBInformation>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<AWBInformation>().Detach(entity);
-            if(model.PackageProducts != null && model.PackageProducts.Count>0)
-            {
-                foreach(var product in model.PackageProducts){
-                    product.AWBInformationId = entity.Id;
-                    if (product.Id != null && product.Id != Guid.Empty)
-                    {
-                        await _aWBProductService.UpdateAsync(product);
-                    }
-                    else
-                    {
-                        await _aWBProductService.CreateAsync(product);
-                    }
-                }
-            }
             return ServiceResponseStatus.Success;
         }
     }

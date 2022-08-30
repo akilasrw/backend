@@ -35,7 +35,5 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs
         public double? DeclaredValueForCustomer { get; set; }
         public double? AmountOfInsurance { get; set; }
         public Guid CargoBookingId { get; set; }
-
-        public IReadOnlyList<AWBProductRM> PackageProducts { get; set; }
     }
 }
