@@ -27,6 +27,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs
         public double DeclaredValueForCustomer { get; set; }
         public double AmountOfInsurance { get; set; }
         public int AwbTrackingNumber { get; set; }
+        public double RateCharge { get; set; }
+        public string? NatureAndQualityOfGoods { get; set; }
 
     }
 }

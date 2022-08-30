@@ -27,6 +27,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public double DeclaredValueForCustomer { get; set; }
         public double AmountOfInsurance { get; set; }
         public int AwbTrackingNumber { get; set; }
+        public double RateCharge { get; set; }
+        public string? NatureAndQualityOfGoods { get; set; }
         public Guid CargoBookingId { get; set; }
 
         public virtual CargoBooking CargoBooking { get; set; }
