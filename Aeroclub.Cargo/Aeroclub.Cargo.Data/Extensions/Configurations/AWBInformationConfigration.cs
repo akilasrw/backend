@@ -24,7 +24,7 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
             builder.Property(p => p.RequestedRouting).HasColumnType("nvarchar(100)");
             builder.Property(p => p.RoutingAndDestinationBy).HasColumnType("nvarchar(100)");
             builder.Property(p => p.RoutingAndDestinationTo).HasColumnType("nvarchar(100)");
-            builder.Property(p => p.DestinationAirportCode).HasColumnType("varchar(3)");
+            builder.Property(p => p.DestinationAirportName).HasColumnType("nvarchar(100)");
             builder.Property(p => p.ShippingReferenceNumber).HasColumnType("varchar(40)");
             builder.Property(p => p.Currency).HasColumnType("varchar(10)");
             builder.Property(p => p.NatureAndQualityOfGoods).HasColumnType("nvarchar(400)");
