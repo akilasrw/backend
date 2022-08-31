@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class CargoAgentSpecification : BaseSpecification<CargoAgent>
     {
         public CargoAgentSpecification(CargoAgentQM query)
-            : base(x=>( query.Id == Guid.Empty || x.Id == query.Id))
+            : base(x=>( (query.Id == Guid.Empty || x.Id == query.Id) && (query.AppUserId == Guid.Empty || x.AppUserId == query.AppUserId)))
         {
 
             AddInclude(d => d.Include(s => s.AppUser));

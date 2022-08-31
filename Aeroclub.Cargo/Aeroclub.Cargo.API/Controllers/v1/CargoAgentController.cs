@@ -53,7 +53,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<CargoAgentVM>> GetAsync([FromQuery] CargoAgentQM query)
         {
-            if (query.Id == Guid.Empty) return BadRequest();
+            if (query.AppUserId == Guid.Empty) return BadRequest();
 
             var result = await cargoAgentService.GetAsync(query);
 
