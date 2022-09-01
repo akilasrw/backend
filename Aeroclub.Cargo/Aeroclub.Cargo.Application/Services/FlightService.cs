@@ -1,5 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -7,7 +9,7 @@ using AutoMapper;
 
 namespace Aeroclub.Cargo.Application.Services
 {
-    public class FlightService : BaseService,IFlightService
+    public class FlightService : BaseService, IFlightService
     {
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper):
             base(unitOfWork,mapper)
@@ -33,6 +35,36 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(id);
             return flight.FlightNumber;
+        }
+
+        public async Task<ServiceResponseCreateStatus> CreateAsync(FlightCreateRM flightRM)
+        {
+            var res = new ServiceResponseCreateStatus();
+
+            var entity = _mapper.Map<FlightCreateRM, Flight>(flightRM);
+
+            if (entity.FlightSectors.Any())
+            {
+                var orderedSectorList = entity.FlightSectors.OrderBy(x => x.Sequence);
+                var firstFlightSector = orderedSectorList.FirstOrDefault();
+                var lastFlightSector = orderedSectorList.LastOrDefault();
+
+                var firstSector = await _unitOfWork.Repository<Sector>().GetByIdAsync(firstFlightSector.SectorId);
+                var lastSector = await _unitOfWork.Repository<Sector>().GetByIdAsync(lastFlightSector.SectorId);
+
+                entity.OriginAirportId = firstSector.OriginAirportId;
+                entity.OriginAirportCode = firstSector.OriginAirportCode;
+                entity.DestinationAirportId = lastSector.DestinationAirportId;
+                entity.DestinationAirportCode = lastSector.DestinationAirportCode;
+            }
+
+            await _unitOfWork.Repository<Flight>().CreateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+            
+            res.Id = entity.Id;
+            res.StatusCode =  Enums.ServiceResponseStatus.Success;
+
+            return res;
         }
     }
 }
