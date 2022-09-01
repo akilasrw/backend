@@ -891,7 +891,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9c03fcd4-326c-4beb-9cf2-8e5e3ca780eb",
+                            ConcurrencyStamp = "89f747a4-9821-4652-bc16-b122a34a4266",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -907,7 +907,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "26c72a91-20da-465f-9815-815083851217",
+                            ConcurrencyStamp = "c211b714-58e9-4c67-93c7-0209920a9769",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -970,7 +970,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<int>("AwbTrackingNumber")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CargoBookingId")
+                    b.Property<Guid?>("CargoBookingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConsigneeAccountNumber")
@@ -1048,7 +1048,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CargoBookingId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[CargoBookingId] IS NOT NULL");
 
                     b.ToTable("AWBInformations");
                 });
@@ -36458,9 +36459,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.CargoBooking", "CargoBooking")
                         .WithOne("AWBInformation")
-                        .HasForeignKey("Aeroclub.Cargo.Core.Entities.AWBInformation", "CargoBookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Aeroclub.Cargo.Core.Entities.AWBInformation", "CargoBookingId");
 
                     b.Navigation("CargoBooking");
                 });
