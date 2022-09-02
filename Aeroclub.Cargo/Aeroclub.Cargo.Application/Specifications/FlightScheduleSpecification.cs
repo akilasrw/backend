@@ -52,5 +52,18 @@ namespace Aeroclub.Cargo.Application.Specifications
             }
         }
 
+        public FlightScheduleSpecification(FlightScheduleFilteredListQM query, bool isCount = false)
+           : base(x =>
+               (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
+               (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
+           (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)))
+        {
+            if (query.IncludeAircraft)
+                AddInclude(y => y.Include(x => x.Aircraft));
+
+            if (!isCount)
+                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+        }
+
     }
 }
