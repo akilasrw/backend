@@ -38,6 +38,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDMetaDataVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -55,6 +56,10 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Currency, BaseSelectListModel>()
                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
             CreateMap<Flight, FlightVM>();
+            CreateMap<FlightCreateRM, Flight>();
+            CreateMap<FlightSectorDto, FlightSector>()
+                .ForMember(d => d.DepartureDateTime, o => o.MapFrom(s => TimeSpan.Parse(s.DepartureDateDisplayTime)))
+                .ForMember(d => d.ArrivalDateTime, o => o.MapFrom(s => TimeSpan.Parse(s.ArrivalDateDisplayTime)));
             CreateMap<FlightScheduleUpdateRM, FlightSchedule>();
             CreateMap<FlightScheduleCreateRM, FlightSchedule>();
             CreateMap<FlightScheduleSectorCreateRM, FlightScheduleSector>();
