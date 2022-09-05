@@ -100,6 +100,15 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<SectorVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
 
+        public async Task<IReadOnlyList<SectorVM>> GetListAsync(SectorSelectListQM query)
+        {
+            var spec = new SectorSpecification(query);
+            var sectorList = await _unitOfWork.Repository<Sector>().GetListWithSpecAsync(spec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<SectorVM>>(sectorList);
+            return dtoList;
+        }
+
         public async Task<ServiceResponseStatus> UpdateAsync(SectorUpdateRM model)
         {
             bool IsSectorAvailable = await IsSectorAlreadyAvailable(model.OriginAirportId, model.DestinationAirportId, model.SectorType);

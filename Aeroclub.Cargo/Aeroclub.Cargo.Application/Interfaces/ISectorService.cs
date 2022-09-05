@@ -15,5 +15,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Pagination<SectorVM>> GetFilteredListAsync(SectorListQM query);
         Task<bool> DeleteAsync(Guid Id);
 
+        Task<IReadOnlyList<SectorVM>> GetListAsync(SectorSelectListQM query);
+
     }
 }

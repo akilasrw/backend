@@ -29,6 +29,12 @@ namespace Aeroclub.Cargo.Application.Specifications
             }
         }
 
+        public SectorSpecification(SectorSelectListQM query)
+            : base(x => (query.SectorType == SectorType.None || x.SectorType == query.SectorType))
+        {
+
+        }
+
 
     }
 }
