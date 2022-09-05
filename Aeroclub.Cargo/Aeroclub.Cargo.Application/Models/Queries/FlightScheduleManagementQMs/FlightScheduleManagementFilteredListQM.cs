@@ -1,9 +1,9 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using System.Text.Json.Serialization;
 
-namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs
+namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs
 {
-    public class FlightScheduleFilteredListQM : BasePaginationQM
+    public class FlightScheduleManagementFilteredListQM : BasePaginationQM
     {
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }

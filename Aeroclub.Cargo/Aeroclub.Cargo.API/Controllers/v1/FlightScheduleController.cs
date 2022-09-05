@@ -4,7 +4,6 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -41,10 +40,5 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, flightScheduleCreateRM);
         }
 
-        [HttpGet("GetFilteredList")]
-        public async Task<ActionResult<Pagination<FlightScheduleVM>>> GetFilteredListAsync([FromQuery] FlightScheduleFilteredListQM query)
-        {
-            return Ok(await _flightScheduleService.GetFilteredListAsync(query));
-        }
     }
 }

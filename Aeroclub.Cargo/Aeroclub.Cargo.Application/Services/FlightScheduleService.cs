@@ -139,18 +139,5 @@ namespace Aeroclub.Cargo.Application.Services
 
             return _mapper.Map<FlightSchedule, FlightScheduleVM>(flightSchedule);
         }
-
-        public async Task<Pagination<FlightScheduleVM>> GetFilteredListAsync(FlightScheduleFilteredListQM query)
-        {
-            query.IncludeAircraft = true;
-            var spec = new FlightScheduleSpecification(query);
-            var flightScheduleList = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(spec);
-
-            var countSpec = new FlightScheduleSpecification(query, true);
-            var totalCount = await _unitOfWork.Repository<FlightSchedule>().CountAsync(countSpec);
-
-            var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleVM>>(flightScheduleList);
-            return new Pagination<FlightScheduleVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
-        }
     }
 }

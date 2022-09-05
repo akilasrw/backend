@@ -10,5 +10,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public DateTime ScheduleEndDate { get; set; }
         public string DaysOfWeek { get; set; } = null!;
         public bool IsFlightScheduleGenerated { get; set; }
+        public virtual Flight? Flight { get; set; }
+        public virtual Aircraft? Aircraft { get; set; }
+
     }
 }
