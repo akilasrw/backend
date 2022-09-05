@@ -44,6 +44,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _sectorService.GetAsync(query));
         }
+        
+        [HttpGet("GetList")]
+        public async Task<ActionResult<SectorVM>> GetListAsync([FromQuery] SectorSelectListQM query)
+        {
+            return Ok(await _sectorService.GetListAsync(query));
+        }
 
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<SectorVM>>> GetFilteredListAsync([FromQuery] SectorListQM query)

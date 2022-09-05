@@ -9,4 +9,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.SectorQMs
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
     }
+    public class SectorSelectListQM
+    {
+        public SectorType SectorType { get; set; } =  SectorType.None;
+    }
 }
