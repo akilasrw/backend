@@ -1,11 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
-using System.Threading.Tasks;
 using Aeroclub.Cargo.Core.Entities.Core;
 using Aeroclub.Cargo.Data.Extensions;
 using Aeroclub.Cargo.Data.Extensions.Configurations;
@@ -59,6 +54,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new AWBStackConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftSubTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new FlightScheduleManagementConfiguration());
             
             
             
@@ -108,6 +104,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AircraftType> AircraftTypes { get; set; } = null!;
         public DbSet<AircraftSubType> AircraftSubTypes { get; set; } = null!;
         public DbSet<AircraftLayoutMapping> AircraftLayoutMappings { get; set; } = null!;
+        public DbSet<FlightScheduleManagement> FlightScheduleManagements { get; set; } = null!;
 
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)

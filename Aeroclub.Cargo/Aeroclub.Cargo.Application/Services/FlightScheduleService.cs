@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
@@ -137,6 +138,19 @@ namespace Aeroclub.Cargo.Application.Services
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
 
             return _mapper.Map<FlightSchedule, FlightScheduleVM>(flightSchedule);
+        }
+
+        public async Task<Pagination<FlightScheduleVM>> GetFilteredListAsync(FlightScheduleFilteredListQM query)
+        {
+            query.IncludeAircraft = true;
+            var spec = new FlightScheduleSpecification(query);
+            var flightScheduleList = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(spec);
+
+            var countSpec = new FlightScheduleSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<FlightSchedule>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleVM>>(flightScheduleList);
+            return new Pagination<FlightScheduleVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
     }
 }
