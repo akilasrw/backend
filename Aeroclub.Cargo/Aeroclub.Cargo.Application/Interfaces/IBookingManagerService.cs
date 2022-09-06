@@ -6,12 +6,6 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -22,5 +16,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query);
         Task<CargoBookingSummaryDetailVM> GetBookingSummaryAsync(BookingSummaryQuery query);
         Task<IEnumerable<SeatDto>> GetSeatBookingSummaryLayoutAsync(FlightScheduleSectorSearchQuery query);
+        Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm);
+
     }
 }

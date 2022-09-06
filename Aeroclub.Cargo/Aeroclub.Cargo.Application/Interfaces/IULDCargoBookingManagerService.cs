@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IULDCargoBookingManagerService
     {
         Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm);
+        Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm);
         Task<CargoBookingDetailVM> GetBookingAsync(CargoBookingDetailQM query);
     }
 }

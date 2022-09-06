@@ -44,5 +44,17 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return Ok(result);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] CargoBookingUpdateRM rm)
+        {
+            var res = await _uldCargoBookingManagerService.UpdateAsync(rm);
+
+            if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
+            if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
     }
 }

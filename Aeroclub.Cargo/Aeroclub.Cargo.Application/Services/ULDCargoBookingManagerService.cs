@@ -222,5 +222,24 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _uldCargoBookingService.GetAsync(query);
         }
+
+        public async Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm)
+        {
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+     
+                // Update Cargo Booking Details
+                var response = await _uldCargoBookingService.UpdateAsync(rm);
+                if (response.StatusCode == ServiceResponseStatus.Failed)
+                {
+                    transaction.Rollback();
+                    return BookingServiceResponseStatus.Failed;
+                }
+
+                transaction.Commit();
+            }
+
+            return BookingServiceResponseStatus.Success;
+        }
     }
 }

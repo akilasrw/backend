@@ -54,5 +54,26 @@ namespace Aeroclub.Cargo.Application.Services
 
             return mappedEntity;
         }
+
+        public async Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM rm)
+        {
+            var res = new ServiceResponseCreateStatus();
+
+            var booking = await _unitOfWork.Repository<CargoBooking>().GetByIdAsync(rm.Id);
+            if (booking != null)
+            {
+                booking.BookingStatus = rm.BookingStatus;
+                _unitOfWork.Repository<CargoBooking>().Update(booking);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<CargoBooking>().Detach(booking);
+                res.StatusCode = ServiceResponseStatus.Success;
+                res.Id = rm.Id;
+            }
+            else
+            {
+                res.StatusCode = ServiceResponseStatus.Failed;
+            }
+            return res;
+        }
     }
 }
