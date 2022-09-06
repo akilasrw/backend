@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));
+                AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(z=>z.Aircraft));
                 AddInclude(x => x.Include(y => y.PackageItems));
                 AddOrderByDescending(x => x.Created);
             }     
@@ -29,7 +30,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             :base(x => (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && (x.Id == query.Id) && (!x.IsDeleted))
         {
             if (query.IsIncludeFlightDetail)
-                AddInclude(x => x.Include(y => y.FlightScheduleSector));
+                AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(z=>z.Aircraft));
 
             if (query.IsIncludeAWBDetail)
                 AddInclude(x => x.Include(y=>y.AWBInformation));

@@ -94,6 +94,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.FlightScheduleSector.DestinationAirportCode))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.FlightScheduleSector.FlightNumber))
                 .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.FlightScheduleSector.ScheduledDepartureDateTime))
+                .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.FlightScheduleSector.Aircraft.ConfigurationType))
                 .ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
                 .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems.Sum(x=>x.Weight)));
 
