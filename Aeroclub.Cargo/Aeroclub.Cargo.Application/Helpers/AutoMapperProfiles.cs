@@ -40,6 +40,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.ULDMetaDataVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -191,6 +192,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportCode : ""))
                 .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportName : ""))
                 .ForMember(d => d.AircraftRegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""));
+            CreateMap<FlightScheduleManagementRM, FlightScheduleManagement>();
+
         }
     }
 }

@@ -68,7 +68,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(result);
         }
 
-
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] CargoBookingUpdateRM rm)
         {
