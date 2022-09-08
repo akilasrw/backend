@@ -142,8 +142,10 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.WeightUnit, o => o.MapFrom(s => s.WeightUnit != null ? s.WeightUnit.Name : ""))
                 .ForMember(d => d.VolumeUnit, o => o.MapFrom(s => s.VolumeUnit != null ? s.VolumeUnit.Name : ""))
                 .ForMember(d => d.BookingRefNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingNumber : ""))
+                .ForMember(d => d.BookingId, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.Id:Guid.Empty))
                 .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""))
+                .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.Aircraft.ConfigurationType :0))
                 .ForMember(d => d.AwbTrackingNumber, o=> o.MapFrom(s => s.CargoBooking != null? s.CargoBooking.AWBInformation.AwbTrackingNumber:0))
                 .ForMember(d => d.CargoPositionType, o => o.MapFrom(s => s.ULDContainer != null ? s.ULDContainer.ULDContainerCargoPositions.First().CargoPosition.CargoPositionType : 0));
 

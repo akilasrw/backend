@@ -52,6 +52,7 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new PackageItemSpecification(query);
             var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
             return _mapper.Map<PackageItem, PackageItemMobileVM>(package);
+
         }
 
         public async Task<PackageItemVM> GetAsync(PackageItemQM query)

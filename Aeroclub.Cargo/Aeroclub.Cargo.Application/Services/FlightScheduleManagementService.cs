@@ -45,6 +45,10 @@ namespace Aeroclub.Cargo.Application.Services
                         response.Id = flightScheduleManagementResponse.Id;
                         response.StatusCode = ServiceResponseStatus.Success;
                     }
+
+
+
+
                    
                     transaction.Commit();
                 }
