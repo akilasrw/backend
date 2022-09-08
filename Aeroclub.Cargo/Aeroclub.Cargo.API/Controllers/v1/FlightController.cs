@@ -23,6 +23,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
         
         [HttpGet()]
+        [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<FlightVM>> GetAsync([FromQuery]FlightQM query)
         {
             return Ok(await _flightService.GetAsync<FlightVM>(query));
@@ -35,7 +36,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync([FromBody] FlightCreateRM model)
+        public async Task<IActionResult> CreateAsync([FromBody] FlightCreateRM model)
         {
 
             var response = await _flightService.CreateAsync(model);

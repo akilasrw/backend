@@ -41,6 +41,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var res = new ServiceResponseCreateStatus();
 
+
             var entity = _mapper.Map<FlightCreateRM, Flight>(flightRM);
 
             if (entity.FlightSectors.Any())
@@ -54,15 +55,18 @@ namespace Aeroclub.Cargo.Application.Services
 
                 entity.OriginAirportId = firstSector.OriginAirportId;
                 entity.OriginAirportCode = firstSector.OriginAirportCode;
+                entity.OriginAirportName = firstSector.OriginAirportName;
                 entity.DestinationAirportId = lastSector.DestinationAirportId;
                 entity.DestinationAirportCode = lastSector.DestinationAirportCode;
+                entity.DestinationAirportName = lastSector.DestinationAirportName;
             }
 
             await _unitOfWork.Repository<Flight>().CreateAsync(entity);
             await _unitOfWork.SaveChangesAsync();
-            
+
             res.Id = entity.Id;
-            res.StatusCode =  Enums.ServiceResponseStatus.Success;
+            res.StatusCode = Enums.ServiceResponseStatus.Success;
+
 
             return res;
         }
