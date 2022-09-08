@@ -1,10 +1,11 @@
 ﻿
 
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
 {
-    public class PackageItemMobileVM
+    public class PackageItemMobileVM : BaseVM
     {
         public string? FlightNumber { get; set; }
         public DateTime FlightDate { get; set; }

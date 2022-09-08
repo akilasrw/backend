@@ -102,7 +102,8 @@
     public enum PackageItemStatus
     {
         None = 0,
-        Pending = 1
+        Pending = 1,
+        Accepted = 2,
     }
 
     public enum AWBStatus

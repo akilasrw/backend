@@ -52,6 +52,7 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new PackageItemSpecification(query);
             var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
             return _mapper.Map<PackageItem, PackageItemMobileVM>(package);
+
         }
 
         public async Task<PackageItemVM> GetAsync(PackageItemQM query)
@@ -60,13 +61,22 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<PackageItem, PackageItemVM>(package);
         }
 
-        public async Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM model)
+        public async Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM rm)
         {
-            var entity = _mapper.Map<PackageItem>(model);
-            _unitOfWork.Repository<PackageItem>().Update(entity);
-            await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<PackageItem>().Detach(entity);
-            return ServiceResponseStatus.Success;
+            var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
+            if (package != null)
+            {
+                package.PackageItemStatus = rm.PackageItemStatus;
+                _unitOfWork.Repository<PackageItem>().Update(package);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<PackageItem>().Detach(package);
+                return ServiceResponseStatus.Success;
+            }
+            else
+            {
+                return ServiceResponseStatus.Failed;
+            }
+
         }
     
         public async Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query)
