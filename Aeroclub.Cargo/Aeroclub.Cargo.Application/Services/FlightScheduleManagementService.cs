@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -29,7 +30,6 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 try
                 {
-
                     var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
                     var flightScheduleManagementResponse = await _unitOfWork.Repository<FlightScheduleManagement>().CreateAsync(flightScheduleManagementEntity);
                     await _unitOfWork.SaveChangesAsync();
@@ -38,13 +38,12 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         transaction.Rollback();
                         response.StatusCode = ServiceResponseStatus.Failed;
+                    }
 
-                    }
-                    else
-                    {
-                        response.Id = flightScheduleManagementResponse.Id;
-                        response.StatusCode = ServiceResponseStatus.Success;
-                    }
+
+
+                    
+
 
 
 
@@ -82,6 +81,41 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementVM>>(flightScheduleManagementList);
             return new Pagination<FlightScheduleManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
             
+        }
+
+        private async Task<ServiceResponseStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)
+        {
+            var flightDetail = await _unitOfWork.Repository<Flight>().GetByIdAsync(dto.FlightId);
+            var aircraftDetail = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(dto.AircraftId);
+            IList<int> daysOfWeek = new List<int>();
+            IList<string?> bookingDays = new List<string?>();
+
+            if (!String.IsNullOrEmpty(dto.DaysOfWeek))
+            {
+                foreach (var s in dto.DaysOfWeek.Split(','))
+                {
+                    int num;
+                    if (int.TryParse(s, out num))
+                        daysOfWeek.Add(num);
+                }
+            }
+
+            if (daysOfWeek.Count > 0)
+            {
+                foreach (var day in daysOfWeek)
+                {
+                    bookingDays.Add(dto.ScheduleStartDate.GetWeekdayInRange(dto.ScheduleEndDate,day.GetDayOfWeek()).ToString());
+                }
+            }
+
+            if(bookingDays.Count > 0)
+            {
+
+            }
+           
+
+            return ServiceResponseStatus.Success;
+
         }
 
 
