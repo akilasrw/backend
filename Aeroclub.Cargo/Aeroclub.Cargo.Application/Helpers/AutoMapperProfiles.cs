@@ -58,6 +58,8 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Currency, BaseSelectListModel>()
                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
             CreateMap<Flight, FlightVM>();
+            CreateMap<Flight, FlightFilterVM>()
+                .ForMember(d=> d.SectorCount, o=> o.MapFrom(s=> s.FlightSectors == null? 0 :s.FlightSectors.Count));
             CreateMap<FlightCreateRM, Flight>();
             CreateMap<FlightSectorDto, FlightSector>()
                 .ForMember(d => d.DepartureDateTime, o => o.MapFrom(s => TimeSpan.Parse(s.DepartureDateDisplayTime)))

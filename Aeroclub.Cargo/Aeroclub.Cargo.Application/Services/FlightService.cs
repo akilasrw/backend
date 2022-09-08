@@ -1,7 +1,10 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
+using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -69,6 +72,19 @@ namespace Aeroclub.Cargo.Application.Services
 
 
             return res;
+        }
+
+        public async Task<Pagination<FlightFilterVM>> GetFilteredListAsync(FlightFilterListQM query)
+        {
+            var spec = new FlightSpecification(query);
+            var flightList = await _unitOfWork.Repository<Flight>().GetListWithSpecAsync(spec);
+
+            var countSpec = new FlightSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<Flight>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<FlightFilterVM>>(flightList);
+
+            return new Pagination<FlightFilterVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
     }
 }
