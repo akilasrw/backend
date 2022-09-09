@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
@@ -14,6 +15,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             )
         {
             
+        }
+
+        public FlightSpecification(FlightDetailQM query)
+            : base(x => x.Id == query.Id)
+        {
+            if (query.IsIncludeFlightSchedules)
+                AddInclude(x => x.Include(y => y.FlightSectors));
         }
 
         public FlightSpecification(FlightListQM query)
