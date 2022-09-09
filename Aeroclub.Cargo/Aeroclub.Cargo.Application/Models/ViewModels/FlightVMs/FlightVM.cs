@@ -13,4 +13,9 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
     }
+
+    public class FlightFilterVM: FlightVM
+    {
+        public int SectorCount { get; set; }
+    }
 }

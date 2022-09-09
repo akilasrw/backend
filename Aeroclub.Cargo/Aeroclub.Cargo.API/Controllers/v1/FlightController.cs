@@ -4,8 +4,11 @@ using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
+using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
+using Aeroclub.Cargo.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +36,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyList<FlightVM>>> GetListAsync([FromQuery] FlightListQM query)
         {
             return Ok(await _flightService.GetListAsync<FlightVM>(query));
+        }
+
+        [HttpGet("GetFilteredList")]
+        public async Task<ActionResult<Pagination<FlightFilterVM>>> GetFilteredListAsync([FromQuery] FlightFilterListQM query)
+        {
+            return Ok(await _flightService.GetFilteredListAsync(query));
         }
 
         [HttpPost]
