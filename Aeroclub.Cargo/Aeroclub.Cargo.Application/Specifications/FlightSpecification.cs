@@ -23,7 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => x.Id == query.Id)
         {
             if (query.IsIncludeFlightSchedules)
-                AddInclude(x => x.Include(y => y.FlightSectors));
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z=>z.Sector));
         }
 
         public FlightSpecification(FlightListQM query)
