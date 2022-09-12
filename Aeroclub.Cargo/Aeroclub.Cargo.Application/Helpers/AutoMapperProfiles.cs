@@ -50,7 +50,7 @@ namespace Aeroclub.Cargo.Application.Helpers
         {
             CreateMap<RegisterRequestRM, AppUser>();
             CreateMap<Airport, BaseSelectListModel>()
-                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code +" - "+c.Name));
+                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code + " - " + c.Name));
             CreateMap<Country, BaseSelectListModel>()
                 .ForMember(x => x.Value, x => x.MapFrom(c => c.Name));
             CreateMap<Sector, SectorDto>().ReverseMap();
@@ -59,7 +59,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
             CreateMap<Flight, FlightVM>();
             CreateMap<Flight, FlightFilterVM>()
-                .ForMember(d=> d.SectorCount, o=> o.MapFrom(s=> s.FlightSectors == null? 0 :s.FlightSectors.Count));
+                .ForMember(d => d.SectorCount, o => o.MapFrom(s => s.FlightSectors == null ? 0 : s.FlightSectors.Count));
             CreateMap<FlightCreateRM, Flight>();
             CreateMap<FlightSectorDto, FlightSector>()
                 .ForMember(d => d.DepartureDateTime, o => o.MapFrom(s => TimeSpan.Parse(s.DepartureDateDisplayTime)))
@@ -68,9 +68,9 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<FlightScheduleCreateRM, FlightSchedule>();
             CreateMap<FlightScheduleSectorCreateRM, FlightScheduleSector>();
             CreateMap<FlightScheduleSector, FlightScheduleSectorVM>()
-                .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s=> s.Aircraft != null? s.Aircraft.ConfigurationType: AircraftConfigType.None))
-                .ForMember(d => d.AircraftLayoutId, o => o.MapFrom(s=> s.LoadPlan != null? s.LoadPlan.AircraftLayoutId: Guid.Empty))
-                .ForMember(d => d.SeatLayoutId, o => o.MapFrom(s=> s.LoadPlan != null? s.LoadPlan.SeatLayoutId: Guid.Empty));
+                .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.ConfigurationType : AircraftConfigType.None))
+                .ForMember(d => d.AircraftLayoutId, o => o.MapFrom(s => s.LoadPlan != null ? s.LoadPlan.AircraftLayoutId : Guid.Empty))
+                .ForMember(d => d.SeatLayoutId, o => o.MapFrom(s => s.LoadPlan != null ? s.LoadPlan.SeatLayoutId : Guid.Empty));
             CreateMap<FlightSchedule, FlightScheduleVM>();
             CreateMap<FlightSchedule, CargoBookingSummaryVM>()
                 .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.ConfigurationType : AircraftConfigType.None));
@@ -82,11 +82,11 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<WarehouseUpdateRM, Warehouse>();
             CreateMap<Warehouse, WarehouseVM>();
 
-            CreateMap<CargoAgentCreateRM,CargoAgent>();
+            CreateMap<CargoAgentCreateRM, CargoAgent>();
             CreateMap<CargoAgentCreateRM, AppUser>()
                 .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.PrimaryTelephoneNumber));
 
-            CreateMap<CargoAgentUpdateRM,CargoAgent>();
+            CreateMap<CargoAgentUpdateRM, CargoAgent>();
 
             CreateMap<CargoAgent, CargoAgentVM>()
                 .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country.Name))
@@ -99,7 +99,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.FlightScheduleSector.ScheduledDepartureDateTime))
                 .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.FlightScheduleSector.Aircraft.ConfigurationType))
                 .ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
-                .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems.Sum(x=>x.Weight)));
+                .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems.Sum(x => x.Weight)));
 
             CreateMap<CargoBookingRM, CargoBooking>();
 
@@ -126,14 +126,14 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<Unit, BaseSelectListModel>()
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.Name));
-            CreateMap<Unit, UnitDto>();   
+            CreateMap<Unit, UnitDto>();
 
             CreateMap<PackageItem, PackageListItemVM>()
                 .ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingStatus : 0))
                 .ForMember(d => d.BookingDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingDate : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""));
 
-            CreateMap<PackageItemCreateRM, PackageItem>(); 
+            CreateMap<PackageItemCreateRM, PackageItem>();
             CreateMap<Seat, SeatDto>().ReverseMap();
 
             CreateMap<AWBCreateRM, AWBInformation>();
@@ -146,7 +146,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.BookingRefNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingNumber : ""))
                 .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.FlightScheduleSector.FlightNumber : ""))
-                .ForMember(d => d.AwbTrackingNumber, o=> o.MapFrom(s => s.CargoBooking != null? s.CargoBooking.AWBInformation.AwbTrackingNumber:0))
+                .ForMember(d => d.AwbTrackingNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.AWBInformation.AwbTrackingNumber : 0))
                 .ForMember(d => d.CargoPositionType, o => o.MapFrom(s => s.ULDContainer != null ? s.ULDContainer.ULDContainerCargoPositions.First().CargoPosition.CargoPositionType : 0));
 
             CreateMap<SeatConfiguration, SeatConfigurationDto>().ReverseMap();
@@ -158,18 +158,18 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<AWBStackRM, AWBStack>();
             CreateMap<AWBStack, AWBStackVM>()
-                .ForMember(d => d.CargoAgentName,o => o.MapFrom(s => s.CargoAgent != null? s.CargoAgent.AgentName : ""));
+                .ForMember(d => d.CargoAgentName, o => o.MapFrom(s => s.CargoAgent != null ? s.CargoAgent.AgentName : ""));
 
             CreateMap<CargoAgent, BaseSelectListModel>()
                .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
 
-            CreateMap<AWBUpdateRM,AWBInformation>();
+            CreateMap<AWBUpdateRM, AWBInformation>();
 
             CreateMap<PackageItemUpdateRM, PackageItem>();
             CreateMap<PackageItemVM, PackageItemUpdateRM>();
 
             CreateMap<Airport, AirportVM>()
-                .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country != null? s.Country.Name : ""));
+                .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country != null ? s.Country.Name : ""));
             CreateMap<AirportCreateRM, Airport>();
             CreateMap<AirportUpdateRM, Airport>();
 
@@ -193,7 +193,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.OriginAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.OriginAirportName : ""))
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportCode : ""))
                 .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportName : ""))
-                .ForMember(d => d.ScheduledTime, o => o.MapFrom(s => (s.Flight != null && s.Flight.FlightSectors != null)? s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime : null))
+                .ForMember(d => d.ScheduledTime, o => o.MapFrom(s => (s.Flight != null && s.Flight.FlightSectors != null) ? new DateTime()
+                .Add((TimeSpan)s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime) : new DateTime()))
                 .ForMember(d => d.AircraftRegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""));
             CreateMap<FlightScheduleManagementRM, FlightScheduleManagement>();
 
