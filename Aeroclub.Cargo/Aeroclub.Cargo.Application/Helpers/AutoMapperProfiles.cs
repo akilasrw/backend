@@ -41,6 +41,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -182,11 +183,14 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<AircaftCreateRM, Aircraft>();
             CreateMap<AircaftUpdateRM, Aircraft>();
             CreateMap<Aircraft, AircraftVM>();
+
             CreateMap<CargoPosition, CargoPositionVM>();
+
             CreateMap<ULDContainer, ULDContainerVM>();
             CreateMap<ULD, ULDVM>();
             CreateMap<ULDMetaData, ULDMetaDataVM>();
             CreateMap<ULDContainerCargoPosition, ULDContainerCargoPositionVM>();
+
             CreateMap<FlightScheduleManagement, FlightScheduleManagementVM>()
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.Flight != null ? s.Flight.FlightNumber : ""))
                 .ForMember(d => d.OriginAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.OriginAirportCode : ""))
@@ -197,6 +201,14 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .Add((TimeSpan)s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime) : new DateTime()))
                 .ForMember(d => d.AircraftRegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""));
             CreateMap<FlightScheduleManagementRM, FlightScheduleManagement>();
+
+            CreateMap<Aircraft, BaseSelectListModel>()
+                .ForMember(d => d.Value, o => o.MapFrom(s => s.RegNo));
+
+            CreateMap<Flight, BaseSelectListModel>()
+               .ForMember(d => d.Value, o => o.MapFrom(s => s.FlightNumber));
+
+            CreateMap<FlightSector, FlightSectorVM>();
 
         }
     }

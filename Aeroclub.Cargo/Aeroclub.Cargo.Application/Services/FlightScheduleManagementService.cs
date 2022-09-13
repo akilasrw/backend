@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRM
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -19,12 +20,15 @@ namespace Aeroclub.Cargo.Application.Services
     public class FlightScheduleManagementService : BaseService, IFlightScheduleManagementService
     {
         private readonly IFlightScheduleService _flightScheduleService;
+        private readonly IFlightService _flightService;
         public FlightScheduleManagementService(
             IUnitOfWork unitOfWork,
+            IFlightService flightService,
             IMapper mapper, IFlightScheduleService flightScheduleService) :
             base(unitOfWork, mapper)
         {
             _flightScheduleService = flightScheduleService;
+            _flightService = flightService;
 
         }
 
@@ -75,8 +79,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<ServiceResponseStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)
         {
-            var spec = new FlightSpecification(new FlightDetailQM() { Id = dto.FlightId, IsIncludeFlightSchedules = true });
-            var flightDetail = await _unitOfWork.Repository<Flight>().GetEntityWithSpecAsync(spec);
+            var flightDetail = await _flightService.GetAsync<FlightVM>(new FlightQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
             var aircraftDetail = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(dto.AircraftId);
             IList<int> daysOfWeek = new List<int>();
             List<DateTime> bookingDays = new List<DateTime>();

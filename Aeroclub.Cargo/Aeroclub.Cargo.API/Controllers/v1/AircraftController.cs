@@ -22,6 +22,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
         }
 
+        [HttpGet("getSelectList")]
+        public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetSelectListAsync()
+        {
+            return Ok(await _aircraftService.GetSelectListAsync());
+        }
+
         [HttpGet()]
         [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<IReadOnlyList<AircraftVM>>> GetAsync([FromQuery] AircraftQM query)

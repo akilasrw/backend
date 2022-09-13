@@ -86,5 +86,12 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new Pagination<FlightFilterVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
+
+        public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
+        {
+            var list = await _unitOfWork.Repository<Flight>().GetListAsync();
+            return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
+        }
+
     }
 }
