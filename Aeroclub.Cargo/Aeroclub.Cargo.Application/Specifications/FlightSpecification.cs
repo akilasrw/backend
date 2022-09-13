@@ -14,16 +14,23 @@ namespace Aeroclub.Cargo.Application.Specifications
                        ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) && (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
             )
         {
-            if (query.IsIncludeFlightSectors)
-                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
+           
         }
-
+        
         public FlightSpecification(FlightListQM query)
         : base(x=> 
             ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) && (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
             )
         {
             
+        }
+
+        public FlightSpecification(FlightDetailQM query)
+           : base(x =>x.Id == query.Id 
+           )
+        {
+            if (query.IsIncludeFlightSectors)
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
         }
 
         public FlightSpecification(FlightFilterListQM query, bool isCount = false)

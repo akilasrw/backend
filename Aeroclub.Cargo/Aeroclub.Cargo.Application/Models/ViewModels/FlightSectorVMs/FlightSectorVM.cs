@@ -1,5 +1,4 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
-using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs
@@ -13,7 +12,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs
         public TimeSpan? ArrivalDateTime { get; set; }
 
         public SectorVM? Sector { get; set; }
-        public FlightVM? Flight { get; set; }
 
     }
 }

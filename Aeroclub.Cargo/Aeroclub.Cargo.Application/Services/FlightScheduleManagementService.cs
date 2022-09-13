@@ -79,7 +79,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<ServiceResponseStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)
         {
-            var flightDetail = await _flightService.GetAsync<FlightVM>(new FlightQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
+            var flightDetail = await _flightService.GetDetailAsync(new FlightDetailQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
             var aircraftDetail = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(dto.AircraftId);
             IList<int> daysOfWeek = new List<int>();
             List<DateTime> bookingDays = new List<DateTime>();

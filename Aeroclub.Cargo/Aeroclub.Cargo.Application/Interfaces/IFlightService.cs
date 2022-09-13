@@ -16,5 +16,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> CreateAsync(FlightCreateRM flightRM);
         Task<Pagination<FlightFilterVM>> GetFilteredListAsync(FlightFilterListQM query);
         Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync();
+        Task<FlightVM> GetDetailAsync(FlightDetailQM query);
     }
 }

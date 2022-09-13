@@ -37,6 +37,14 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _flightService.GetAsync<FlightVM>(query));
         }
+
+
+        [HttpGet("getDetail")]
+        [ActionName(nameof(GetAsync))]
+        public async Task<ActionResult<FlightVM>> GetDetailAsync([FromQuery] FlightDetailQM query)
+        {
+            return Ok(await _flightService.GetDetailAsync(query));
+        }
         
         [HttpGet("getList")]
         public async Task<ActionResult<IReadOnlyList<FlightVM>>> GetListAsync([FromQuery] FlightListQM query)
