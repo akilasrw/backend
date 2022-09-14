@@ -1,7 +1,5 @@
 ﻿using System;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
-using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
-using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,16 +14,23 @@ namespace Aeroclub.Cargo.Application.Specifications
                        ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) || (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
             )
         {
-            if (query.IncludeSectors)
-                AddInclude(y => y.Include(z => z.FlightSectors));         
+            
         }
-
+        
         public FlightSpecification(FlightListQM query)
         : base(x=> 
             ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) && (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
             )
         {
             
+        }
+
+        public FlightSpecification(FlightDetailQM query)
+           : base(x =>x.Id == query.Id 
+           )
+        {
+            if (query.IsIncludeFlightSectors)
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
         }
 
         public FlightSpecification(FlightFilterListQM query, bool isCount = false)

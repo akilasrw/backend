@@ -24,13 +24,27 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             _flightService = flightService;
         }
-        
+
+        [HttpGet("getSelectList")]
+        public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetSelectListAsync()
+        {
+            return Ok(await _flightService.GetSelectListAsync());
+        }
+
         [HttpGet()]
         [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<FlightVM>> GetAsync([FromQuery]FlightQM query)
         {
             var res = await _flightService.GetAsync<FlightVM>(query);
             return Ok(res);
+        }
+
+
+        [HttpGet("getDetail")]
+        [ActionName(nameof(GetAsync))]
+        public async Task<ActionResult<FlightVM>> GetDetailAsync([FromQuery] FlightDetailQM query)
+        {
+            return Ok(await _flightService.GetDetailAsync(query));
         }
         
         [HttpGet("getList")]

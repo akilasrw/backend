@@ -6,6 +6,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementV
         public string? FlightNumber { get; set; } = null;
         public DateTime ScheduleStartDate { get; set; }
         public DateTime ScheduleEndDate { get; set; }
+        public DateTime? ScheduledTime { get; set; }
         public string DaysOfWeek { get; set; } = null!;
         public string OriginAirportCode { get; set; } = null!;
         public string DestinationAirportCode { get; set; } = null!;

@@ -26,7 +26,14 @@ namespace Aeroclub.Cargo.Application.Services
             var flight = await _unitOfWork.Repository<Flight>().GetEntityWithSpecAsync(spec);
             return _mapper.Map<T>(flight);
         }
-        
+
+        public async Task<FlightVM> GetDetailAsync(FlightDetailQM query)
+        {
+            var spec = new FlightSpecification(query);
+            var flight = await _unitOfWork.Repository<Flight>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<FlightVM>(flight);
+        }
+
         public async Task<IReadOnlyList<T>> GetListAsync<T>(FlightListQM query)
         {
             var spec = new FlightSpecification(query);
@@ -93,5 +100,12 @@ namespace Aeroclub.Cargo.Application.Services
                 .AnyAsync(new FlightSpecification(
                 new FlightCheckExistsQM { FlightNumber = dto.FlightNumber }));
         }
+
+        public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
+        {
+            var list = await _unitOfWork.Repository<Flight>().GetListAsync();
+            return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
+        }
+
     }
 }

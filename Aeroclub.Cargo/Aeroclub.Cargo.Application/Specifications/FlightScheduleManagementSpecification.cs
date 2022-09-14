@@ -13,7 +13,7 @@ namespace Aeroclub.Cargo.Application.Specifications
        (query.DestinationAirportId == Guid.Empty || (x.Flight != null && x.Flight.DestinationAirportId == query.DestinationAirportId)) &&
         (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
         {
-            AddInclude(y => y.Include(x => x.Flight));
+            AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
 
             if (query.IncludeAircraft)
             {
@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightScheduleManagementSpecification(FlightScheduleManagementDetailQM query)
             : base(x => x.Id == query.Id && !x.IsDeleted)
         {
-            AddInclude(y => y.Include(x => x.Flight));
+            AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
 
             if (query.IncludeAircraft)
             {
