@@ -135,7 +135,7 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.AircraftId = aircraftDetail.Id;
                     flightSchedule.AircraftRegNo = aircraftDetail.RegNo;
 
-                    foreach (var sector in flightDetail.FlightSectors.OrderBy(r => r.Sequence))
+                    foreach (var sector in flightDetail.FlightSectors)
                     {
                         flightScheduleSectors.Add(new FlightScheduleSectorCreateRM()
                         {
