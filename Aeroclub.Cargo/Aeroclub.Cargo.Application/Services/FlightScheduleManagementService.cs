@@ -122,13 +122,13 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.FlightId = flightDetail.Id;
                     flightSchedule.FlightNumber = flightDetail.FlightNumber;
                     flightSchedule.ScheduledDepartureDateTime =
-                                                flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == null ?
+                                                flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == DateTime.MinValue ?
                                                 day :
-                                                day.Add((TimeSpan)flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime);
+                                                day.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
                     flightSchedule.ActualDepartureDateTime =
-                                                flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == null ?
+                                                flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == DateTime.MinValue ?
                                                 day :
-                                                day.Add((TimeSpan)flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime);
+                                                day.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
@@ -151,8 +151,8 @@ namespace Aeroclub.Cargo.Application.Services
                             DestinationAirportCode = sector.Sector.DestinationAirportCode,
                             OriginAirportName = sector.Sector.OriginAirportName,
                             DestinationAirportName = sector.Sector.DestinationAirportName,
-                            ScheduledDepartureDateTime = sector.DepartureDateTime == null ? day : day.Add((TimeSpan)(sector.DepartureDateTime)),
-                            ActualDepartureDateTime = sector.DepartureDateTime == null ? day : day.Add((TimeSpan)(sector.DepartureDateTime)),
+                            ScheduledDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Add(sector.DepartureDateTime.TimeOfDay),
+                            ActualDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Add(sector.DepartureDateTime.TimeOfDay),
                         });
                     }
                     flightSchedule.FlightScheduleSectors = flightScheduleSectors;
