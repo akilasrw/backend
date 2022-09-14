@@ -86,5 +86,12 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new Pagination<FlightFilterVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
+
+        public async Task<bool> IsExistsAsync(FlightCreateRM dto)
+        {
+            return await _unitOfWork.Repository<Flight>()
+                .AnyAsync(new FlightSpecification(
+                new FlightCheckExistsQM { FlightNumber = dto.FlightNumber }));
+        }
     }
 }
