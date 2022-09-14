@@ -15,6 +15,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<string> GetFlightNumber(Guid id);
         Task<ServiceResponseCreateStatus> CreateAsync(FlightCreateRM flightRM);
         Task<Pagination<FlightFilterVM>> GetFilteredListAsync(FlightFilterListQM query);
+        Task<bool> IsExistsAsync(FlightCreateRM dto);
         Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync();
         Task<FlightVM> GetDetailAsync(FlightDetailQM query);
     }

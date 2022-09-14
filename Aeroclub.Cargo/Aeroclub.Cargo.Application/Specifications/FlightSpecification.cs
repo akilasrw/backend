@@ -11,10 +11,10 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightSpecification(FlightQM query)
             : base(x=> 
                         (query.Id == Guid.Empty || x.Id == query.Id) &&
-                       ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) && (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
+                       ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) || (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
             )
         {
-           
+            
         }
         
         public FlightSpecification(FlightListQM query)
@@ -45,6 +45,12 @@ namespace Aeroclub.Cargo.Application.Specifications
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);
             }
+        }
+
+        public FlightSpecification(FlightCheckExistsQM query)
+            : base(x => x.FlightNumber.ToUpper() == query.FlightNumber.Trim().ToUpper())
+        {
+
         }
     }
 }

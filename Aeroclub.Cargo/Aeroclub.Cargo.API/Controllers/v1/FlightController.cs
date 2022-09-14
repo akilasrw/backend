@@ -35,7 +35,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<FlightVM>> GetAsync([FromQuery]FlightQM query)
         {
-            return Ok(await _flightService.GetAsync<FlightVM>(query));
+            var res = await _flightService.GetAsync<FlightVM>(query);
+            return Ok(res);
         }
 
 
@@ -61,6 +62,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FlightCreateRM model)
         {
+            if (await _flightService.IsExistsAsync(model))
+                return BadRequest("Given flight is already available in the system.");
 
             var response = await _flightService.CreateAsync(model);
             if (response.StatusCode == ServiceResponseStatus.Success)
