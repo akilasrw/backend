@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Aeroclub.Cargo.Core.Entities.Core;
+using System;
 
 namespace Aeroclub.Cargo.Core.Entities
 {
-    public class FlightSector
+    public class FlightSector : AuditableEntity
     {
         public Guid FlightId { get; set; }
         public Guid SectorId { get; set; }

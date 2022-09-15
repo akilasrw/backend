@@ -14,7 +14,8 @@ namespace Aeroclub.Cargo.Application.Specifications
                        ((query.DestinationAirportId == Guid.Empty && query.OriginAirportId == Guid.Empty) || (x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId))
             )
         {
-            
+            if (query.IncludeSectors)
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
         }
         
         public FlightSpecification(FlightListQM query)
