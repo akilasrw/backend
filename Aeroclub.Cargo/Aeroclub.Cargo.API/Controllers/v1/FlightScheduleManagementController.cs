@@ -51,7 +51,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
 
-            return BadRequest("Flight schedule creation fails.");
+            return BadRequest(response.Message == null?"Flight schedule creation fails.":response.Message);
         }
 
     }

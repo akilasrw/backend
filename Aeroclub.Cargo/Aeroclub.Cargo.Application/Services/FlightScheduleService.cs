@@ -14,19 +14,19 @@ using AutoMapper;
 
 namespace Aeroclub.Cargo.Application.Services
 {
-    public class FlightScheduleService :BaseService, IFlightScheduleService
+    public class FlightScheduleService : BaseService, IFlightScheduleService
     {
         private readonly IFlightService _flightService;
         private readonly IAircraftService _aircraftService;
         private readonly ILayoutCloneService _layoutCloneService;
 
         public FlightScheduleService(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IMapper mapper,
             IFlightService flightService,
             IAircraftService aircraftService,
             ILayoutCloneService layoutCloneService) :
-            base(unitOfWork,mapper)
+            base(unitOfWork, mapper)
         {
             _flightService = flightService;
             _aircraftService = aircraftService;
@@ -37,10 +37,10 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var responseStatus = new FlightScheduleCreateStatusRM();
             var entity = _mapper.Map<FlightSchedule>(model);
-            
+
             if (string.IsNullOrEmpty(entity.FlightNumber) && model.FlightId.HasValue)
                 entity.FlightNumber = await _flightService.GetFlightNumber(model.FlightId.Value);
-            
+
             if (string.IsNullOrEmpty(entity.AircraftRegNo) && model.AircraftId.HasValue)
                 entity.AircraftRegNo = await _aircraftService.GetAircraftRegNo(model.AircraftId.Value);
 
@@ -80,7 +80,7 @@ namespace Aeroclub.Cargo.Application.Services
                     throw ex;
                 }
             }
-                
+
             return responseStatus;
         }
 
@@ -101,16 +101,16 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 return false;
             }
-           
+
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(FlightScheduleUpdateRM model)
         {
             var entity = _mapper.Map<FlightSchedule>(model);
 
-            if(string.IsNullOrEmpty(entity.FlightNumber) && model.FlightId.HasValue)
+            if (string.IsNullOrEmpty(entity.FlightNumber) && model.FlightId.HasValue)
                 entity.FlightNumber = await _flightService.GetFlightNumber(model.FlightId.Value);
-            
+
             if (string.IsNullOrEmpty(entity.AircraftRegNo) && model.AircraftId.HasValue)
                 entity.AircraftRegNo = await _aircraftService.GetAircraftRegNo(model.AircraftId.Value);
 
@@ -125,7 +125,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
                 entity.MapDestinationAirport(destinationAirport);
             }
-            
+
             _unitOfWork.Repository<FlightSchedule>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
             return ServiceResponseStatus.Success;
@@ -138,6 +138,12 @@ namespace Aeroclub.Cargo.Application.Services
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
 
             return _mapper.Map<FlightSchedule, FlightScheduleVM>(flightSchedule);
+        }
+
+        public async Task<IReadOnlyList<FlightScheduleVM>> GetListAsync()
+        {
+            var list = await _unitOfWork.Repository<FlightSchedule>().GetListAsync();
+            return _mapper.Map<IReadOnlyList<FlightScheduleVM>>(list);
         }
     }
 }

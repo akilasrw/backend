@@ -34,11 +34,10 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
         {
-            var response = new ServiceResponseCreateStatus();
 
-            var createdFlightScheduleStatus = await CreateFlightSchedule(dto);
+            var createdFlightSchedule = await CreateFlightSchedule(dto);
 
-            if (createdFlightScheduleStatus == ServiceResponseStatus.Success)
+            if (createdFlightSchedule.StatusCode == ServiceResponseStatus.Success)
             {
                 var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
                 var flightScheduleManagementResponse = await _unitOfWork.Repository<FlightScheduleManagement>().CreateAsync(flightScheduleManagementEntity);
@@ -46,14 +45,11 @@ namespace Aeroclub.Cargo.Application.Services
 
                 if (flightScheduleManagementResponse == null)
                 {
-                    response.StatusCode = ServiceResponseStatus.Failed;
+                    createdFlightSchedule.StatusCode = ServiceResponseStatus.Failed;
                 }
             }
-            else
-            {
-                response.StatusCode = createdFlightScheduleStatus;
-            }
-            return response;
+           
+            return createdFlightSchedule;
         }
 
         public async Task<FlightScheduleManagementVM> GetAsync(FlightScheduleManagementDetailQM query)
@@ -77,18 +73,19 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        private async Task<ServiceResponseStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)
+        private async Task<ServiceResponseCreateStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)
         {
+
             var flightDetail = await _flightService.GetDetailAsync(new FlightDetailQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
             var aircraftDetail = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(dto.AircraftId);
             IList<int> daysOfWeek = new List<int>();
             List<DateTime> bookingDays = new List<DateTime>();
 
             if (flightDetail == null)
-                return ServiceResponseStatus.ValidationError;
+                return new ServiceResponseCreateStatus() { StatusCode =ServiceResponseStatus.ValidationError};
 
             if (flightDetail.FlightSectors.Count < 1)
-                return ServiceResponseStatus.ValidationError;
+                return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
 
             if (!String.IsNullOrEmpty(dto.DaysOfWeek))
             {
@@ -100,7 +97,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
             else
-                return ServiceResponseStatus.ValidationError;
+                return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
 
 
             if (daysOfWeek.Count > 0)
@@ -111,10 +108,24 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
             else
-                return ServiceResponseStatus.ValidationError;
+                return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
+
+
 
             if (bookingDays.Count > 0)
             {
+                var scheduledList = await _flightScheduleService.GetListAsync();
+
+                if (scheduledList != null && scheduledList.Count > 0)
+                {
+                    foreach (var day in bookingDays)
+                    {
+                        var matchingSchedule = scheduledList.FirstOrDefault(z => z.ScheduledDepartureDateTime.Date == day.Date && z.AircraftId == dto.AircraftId);
+                        if(matchingSchedule != null)
+                            return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError,Message = "This aircraft is already assigned for " + day.Date.ToShortDateString()+"."};
+                    }
+                }
+
                 foreach (var day in bookingDays)
                 {
                     var flightSchedule = new FlightScheduleCreateRM();
@@ -124,11 +135,11 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.ScheduledDepartureDateTime =
                                                 flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == DateTime.MinValue ?
                                                 day :
-                                                day.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
+                                                day.Date.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
                     flightSchedule.ActualDepartureDateTime =
                                                 flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == DateTime.MinValue ?
                                                 day :
-                                                day.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
+                                                day.Date.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
@@ -151,23 +162,23 @@ namespace Aeroclub.Cargo.Application.Services
                             DestinationAirportCode = sector.Sector.DestinationAirportCode,
                             OriginAirportName = sector.Sector.OriginAirportName,
                             DestinationAirportName = sector.Sector.DestinationAirportName,
-                            ScheduledDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Add(sector.DepartureDateTime.TimeOfDay),
-                            ActualDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Add(sector.DepartureDateTime.TimeOfDay),
+                            ScheduledDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Date.Add(sector.DepartureDateTime.TimeOfDay),
+                            ActualDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Date.Add(sector.DepartureDateTime.TimeOfDay),
                         });
                     }
                     flightSchedule.FlightScheduleSectors = flightScheduleSectors;
 
                     var flightScheduleResponse = await _flightScheduleService.CreateAsync(flightSchedule);
 
-                    if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed) return ServiceResponseStatus.Failed;
-                    if (flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError) return ServiceResponseStatus.ValidationError;
+                    if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed) return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Failed };
+                    if (flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError) return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
 
                 }
             }
             else
-                return ServiceResponseStatus.ValidationError;
+                return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
 
-            return ServiceResponseStatus.Success;
+            return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
         }
 
     }

@@ -13,5 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
         public string? AircraftRegNo { get; set; } = null;
+        public Guid? AircraftId { get; set; }
+
     }
 }
