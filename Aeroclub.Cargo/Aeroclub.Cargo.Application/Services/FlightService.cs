@@ -34,6 +34,10 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var spec = new FlightSpecification(query);
             var flight = await _unitOfWork.Repository<Flight>().GetEntityWithSpecAsync(spec);
+
+            if (flight != null && flight.FlightSectors != null)
+                flight.FlightSectors.OrderBy(r => r.Sequence);
+            
             return _mapper.Map<FlightVM>(flight);
         }
 

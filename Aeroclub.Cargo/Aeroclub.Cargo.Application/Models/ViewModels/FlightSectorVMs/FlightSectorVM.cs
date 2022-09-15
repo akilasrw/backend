@@ -8,8 +8,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs
         public Guid FlightId { get; set; }
         public Guid SectorId { get; set; }
         public int Sequence { get; set; }
-        public TimeSpan? DepartureDateTime { get; set; }
-        public TimeSpan? ArrivalDateTime { get; set; }
+        public DateTime DepartureDateTime { get; set; }
+        public DateTime ArrivalDateTime { get; set; }
 
         public SectorVM? Sector { get; set; }
 
