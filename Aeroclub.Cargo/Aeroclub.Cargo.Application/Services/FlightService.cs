@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
@@ -10,17 +11,15 @@ using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Services
 {
     public class FlightService : BaseService, IFlightService
     {
-        public IFlightScheduleService _flightScheduleService { get; }
-
-        public FlightService(IUnitOfWork unitOfWork, IMapper mapper, IFlightScheduleService flightScheduleService):
+        public FlightService(IUnitOfWork unitOfWork, IMapper mapper):
             base(unitOfWork,mapper)
         {
-            _flightScheduleService = flightScheduleService;
         }
 
         public async Task<T> GetAsync<T>(FlightQM query)
@@ -75,52 +74,61 @@ namespace Aeroclub.Cargo.Application.Services
 
             return res;
         }
-        
+
         public async Task<ServiceResponseStatus> UpdateAsync(FlightCreateRM flightRM)
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-            }
-                var createdShedule = await _flightScheduleService.GetAsync(new Models.Queries.FlightScheduleQMs.FlightScheduleQM() { FlightId = flightRM.Id });
-
-            if (createdShedule != null)
-            {
-                return ServiceResponseStatus.ValidationError;
-            }
-
-            var entity = _mapper.Map<FlightCreateRM, Flight>(flightRM);
-
-            if (entity.FlightSectors.Any())
-            {                    
-                var createdFlight = await _unitOfWork.Repository<Flight>()
-                    .GetEntityWithSpecAsync(new  FlightSpecification(new FlightQM() { Id = flightRM.Id}));
-
-                createdFlight.FlightSectors.Clear();
-                
-                // Set first and last sector 
-                if (createdFlight.FlightNumber != flightRM.FlightNumber)
+                try
                 {
-                    createdFlight = await MappingFlight(createdFlight);
-                    _unitOfWork.Repository<Flight>().Update(createdFlight);
-                    await _unitOfWork.SaveChangesAsync();
+                    var createdShedule = await _unitOfWork.Repository<FlightSchedule>()
+                        .GetEntityWithSpecAsync(new FlightScheduleSpecification(new FlightScheduleQM() { FlightId = flightRM.Id }));
+
+                    if (createdShedule != null)
+                    {
+                        return ServiceResponseStatus.ValidationError;
+                    }
+
+                    var entity = _mapper.Map<FlightCreateRM, Flight>(flightRM);
+
+                    if (entity.FlightSectors.Any())
+                    {
+                        var createdFlight = await _unitOfWork.Repository<Flight>()
+                            .GetEntityWithSpecAsync(new FlightSpecification(new FlightQM() { Id = flightRM.Id }));
+
+                        createdFlight.FlightSectors.Clear();
+
+                        // Set first and last sector 
+                        if (createdFlight.FlightNumber != flightRM.FlightNumber)
+                        {
+                            createdFlight = await MappingFlight(createdFlight);
+                            _unitOfWork.Repository<Flight>().Update(createdFlight);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+
+                        //// Delete created Sectors. 
+                        //foreach (var sector in createdFlight.FlightSectors)
+                        //{
+                        //    _unitOfWork.Repository<FlightSector>().Delete(sector);
+                        //    await _unitOfWork.SaveChangesAsync();
+                        //}
+
+                        // create new flight sectors
+                        foreach (var flightSector in entity.FlightSectors)
+                        {
+                            await _unitOfWork.Repository<FlightSector>().CreateAsync(flightSector);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                    }
+                    await transaction.CommitAsync();
+                    return ServiceResponseStatus.Success;
                 }
-
-                //// Delete created Sectors. 
-                //foreach (var sector in createdFlight.FlightSectors)
-                //{
-                //    _unitOfWork.Repository<FlightSector>().Delete(sector);
-                //    await _unitOfWork.SaveChangesAsync();
-                //}
-
-                // create new flight sectors
-                foreach (var flightSector in entity.FlightSectors)
+                catch (Exception ex)
                 {
-                    await _unitOfWork.Repository<FlightSector>().CreateAsync(flightSector);
-                    await _unitOfWork.SaveChangesAsync();
+                    await transaction.RollbackAsync();
+                    throw ex;
                 }
             }
-
-            return ServiceResponseStatus.Success;
         }
 
         async Task<Flight> MappingFlight(Flight entity)
