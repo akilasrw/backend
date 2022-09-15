@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Dtos;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs
 {
-    public class FlightCreateRM
+    public class FlightCreateRM: BaseRM
     {
         [Required(ErrorMessage = "Flight Number is required.")]
         public string FlightNumber { get; set; } = null!;

@@ -9,5 +9,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs
 {
     public class FlightScheduleQM: BaseQM
     {
+        public Guid FlightId { get; set; }
     }
 }

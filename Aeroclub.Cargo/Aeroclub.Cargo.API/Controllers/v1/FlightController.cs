@@ -71,5 +71,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return BadRequest("Flight creation fails.");
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] FlightCreateRM model)
+        {
+            var res = await _flightService.UpdateAsync(model);
+            if (res == ServiceResponseStatus.ValidationError)
+            {
+                return BadRequest("Can not be deleted. This flight is already use in the schedule.");
+            }
+            return NoContent();
+        }
     }
 }

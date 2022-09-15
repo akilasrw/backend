@@ -1,6 +1,8 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
@@ -9,6 +11,7 @@ using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -17,7 +20,6 @@ namespace Aeroclub.Cargo.Application.Services
         public FlightService(IUnitOfWork unitOfWork, IMapper mapper):
             base(unitOfWork,mapper)
         {
-     
         }
 
         public async Task<T> GetAsync<T>(FlightQM query)
@@ -60,19 +62,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (entity.FlightSectors.Any())
             {
-                var orderedSectorList = entity.FlightSectors.OrderBy(x => x.Sequence);
-                var firstFlightSector = orderedSectorList.FirstOrDefault();
-                var lastFlightSector = orderedSectorList.LastOrDefault();
-
-                var firstSector = await _unitOfWork.Repository<Sector>().GetByIdAsync(firstFlightSector.SectorId);
-                var lastSector = await _unitOfWork.Repository<Sector>().GetByIdAsync(lastFlightSector.SectorId);
-
-                entity.OriginAirportId = firstSector.OriginAirportId;
-                entity.OriginAirportCode = firstSector.OriginAirportCode;
-                entity.OriginAirportName = firstSector.OriginAirportName;
-                entity.DestinationAirportId = lastSector.DestinationAirportId;
-                entity.DestinationAirportCode = lastSector.DestinationAirportCode;
-                entity.DestinationAirportName = lastSector.DestinationAirportName;
+                entity = await MappingFlight(entity);
             }
 
             await _unitOfWork.Repository<Flight>().CreateAsync(entity);
@@ -83,6 +73,81 @@ namespace Aeroclub.Cargo.Application.Services
 
 
             return res;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(FlightCreateRM flightRM)
+        {
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    var createdShedule = await _unitOfWork.Repository<FlightSchedule>()
+                        .GetEntityWithSpecAsync(new FlightScheduleSpecification(new FlightScheduleQM() { FlightId = flightRM.Id }));
+
+                    if (createdShedule != null)
+                    {
+                        return ServiceResponseStatus.ValidationError;
+                    }
+
+                    var entity = _mapper.Map<FlightCreateRM, Flight>(flightRM);
+
+                    if (entity.FlightSectors.Any())
+                    {
+                        var createdFlight = await _unitOfWork.Repository<Flight>()
+                            .GetEntityWithSpecAsync(new FlightSpecification(new FlightQM() { Id = flightRM.Id }));
+
+                        createdFlight.FlightSectors.Clear();
+
+                        // Set first and last sector 
+                        if (createdFlight.FlightNumber != flightRM.FlightNumber)
+                        {
+                            createdFlight = await MappingFlight(createdFlight);
+                            _unitOfWork.Repository<Flight>().Update(createdFlight);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+
+                        //// Delete created Sectors. 
+                        //foreach (var sector in createdFlight.FlightSectors)
+                        //{
+                        //    _unitOfWork.Repository<FlightSector>().Delete(sector);
+                        //    await _unitOfWork.SaveChangesAsync();
+                        //}
+
+                        // create new flight sectors
+                        foreach (var flightSector in entity.FlightSectors)
+                        {
+                            await _unitOfWork.Repository<FlightSector>().CreateAsync(flightSector);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                    }
+                    await transaction.CommitAsync();
+                    return ServiceResponseStatus.Success;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw ex;
+                }
+            }
+        }
+
+        async Task<Flight> MappingFlight(Flight entity)
+        {
+            var orderedSectorList = entity.FlightSectors.OrderBy(x => x.Sequence);
+            var firstFlightSector = orderedSectorList.FirstOrDefault();
+            var lastFlightSector = orderedSectorList.LastOrDefault();
+
+            var firstSector = await _unitOfWork.Repository<Sector>().GetByIdAsync(firstFlightSector.SectorId);
+            var lastSector = await _unitOfWork.Repository<Sector>().GetByIdAsync(lastFlightSector.SectorId);
+
+            entity.OriginAirportId = firstSector.OriginAirportId;
+            entity.OriginAirportCode = firstSector.OriginAirportCode;
+            entity.OriginAirportName = firstSector.OriginAirportName;
+            entity.DestinationAirportId = lastSector.DestinationAirportId;
+            entity.DestinationAirportCode = lastSector.DestinationAirportCode;
+            entity.DestinationAirportName = lastSector.DestinationAirportName;
+
+            return entity;
         }
 
         public async Task<Pagination<FlightFilterVM>> GetFilteredListAsync(FlightFilterListQM query)
