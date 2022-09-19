@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
@@ -72,14 +73,31 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return BadRequest("Flight creation fails.");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] FlightCreateRM model)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(Guid id, FlightCreateRM model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+
             var res = await _flightService.UpdateAsync(model);
             if (res == ServiceResponseStatus.ValidationError)
             {
                 return BadRequest("Can not be deleted. This flight is already use in the schedule.");
             }
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            var model = await GetAsync(new FlightQM() { Id = id});
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             return NoContent();
         }
     }
