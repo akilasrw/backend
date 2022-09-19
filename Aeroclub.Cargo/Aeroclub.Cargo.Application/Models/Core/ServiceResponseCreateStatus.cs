@@ -6,6 +6,7 @@ namespace Aeroclub.Cargo.Application.Models.Core
     {
         public Guid Id { get; set; }
         public ServiceResponseStatus StatusCode { get; set; }
+        public string? Message { get; set; }
 
 
     }

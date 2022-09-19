@@ -12,7 +12,7 @@ namespace Aeroclub.Cargo.Common.Extentions
             do
             {
                 from = from.AddDays(daysToAdd);
-                if (from < to)
+                if (from <= to)
                     result.Add(from);
                 
                 daysToAdd = daysInWeek;
