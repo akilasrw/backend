@@ -94,27 +94,27 @@ namespace Aeroclub.Cargo.Application.Services
                     if (entity.FlightSectors.Any())
                     {
                         var createdFlight = await _unitOfWork.Repository<Flight>()
-                            .GetEntityWithSpecAsync(new FlightSpecification(new FlightQM() { Id = flightRM.Id }));
-
-                        createdFlight.FlightSectors.Clear();
+                            .GetEntityWithSpecAsync(new FlightSpecification(new FlightQM() { Id = flightRM.Id, IncludeSectors = true }));
+                       
+                        // Delete created Sectors. 
+                        foreach (var sector in createdFlight.FlightSectors)
+                        {
+                            _unitOfWork.Repository<FlightSector>().Delete(sector);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<FlightSector>().Detach(sector);
+                            
+                        }
+                        _unitOfWork.Repository<Flight>().Detach(createdFlight);
 
                         // Set first and last sector 
-                        if (createdFlight.FlightNumber != flightRM.FlightNumber)
-                        {
-                            createdFlight = await MappingFlight(createdFlight);
-                            _unitOfWork.Repository<Flight>().Update(createdFlight);
-                            await _unitOfWork.SaveChangesAsync();
-                        }
-
-                        //// Delete created Sectors. 
-                        //foreach (var sector in createdFlight.FlightSectors)
-                        //{
-                        //    _unitOfWork.Repository<FlightSector>().Delete(sector);
-                        //    await _unitOfWork.SaveChangesAsync();
-                        //}
+                        entity = await MappingFlight(entity);
+                        var flightSectors = entity.FlightSectors;
+                        entity.FlightSectors = null;
+                        _unitOfWork.Repository<Flight>().Update(entity);
+                        await _unitOfWork.SaveChangesAsync();
 
                         // create new flight sectors
-                        foreach (var flightSector in entity.FlightSectors)
+                        foreach (var flightSector in flightSectors)
                         {
                             await _unitOfWork.Repository<FlightSector>().CreateAsync(flightSector);
                             await _unitOfWork.SaveChangesAsync();
