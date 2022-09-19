@@ -9,8 +9,5 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs
         public Guid DestinationAirportId { get; set; }
         public string? FlightNumber { get; set; }
 
-        [JsonIgnore]
-        public bool IncludeAircraft { get; set; } = false;
-
     }
 }

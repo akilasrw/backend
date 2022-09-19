@@ -1,5 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Queries.AircraftQMs;
+using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
 using Aeroclub.Cargo.Application.Models.Queries.OverheadLayoutQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -12,19 +14,16 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class LayoutCloneService : BaseService, ILayoutCloneService
     {
-        private readonly IAircraftService _aircraftService;
         private readonly ILoadPlanService _loadPlanService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
 
         public LayoutCloneService(
-            IAircraftService aircraftService,
             ILoadPlanService loadPlanService,
             IFlightScheduleSectorService flightScheduleSectorService,
             IUnitOfWork unitOfWork,
             IMapper mapper)
             : base(unitOfWork, mapper)
         {
-            _aircraftService = aircraftService;
             _loadPlanService = loadPlanService;
             _flightScheduleSectorService = flightScheduleSectorService;
         }
@@ -33,24 +32,33 @@ namespace Aeroclub.Cargo.Application.Services
         {
             if (FlightScheduleSectors != null)
             {
-                var aircraftId = flightSchedule.AircraftId;
-                if (aircraftId == null) return false;
+                var aircraftSubType = flightSchedule.AircraftSubType;
+                if (aircraftSubType == AircraftSubTypes.None) return false;
 
-                // Get Aircraft
-                var aircraft = await GetAircraftAsync(aircraftId.Value);
-                if (aircraft == null) return false;
-                if(aircraft.ConfigurationType != AircraftConfigType.P2C) return false;
+                // Get Aircraft Sub Type
+                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(aircraftSubType);
+                if (aircraftSubTypeDetail == null) return false;
+
+                if(aircraftSubTypeDetail.ConfigType != AircraftConfigType.P2C) return false;
+
+                // Get Aircrat Layout Mapping
+                var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(aircraftSubTypeDetail.Id);
+                if (aircraftLayoutMappingDetail == null) return false;
+                if (aircraftLayoutMappingDetail.AircraftLayoutId == null) return false;
+                if (aircraftLayoutMappingDetail.SeatLayoutId == null) return false;
+                if (aircraftLayoutMappingDetail.OverheadLayoutId == null) return false;
+
 
                 // Get AircraftLayout including all childs till Position
-                var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
+                var aircraftLayout = await GetAircraftLayoutAsync((Guid)aircraftLayoutMappingDetail.AircraftLayoutId);
                 if (aircraftLayout == null) return false;       
 
                 // Get SeatLayout including all childs till Seat
-                var seatLayout = (aircraft.SeatLayoutId != null)?await GetSeatLayoutAsync((Guid)aircraft.SeatLayoutId):null;
+                var seatLayout = await GetSeatLayoutAsync((Guid)aircraftLayoutMappingDetail.SeatLayoutId);
                 if (seatLayout == null) return false;
 
                 // Get OverheadLayout including all childs till overheadPosition
-                var overheadLayout = (aircraft.OverheadLayoutId != null)?await GetOverheadLayoutAsync((Guid)aircraft.OverheadLayoutId):null;
+                var overheadLayout = await GetOverheadLayoutAsync((Guid)aircraftLayoutMappingDetail.OverheadLayoutId);
                 if (overheadLayout == null) return false;
 
                 foreach (var sector in FlightScheduleSectors)
@@ -107,9 +115,16 @@ namespace Aeroclub.Cargo.Application.Services
             }
         }
 
-        private async Task<Aircraft> GetAircraftAsync(Guid aircraftId)
+        private async Task<AircraftSubType> GetAircraftSubTypeAsync(AircraftSubTypes aircraftSubType)
         {
-            return await _unitOfWork.Repository<Aircraft>().GetByIdAsync(aircraftId);
+            var spec = new AircraftSubTypeSpecification(new AircraftSubTypeQM() { aircraftSubType = aircraftSubType });
+            return await _unitOfWork.Repository<AircraftSubType>().GetEntityWithSpecAsync(spec);
+        }
+
+        private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
+        {
+            var spec = new AircraftLayoutMappingSpecification(new AircraftLayoutMappingQM(){ AircraftSubTypeId = subTypeId});
+            return await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(spec);
         }
 
         private async Task<AircraftLayout> GetAircraftLayoutAsync(Guid aircraftLayoutId)
@@ -119,6 +134,23 @@ namespace Aeroclub.Cargo.Application.Services
 
             return await _unitOfWork.Repository<AircraftLayout>().GetEntityWithSpecAsync(aircraftLayoutSpec);
         }
+
+        private async Task<SeatLayout> GetSeatLayoutAsync(Guid aircraftLayoutId)
+        {
+            var seatLayoutSpec = new SeatLayoutSpecification(
+               new Models.Queries.SeatLayoutQMs.SeatLayoutQM() { Id = aircraftLayoutId, IncludeSeatConfiguration = true });
+
+            return await _unitOfWork.Repository<SeatLayout>().GetEntityWithSpecAsync(seatLayoutSpec);
+        }
+
+        private async Task<OverheadLayout> GetOverheadLayoutAsync(Guid overheadLayoutId)
+        {
+            var overheadLayoutSpec = new OverheadLayoutSpecification(
+               new OverheadLayoutQM() { Id = overheadLayoutId, IncludeOverheadCompartment = true });
+
+            return await _unitOfWork.Repository<OverheadLayout>().GetEntityWithSpecAsync(overheadLayoutSpec);
+        }
+
 
         private Task<Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>>> ResetLayoutAsync(AircraftLayout aircraftLayout, SeatLayout seatLayout, OverheadLayout overheadLayout)
         {
@@ -210,36 +242,28 @@ namespace Aeroclub.Cargo.Application.Services
             return Task.FromResult(layouts);
         }
 
-        private async Task<SeatLayout> GetSeatLayoutAsync(Guid aircraftLayoutId)
-        {
-            var seatLayoutSpec = new SeatLayoutSpecification(
-               new Models.Queries.SeatLayoutQMs.SeatLayoutQM() { Id = aircraftLayoutId, IncludeSeatConfiguration = true });
-
-            return await _unitOfWork.Repository<SeatLayout>().GetEntityWithSpecAsync(seatLayoutSpec);
-        }
-        
-        private async Task<OverheadLayout> GetOverheadLayoutAsync(Guid overheadLayoutId)
-        {
-            var overheadLayoutSpec = new OverheadLayoutSpecification(
-               new OverheadLayoutQM() { Id = overheadLayoutId, IncludeOverheadCompartment = true });
-
-            return await _unitOfWork.Repository<OverheadLayout>().GetEntityWithSpecAsync(overheadLayoutSpec);
-        }
 
         public async Task<bool> CloneULDCargoLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
         {
             if (FlightScheduleSectors != null)
             {
-                var aircraftId = flightSchedule.AircraftId;
-                if (aircraftId == null) return false;
 
-                // Get Aircraft
-                var aircraft = await GetAircraftAsync(aircraftId.Value);
-                if (aircraft == null) return false;
-                if (aircraft.ConfigurationType != AircraftConfigType.Freighter) return false;
+                var aircraftSubType = flightSchedule.AircraftSubType;
+                if (aircraftSubType == AircraftSubTypes.None) return false;
+
+                // Get Aircraft Sub Type
+                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(aircraftSubType);
+                if (aircraftSubTypeDetail == null) return false;
+
+                if (aircraftSubTypeDetail.ConfigType != AircraftConfigType.Freighter) return false;
+
+                // Get Aircrat Layout Mapping
+                var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(aircraftSubTypeDetail.Id);
+                if (aircraftLayoutMappingDetail == null) return false;
+                if (aircraftLayoutMappingDetail.AircraftLayoutId == null) return false;
 
                 // Get AircraftLayout including all childs till Position
-                var aircraftLayout = await GetAircraftLayoutAsync(aircraft.AircraftLayoutId);
+                var aircraftLayout = await GetAircraftLayoutAsync((Guid)aircraftLayoutMappingDetail.AircraftLayoutId);
                 if (aircraftLayout == null) return false;
 
                 foreach (var sector in FlightScheduleSectors)

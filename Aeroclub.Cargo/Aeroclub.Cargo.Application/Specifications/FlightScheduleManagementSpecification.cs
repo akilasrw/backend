@@ -15,11 +15,6 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
 
-            if (query.IncludeAircraft)
-            {
-                AddInclude(x => x.Include(y => y.Aircraft));
-            }
-
             if (!isCount)
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
         }
@@ -29,10 +24,6 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
 
-            if (query.IncludeAircraft)
-            {
-                AddInclude(x => x.Include(y => y.Aircraft));
-            }
         }
 
 

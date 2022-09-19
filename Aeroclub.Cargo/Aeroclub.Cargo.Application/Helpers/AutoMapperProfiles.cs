@@ -198,8 +198,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportCode : ""))
                 .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportName : ""))
                 .ForMember(d => d.ScheduledTime, o => o.MapFrom(s => (s.Flight != null && s.Flight.FlightSectors != null) ? new DateTime()
-                .Add((TimeSpan)s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime) : new DateTime()))
-                .ForMember(d => d.AircraftRegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""));
+                .Add((TimeSpan)s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime) : new DateTime()));
             CreateMap<FlightScheduleManagementRM, FlightScheduleManagement>();
 
             CreateMap<Aircraft, BaseSelectListModel>()

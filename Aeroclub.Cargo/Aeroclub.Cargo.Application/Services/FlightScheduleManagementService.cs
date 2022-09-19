@@ -7,7 +7,6 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRM
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -61,7 +60,6 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<Pagination<FlightScheduleManagementVM>> GetFilteredListAsync(FlightScheduleManagementFilteredListQM query)
         {
-            query.IncludeAircraft = true;
             var spec = new FlightScheduleManagementSpecification(query);
             var flightScheduleManagementList = await _unitOfWork.Repository<FlightScheduleManagement>().GetListWithSpecAsync(spec);
 
@@ -77,7 +75,6 @@ namespace Aeroclub.Cargo.Application.Services
         {
 
             var flightDetail = await _flightService.GetDetailAsync(new FlightDetailQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
-            var aircraftDetail = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(dto.AircraftId);
             IList<int> daysOfWeek = new List<int>();
             List<DateTime> bookingDays = new List<DateTime>();
 
@@ -114,18 +111,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (bookingDays.Count > 0)
             {
-                var scheduledList = await _flightScheduleService.GetListAsync();
-
-                if (scheduledList != null && scheduledList.Count > 0)
-                {
-                    foreach (var day in bookingDays)
-                    {
-                        var matchingSchedule = scheduledList.FirstOrDefault(z => z.ScheduledDepartureDateTime.Date == day.Date && z.AircraftId == dto.AircraftId);
-                        if(matchingSchedule != null)
-                            return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError,Message = "This aircraft is already assigned for " + day.Date.ToShortDateString()+"."};
-                    }
-                }
-
+               
                 foreach (var day in bookingDays)
                 {
                     var flightSchedule = new FlightScheduleCreateRM();
@@ -143,8 +129,7 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
-                    flightSchedule.AircraftId = aircraftDetail.Id;
-                    flightSchedule.AircraftRegNo = aircraftDetail.RegNo;
+                    flightSchedule.AircraftSubType = dto.AircraftSubType;
 
                     foreach (var sector in flightDetail.FlightSectors)
                     {
@@ -154,7 +139,7 @@ namespace Aeroclub.Cargo.Application.Services
                             SectorId = sector.SectorId,
                             SequenceNo = sector.Sequence,
                             FlightNumber = flightDetail.FlightNumber,
-                            AircraftId = aircraftDetail.Id,
+                            AircraftSubType = dto.AircraftSubType,
                             FlightScheduleStatus = FlightScheduleStatus.None,
                             OriginAirportId = sector.Sector.OriginAirportId,
                             DestinationAirportId = sector.Sector.DestinationAirportId,

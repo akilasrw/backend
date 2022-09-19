@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20220919062238_Add_Aircraft_Sub_Type_To_Flight_Schedule_And_Flight_Schedule_Sector_Table")]
+    partial class Add_Aircraft_Sub_Type_To_Flight_Schedule_And_Flight_Schedule_Sector_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AircraftLayoutId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<short>("AircraftSubType")
@@ -55,14 +60,26 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("OverheadLayoutId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("RegNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid?>("SeatLayoutId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<short>("Status")
                         .HasColumnType("smallint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AircraftLayoutId");
+
+                    b.HasIndex("OverheadLayoutId");
+
+                    b.HasIndex("SeatLayoutId");
 
                     b.ToTable("Aircrafts");
                 });
@@ -729,7 +746,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3c1a2335-5722-4ac0-9b7d-d08a7b33c899",
+                            ConcurrencyStamp = "83447383-b720-44e0-85ea-562eb6203210",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -745,7 +762,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fcaf5c25-cce7-422f-8b42-a2382f19e403",
+                            ConcurrencyStamp = "4a51b3d4-77e5-432d-97bc-14e4b6300c27",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -22958,8 +22975,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<short>("AircraftSubType")
-                        .HasColumnType("smallint");
+                    b.Property<Guid?>("AircraftId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -22996,6 +23013,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AircraftId");
 
                     b.HasIndex("FlightId");
 
@@ -36031,6 +36050,29 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Aircraft", b =>
+                {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.AircraftLayout", "AircraftLayout")
+                        .WithMany()
+                        .HasForeignKey("AircraftLayoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.OverheadLayout", "OverheadLayout")
+                        .WithMany()
+                        .HasForeignKey("OverheadLayoutId");
+
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.SeatLayout", "SeatLayout")
+                        .WithMany()
+                        .HasForeignKey("SeatLayoutId");
+
+                    b.Navigation("AircraftLayout");
+
+                    b.Navigation("OverheadLayout");
+
+                    b.Navigation("SeatLayout");
+                });
+
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AircraftCabin", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.AircraftDeck", "AircraftDeck")
@@ -36297,9 +36339,15 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleManagement", b =>
                 {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.Aircraft", "Aircraft")
+                        .WithMany()
+                        .HasForeignKey("AircraftId");
+
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Flight", "Flight")
                         .WithMany()
                         .HasForeignKey("FlightId");
+
+                    b.Navigation("Aircraft");
 
                     b.Navigation("Flight");
                 });
