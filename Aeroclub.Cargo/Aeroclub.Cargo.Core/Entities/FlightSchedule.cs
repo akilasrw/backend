@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public string DestinationAirportName { get; set; } = null!;
         public Guid? AircraftId { get; set; }
         public string? AircraftRegNo { get; set; } = null;
+        public AircraftSubTypes AircraftSubType { get; set; }
 
         public virtual Airport? OriginAirport { get; set; }
         public virtual Airport? DestinationAirport { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
-using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
@@ -40,9 +39,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (string.IsNullOrEmpty(entity.FlightNumber) && model.FlightId.HasValue)
                 entity.FlightNumber = await _flightService.GetFlightNumber(model.FlightId.Value);
-
-            if (string.IsNullOrEmpty(entity.AircraftRegNo) && model.AircraftId.HasValue)
-                entity.AircraftRegNo = await _aircraftService.GetAircraftRegNo(model.AircraftId.Value);
 
             if (string.IsNullOrEmpty(entity.OriginAirportCode))
             {
@@ -86,21 +82,14 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)
         {
-            if (flightSchedule.AircraftId.HasValue)
-            {
-                var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftId.Value);
+            var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubType);
 
-                if (aircraftConfigType == AircraftConfigType.P2C)
-                    return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
-                else if (aircraftConfigType == AircraftConfigType.Freighter)
-                    return await _layoutCloneService.CloneULDCargoLayoutAsync(flightSchedule, flightScheduleSectors);
-                else
-                    return false;
-            }
+            if (aircraftConfigType == AircraftConfigType.P2C)
+                return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
+            else if (aircraftConfigType == AircraftConfigType.Freighter)
+                return await _layoutCloneService.CloneULDCargoLayoutAsync(flightSchedule, flightScheduleSectors);
             else
-            {
                 return false;
-            }
 
         }
 

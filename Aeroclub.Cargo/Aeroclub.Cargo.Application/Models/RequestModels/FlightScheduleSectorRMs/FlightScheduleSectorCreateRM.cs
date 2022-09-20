@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs
 {
@@ -29,5 +27,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRM
         public string? FlightNumber { get; set; } = null;
         public Guid? LoadPlanId { get; set; } = null;
         public Guid? AircraftId { get; set; } = null;
+        public AircraftSubTypes AircraftSubType { get; set; }
+
     }
 }

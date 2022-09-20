@@ -9,6 +9,8 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
         public void Configure(EntityTypeBuilder<FlightScheduleManagement> builder)
         {
             builder.Property(p => p.DaysOfWeek).HasColumnType("varchar(20)").IsRequired();
+            builder.Property(p => p.AircraftSubType).HasColumnType("smallint").IsRequired();
+
         }
     }
 }

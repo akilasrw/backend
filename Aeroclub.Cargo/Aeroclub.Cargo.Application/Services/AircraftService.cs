@@ -75,10 +75,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             entity.AircraftType = aircraftType.Type;
             entity.AircraftSubType = aircraftSubType.Type;
-
-            entity.AircraftLayoutId = (Guid)(aircraftLayoutMapping.AircraftLayoutId);
-            entity.OverheadLayoutId = (dto.ConfigurationType == AircraftConfigType.P2C)?aircraftLayoutMapping.OverheadLayoutId:null;
-            entity.SeatLayoutId = (dto.ConfigurationType == AircraftConfigType.P2C)?aircraftLayoutMapping.SeatLayoutId:null;
                          
 
             await _unitOfWork.Repository<Aircraft>().CreateAsync(entity);
@@ -90,10 +86,11 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<AircraftConfigType> GetAircraftConfigType(Guid id)
+        public async Task<AircraftConfigType> GetAircraftConfigType(AircraftSubTypes aircraftSubType)
         {
-            var flight = await _unitOfWork.Repository<Aircraft>().GetByIdAsync(id);
-            return flight.ConfigurationType;
+            var spec = new AircraftSubTypeSpecification(new AircraftSubTypeQM() { aircraftSubType = aircraftSubType });
+            var aircraftSubTypeDetail = await _unitOfWork.Repository<AircraftSubType>().GetEntityWithSpecAsync(spec);
+            return aircraftSubTypeDetail.ConfigType;
         }
 
         public async Task<string> GetAircraftRegNo(Guid id)
@@ -176,14 +173,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             entity.AircraftType = aircraftType.Type;
             entity.AircraftSubType = aircraftSubType.Type;
-
-            entity.AircraftLayoutId = (Guid)(aircraftLayoutMapping.AircraftLayoutId);
-
-            if(dto.ConfigurationType == AircraftConfigType.P2C)
-            {
-                entity.OverheadLayoutId = (Guid)(aircraftLayoutMapping.OverheadLayoutId);
-                entity.SeatLayoutId = (Guid)(aircraftLayoutMapping.SeatLayoutId);
-            }
 
 
             _unitOfWork.Repository<Aircraft>().Update(entity);

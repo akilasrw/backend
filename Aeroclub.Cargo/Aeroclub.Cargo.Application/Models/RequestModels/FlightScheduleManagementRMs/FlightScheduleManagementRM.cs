@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Aeroclub.Cargo.Common.Enums;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs
@@ -8,8 +9,8 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
         [Required(ErrorMessage = "Flight Id required")]
         public Guid FlightId { get; set; }
 
-        [Required(ErrorMessage = "Aircraft Id required")]
-        public Guid AircraftId { get; set; }
+        [Required(ErrorMessage = "Aircraft type required")]
+        public AircraftSubTypes AircraftSubType { get; set; }
 
         [Required(ErrorMessage = "Schedule start date required")]
         public DateTime ScheduleStartDate { get; set; }
