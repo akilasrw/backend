@@ -111,7 +111,19 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (bookingDays.Count > 0)
             {
-               
+
+                var scheduledList = await _flightScheduleService.GetListAsync();
+
+                if (scheduledList != null && scheduledList.Count > 0)
+                {
+                    foreach (var day in bookingDays)
+                    {
+                        var matchingSchedule = scheduledList.FirstOrDefault(z => z.ScheduledDepartureDateTime.Date == day.Date && z.FlightId == dto.FlightId && z.AircraftSubTypeId == dto.AircraftSubTypeId);
+                        if (matchingSchedule != null)
+                            return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError, Message = "This aircraft and flight are already assigned for " + day.Date.ToShortDateString() + "." };
+                    }
+                }
+
                 foreach (var day in bookingDays)
                 {
                     var flightSchedule = new FlightScheduleCreateRM();
@@ -165,6 +177,5 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
         }
-
     }
 }
