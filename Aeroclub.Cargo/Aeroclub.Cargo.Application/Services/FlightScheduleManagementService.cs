@@ -129,7 +129,7 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
-                    flightSchedule.AircraftSubType = dto.AircraftSubType;
+                    flightSchedule.AircraftSubTypeId = dto.AircraftSubTypeId;
 
                     foreach (var sector in flightDetail.FlightSectors)
                     {
@@ -139,7 +139,7 @@ namespace Aeroclub.Cargo.Application.Services
                             SectorId = sector.SectorId,
                             SequenceNo = sector.Sequence,
                             FlightNumber = flightDetail.FlightNumber,
-                            AircraftSubType = dto.AircraftSubType,
+                            AircraftSubTypeId = dto.AircraftSubTypeId,
                             FlightScheduleStatus = FlightScheduleStatus.None,
                             OriginAirportId = sector.Sector.OriginAirportId,
                             DestinationAirportId = sector.Sector.DestinationAirportId,

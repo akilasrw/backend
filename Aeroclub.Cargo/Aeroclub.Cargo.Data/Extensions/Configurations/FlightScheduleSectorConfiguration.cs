@@ -14,7 +14,6 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
             builder.Property(p => p.OriginAirportName).HasColumnType("nvarchar(80)").IsRequired();
             builder.Property(p => p.DestinationAirportName).HasColumnType("nvarchar(80)").IsRequired();
             builder.Property(p => p.FlightScheduleStatus).HasColumnType("tinyint").IsRequired();
-            builder.Property(p => p.AircraftSubType).HasColumnType("smallint").IsRequired();
 
             builder.HasMany(ur => ur.CargoBookings)
                .WithOne(u => u.FlightScheduleSector)

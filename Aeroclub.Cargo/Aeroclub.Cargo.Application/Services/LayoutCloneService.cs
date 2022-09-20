@@ -1,6 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
-using Aeroclub.Cargo.Application.Models.Queries.AircraftQMs;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
 using Aeroclub.Cargo.Application.Models.Queries.OverheadLayoutQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
@@ -32,11 +31,10 @@ namespace Aeroclub.Cargo.Application.Services
         {
             if (FlightScheduleSectors != null)
             {
-                var aircraftSubType = flightSchedule.AircraftSubType;
-                if (aircraftSubType == AircraftSubTypes.None) return false;
+                if (flightSchedule.AircraftSubTypeId == Guid.Empty) return false;
 
                 // Get Aircraft Sub Type
-                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(aircraftSubType);
+                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSchedule.AircraftSubTypeId);
                 if (aircraftSubTypeDetail == null) return false;
 
                 if(aircraftSubTypeDetail.ConfigType != AircraftConfigType.P2C) return false;
@@ -115,10 +113,9 @@ namespace Aeroclub.Cargo.Application.Services
             }
         }
 
-        private async Task<AircraftSubType> GetAircraftSubTypeAsync(AircraftSubTypes aircraftSubType)
+        private async Task<AircraftSubType> GetAircraftSubTypeAsync(Guid id)
         {
-            var spec = new AircraftSubTypeSpecification(new AircraftSubTypeQM() { aircraftSubType = aircraftSubType });
-            return await _unitOfWork.Repository<AircraftSubType>().GetEntityWithSpecAsync(spec);
+            return await _unitOfWork.Repository<AircraftSubType>().GetByIdAsync(id);
         }
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
@@ -248,11 +245,10 @@ namespace Aeroclub.Cargo.Application.Services
             if (FlightScheduleSectors != null)
             {
 
-                var aircraftSubType = flightSchedule.AircraftSubType;
-                if (aircraftSubType == AircraftSubTypes.None) return false;
+                if (flightSchedule.AircraftSubTypeId == Guid.Empty) return false;
 
                 // Get Aircraft Sub Type
-                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(aircraftSubType);
+                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSchedule.AircraftSubTypeId);
                 if (aircraftSubTypeDetail == null) return false;
 
                 if (aircraftSubTypeDetail.ConfigType != AircraftConfigType.Freighter) return false;

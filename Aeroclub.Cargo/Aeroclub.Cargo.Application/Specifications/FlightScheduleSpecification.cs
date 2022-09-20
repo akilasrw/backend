@@ -1,5 +1,4 @@
-﻿using System;
-using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
@@ -34,7 +33,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (!isCount)
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
-                AddInclude(x => x.Include(y => y.Aircraft));
+                AddInclude(x => x.Include(y => y.AircraftSubType));
                 AddOrderByDescending(x => x.Created);
             }
         }
@@ -42,9 +41,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightScheduleSpecification(CargoBookingSummaryDetailQM query, bool isCount = false)
             : base(x => (query.Id == Guid.Empty || x.Id == query.Id))
         {
-            if (query.IsIncludeAircraft)
+            if (query.IsIncludeAircraftType)
             {
-                AddInclude(x => x.Include(y => y.Aircraft));
+                AddInclude(x => x.Include(y => y.AircraftSubType).ThenInclude(z => z.AircraftType));
             }
 
             if (query.IsIncludeFlightScheduleSectors)

@@ -1,9 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs
 {
@@ -27,7 +24,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRM
         public string? FlightNumber { get; set; } = null;
         public Guid? LoadPlanId { get; set; } = null;
         public Guid? AircraftId { get; set; } = null;
-        public AircraftSubTypes AircraftSubType { get; set; }
+        public Guid AircraftSubTypeId { get; set; }
 
     }
 }

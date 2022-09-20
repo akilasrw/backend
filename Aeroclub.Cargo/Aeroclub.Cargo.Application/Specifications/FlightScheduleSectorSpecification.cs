@@ -1,5 +1,4 @@
-﻿using System;
-using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -37,8 +36,8 @@ namespace Aeroclub.Cargo.Application.Specifications
                 (!query.DestinationAirportOnly || x.DestinationAirportId == query.DestinationAirportId)
             )
         {
-            if (query.IncludeAircraft)
-                AddInclude(y => y.Include(x => x.Aircraft));
+            if (query.IncludeAircraftSubType)
+                AddInclude(y => y.Include(x => x.AircraftSubType));
 
             if (!isCount)
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
@@ -50,8 +49,8 @@ namespace Aeroclub.Cargo.Application.Specifications
             if(query.IncludeULDContaines)
                 AddInclude(y=> y.Include(x=> x.LoadPlan.ULDContaines).ThenInclude(y=>y.ULDContainerCargoPositions).ThenInclude(z=>z.CargoPosition));
             
-            if(query.IncludeAircraft)
-                AddInclude(y=> y.Include(x=> x.Aircraft));
+            if(query.IncludeAircraftSubType)
+                AddInclude(y=> y.Include(x=> x.AircraftSubType));
 
             if(query.IncludeLoadPlan)
                 AddInclude(y=> y.Include(x=> x.LoadPlan));
@@ -61,7 +60,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => (query.Id == Guid.Empty || x.Id == query.Id) && 
             (query.FlightScheduleId == Guid.Empty || x.FlightScheduleId == query.FlightScheduleId))
         {
-            AddInclude(x => x.Include(y => y.Aircraft));
+            AddInclude(x => x.Include(y => y.AircraftSubType));
             AddInclude(y => y.Include(x => x.LoadPlan.ULDContaines).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z => z.CargoPosition));
             AddInclude(y => y.Include(x => x.LoadPlan.AircraftLayout.AircraftDecks));
         }

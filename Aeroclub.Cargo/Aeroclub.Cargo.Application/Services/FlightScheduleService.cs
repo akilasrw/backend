@@ -82,7 +82,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)
         {
-            var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubType);
+            var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubTypeId);
 
             if (aircraftConfigType == AircraftConfigType.P2C)
                 return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);

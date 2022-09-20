@@ -20,7 +20,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));
-                AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(z=>z.Aircraft));
+                AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(z=>z.AircraftSubType));
                 AddInclude(x => x.Include(y => y.PackageItems));
                 AddOrderByDescending(x => x.Created);
             }     
@@ -30,7 +30,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             :base(x => (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && (x.Id == query.Id) && (!x.IsDeleted))
         {
             if (query.IsIncludeFlightDetail)
-                AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(z=>z.Aircraft));
+                AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(z=>z.AircraftSubType));
 
             if (query.IsIncludeAWBDetail)
                 AddInclude(x => x.Include(y=>y.AWBInformation));
@@ -44,12 +44,6 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => x.Created.Year == query.Year && x.Created.Month == query.Month)
         {
 
-        }
-
-        public CargoBookingSpecification(BookingSummaryQuery query)
-            :base(x=> (query.FlightScheduleId == Guid.Empty || x.FlightScheduleSectorId == query.FlightScheduleId))
-        {
-            AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(y => y.Aircraft));
         }
 
     }

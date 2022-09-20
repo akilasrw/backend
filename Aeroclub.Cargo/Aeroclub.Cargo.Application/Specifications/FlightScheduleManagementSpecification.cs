@@ -14,6 +14,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
         {
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+            AddInclude(x => x.Include(y => y.AircraftSubType));
 
             if (!isCount)
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
@@ -23,6 +24,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => x.Id == query.Id && !x.IsDeleted)
         {
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+            AddInclude(x => x.Include(y => y.AircraftSubType));
 
         }
 

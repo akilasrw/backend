@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Aeroclub.Cargo.Common.Enums;
+﻿using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities.Core;
 
 namespace Aeroclub.Cargo.Core.Entities
@@ -20,11 +18,12 @@ namespace Aeroclub.Cargo.Core.Entities
         public string DestinationAirportName { get; set; } = null!;
         public Guid? AircraftId { get; set; }
         public string? AircraftRegNo { get; set; } = null;
-        public AircraftSubTypes AircraftSubType { get; set; }
+        public Guid AircraftSubTypeId { get; set; }
 
         public virtual Airport? OriginAirport { get; set; }
         public virtual Airport? DestinationAirport { get; set; }
         public virtual Aircraft? Aircraft { get; set; }
+        public virtual AircraftSubType? AircraftSubType { get; set; }
         public virtual ICollection<FlightScheduleSector> FlightScheduleSectors { get; set; } // For the multiple sectors
     }
 }
