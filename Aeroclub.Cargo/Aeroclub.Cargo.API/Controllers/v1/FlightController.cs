@@ -90,6 +90,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var model = await GetAsync(new FlightQM() { Id = id});
@@ -98,6 +100,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return NotFound();
             }
 
+            var res = await _flightService.DeleteAsync(id);
+
+            if (res == ServiceResponseStatus.ValidationError)
+            {
+                return BadRequest("Can not be deleted. This flight is already use in the schedule.");
+            }
             return NoContent();
         }
     }
