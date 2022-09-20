@@ -131,6 +131,23 @@ namespace Aeroclub.Cargo.Application.Services
             }
         }
 
+        public async Task<ServiceResponseStatus> DeleteAsync(Guid Id)
+        {
+            var createdShedule = await _unitOfWork.Repository<FlightSchedule>()
+                        .GetEntityWithSpecAsync(new FlightScheduleSpecification(new FlightScheduleQM() { FlightId = Id }));
+
+            if (createdShedule != null)
+            {
+                return ServiceResponseStatus.ValidationError;
+            }
+
+            var entity = await _unitOfWork.Repository<Flight>().GetByIdAsync(Id, false);
+            entity.IsDeleted = true;
+            if (await _unitOfWork.SaveChangesAsync() > 0)
+                return ServiceResponseStatus.Success;
+            return ServiceResponseStatus.Failed;
+        }
+
         async Task<Flight> MappingFlight(Flight entity)
         {
             var orderedSectorList = entity.FlightSectors.OrderBy(x => x.Sequence);
