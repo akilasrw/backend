@@ -57,7 +57,7 @@ namespace Aeroclub.Cargo.Infrastructure.Authorization.Services
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = jwtToken.Claims.First(x => x.Type == "id").Value;
+                var userId = jwtToken.Claims.First(x => x.Type == "Userid").Value;
 
                 // return user id from JWT token if validation successful
                 return userId == null ? null: Guid.Parse(userId);

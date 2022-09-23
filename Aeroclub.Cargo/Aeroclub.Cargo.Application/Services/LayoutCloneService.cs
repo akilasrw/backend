@@ -46,33 +46,40 @@ namespace Aeroclub.Cargo.Application.Services
                 if (aircraftLayoutMappingDetail.SeatLayoutId == null) return false;
                 if (aircraftLayoutMappingDetail.OverheadLayoutId == null) return false;
 
-
-                // Get AircraftLayout including all childs till Position
-                var aircraftLayout = await GetAircraftLayoutAsync((Guid)aircraftLayoutMappingDetail.AircraftLayoutId);
-                if (aircraftLayout == null) return false;       
-
-                // Get SeatLayout including all childs till Seat
-                var seatLayout = await GetSeatLayoutAsync((Guid)aircraftLayoutMappingDetail.SeatLayoutId);
-                if (seatLayout == null) return false;
-
-                // Get OverheadLayout including all childs till overheadPosition
-                var overheadLayout = await GetOverheadLayoutAsync((Guid)aircraftLayoutMappingDetail.OverheadLayoutId);
-                if (overheadLayout == null) return false;
-
                 foreach (var sector in FlightScheduleSectors)
                 {
+                    // Get AircraftLayout including all childs till Position
+                    var aircraftLayout = await GetAircraftLayoutAsync((Guid)aircraftLayoutMappingDetail.AircraftLayoutId);
+                    if (aircraftLayout == null) return false;
+
+                    // Get SeatLayout including all childs till Seat
+                    var seatLayout = await GetSeatLayoutAsync((Guid)aircraftLayoutMappingDetail.SeatLayoutId);
+                    if (seatLayout == null) return false;
+
+                    // Get OverheadLayout including all childs till overheadPosition
+                    var overheadLayout = await GetOverheadLayoutAsync((Guid)aircraftLayoutMappingDetail.OverheadLayoutId);
+                    if (overheadLayout == null) return false;
+
+
                     var newResetLayouts = await ResetLayoutAsync(aircraftLayout, seatLayout, overheadLayout);
+
+
                     // Create Aircraft Layout
                     var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(newResetLayouts.Item1);
                     await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AircraftLayout>().Detach(createdAircraftLayout);
                     // Save, if not success, go with this sequence | CargoPosition <-- Zone Area <-- Aircraft Cabin <-- Aircraft Deck <-- Aircraft Layout
 
                     var createdSeatLayout = await _unitOfWork.Repository<SeatLayout>().CreateAsync(newResetLayouts.Item2);
                     await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<SeatLayout>().Detach(createdSeatLayout);
+                    foreach(var seatConfig in createdSeatLayout.SeatConfigurations)
+                        _unitOfWork.Repository<SeatConfiguration>().Detach(seatConfig);
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
                     var createdoverheadLayout = await _unitOfWork.Repository<OverheadLayout>().CreateAsync(newResetLayouts.Item3);
                     await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<OverheadLayout>().Detach(createdoverheadLayout);
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
                     // Update Position - Seat Id after saving Seats
@@ -269,6 +276,7 @@ namespace Aeroclub.Cargo.Application.Services
                     // Create Aircraft Layout
                     var createdAircraftLayout = await _unitOfWork.Repository<AircraftLayout>().CreateAsync(newResetLayouts.Item1);
                     await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AircraftLayout>().Detach(createdAircraftLayout);
                     // Save, if not success, go with this sequence | CargoPosition <-- Zone Area <-- Aircraft Cabin <-- Aircraft Deck <-- Aircraft Layout
 
                     // Create Load Plan                    
