@@ -19,6 +19,5 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
 
         [Required(ErrorMessage = "Days of week required")]
         public string DaysOfWeek { get; set; } = null!;
-        public bool IsFlightScheduleGenerated { get; set; }
     }
 }

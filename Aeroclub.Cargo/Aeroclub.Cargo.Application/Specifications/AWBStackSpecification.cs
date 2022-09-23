@@ -27,14 +27,15 @@ namespace Aeroclub.Cargo.Application.Specifications
         public AWBStackSpecification(AWBStackListQM query, bool isCount = false)
             :base(x => ((string.IsNullOrEmpty(query.CargoAgentName) || x.CargoAgent.AgentName == query.CargoAgentName)) && !x.IsSequenceCompleted)
         {
-            if (query.IsAgentInclude)
-            {
-                AddInclude(x => x.Include(y => y.CargoAgent));
-            }
 
             if (!isCount)
             {
+                if (query.IsAgentInclude)
+                {
+                    AddInclude(x => x.Include(y => y.CargoAgent));
+                }
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
             }
         }
     }

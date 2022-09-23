@@ -39,6 +39,7 @@ namespace Aeroclub.Cargo.Application.Services
             if (createdFlightSchedule.StatusCode == ServiceResponseStatus.Success)
             {
                 var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
+                flightScheduleManagementEntity.IsFlightScheduleGenerated = true;
                 var flightScheduleManagementResponse = await _unitOfWork.Repository<FlightScheduleManagement>().CreateAsync(flightScheduleManagementEntity);
                 await _unitOfWork.SaveChangesAsync();
 

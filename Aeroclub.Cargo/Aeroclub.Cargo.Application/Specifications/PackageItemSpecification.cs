@@ -31,7 +31,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y=>y.FlightScheduleSector));
-                
+                AddOrderByDescending(x => x.Created);
             }
         }
     }

@@ -38,7 +38,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             }
         }
 
-        public FlightScheduleSpecification(CargoBookingSummaryDetailQM query, bool isCount = false)
+        public FlightScheduleSpecification(CargoBookingSummaryDetailQM query)
             : base(x => (query.Id == Guid.Empty || x.Id == query.Id))
         {
             if (query.IsIncludeAircraftType)

@@ -36,11 +36,18 @@ namespace Aeroclub.Cargo.Application.Specifications
                 (!query.DestinationAirportOnly || x.DestinationAirportId == query.DestinationAirportId)
             )
         {
-            if (query.IncludeAircraftSubType)
-                AddInclude(y => y.Include(x => x.AircraftSubType));
-
+           
             if (!isCount)
+            {
+                if (query.IncludeAircraftSubType)
+                {
+                    AddInclude(y => y.Include(x => x.AircraftSubType));
+
+                }
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
+            }
+
         }
 
         public FlightScheduleSectorSpecification(FlightScheduleSectorQM query)

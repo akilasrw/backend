@@ -13,11 +13,15 @@ namespace Aeroclub.Cargo.Application.Specifications
        (query.DestinationAirportId == Guid.Empty || (x.Flight != null && x.Flight.DestinationAirportId == query.DestinationAirportId)) &&
         (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
         {
-            AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
-            AddInclude(x => x.Include(y => y.AircraftSubType));
 
             if (!isCount)
+            {
+                AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+                AddInclude(x => x.Include(y => y.AircraftSubType));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
+            }
+
         }
 
         public FlightScheduleManagementSpecification(FlightScheduleManagementDetailQM query)
