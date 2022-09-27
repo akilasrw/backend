@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aeroclub.Cargo.Data.Migrations
 {
-    public partial class Add_Rate_Management_Tables : Migration
+    public partial class Add_Agent_Rate_Tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -109,14 +109,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "b04610a8-faf2-4868-aea3-97c9367063ca");
+                value: "a0a7fc80-6d5a-41b8-bfbf-73bf7d114916");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "5a684aad-28bd-40ba-843e-a85478a1cd0e");
+                value: "dfb05d0e-f6a7-4387-9c96-7c094ebffb2c");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AgentRateManagements_CargoAgentId",

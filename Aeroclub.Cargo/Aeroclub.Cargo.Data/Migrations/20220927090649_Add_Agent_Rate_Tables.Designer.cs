@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20220926085103_Add_Rate_Management_Tables")]
-    partial class Add_Rate_Management_Tables
+    [Migration("20220927090649_Add_Agent_Rate_Tables")]
+    partial class Add_Agent_Rate_Tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -895,7 +895,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b04610a8-faf2-4868-aea3-97c9367063ca",
+                            ConcurrencyStamp = "a0a7fc80-6d5a-41b8-bfbf-73bf7d114916",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -911,7 +911,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5a684aad-28bd-40ba-843e-a85478a1cd0e",
+                            ConcurrencyStamp = "dfb05d0e-f6a7-4387-9c96-7c094ebffb2c",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -36205,11 +36205,13 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentRate", b =>
                 {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.AgentRateManagement", null)
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.AgentRateManagement", "AgentRateManagement")
                         .WithMany("AgentRates")
                         .HasForeignKey("AgentRateManagementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AgentRateManagement");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentRateManagement", b =>

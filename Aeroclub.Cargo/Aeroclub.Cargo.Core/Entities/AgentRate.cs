@@ -9,5 +9,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid AgentRateManagementId { get; set; }
         public double Rate { get; set; }
         public WeightType WeightType { get; set; }
+
+        public virtual AgentRateManagement AgentRateManagement { get; set; } = null!;
     }
 }

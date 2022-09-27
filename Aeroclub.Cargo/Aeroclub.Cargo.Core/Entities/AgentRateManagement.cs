@@ -15,7 +15,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public virtual CargoAgent CargoAgent { get; set; } = null!;
         public virtual Airport OriginAirport { get; set; } = null!;
         public virtual Airport DestinationAirport { get; set; } = null!;
-        public virtual ICollection<AgentRate>? AgentRates { get; set; }
+        public virtual ICollection<AgentRate> AgentRates { get; set; } = null!;
 
     }
 }

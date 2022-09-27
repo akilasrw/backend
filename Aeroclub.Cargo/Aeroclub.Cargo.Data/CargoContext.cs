@@ -112,7 +112,6 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AgentRateManagementHistory> AgentRateManagementHistorys { get; set; } = null!;
         public DbSet<AgentRate> AgentRates { get; set; } = null!;
 
-
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
         {
             var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && x.State is EntityState.Added or EntityState.Modified);

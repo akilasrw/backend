@@ -42,6 +42,8 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -213,6 +215,9 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .Add((TimeSpan)s.DepartureDateTime): new DateTime()))
                 .ForMember(d => d.ArrivalDateTime, o => o.MapFrom(s => (s.ArrivalDateTime != null) ? new DateTime()
                 .Add((TimeSpan)s.ArrivalDateTime) : new DateTime()));
+
+            CreateMap<AgentRateManagementRM, AgentRateManagement>();
+            CreateMap<AgentRateRM, AgentRate>();
 
         }
     }
