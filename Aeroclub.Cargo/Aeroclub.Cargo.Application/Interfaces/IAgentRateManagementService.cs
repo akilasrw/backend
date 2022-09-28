@@ -5,7 +5,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IAgentRateManagementService
     {
-        Task<ServiceResponseCreateStatus> CreateAsync(AgentRateManagementRM dto);
+        Task<ServiceResponseCreateStatus> CreateAsync(AgentRateManagementListRM dto);
 
     }
 }
