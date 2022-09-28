@@ -44,6 +44,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRM
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -218,6 +219,9 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<AgentRateManagementRM, AgentRateManagement>();
             CreateMap<AgentRateRM, AgentRate>();
+            CreateMap<AgentRateManagement, AgentRateManagementVM>()
+                            .ForMember(d => d.CargoAgentName, o => o.MapFrom(s => s.CargoAgent != null ? s.CargoAgent.AgentName:""));
+            CreateMap<AgentRate, AgentRateVM>();
             CreateMap<AgentRateManagementRM, AgentRateManagementHistory>();
 
         }

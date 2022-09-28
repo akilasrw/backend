@@ -1,7 +1,10 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
+using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
@@ -18,6 +21,19 @@ namespace Aeroclub.Cargo.Application.Services
         {
             _userResolverService = userResolverService;
             _userService = userService;
+        }
+
+        public async Task<Pagination<AgentRateManagementVM>> GetFilteredListAsync(AgentRateManagementListQM query)
+        {
+            var spec = new AgentRateManagementSpecification(query);
+            var aircraftList = await _unitOfWork.Repository<AgentRateManagement>().GetListWithSpecAsync(spec);
+
+            var countSpec = new AgentRateManagementSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<AgentRateManagement>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<AgentRateManagementVM>>(aircraftList);
+
+            return new Pagination<AgentRateManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(AgentRateManagementListRM dto)
