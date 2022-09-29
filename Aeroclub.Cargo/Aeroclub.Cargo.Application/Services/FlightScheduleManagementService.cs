@@ -3,16 +3,20 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using System.Runtime.CompilerServices;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -69,6 +73,53 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementVM>>(flightScheduleManagementList);
             return new Pagination<FlightScheduleManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
+        }
+
+        public async Task<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query)
+        {
+            var spec = new FlightScheduleManagementSpecification(query);
+            var flightScheduleManagementList = await _unitOfWork.Repository<FlightScheduleManagement>().GetListWithSpecAsync(spec);
+
+            var countSpec = new FlightScheduleManagementSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>>(flightScheduleManagementList);
+            foreach (var dto in dtoList)
+            {
+                var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { FlightId = dto.FlightId });
+
+                if (schedule != null && schedule.AircraftId != null)
+                {
+                    dto.AircraftId = schedule.AircraftId;
+                    dto.IsAircraftLinked = true;
+                }
+                else
+                {
+                    dto.IsAircraftLinked = false;
+                }
+            }
+            var list = dtoList.Where(x => x.IsAircraftLinked == query.IsLink).ToList();
+            return list;
+        }
+
+        public async Task<ServiceResponseStatus> LinkAircraftToScheduleAsync(ScheduleAircraftRM query)
+        {
+            var status = ServiceResponseStatus.Success;
+            var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { Id = query.FlightScheduleId });
+            schedule.AircraftId = query.AircraftId;
+            var mappedSchedule = _mapper.Map<FlightScheduleVM, FlightScheduleUpdateRM>(schedule);
+            status = await _flightScheduleService.UpdateAsync(mappedSchedule);
+
+            var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = query.FlightScheduleId });
+            var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            foreach (var sector in flightScheduleSectors)
+            {
+                sector.AircraftId = query.AircraftId;
+                _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+            }
+            return status;
         }
 
         private async Task<ServiceResponseCreateStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)

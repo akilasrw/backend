@@ -54,5 +54,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return BadRequest(response.Message == null?"Flight schedule creation fails.":response.Message);
         }
 
+        [HttpPost("LinkAircraftToScheduleAsync")]
+        public async Task<IActionResult> LinkAircraftToScheduleAsync([FromBody] ScheduleAircraftRM query)
+        {
+            return Ok(await _flightScheduleManagementService.LinkAircraftToScheduleAsync(query));
+        }
+
     }
 }
