@@ -43,6 +43,7 @@ namespace Aeroclub.Cargo.Application.Services
             if (createdFlightSchedule.StatusCode == ServiceResponseStatus.Success)
             {
                 var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
+                flightScheduleManagementEntity.IsFlightScheduleGenerated = true;
                 var flightScheduleManagementResponse = await _unitOfWork.Repository<FlightScheduleManagement>().CreateAsync(flightScheduleManagementEntity);
                 await _unitOfWork.SaveChangesAsync();
 
@@ -162,7 +163,19 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (bookingDays.Count > 0)
             {
-               
+
+                var scheduledList = await _flightScheduleService.GetListAsync();
+
+                if (scheduledList != null && scheduledList.Count > 0)
+                {
+                    foreach (var day in bookingDays)
+                    {
+                        var matchingSchedule = scheduledList.FirstOrDefault(z => z.ScheduledDepartureDateTime.Date == day.Date && z.FlightId == dto.FlightId && z.AircraftSubTypeId == dto.AircraftSubTypeId);
+                        if (matchingSchedule != null)
+                            return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError, Message = "This aircraft and flight are already assigned for " + day.Date.ToShortDateString() + "." };
+                    }
+                }
+
                 foreach (var day in bookingDays)
                 {
                     var flightSchedule = new FlightScheduleCreateRM();
@@ -180,7 +193,7 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
-                    flightSchedule.AircraftSubType = dto.AircraftSubType;
+                    flightSchedule.AircraftSubTypeId = dto.AircraftSubTypeId;
 
                     foreach (var sector in flightDetail.FlightSectors)
                     {
@@ -190,7 +203,7 @@ namespace Aeroclub.Cargo.Application.Services
                             SectorId = sector.SectorId,
                             SequenceNo = sector.Sequence,
                             FlightNumber = flightDetail.FlightNumber,
-                            AircraftSubType = dto.AircraftSubType,
+                            AircraftSubTypeId = dto.AircraftSubTypeId,
                             FlightScheduleStatus = FlightScheduleStatus.None,
                             OriginAirportId = sector.Sector.OriginAirportId,
                             DestinationAirportId = sector.Sector.DestinationAirportId,
@@ -216,6 +229,5 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
         }
-
     }
 }

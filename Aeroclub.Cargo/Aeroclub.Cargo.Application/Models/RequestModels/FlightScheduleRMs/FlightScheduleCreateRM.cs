@@ -15,7 +15,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs
         public Guid DestinationAirportId { get; set; }
         public Guid? AircraftId { get; set; }
         public string? AircraftRegNo { get; set; } = null;
-        public AircraftSubTypes AircraftSubType { get; set; }
+        public Guid AircraftSubTypeId { get; set; }
 
         public IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors { get; set; }
     }

@@ -55,6 +55,9 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new AircraftTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftSubTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FlightScheduleManagementConfiguration());
+            modelBuilder.ApplyConfiguration(new AgentRateManagementConfiguration());
+            modelBuilder.ApplyConfiguration(new AgentRateConfiguration());
+            modelBuilder.ApplyConfiguration(new AgentRateManagementHistoryConfiguration());
             
             
             
@@ -105,7 +108,9 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AircraftSubType> AircraftSubTypes { get; set; } = null!;
         public DbSet<AircraftLayoutMapping> AircraftLayoutMappings { get; set; } = null!;
         public DbSet<FlightScheduleManagement> FlightScheduleManagements { get; set; } = null!;
-
+        public DbSet<AgentRateManagement> AgentRateManagements { get; set; } = null!;
+        public DbSet<AgentRateManagementHistory> AgentRateManagementHistorys { get; set; } = null!;
+        public DbSet<AgentRate> AgentRates { get; set; } = null!;
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
         {

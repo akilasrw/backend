@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
-using Aeroclub.Cargo.Application.Models.Queries.AircraftQMs;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -44,7 +38,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<Pagination<FlightScheduleSectorVM>> GetFilteredListAsync(FlightScheduleSectorFilteredListQM query)
         {
-            query.IncludeAircraft = true;
+            query.IncludeAircraftSubType = true;
             var spec = new FlightScheduleSectorSpecification(query);
             var flightScheduleSectorList =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
@@ -160,7 +154,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 Id = flightScheduleSectorId,
                 IncludeULDContaines = true,
-                IncludeAircraft = true,
+                IncludeAircraftSubType = true,
             });
 
             var flightScheduleSector = await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
@@ -204,7 +198,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 Id = flightScheduleSectorId,
                 IncludeULDContaines = true,
-                IncludeAircraft = true,
+                IncludeAircraftSubType = true,
             });
 
             var flightScheduleSector =
@@ -254,12 +248,8 @@ namespace Aeroclub.Cargo.Application.Services
             if (flightSector == null)
                 return new CargoPositionSummaryVM();
 
-            // Get Aircraft Sub Type
-            var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSector.AircraftSubType);
-            if (aircraftSubTypeDetail == null) return new CargoPositionSummaryVM();
-
             // Get Aircrat Layout Mapping
-            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(aircraftSubTypeDetail.Id);
+            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(flightSector.AircraftSubTypeId);
             if (aircraftLayoutMappingDetail == null) return new CargoPositionSummaryVM();
             if (aircraftLayoutMappingDetail.AircraftLayoutId == null) return new CargoPositionSummaryVM();
                        
@@ -326,11 +316,8 @@ namespace Aeroclub.Cargo.Application.Services
             //if (flightSector == null)
             //    return new CargoPositionSummaryVM();
 
-            // Get Aircraft Sub Type
-            var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSector.AircraftSubType);
-
             // Get Aircrat Layout Mapping
-            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(aircraftSubTypeDetail.Id);
+            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(entity.AircraftSubTypeId);
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             { AircraftLayoutId = (Guid)aircraftLayoutMappingDetail.AircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
@@ -377,13 +364,6 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                 }
             }
-        }
-
-
-        private async Task<AircraftSubType> GetAircraftSubTypeAsync(AircraftSubTypes aircraftSubType)
-        {
-            var spec = new AircraftSubTypeSpecification(new AircraftSubTypeQM() { aircraftSubType = aircraftSubType });
-            return await _unitOfWork.Repository<AircraftSubType>().GetEntityWithSpecAsync(spec);
         }
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)

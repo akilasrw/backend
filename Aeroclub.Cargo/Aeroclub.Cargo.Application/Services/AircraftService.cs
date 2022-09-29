@@ -86,10 +86,9 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<AircraftConfigType> GetAircraftConfigType(AircraftSubTypes aircraftSubType)
+        public async Task<AircraftConfigType> GetAircraftConfigType(Guid aircraftSubTypeId)
         {
-            var spec = new AircraftSubTypeSpecification(new AircraftSubTypeQM() { aircraftSubType = aircraftSubType });
-            var aircraftSubTypeDetail = await _unitOfWork.Repository<AircraftSubType>().GetEntityWithSpecAsync(spec);
+            var aircraftSubTypeDetail = await _unitOfWork.Repository<AircraftSubType>().GetByIdAsync(aircraftSubTypeId);
             return aircraftSubTypeDetail.ConfigType;
         }
 

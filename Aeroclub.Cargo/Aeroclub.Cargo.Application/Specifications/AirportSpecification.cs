@@ -13,14 +13,14 @@ namespace Aeroclub.Cargo.Application.Specifications
             (string.IsNullOrEmpty(query.CountryName) || x.Country.Name.Contains(query.CountryName)) &&
             (string.IsNullOrEmpty(query.AirportCode) || x.Code.Contains(query.AirportCode)) && !x.IsDeleted)
         {
-            if (query.IsCountryInclude)
-            {
-                AddInclude(x => x.Include(y => y.Country));
-            }
-
             if (!isCount)
             {
+                if (query.IsCountryInclude)
+                {
+                    AddInclude(x => x.Include(y => y.Country));
+                }
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
             }
         }
 
