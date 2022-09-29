@@ -89,15 +89,15 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { FlightId = dto.FlightId });
 
-                if (schedule != null && schedule.AircraftId != null)
-                {
-                    dto.AircraftId = schedule.AircraftId;
-                    dto.IsAircraftLinked = true;
-                }
-                else
-                {
-                    dto.IsAircraftLinked = false;
-                }
+                //if (schedule != null && schedule.AircraftId != null)
+                //{
+                //    dto.AircraftId = schedule.AircraftId;
+                //    dto.IsAircraftLinked = true;
+                //}
+                //else
+                //{
+                //    dto.IsAircraftLinked = false;
+                //}
             }
             var list = dtoList.Where(x => x.IsAircraftLinked == query.IsLink).ToList();
             return list;
@@ -107,7 +107,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var status = ServiceResponseStatus.Success;
             var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { Id = query.FlightScheduleId });
-            schedule.AircraftId = query.AircraftId;
+            //schedule.AircraftId = query.AircraftId;
             var mappedSchedule = _mapper.Map<FlightScheduleVM, FlightScheduleUpdateRM>(schedule);
             status = await _flightScheduleService.UpdateAsync(mappedSchedule);
 
