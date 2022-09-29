@@ -10,5 +10,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs
         public double Lon { get; set; }
         public string? CountryId { get; set; } = null;
         public string? CountryName { get; set; } = null;
+        public string? CountryCode { get; set; } = null;
+        public string? CountryCodeISO3166 { get => CountryCode != null? CountryCode.Substring(0,2): CountryCodeISO3166; }
     }
 }
