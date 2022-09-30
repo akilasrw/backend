@@ -66,6 +66,13 @@ namespace Aeroclub.Cargo.Application.Services
                         return response;
                     }
 
+                    if (entity.AgentRates == null)
+                    {
+                        transaction.Rollback();
+                        response.StatusCode = ServiceResponseStatus.ValidationError;
+                        return response;
+                    }
+
                     entity.OriginAirportCode = originAirport.Code;
                     entity.OriginAirportName = originAirport.Name;
                     entity.DestinationAirportCode = destinationAirport.Code;

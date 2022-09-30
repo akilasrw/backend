@@ -33,6 +33,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             var response = await _agentRateManagementService.CreateAsync(dto);
 
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return Ok(new { message = "Validation error." });
+
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return Ok(new { message = "Rate created successfully." });
 
