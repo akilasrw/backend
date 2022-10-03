@@ -23,6 +23,13 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddOrderByDescending(x => x.Created);
             }
         }
+
+        public AgentRateManagementSpecification(AgentRateManagementValidationQM query)
+            :base(x =>  x.CargoAgentId == query.CargoAgentId && x.OriginAirportId == query.OriginAirportId &&
+            x.DestinationAirportId == query.DestinationAirportId && !x.IsDeleted)
+        {
+
+        }
     }
 
 }
