@@ -26,12 +26,12 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Pagination<AgentRateManagementVM>> GetFilteredListAsync(AgentRateManagementListQM query)
         {
             var spec = new AgentRateManagementSpecification(query);
-            var aircraftList = await _unitOfWork.Repository<AgentRateManagement>().GetListWithSpecAsync(spec);
+            var agentRateList = await _unitOfWork.Repository<AgentRateManagement>().GetListWithSpecAsync(spec);
 
             var countSpec = new AgentRateManagementSpecification(query, true);
             var totalCount = await _unitOfWork.Repository<AgentRateManagement>().CountAsync(countSpec);
 
-            var dtoList = _mapper.Map<IReadOnlyList<AgentRateManagementVM>>(aircraftList);
+            var dtoList = _mapper.Map<IReadOnlyList<AgentRateManagementVM>>(agentRateList);
 
             return new Pagination<AgentRateManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
@@ -54,6 +54,20 @@ namespace Aeroclub.Cargo.Application.Services
                              
                 foreach (var item in dto!.AgentRateManagements)
                 {
+
+                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM { CargoAgentId = item.CargoAgentId, 
+                        DestinationAirportId = item.DestinationAirportId,
+                        OriginAirportId = item.OriginAirportId});
+                    var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
+
+                    if (agentRate != null)
+                    {
+                        transaction.Rollback();
+                        response.StatusCode = ServiceResponseStatus.ValidationError;
+                        response.Message = agentRate.OriginAirportCode +" and "+agentRate.DestinationAirportCode+" already exist for selected user.";
+                        return response;
+                    }
+
                     var entity = _mapper.Map<AgentRateManagement>(item);
 
                     var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(item.OriginAirportId);
@@ -70,6 +84,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         transaction.Rollback();
                         response.StatusCode = ServiceResponseStatus.ValidationError;
+                        response.Message = "Agent rates required.";
                         return response;
                     }
 
