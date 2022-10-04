@@ -179,4 +179,11 @@
         Plus1000K = 7,
     }
 
+    public enum DBTransactionStatus
+    {
+        None = 0,
+        Updated = 1,
+        Deleted = 2
+    }
+
 }

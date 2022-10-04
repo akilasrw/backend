@@ -56,5 +56,26 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return BadRequest("Rate creation fails.");
 
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            if (Guid.Empty == id)
+            {
+                return BadRequest();
+            }
+
+            var response = await _agentRateManagementService.DeleteAsync(id);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(new { message = response.Message });
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return Ok(new { message = "Rate deleted successfully." });
+
+            return BadRequest(new { message = "Rate delete fail." });
+        }
     }
 }

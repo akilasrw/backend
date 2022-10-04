@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
@@ -103,29 +104,6 @@ namespace Aeroclub.Cargo.Application.Services
                         response.StatusCode = ServiceResponseStatus.Failed;
                         return response;
                     }
-
-                    foreach(var rateItem in item.AgentRates)
-                    {
-                        var historyEntity = _mapper.Map<AgentRateManagementHistory>(item);
-
-                        historyEntity.OriginAirportCode = originAirport.Code;
-                        historyEntity.OriginAirportName = originAirport.Name;
-                        historyEntity.DestinationAirportCode = destinationAirport.Code;
-                        historyEntity.DestinationAirportName = destinationAirport.Name;
-                        historyEntity.Rate = rateItem.Rate;
-                        historyEntity.WeightType = rateItem.WeightType;
-                        historyEntity.CreatedUser = currentUser.FirstName != null? currentUser.FirstName:"";
-
-                        var createdHistory = await _unitOfWork.Repository<AgentRateManagementHistory>().CreateAsync(historyEntity);
-                        await _unitOfWork.SaveChangesAsync();
-
-                        if (createdHistory == null)
-                        {
-                            transaction.Rollback();
-                            response.StatusCode = ServiceResponseStatus.Failed;
-                            return response;
-                        }
-                    }
                 }
 
                 transaction.Commit();
@@ -141,6 +119,69 @@ namespace Aeroclub.Cargo.Application.Services
             var entity = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
             var agentRateManagementVM = _mapper.Map<AgentRateManagement, AgentRateManagementVM>(entity);
             return agentRateManagementVM;
+        }
+
+        public async Task<ServiceResponseCreateStatus> DeleteAsync(Guid Id)
+        {
+            var response = new ServiceResponseCreateStatus();
+
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                var userid = _userResolverService.GetUserId();
+                var currentUser = _userService.GetById(userid);
+
+                var rateManagement = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(new AgentRateManagementQM { Id = Id, IncludeCargoAgent = true }));
+                if (rateManagement == null)
+                {
+                    transaction.Rollback();
+                    response.StatusCode= ServiceResponseStatus.ValidationError;
+                    response.Message = "Record not found";
+                    return response;
+                }
+
+                if(currentUser == null)
+                {
+                    transaction.Rollback();
+                    response.StatusCode = ServiceResponseStatus.ValidationError;
+                    response.Message = "User not found";
+                    return response;
+                }
+
+                foreach (var rateItem in rateManagement.AgentRates)
+                {
+                    var historyEntity = _mapper.Map<AgentRateManagementHistory>(rateManagement);
+                    historyEntity.Id = Guid.Empty;
+                    historyEntity.Status = DBTransactionStatus.Deleted;
+                    historyEntity.Rate = rateItem.Rate;
+                    historyEntity.WeightType = rateItem.WeightType;
+                    historyEntity.CreatedUser = currentUser.FirstName != null ? currentUser.FirstName : "";
+
+                    var createdHistory = await _unitOfWork.Repository<AgentRateManagementHistory>().CreateAsync(historyEntity);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AgentRateManagementHistory>().Detach(historyEntity);
+
+
+                    if (createdHistory == null)
+                    {
+                        transaction.Rollback();
+                        response.StatusCode = ServiceResponseStatus.Failed;
+                        return response;
+                    }
+
+                    _unitOfWork.Repository<AgentRate>().Delete(rateItem);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AgentRate>().Detach(rateItem);
+                }
+
+                _unitOfWork.Repository<AgentRateManagement>().Delete(rateManagement);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<AgentRateManagement>().Detach(rateManagement);
+
+                transaction.Commit();
+            }
+
+            response.StatusCode = ServiceResponseStatus.Success;
+            return response;
         }
     }
 }

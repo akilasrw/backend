@@ -234,7 +234,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<AgentRateManagement, AgentRateManagementVM>()
                             .ForMember(d => d.CargoAgentName, o => o.MapFrom(s => s.CargoAgent != null ? s.CargoAgent.AgentName:""));
             CreateMap<AgentRate, AgentRateVM>();
-            CreateMap<AgentRateManagementRM, AgentRateManagementHistory>();
+            CreateMap<AgentRateManagement, AgentRateManagementHistory>();
 
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aeroclub.Cargo.Data.Migrations
 {
-    public partial class Add_Agent_Rate_Tables : Migration
+    public partial class Add_Agent_Rate_Table : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,6 +24,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     Rate = table.Column<double>(type: "float", nullable: false),
                     WeightType = table.Column<byte>(type: "tinyint", nullable: false),
                     CreatedUser = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Status = table.Column<short>(type: "smallint", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -109,14 +110,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "a0a7fc80-6d5a-41b8-bfbf-73bf7d114916");
+                value: "b0970a94-f243-4ce0-b80b-4ec696de6b0f");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "dfb05d0e-f6a7-4387-9c96-7c094ebffb2c");
+                value: "5619d218-732b-40ef-9d22-06feb06f85ae");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AgentRateManagements_CargoAgentId",
