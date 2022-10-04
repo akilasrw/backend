@@ -134,5 +134,13 @@ namespace Aeroclub.Cargo.Application.Services
             response.StatusCode = ServiceResponseStatus.Success;
             return response;
         }
+
+        public async Task<AgentRateManagementVM> GetAsync(AgentRateManagementQM query)
+        {
+            var spec = new AgentRateManagementSpecification(query);
+            var entity = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
+            var agentRateManagementVM = _mapper.Map<AgentRateManagement, AgentRateManagementVM>(entity);
+            return agentRateManagementVM;
+        }
     }
 }

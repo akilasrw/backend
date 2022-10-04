@@ -19,6 +19,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             this._agentRateManagementService = agentRateManagementService;
         }
 
+        [HttpGet()]
+        [ActionName(nameof(GetAsync))]
+        public async Task<ActionResult<IReadOnlyList<AgentRateManagementVM>>> GetAsync([FromQuery] AgentRateManagementQM query)
+        {
+            if (query.Id == Guid.Empty) return BadRequest();
+
+            var result = await _agentRateManagementService.GetAsync(query);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<AgentRateManagementVM>>> GetFilteredListAsync([FromQuery] AgentRateManagementListQM query)
         {
