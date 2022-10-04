@@ -43,10 +43,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                var userid = _userResolverService.GetUserId();
-                var currentUser = _userService.GetById(userid);
-
-                if (currentUser == null || dto == null || (dto != null && dto.AgentRateManagements.Count < 1))
+              
+                if (dto == null || (dto != null && dto.AgentRateManagements.Count < 1))
                 {
                     transaction.Rollback();
                     response.StatusCode = ServiceResponseStatus.Failed;
