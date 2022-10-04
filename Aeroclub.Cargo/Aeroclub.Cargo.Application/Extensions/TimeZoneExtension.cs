@@ -1,4 +1,5 @@
-﻿using NodaTime.TimeZones;
+﻿using NodaTime;
+using NodaTime.TimeZones;
 
 namespace Aeroclub.Cargo.Application.Extensions
 {
@@ -8,22 +9,29 @@ namespace Aeroclub.Cargo.Application.Extensions
  
         public static DateTime ToInternationalTime(this DateTime UTCtime, string countryCode, double longitude)
         {
-            var zones = TzdbDateTimeZoneSource.Default.ZoneLocations.Where(x => x.CountryCode == countryCode.ValidityCountryCode()).AsQueryable();
-            if (!double.IsNaN(longitude))
-            {
-                zones = zones.OrderBy(o => Distance(o.Latitude, longitude, o.Latitude, o.Longitude, DistanceUnit.Kilometer));
-            }
-            var bestZone = zones.FirstOrDefault();
-            var dateTimeZone = TzdbDateTimeZoneSource.Default.ForId(bestZone.ZoneId);
-
-            var newTime = UTCtime.ToConvertToUTC().AddSeconds(dateTimeZone.MaxOffset.Seconds);
+            TimeZoneInfo sysTime = GetBestZone(countryCode, longitude);
+            var newTime = UTCtime.ToConvertToUTC().AddSeconds(sysTime.BaseUtcOffset.TotalSeconds);
             return newTime;
 
         }
 
+        public static TimeSpan ToInternationalTimeSpan(this TimeSpan? ts, string countryCode, double longitude, bool isSaveUTC = true)
+        {
+            if (ts == null) return new TimeSpan();
+
+            TimeSpan newTime = ts.Value;
+            TimeZoneInfo sysTime = GetBestZone(countryCode, longitude);
+            double offSetSeconds = sysTime.BaseUtcOffset.TotalSeconds;
+            TimeSpan ts1 = TimeSpan.FromSeconds(offSetSeconds);
+            if (isSaveUTC)
+                newTime = newTime.Subtract(ts1);
+            else
+                newTime = newTime.Add(ts1);
+            return newTime;
+        }
+
         public static TimeZoneInfo GetBestTimeZoneByCountryId(string countryCode, double longitude)
         {
-
             var zones = TzdbDateTimeZoneSource.Default.ZoneLocations.Where(x => x.CountryCode == countryCode.ValidityCountryCode()).AsQueryable();
             if (!double.IsNaN(longitude))
             {
@@ -58,6 +66,17 @@ namespace Aeroclub.Cargo.Application.Extensions
         public static DateTime ToConvertToLocal(this DateTime time)
         {
             return time.ToLocalTime();
+        }
+
+        private static TimeZoneInfo GetBestZone(string countryCode, double longitude)
+        {
+            var zones = TzdbDateTimeZoneSource.Default.ZoneLocations.Where(x => x.CountryCode == countryCode.ValidityCountryCode()).AsQueryable();
+            if (!double.IsNaN(longitude))
+            {
+                zones = zones.OrderBy(o => Distance(o.Latitude, longitude, o.Latitude, o.Longitude, DistanceUnit.Kilometer));
+            }
+            var bestZone = zones.FirstOrDefault();
+            return TimeZoneInfo.FindSystemTimeZoneById(bestZone.ZoneId);
         }
 
         private static double Distance(double lat1, double lon1, double lat2, double lon2, DistanceUnit unit)

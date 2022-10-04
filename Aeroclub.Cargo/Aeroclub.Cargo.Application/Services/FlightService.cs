@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
@@ -12,14 +13,21 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Aeroclub.Cargo.Application.Extensions;
+using System.Numerics;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 
 namespace Aeroclub.Cargo.Application.Services
 {
     public class FlightService : BaseService, IFlightService
     {
-        public FlightService(IUnitOfWork unitOfWork, IMapper mapper):
+        private readonly ISectorService _sectorService;
+
+        public FlightService(IUnitOfWork unitOfWork, 
+            IMapper mapper, ISectorService sectorService) :
             base(unitOfWork,mapper)
         {
+            _sectorService = sectorService;
         }
 
         public async Task<T> GetAsync<T>(FlightQM query)
@@ -56,22 +64,30 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightCreateRM flightRM)
         {
             var res = new ServiceResponseCreateStatus();
-
-
             var entity = _mapper.Map<FlightCreateRM, Flight>(flightRM);
 
             if (entity.FlightSectors.Any())
             {
                 entity = await MappingFlight(entity);
+                foreach (var fSector in entity.FlightSectors)
+                {
+                    var list = await _sectorService.GetSectorAirports(fSector.SectorId);
+                    var originAirport = list.Where(k => k.Key == "origin").FirstOrDefault().Value;
+                    var desAirport = list.Where(k => k.Key == "destination").FirstOrDefault().Value;
+
+                    if (originAirport != null && !string.IsNullOrEmpty(originAirport.CountryCode))
+                        fSector.DepartureDateTime = fSector.DepartureDateTime.ToInternationalTimeSpan(originAirport.CountryCodeISO3166, originAirport.Lat);
+
+                    if (desAirport != null && !string.IsNullOrEmpty(desAirport.CountryCode))
+                        fSector.ArrivalDateTime = fSector.ArrivalDateTime.ToInternationalTimeSpan(desAirport.CountryCodeISO3166, desAirport.Lat);
+                }                 
             }
 
             await _unitOfWork.Repository<Flight>().CreateAsync(entity);
             await _unitOfWork.SaveChangesAsync();
 
             res.Id = entity.Id;
-            res.StatusCode = Enums.ServiceResponseStatus.Success;
-
-
+            res.StatusCode = ServiceResponseStatus.Success;
             return res;
         }
 

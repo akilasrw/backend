@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 
 namespace Aeroclub.Cargo.Application.Interfaces
@@ -16,6 +17,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<bool> DeleteAsync(Guid Id);
 
         Task<IReadOnlyList<SectorVM>> GetListAsync(SectorSelectListQM query);
+        Task<List<KeyValuePair<string, AirportVM>>> GetSectorAirports(Guid sectorId);
 
     }
 }

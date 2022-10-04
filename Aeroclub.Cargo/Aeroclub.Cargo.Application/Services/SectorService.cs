@@ -2,8 +2,10 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.SectorRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -15,11 +17,12 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class SectorService :BaseService, ISectorService
     {
+        private readonly IAirportService _airportService;
 
-        public SectorService(IUnitOfWork unitOfWork, IMapper mapper):
+        public SectorService(IUnitOfWork unitOfWork, IMapper mapper, IAirportService airportService) :
             base(unitOfWork,mapper)
         {
-           
+            _airportService = airportService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(SectorCreateRM model)
@@ -107,6 +110,18 @@ namespace Aeroclub.Cargo.Application.Services
 
             var dtoList = _mapper.Map<IReadOnlyList<SectorVM>>(sectorList);
             return dtoList;
+        }
+
+        public async Task<List<KeyValuePair<string, AirportVM>>> GetSectorAirports(Guid sectorId)
+        {
+            var spec = new SectorSpecification(new SectorQM { Id = sectorId });
+            var sector = await _unitOfWork.Repository<Sector>().GetEntityWithSpecAsync(spec);
+            var originAirport = await _airportService.GetAsync(new AirportQM() { Id = sector.OriginAirportId, IsCountryInclude = true });
+            var desAirport = await _airportService.GetAsync(new AirportQM() { Id = sector.DestinationAirportId, IsCountryInclude = true });
+            List<KeyValuePair<string, AirportVM>> list = new List<KeyValuePair<string, AirportVM>>();
+            list.Add(new KeyValuePair<string, AirportVM>("origin", originAirport));
+            list.Add(new KeyValuePair<string, AirportVM>("destination", desAirport));
+            return list;
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(SectorUpdateRM model)
