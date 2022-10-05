@@ -112,15 +112,13 @@ namespace Aeroclub.Cargo.Application.Services
             return dtoList;
         }
 
-        public async Task<List<KeyValuePair<string, AirportVM>>> GetSectorAirports(Guid sectorId)
+        public async Task<AirportVM[]> GetSectorAirports(Guid sectorId)
         {
             var spec = new SectorSpecification(new SectorQM { Id = sectorId });
             var sector = await _unitOfWork.Repository<Sector>().GetEntityWithSpecAsync(spec);
             var originAirport = await _airportService.GetAsync(new AirportQM() { Id = sector.OriginAirportId, IsCountryInclude = true });
             var desAirport = await _airportService.GetAsync(new AirportQM() { Id = sector.DestinationAirportId, IsCountryInclude = true });
-            List<KeyValuePair<string, AirportVM>> list = new List<KeyValuePair<string, AirportVM>>();
-            list.Add(new KeyValuePair<string, AirportVM>("origin", originAirport));
-            list.Add(new KeyValuePair<string, AirportVM>("destination", desAirport));
+            AirportVM[] list = new AirportVM[2] { originAirport,desAirport };
             return list;
         }
 

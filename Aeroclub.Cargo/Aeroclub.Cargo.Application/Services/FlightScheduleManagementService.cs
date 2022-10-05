@@ -16,7 +16,9 @@ using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Aeroclub.Cargo.Application.Extensions;
 using System.Runtime.CompilerServices;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -24,15 +26,18 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IFlightScheduleService _flightScheduleService;
         private readonly IFlightService _flightService;
+        private readonly ISectorService _sectorService;
+
         public FlightScheduleManagementService(
             IUnitOfWork unitOfWork,
             IFlightService flightService,
+            ISectorService sectorService,
             IMapper mapper, IFlightScheduleService flightScheduleService) :
             base(unitOfWork, mapper)
         {
             _flightScheduleService = flightScheduleService;
             _flightService = flightService;
-
+            _sectorService = sectorService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
@@ -71,6 +76,10 @@ namespace Aeroclub.Cargo.Application.Services
             var countSpec = new FlightScheduleManagementSpecification(query, true);
             var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
 
+            foreach (var mgt in flightScheduleManagementList)
+            {
+                mgt.Flight = await _flightService.MappedFlightSectorData(mgt.Flight, false);
+            }
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementVM>>(flightScheduleManagementList);
             return new Pagination<FlightScheduleManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
@@ -178,18 +187,18 @@ namespace Aeroclub.Cargo.Application.Services
 
                 foreach (var day in bookingDays)
                 {
+                    var firstSector = flightDetail.FlightSectors.First(r => r.Sequence == 1);
+                    var list = await _sectorService.GetSectorAirports(firstSector.SectorId);
+
                     var flightSchedule = new FlightScheduleCreateRM();
                     var flightScheduleSectors = new List<FlightScheduleSectorCreateRM>();
                     flightSchedule.FlightId = flightDetail.Id;
                     flightSchedule.FlightNumber = flightDetail.FlightNumber;
                     flightSchedule.ScheduledDepartureDateTime =
-                                                flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == DateTime.MinValue ?
+                                                firstSector.DepartureDateTime == DateTime.MinValue ?
                                                 day :
-                                                day.Date.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
-                    flightSchedule.ActualDepartureDateTime =
-                                                flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime == DateTime.MinValue ?
-                                                day :
-                                                day.Date.Add(flightDetail.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime.TimeOfDay);
+                                                day.Date.Add(firstSector.DepartureDateTime.TimeOfDay.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat));
+                    flightSchedule.ActualDepartureDateTime = flightSchedule.ScheduledDepartureDateTime;
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
@@ -197,6 +206,10 @@ namespace Aeroclub.Cargo.Application.Services
 
                     foreach (var sector in flightDetail.FlightSectors)
                     {
+                        list = await _sectorService.GetSectorAirports(sector.SectorId);
+                        var utcDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day
+                            : day.Date.Add(sector.DepartureDateTime.TimeOfDay.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat));
+
                         flightScheduleSectors.Add(new FlightScheduleSectorCreateRM()
                         {
                             FlightId = flightDetail.Id,
@@ -211,8 +224,8 @@ namespace Aeroclub.Cargo.Application.Services
                             DestinationAirportCode = sector.Sector.DestinationAirportCode,
                             OriginAirportName = sector.Sector.OriginAirportName,
                             DestinationAirportName = sector.Sector.DestinationAirportName,
-                            ScheduledDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Date.Add(sector.DepartureDateTime.TimeOfDay),
-                            ActualDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day : day.Date.Add(sector.DepartureDateTime.TimeOfDay),
+                            ScheduledDepartureDateTime = utcDepartureDateTime,
+                            ActualDepartureDateTime = utcDepartureDateTime,
                         });
                     }
                     flightSchedule.FlightScheduleSectors = flightScheduleSectors;

@@ -6,23 +6,40 @@ namespace Aeroclub.Cargo.Application.Extensions
     public static class TimeZoneExtension
     {
         private enum DistanceUnit { StatuteMile, Kilometer, NauticalMile };
- 
+
         public static DateTime ToInternationalTime(this DateTime UTCtime, string countryCode, double longitude)
         {
             TimeZoneInfo sysTime = GetBestZone(countryCode, longitude);
             var newTime = UTCtime.ToConvertToUTC().AddSeconds(sysTime.BaseUtcOffset.TotalSeconds);
             return newTime;
-
         }
 
         public static TimeSpan ToInternationalTimeSpan(this TimeSpan? ts, string countryCode, double longitude, bool isSaveUTC = true)
         {
             if (ts == null) return new TimeSpan();
+            return ToInternationalTimeSpan(ts.Value, countryCode, longitude, isSaveUTC);
+        }
 
-            TimeSpan newTime = ts.Value;
-            TimeZoneInfo sysTime = GetBestZone(countryCode, longitude);
-            double offSetSeconds = sysTime.BaseUtcOffset.TotalSeconds;
-            TimeSpan ts1 = TimeSpan.FromSeconds(offSetSeconds);
+        public static TimeSpan ToInternationalTimeSpan(this TimeSpan ts, string countryCode, double longitude, bool isSaveUTC = true)
+        {
+            TimeSpan newTime = ts;
+            TimeZoneInfo timeZone = GetBestZone(countryCode, longitude);
+            TimeSpan ts1 = new TimeSpan();
+
+            DateTime dt = new DateTime(2022, 01, 01);
+            dt = dt + ts;
+            if (timeZone.IsDaylightSavingTime(dt))
+            {
+                DateTimeOffset utcOffset = new DateTimeOffset(dt, TimeSpan.Zero);
+                DateTimeOffset result = utcOffset.ToOffset(timeZone.GetUtcOffset(utcOffset));
+                ts1 = TimeSpan.FromSeconds(result.Offset.TotalSeconds);
+            }
+            else
+            {
+                double offSetSeconds = timeZone.BaseUtcOffset.TotalSeconds;
+                ts1 = TimeSpan.FromSeconds(offSetSeconds);
+            }
+
             if (isSaveUTC)
                 newTime = newTime.Subtract(ts1);
             else

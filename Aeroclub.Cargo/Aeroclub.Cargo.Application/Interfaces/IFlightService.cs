@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
+using Aeroclub.Cargo.Core.Entities;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -21,5 +22,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<FlightVM> GetDetailAsync(FlightDetailQM query);
         Task<ServiceResponseStatus> UpdateAsync(FlightCreateRM flightRM);
         Task<ServiceResponseStatus> DeleteAsync(Guid Id);
+        Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true);
     }
 }

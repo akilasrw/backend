@@ -19,8 +19,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(FlightScheduleQM query)
-            : base(x => (query.Id == Guid.Empty || x.Id == query.Id) ||
-            query.FlightId == Guid.Empty || x.FlightId == query.FlightId)
+            : base(x => (query.Id == Guid.Empty || x.Id == query.Id) &&
+            (query.FlightId == Guid.Empty || x.FlightId == query.FlightId))
         {
 
         }
