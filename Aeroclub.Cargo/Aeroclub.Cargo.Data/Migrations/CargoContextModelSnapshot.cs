@@ -178,6 +178,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<double>("Rate")
                         .HasColumnType("float");
 
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
                     b.Property<byte>("WeightType")
                         .HasColumnType("tinyint");
 
@@ -893,7 +896,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a0a7fc80-6d5a-41b8-bfbf-73bf7d114916",
+                            ConcurrencyStamp = "b0970a94-f243-4ce0-b80b-4ec696de6b0f",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -909,7 +912,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dfb05d0e-f6a7-4387-9c96-7c094ebffb2c",
+                            ConcurrencyStamp = "5619d218-732b-40ef-9d22-06feb06f85ae",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",

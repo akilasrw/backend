@@ -15,6 +15,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public double Rate { get; set; }
         public WeightType WeightType { get; set; }
         public string CreatedUser { get; set; } = null!;
+        public DBTransactionStatus Status { get; set; }
 
     }
 }

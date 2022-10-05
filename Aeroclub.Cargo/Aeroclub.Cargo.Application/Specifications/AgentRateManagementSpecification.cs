@@ -1,6 +1,4 @@
-﻿
-
-using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +28,18 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
 
         }
+
+        public AgentRateManagementSpecification(AgentRateManagementQM query)
+           : base(x => x.Id == query.Id)
+        {
+
+            AddInclude(x => x.Include(y => y.AgentRates));
+
+            if (query.IncludeCargoAgent)
+                AddInclude(x => x.Include(y => y.CargoAgent));
+
+        }
+
     }
 
 }

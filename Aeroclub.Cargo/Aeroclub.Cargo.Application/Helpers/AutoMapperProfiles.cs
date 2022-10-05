@@ -229,12 +229,13 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.ArrivalDateTime, o => o.MapFrom(s => (s.ArrivalDateTime != null) ? new DateTime()
                 .Add((TimeSpan)s.ArrivalDateTime) : new DateTime()));
 
-            CreateMap<AgentRateManagementRM, AgentRateManagement>();
+            CreateMap<AgentRateManagementCreateRM, AgentRateManagement>();
             CreateMap<AgentRateRM, AgentRate>();
             CreateMap<AgentRateManagement, AgentRateManagementVM>()
                             .ForMember(d => d.CargoAgentName, o => o.MapFrom(s => s.CargoAgent != null ? s.CargoAgent.AgentName:""));
             CreateMap<AgentRate, AgentRateVM>();
-            CreateMap<AgentRateManagementRM, AgentRateManagementHistory>();
+            CreateMap<AgentRateManagement, AgentRateManagementHistory>();
+            CreateMap<AgentRateManagementUpdateRM, AgentRateManagement>();
 
         }
     }

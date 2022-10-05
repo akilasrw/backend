@@ -19,6 +19,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             this._agentRateManagementService = agentRateManagementService;
         }
 
+        [HttpGet()]
+        [ActionName(nameof(GetAsync))]
+        public async Task<ActionResult<IReadOnlyList<AgentRateManagementVM>>> GetAsync([FromQuery] AgentRateManagementQM query)
+        {
+            if (query.Id == Guid.Empty) return BadRequest();
+
+            var result = await _agentRateManagementService.GetAsync(query);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<AgentRateManagementVM>>> GetFilteredListAsync([FromQuery] AgentRateManagementListQM query)
         {
@@ -41,6 +55,43 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return BadRequest("Rate creation fails.");
 
+        }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] AgentRateManagementUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _agentRateManagementService.UpdateAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(new { message = response.Message });
+
+            if (response.StatusCode == ServiceResponseStatus.Failed)
+                return BadRequest("Rate update fails.");
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            if (Guid.Empty == id)
+            {
+                return BadRequest();
+            }
+
+            var response = await _agentRateManagementService.DeleteAsync(id);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(new { message = response.Message });
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return Ok(new { message = "Rate deleted successfully." });
+
+            return BadRequest(new { message = "Rate delete fail." });
         }
     }
 }
