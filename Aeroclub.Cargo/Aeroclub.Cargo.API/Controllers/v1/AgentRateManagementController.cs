@@ -57,6 +57,22 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
         }
 
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] AgentRateManagementUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _agentRateManagementService.UpdateAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(new { message = response.Message });
+
+            if (response.StatusCode == ServiceResponseStatus.Failed)
+                return BadRequest("Rate update fails.");
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

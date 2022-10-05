@@ -1,9 +1,10 @@
-﻿using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
 {
-    public class AgentRateManagementRM
+    public class AgentRateManagementUpdateRM : BaseRM
     {
         [Required(ErrorMessage = "Cargo agent required.")]
         public Guid CargoAgentId { get; set; }
@@ -16,6 +17,5 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
 
         [Required(ErrorMessage = "Rate(s) required.")]
         public IEnumerable<AgentRateRM> AgentRates { get; set; } = null!;
-
     }
 }

@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> CreateAsync(AgentRateManagementListRM dto);
         Task<Pagination<AgentRateManagementVM>> GetFilteredListAsync(AgentRateManagementListQM query);
         Task<AgentRateManagementVM> GetAsync(AgentRateManagementQM query);
+        Task<ServiceResponseCreateStatus> UpdateAsync(AgentRateManagementUpdateRM dto);
         Task<ServiceResponseCreateStatus> DeleteAsync(Guid Id);
 
 
