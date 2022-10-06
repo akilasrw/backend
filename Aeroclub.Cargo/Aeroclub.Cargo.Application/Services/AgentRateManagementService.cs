@@ -54,7 +54,9 @@ namespace Aeroclub.Cargo.Application.Services
                 foreach (var item in dto!.AgentRateManagements)
                 {
 
-                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM { CargoAgentId = item.CargoAgentId, 
+                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM {
+                        IncludeAgentRates = false,
+                        CargoAgentId = item.CargoAgentId,
                         DestinationAirportId = item.DestinationAirportId,
                         OriginAirportId = item.OriginAirportId});
                     var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
@@ -165,25 +167,55 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> UpdateAsync(AgentRateManagementUpdateRM dto)
         {
             var response = new ServiceResponseCreateStatus();
+
             using (var transaction = _unitOfWork.BeginTransaction())
             {
                 var entity = _mapper.Map<AgentRateManagement>(dto);
-
-                var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(dto.OriginAirportId);
-                var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(dto.DestinationAirportId);
-
-                if (originAirport == null || destinationAirport == null)
-                {
-                    transaction.Rollback();
-                    response.StatusCode = ServiceResponseStatus.Failed;
-                    return response;
-                }
 
                 if (entity.AgentRates == null)
                 {
                     transaction.Rollback();
                     response.StatusCode = ServiceResponseStatus.ValidationError;
                     response.Message = "Agent rates required.";
+                    return response;
+                }
+
+                var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM
+                {
+                    IncludeAgentRates = true,
+                    CargoAgentId = entity.CargoAgentId,
+                    DestinationAirportId = entity.DestinationAirportId,
+                    OriginAirportId = entity.OriginAirportId
+                });
+                var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
+
+                if (agentRate != null && agentRate.AgentRates != null)
+                {
+                    bool isAllRatesSame = true;
+
+                    foreach (var existingItem in agentRate.AgentRates)
+                        foreach(var newItem in entity.AgentRates)
+                        {
+                            if(existingItem.WeightType == newItem.WeightType && existingItem.Rate != newItem.Rate)
+                                isAllRatesSame = false;
+                        }
+                    
+                    if (isAllRatesSame || (agentRate.Id != entity.Id))
+                    {
+                        transaction.Rollback();
+                        response.StatusCode = ServiceResponseStatus.ValidationError;
+                        response.Message = "This record is already available.";
+                        return response;
+                    }  
+                }
+
+                var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(entity.OriginAirportId);
+                var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(entity.DestinationAirportId);
+
+                if (originAirport == null || destinationAirport == null)
+                {
+                    transaction.Rollback();
+                    response.StatusCode = ServiceResponseStatus.Failed;
                     return response;
                 }
 
@@ -210,9 +242,17 @@ namespace Aeroclub.Cargo.Application.Services
                 entity.DestinationAirportCode = destinationAirport.Code;
                 entity.DestinationAirportName = destinationAirport.Name;
 
+                foreach(var rateItem in entity.AgentRates)
+                {
+                    _unitOfWork.Repository<AgentRate>().Update(rateItem);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AgentRate>().Detach(rateItem);
+                }
+
                 _unitOfWork.Repository<AgentRateManagement>().Update(entity);
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<AgentRateManagement>().Detach(entity);
+
                 transaction.Commit();
 
             }

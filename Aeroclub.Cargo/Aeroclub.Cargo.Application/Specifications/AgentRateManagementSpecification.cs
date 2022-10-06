@@ -26,7 +26,8 @@ namespace Aeroclub.Cargo.Application.Specifications
             :base(x =>  x.CargoAgentId == query.CargoAgentId && x.OriginAirportId == query.OriginAirportId &&
             x.DestinationAirportId == query.DestinationAirportId && !x.IsDeleted)
         {
-
+            if(query.IncludeAgentRates)
+                AddInclude(x => x.Include(y => y.AgentRates));
         }
 
         public AgentRateManagementSpecification(AgentRateManagementQM query)

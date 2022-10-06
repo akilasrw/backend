@@ -6,6 +6,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs
         public Guid CargoAgentId { get; set; }
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
+        public bool IncludeAgentRates { get; set; }
 
     }
 }
