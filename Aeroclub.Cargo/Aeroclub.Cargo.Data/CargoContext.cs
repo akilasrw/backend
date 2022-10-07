@@ -47,7 +47,6 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new SeatConfigurationConfiguration());
             modelBuilder.ApplyConfiguration(new SeatEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CargoAgentConfiguration());
-            modelBuilder.ApplyConfiguration(new PackageContainerSectorConfiguration());
             modelBuilder.ApplyConfiguration(new AWBInformationConfigration());
             modelBuilder.ApplyConfiguration(new OverheadPositionConfiguration());
             modelBuilder.ApplyConfiguration(new ULDContainerCargoPositionConfiguration());
@@ -97,7 +96,6 @@ namespace Aeroclub.Cargo.Data
         public DbSet<SeatLayout> SeatLayouts { get; set; } = null!;
         public DbSet<CargoAgent> CargoAgents { get; set; } = null!;
         public DbSet<PackageContainer> PackageContainers { get; set; } = null!;
-        public DbSet<PackageContainerSector> PackageContainerSectors { get; set; } = null!;
         public DbSet<AWBInformation> AWBInformations { get; set; } = null!;
         public DbSet<OverheadLayout> OverheadLayouts { get; set; } = null!;
         public DbSet<OverheadCompartmentConfiguration> OverheadCompartmentConfigurations { get; set; } = null!;

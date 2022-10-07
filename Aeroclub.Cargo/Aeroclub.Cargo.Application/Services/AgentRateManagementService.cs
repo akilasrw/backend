@@ -288,5 +288,18 @@ namespace Aeroclub.Cargo.Application.Services
             
             return ServiceResponseStatus.Success;
         }
+
+        public async Task<Pagination<AgentRateManagementVM>> GetFilteredAgentRateListAsync(AgentRateManagementRateListQM query)
+        {
+            var spec = new AgentRateManagementSpecification(query);
+            var agentRateList = await _unitOfWork.Repository<AgentRateManagement>().GetListWithSpecAsync(spec);
+
+            var countSpec = new AgentRateManagementSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<AgentRateManagement>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<AgentRateManagementVM>>(agentRateList);
+
+            return new Pagination<AgentRateManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
     }
 }

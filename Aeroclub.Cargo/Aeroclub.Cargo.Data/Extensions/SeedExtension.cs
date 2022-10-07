@@ -32,7 +32,6 @@ namespace Aeroclub.Cargo.Data.Extensions
             SeedAircraft(modelBuilder, basePath);
             SeedFlightSector(modelBuilder, basePath);
             SeedPackageContainer(modelBuilder, basePath);
-            SeedPackageContainerSector(modelBuilder, basePath);
             SeedAircraftType(modelBuilder, basePath);
             SeedAircraftSubType(modelBuilder, basePath);
             SeedAircraftLayoutMapping(modelBuilder, basePath);            
@@ -196,14 +195,6 @@ namespace Aeroclub.Cargo.Data.Extensions
                 JsonConvert.DeserializeObject<PackageContainer[]>(File.ReadAllText(Path.Combine(basePath, "PackageContainer.json")));
             if (packageContainer != null)
                 modelBuilder.Entity<PackageContainer>().HasData(packageContainer);
-        }
-
-        private static void SeedPackageContainerSector(ModelBuilder modelBuilder, string basePath)
-        {
-            var packageContainerSector =
-                JsonConvert.DeserializeObject<PackageContainerSector[]>(File.ReadAllText(Path.Combine(basePath, "PackageContainerSector.json")));
-            if (packageContainerSector != null)
-                modelBuilder.Entity<PackageContainerSector>().HasData(packageContainerSector);
         }
         private static void SeedOverheadLayout(ModelBuilder modelBuilder, string basePath)
         {
