@@ -236,6 +236,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<AgentRate, AgentRateVM>();
             CreateMap<AgentRateManagement, AgentRateManagementHistory>();
             CreateMap<AgentRateManagementUpdateRM, AgentRateManagement>();
+            CreateMap<CountryDto, Country>().ReverseMap(); ;
 
         }
     }

@@ -1,10 +1,14 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Extensions;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -19,11 +23,16 @@ namespace Aeroclub.Cargo.Application.Services
     public class FlightScheduleSectorService : BaseService, IFlightScheduleSectorService
     {
         private readonly IConfiguration _configuration;
+        private readonly IAirportService _airportService;
 
-        public FlightScheduleSectorService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
+        public FlightScheduleSectorService(IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IConfiguration configuration,
+            IAirportService airportService)
             : base(unitOfWork, mapper)
         {
             _configuration = configuration;
+            _airportService = airportService;
         }
 
         public async Task<IReadOnlyList<T>> GetListAsync<T>(FlightScheduleSectorListQM query)
@@ -51,6 +60,9 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in dtoList)
             {
+                flightScheduleSector.ScheduledDepartureDateTime = await GetMappedTimeAsync(flightScheduleSector.ScheduledDepartureDateTime, flightScheduleSector.OriginAirportId);
+                flightScheduleSector.ActualDepartureDateTime = flightScheduleSector.ScheduledDepartureDateTime;
+
                 flightScheduleSector.AcceptanceCutoffTime = string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]) ?
                     flightScheduleSector.ScheduledDepartureDateTime : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]));
 
@@ -372,5 +384,15 @@ namespace Aeroclub.Cargo.Application.Services
             return await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(spec);
         }
 
+        private async Task<DateTime> GetMappedTimeAsync(DateTime date, Guid airportId)
+        {
+            TimeSpan offsetTime = new TimeSpan();
+            var res = await _airportService.GetAsync(new AirportQM() { Id = airportId, IsCountryInclude = true});
+
+            if (res != null && !string.IsNullOrEmpty(res.CountryCode))
+                offsetTime = date.TimeOfDay.ToInternationalTimeSpan(res.CountryCodeISO3166, res.Lat, false);
+
+            return date + offsetTime;
+        }
     }
 }

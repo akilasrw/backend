@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
@@ -13,12 +14,12 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class AirportService :BaseService, IAirportService
     {
-   
+        private readonly ICountryService _countryService;
 
-        public AirportService(IUnitOfWork unitOfWork, IMapper mapper):
+        public AirportService(IUnitOfWork unitOfWork, IMapper mapper, ICountryService countryService):
             base(unitOfWork,mapper)
         {
-           
+            _countryService = countryService;
         }
 
         public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
@@ -57,6 +58,15 @@ namespace Aeroclub.Cargo.Application.Services
             if (airportList != null && airportList?.Count > 0)
             {
                 response.StatusCode = ServiceResponseStatus.ValidationError;
+                response.Message = "Airport is already available.";
+                return response;
+            }
+
+            var isValidLat = await ValidAirportLatitudeAsync(dto.CountryId, dto.Lat);
+            if (!isValidLat)
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                response.Message = "Latitude is not valid.";
                 return response;
             }
 
@@ -66,6 +76,18 @@ namespace Aeroclub.Cargo.Application.Services
             response.Id = airport.Id;
             response.StatusCode = ServiceResponseStatus.Success;
             return response;
+        }
+
+        public async Task<bool> ValidAirportLatitudeAsync(Guid countryId, double lat)
+        {
+            var country = await _countryService.GetAsync(countryId);
+            if (TimeZoneExtension.GetTimeZoneByCountryId(country.CodeISO3166).Count() > 0)
+            {
+                var zone = TimeZoneExtension.GetBestTimeZoneByCountryId(country.CodeISO3166, lat);
+                if(zone == null)
+                    return false;
+            }
+            return true;
         }
 
         public async Task<bool> DeleteAsync(Guid Id)
