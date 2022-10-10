@@ -22,6 +22,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("getSelectList")]
+        [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetSelectListAsync()
         {
             return Ok(await _airportService.GetSelectListAsync());
