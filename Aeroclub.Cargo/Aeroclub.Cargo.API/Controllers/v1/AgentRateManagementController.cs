@@ -33,6 +33,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(result);
         }
 
+        [HttpGet("GetFilteredAgentRateList")]
+        public async Task<ActionResult<Pagination<AgentRateManagementVM>>> GetFilteredAgentRateListAsync([FromQuery] AgentRateManagementRateListQM query)
+        {
+            return Ok(await _agentRateManagementService.GetFilteredAgentRateListAsync(query));
+        }
+
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<AgentRateManagementVM>>> GetFilteredListAsync([FromQuery] AgentRateManagementListQM query)
         {

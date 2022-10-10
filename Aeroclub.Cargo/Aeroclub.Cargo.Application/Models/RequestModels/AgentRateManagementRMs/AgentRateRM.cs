@@ -1,11 +1,12 @@
 ﻿
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
 using Aeroclub.Cargo.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs
 {
-    public class AgentRateRM
+    public class AgentRateRM :BaseRM
     {     
         public Guid AgentRateManagementId { get; set; }
 

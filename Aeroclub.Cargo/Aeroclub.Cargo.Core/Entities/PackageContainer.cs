@@ -14,9 +14,5 @@ namespace Aeroclub.Cargo.Core.Entities
         public PackageBoxType PackageBoxType { get; set; } = PackageBoxType.Container;
         public double MaxWaight { get; set; } 
         public double ? MinWaight { get; set; } = null;
-
-
-        public virtual ICollection<PackageContainerSector> PackageContainerSector { get; set; }
-
     }
 }

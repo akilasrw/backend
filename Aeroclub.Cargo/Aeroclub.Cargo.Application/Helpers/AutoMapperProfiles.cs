@@ -11,7 +11,6 @@ using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.RateVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageContainerVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.WarehouseVMs;
 using Aeroclub.Cargo.Core.Entities;
@@ -120,14 +119,6 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<PackageItem, PackageItemVM>();
 
             CreateMap<CargoBooking, CargoBookingLookupVM>();
-
-            CreateMap<PackageContainerSector, RateVM>()
-               .ForMember(d => d.Width, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.Width : 0))
-               .ForMember(d => d.Height, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.Height : 0))
-               .ForMember(d => d.Length, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.Length : 0))
-               .ForMember(d => d.PackageContainerType, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.PackageContainerType : 0))
-               .ForMember(d => d.PackageBoxType, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.PackageBoxType : 0))
-               .ForMember(d => d.MaxWaight, o => o.MapFrom(s => s.PackageContainer != null ? s.PackageContainer.MaxWaight : 0));
 
             CreateMap<Unit, BaseSelectListModel>()
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.Name));

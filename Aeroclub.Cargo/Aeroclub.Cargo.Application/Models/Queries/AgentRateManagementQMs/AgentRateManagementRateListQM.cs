@@ -1,12 +1,11 @@
-﻿
+﻿using Aeroclub.Cargo.Application.Models.Core;
+
 namespace Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs
 {
-    public class AgentRateManagementValidationQM
+    public class AgentRateManagementRateListQM : BasePaginationQM
     {
-        public Guid CargoAgentId { get; set; }
+        public Guid UserId { get; set; }
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
-        public bool IncludeAgentRates { get; set; }
-
     }
 }
