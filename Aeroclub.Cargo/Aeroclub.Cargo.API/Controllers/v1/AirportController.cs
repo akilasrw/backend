@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
@@ -55,7 +56,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _airportService.CreateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest("Airport is already available.");
+                return BadRequest(response.Message);
 
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);

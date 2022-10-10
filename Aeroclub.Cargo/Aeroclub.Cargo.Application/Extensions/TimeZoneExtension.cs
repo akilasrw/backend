@@ -9,8 +9,14 @@ namespace Aeroclub.Cargo.Application.Extensions
 
         public static DateTime ToInternationalTime(this DateTime UTCtime, string countryCode, double longitude)
         {
-            TimeZoneInfo sysTime = GetBestZone(countryCode, longitude);
-            var newTime = UTCtime.ToConvertToUTC().AddSeconds(sysTime.BaseUtcOffset.TotalSeconds);
+            TimeZoneInfo timeZone = GetBestZone(countryCode, longitude);
+            var newTime = UTCtime.ToConvertToUTC().AddSeconds(timeZone.BaseUtcOffset.TotalSeconds);
+            if (timeZone.IsDaylightSavingTime(newTime))
+            {
+                DateTimeOffset utcOffset = new DateTimeOffset(newTime, TimeSpan.Zero);
+                DateTimeOffset result = utcOffset.ToOffset(timeZone.GetUtcOffset(utcOffset));
+                return result.DateTime;
+            }
             return newTime;
         }
 
