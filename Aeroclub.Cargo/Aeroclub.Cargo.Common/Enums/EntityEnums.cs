@@ -186,4 +186,20 @@
         Deleted = 2
     }
 
+    public enum ScheduleStatus
+    {
+        None = 0,
+        Schedule = 1,
+        Chartered = 2,
+        Maintainance = 3,
+    }
+
+    public enum CalendarType
+    {
+        None = 0,
+        Daily = 1,
+        Weekly = 2,
+        Monthly = 3,
+    }
+
 }
