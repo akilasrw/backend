@@ -22,8 +22,11 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
         public string Email { get; set; }= null!;
         public string? CargoAccountNumber { get; set; }
 
-        [Required(ErrorMessage = "Country Id required")]
+        [Required(ErrorMessage = "Country required")]
         public Guid CountryId { get; set; }
+
+        [Required(ErrorMessage = "Base airport required")]
+        public Guid BaseAirportId { get; set; }
 
         [Required(ErrorMessage = "City required")]
         public string City { get; set; } = null!;

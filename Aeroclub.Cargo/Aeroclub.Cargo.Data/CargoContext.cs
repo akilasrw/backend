@@ -57,6 +57,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new AgentRateManagementConfiguration());
             modelBuilder.ApplyConfiguration(new AgentRateConfiguration());
             modelBuilder.ApplyConfiguration(new AgentRateManagementHistoryConfiguration());
+            modelBuilder.ApplyConfiguration(new MasterScheduleConfiguration());
             
             
             
@@ -109,6 +110,11 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AgentRateManagement> AgentRateManagements { get; set; } = null!;
         public DbSet<AgentRateManagementHistory> AgentRateManagementHistorys { get; set; } = null!;
         public DbSet<AgentRate> AgentRates { get; set; } = null!;
+        public DbSet<MasterSchedule> MasterSchedules { get; set; } = null!;
+        public DbSet<AircraftSchedule> AircraftSchedules { get; set; } = null!;
+        //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
+     
+        //  public DbSet<AircraftCharteredSchedule> AircraftCharteredSchedules { get; set; } = null!;
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
         {

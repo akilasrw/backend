@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20221011135151_Add_Schedule_Tables")]
+    partial class Add_Schedule_Tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23132,9 +23134,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<string>("FlightNumber")
                         .HasColumnType("varchar(10)");
 
-                    b.Property<Guid?>("FlightScheduleManagementId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<byte>("FlightScheduleStatus")
                         .HasColumnType("tinyint");
 
@@ -23171,8 +23170,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("AircraftSubTypeId");
 
                     b.HasIndex("DestinationAirportId");
-
-                    b.HasIndex("FlightScheduleManagementId");
 
                     b.HasIndex("OriginAirportId");
 
@@ -36562,10 +36559,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.FlightScheduleManagement", "FlightScheduleManagement")
-                        .WithMany("FlightSchedules")
-                        .HasForeignKey("FlightScheduleManagementId");
-
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "OriginAirport")
                         .WithMany()
                         .HasForeignKey("OriginAirportId")
@@ -36577,8 +36570,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("AircraftSubType");
 
                     b.Navigation("DestinationAirport");
-
-                    b.Navigation("FlightScheduleManagement");
 
                     b.Navigation("OriginAirport");
                 });
@@ -36957,11 +36948,6 @@ namespace Aeroclub.Cargo.Data.Migrations
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightSchedule", b =>
                 {
                     b.Navigation("FlightScheduleSectors");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleManagement", b =>
-                {
-                    b.Navigation("FlightSchedules");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", b =>

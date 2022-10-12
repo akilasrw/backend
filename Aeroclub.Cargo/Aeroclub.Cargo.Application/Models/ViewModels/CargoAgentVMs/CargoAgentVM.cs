@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs
         public string? CargoAccountNumber { get; set; }
         public Guid CountryId { get; set; }
         public Guid AppUserId { get; set; }
+        public Guid BaseAirportId { get; set; }
         public string? CountryName { get; set; }
         public string City { get; set; } = null!;
         public string? AgentIATACode { get; set; }

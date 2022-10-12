@@ -13,9 +13,11 @@ namespace Aeroclub.Cargo.Core.Entities
         public string? AgentIATACode { get; set; }
         public Guid AppUserId { get; set; }
         public Guid CountryId { get; set; }
-        public Country Country { get; set; } = null!;
-        public AppUser AppUser { get; set; } = null!;
+        public Guid BaseAirportId { get; set; }
 
+        public virtual Country Country { get; set; } = null!;
+        public virtual AppUser AppUser { get; set; } = null!;
+        public virtual Airport BaseAirport { get; set; } = null!;
         public virtual ICollection<AWBStack> AWBStacks { get; set; }
     }
 }

@@ -27,6 +27,9 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
 
         [Required(ErrorMessage = "Country Id required")]
         public Guid CountryId { get; set; }
+
+        [Required(ErrorMessage = "Base airport required")]
+        public Guid BaseAirportId { get; set; }
         public Guid AppUserId { get; set; }
 
         [Required(ErrorMessage = "City required")]

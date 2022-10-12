@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20221010053515_Update_CargoAgent_Table")]
+    partial class Update_CargoAgent_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -563,54 +565,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AircraftSchedule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AircraftId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MasterScheduleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ScheduleEndDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ScheduleStartDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AircraftId");
-
-                    b.HasIndex("MasterScheduleId");
-
-                    b.ToTable("AircraftSchedules");
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AircraftSubType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -944,7 +898,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b52d9503-db9b-43ae-abaf-4c45c1ffc62b",
+                            ConcurrencyStamp = "f2b00fdd-61e5-46ec-9ce4-a749f10fade3",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -960,7 +914,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aa09a0b1-f795-4bc1-9a53-60450babdc8f",
+                            ConcurrencyStamp = "0ef96d1f-99bc-4d5d-97af-0ad8febc90ff",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -23132,9 +23086,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<string>("FlightNumber")
                         .HasColumnType("varchar(10)");
 
-                    b.Property<Guid?>("FlightScheduleManagementId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<byte>("FlightScheduleStatus")
                         .HasColumnType("tinyint");
 
@@ -23171,8 +23122,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("AircraftSubTypeId");
 
                     b.HasIndex("DestinationAirportId");
-
-                    b.HasIndex("FlightScheduleManagementId");
 
                     b.HasIndex("OriginAirportId");
 
@@ -23419,51 +23368,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("SeatLayoutId");
 
                     b.ToTable("LoadPlans");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.MasterSchedule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte>("CalendarType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DaysOfWeek")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ScheduleEndDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ScheduleStartDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("ScheduleStatus")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MasterSchedules");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartment", b =>
@@ -36339,23 +36243,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("SeatLayout");
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AircraftSchedule", b =>
-                {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.Aircraft", "Aircraft")
-                        .WithMany()
-                        .HasForeignKey("AircraftId");
-
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.MasterSchedule", "MasterSchedule")
-                        .WithMany("AircraftSchedules")
-                        .HasForeignKey("MasterScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Aircraft");
-
-                    b.Navigation("MasterSchedule");
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AircraftSubType", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.AircraftType", "AircraftType")
@@ -36562,10 +36449,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.FlightScheduleManagement", "FlightScheduleManagement")
-                        .WithMany("FlightSchedules")
-                        .HasForeignKey("FlightScheduleManagementId");
-
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "OriginAirport")
                         .WithMany()
                         .HasForeignKey("OriginAirportId")
@@ -36577,8 +36460,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("AircraftSubType");
 
                     b.Navigation("DestinationAirport");
-
-                    b.Navigation("FlightScheduleManagement");
 
                     b.Navigation("OriginAirport");
                 });
@@ -36959,11 +36840,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("FlightScheduleSectors");
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleManagement", b =>
-                {
-                    b.Navigation("FlightSchedules");
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", b =>
                 {
                     b.Navigation("CargoBookings");
@@ -36975,11 +36851,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ULDContaines");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.MasterSchedule", b =>
-                {
-                    b.Navigation("AircraftSchedules");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadCompartmentConfiguration", b =>
