@@ -69,7 +69,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<FlightSectorDto, FlightSector>()
                 .ForMember(d => d.DepartureDateTime, o => o.MapFrom(s => TimeSpan.Parse(s.DepartureDateDisplayTime)))
                 .ForMember(d => d.ArrivalDateTime, o => o.MapFrom(s => TimeSpan.Parse(s.ArrivalDateDisplayTime)));
-            CreateMap<FlightScheduleUpdateRM, FlightSchedule>();
+            CreateMap<FlightScheduleUpdateRM, FlightSchedule>().ReverseMap();
             CreateMap<FlightScheduleCreateRM, FlightSchedule>();
             CreateMap<FlightScheduleSectorCreateRM, FlightScheduleSector>();
             CreateMap<FlightScheduleSector, FlightScheduleSectorVM>()

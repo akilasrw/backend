@@ -9,7 +9,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
 {
     public class ScheduleAircraftRM
     {
-        public Guid FlightScheduleId { get; set; }
+        public Guid FlightScheduleManagementId { get; set; }
 
         [Required(ErrorMessage = "Aircraft is required.")]
         public Guid AircraftId { get; set; }

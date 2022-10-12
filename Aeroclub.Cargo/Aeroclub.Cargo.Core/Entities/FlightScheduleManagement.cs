@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public bool IsFlightScheduleGenerated { get; set; }
         public virtual Flight? Flight { get; set; }
         public virtual AircraftSubType? AircraftSubType { get; set; }
+        public ICollection<FlightSchedule>? FlightSchedules { get; set; }
 
     }
 }
