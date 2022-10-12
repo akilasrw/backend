@@ -4,6 +4,8 @@ using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Data.Services;
 using Aeroclub.Cargo.Infrastructure.Authorization.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Authorization.Services;
+using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
+using Aeroclub.Cargo.Infrastructure.DateGenerator.Services;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Services;
 
@@ -56,6 +58,8 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IULDContainerCargoPositionService, ULDContainerCargoPositionService>();
             services.AddScoped<IFlightScheduleManagementService, FlightScheduleManagementService>();
             services.AddScoped<IAgentRateManagementService, AgentRateManagementService>();
+            services.AddScoped<IDateGeneratorService, DateGeneratorService>();
+            services.AddScoped<IMasterScheduleService, MasterScheduleService>();
 
 
             return services;

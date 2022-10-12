@@ -19,12 +19,15 @@ using AutoMapper;
 using Aeroclub.Cargo.Application.Extensions;
 using System.Runtime.CompilerServices;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
+using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
+using Aeroclub.Cargo.Infrastructure.DateGenerator.Models;
 
 namespace Aeroclub.Cargo.Application.Services
 {
     public class FlightScheduleManagementService : BaseService, IFlightScheduleManagementService
     {
         private readonly IFlightScheduleService _flightScheduleService;
+        private readonly IDateGeneratorService _dateGeneratorService;
         private readonly IFlightService _flightService;
         private readonly ISectorService _sectorService;
 
@@ -32,12 +35,14 @@ namespace Aeroclub.Cargo.Application.Services
             IUnitOfWork unitOfWork,
             IFlightService flightService,
             ISectorService sectorService,
+            IDateGeneratorService dateGeneratorService,
             IMapper mapper, IFlightScheduleService flightScheduleService) :
             base(unitOfWork, mapper)
         {
             _flightScheduleService = flightScheduleService;
             _flightService = flightService;
             _sectorService = sectorService;
+            _dateGeneratorService = dateGeneratorService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
@@ -136,8 +141,6 @@ namespace Aeroclub.Cargo.Application.Services
         {
 
             var flightDetail = await _flightService.GetDetailAsync(new FlightDetailQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
-            IList<int> daysOfWeek = new List<int>();
-            List<DateTime> bookingDays = new List<DateTime>();
 
             if (flightDetail == null)
                 return new ServiceResponseCreateStatus() { StatusCode =ServiceResponseStatus.ValidationError};
@@ -145,30 +148,7 @@ namespace Aeroclub.Cargo.Application.Services
             if (flightDetail.FlightSectors.Count < 1)
                 return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
 
-            if (!String.IsNullOrEmpty(dto.DaysOfWeek))
-            {
-                foreach (var s in dto.DaysOfWeek.Split(','))
-                {
-                    int num;
-                    if (int.TryParse(s, out num))
-                        daysOfWeek.Add(num);
-                }
-            }
-            else
-                return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
-
-
-            if (daysOfWeek.Count > 0)
-            {
-                foreach (var day in daysOfWeek)
-                {
-                    bookingDays.AddRange(dto.ScheduleStartDate.GetWeekdayInRange(dto.ScheduleEndDate, day.GetDayOfWeek()));
-                }
-            }
-            else
-                return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
-
-
+            var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM(){ DaysOfWeek = dto.DaysOfWeek, ScheduleStartDate = dto.ScheduleStartDate,ScheduleEndDate = dto.ScheduleEndDate});
 
             if (bookingDays.Count > 0)
             {
