@@ -29,6 +29,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
             AddInclude(x => x.Include(y => y.AircraftSubType));
+            AddInclude(x => x.Include(y => y.FlightSchedules));
 
         }
 
@@ -37,6 +38,15 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             if (!isCount)
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+        }
+
+        public FlightScheduleManagementSpecification(Guid AircraftSubTypeId)
+            : base(x => x.AircraftSubTypeId == AircraftSubTypeId && !x.IsDeleted)
+        {
+            AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+            AddInclude(x => x.Include(y => y.AircraftSubType));
+            AddInclude(x => x.Include(y => y.FlightSchedules).ThenInclude(z => z.Aircraft));
+
         }
 
     }

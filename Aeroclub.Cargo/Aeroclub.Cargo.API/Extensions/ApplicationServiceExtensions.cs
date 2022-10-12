@@ -56,6 +56,8 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IULDContainerCargoPositionService, ULDContainerCargoPositionService>();
             services.AddScoped<IFlightScheduleManagementService, FlightScheduleManagementService>();
             services.AddScoped<IAgentRateManagementService, AgentRateManagementService>();
+            services.AddScoped<IAgentRateManagementService, AgentRateManagementService>();
+            services.AddScoped<ILinkAircraftToScheduleService, LinkAircraftToScheduleService>();
 
 
             return services;

@@ -12,8 +12,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto);
         Task<Pagination<FlightScheduleManagementVM>> GetFilteredListAsync(FlightScheduleManagementFilteredListQM query);
         Task<FlightScheduleManagementVM> GetAsync(FlightScheduleManagementDetailQM query);
-        Task<ServiceResponseStatus> LinkAircraftToScheduleAsync(ScheduleAircraftRM query);
-        Task<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query);
 
     }
 }

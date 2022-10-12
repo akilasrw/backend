@@ -42,23 +42,22 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
         {
+            var res = new ServiceResponseCreateStatus();
+            var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
+            flightScheduleManagementEntity.IsFlightScheduleGenerated = true;
+            var flightScheduleManagementResponse = await _unitOfWork.Repository<FlightScheduleManagement>().CreateAsync(flightScheduleManagementEntity);
+            await _unitOfWork.SaveChangesAsync();
 
-            var createdFlightSchedule = await CreateFlightSchedule(dto);
-
-            if (createdFlightSchedule.StatusCode == ServiceResponseStatus.Success)
+            if (flightScheduleManagementResponse == null)
             {
-                var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
-                flightScheduleManagementEntity.IsFlightScheduleGenerated = true;
-                var flightScheduleManagementResponse = await _unitOfWork.Repository<FlightScheduleManagement>().CreateAsync(flightScheduleManagementEntity);
-                await _unitOfWork.SaveChangesAsync();
-
-                if (flightScheduleManagementResponse == null)
-                {
-                    createdFlightSchedule.StatusCode = ServiceResponseStatus.Failed;
-                }
+                res.StatusCode = ServiceResponseStatus.Failed;
             }
-           
-            return createdFlightSchedule;
+            else
+            {
+                return await CreateFlightSchedule(dto, flightScheduleManagementResponse.Id);
+            }
+
+            return res;
         }
 
         public async Task<FlightScheduleManagementVM> GetAsync(FlightScheduleManagementDetailQM query)
@@ -85,54 +84,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query)
-        {
-            var spec = new FlightScheduleManagementSpecification(query);
-            var flightScheduleManagementList = await _unitOfWork.Repository<FlightScheduleManagement>().GetListWithSpecAsync(spec);
-
-            var countSpec = new FlightScheduleManagementSpecification(query, true);
-            var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
-
-            var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>>(flightScheduleManagementList);
-            foreach (var dto in dtoList)
-            {
-                var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { FlightId = dto.FlightId });
-
-                //if (schedule != null && schedule.AircraftId != null)
-                //{
-                //    dto.AircraftId = schedule.AircraftId;
-                //    dto.IsAircraftLinked = true;
-                //}
-                //else
-                //{
-                //    dto.IsAircraftLinked = false;
-                //}
-            }
-            var list = dtoList.Where(x => x.IsAircraftLinked == query.IsLink).ToList();
-            return list;
-        }
-
-        public async Task<ServiceResponseStatus> LinkAircraftToScheduleAsync(ScheduleAircraftRM query)
-        {
-            var status = ServiceResponseStatus.Success;
-            var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { Id = query.FlightScheduleId });
-            //schedule.AircraftId = query.AircraftId;
-            var mappedSchedule = _mapper.Map<FlightScheduleVM, FlightScheduleUpdateRM>(schedule);
-            status = await _flightScheduleService.UpdateAsync(mappedSchedule);
-
-            var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = query.FlightScheduleId });
-            var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-            foreach (var sector in flightScheduleSectors)
-            {
-                sector.AircraftId = query.AircraftId;
-                _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
-                await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
-            }
-            return status;
-        }
-
-        private async Task<ServiceResponseCreateStatus> CreateFlightSchedule(FlightScheduleManagementRM dto)
+        private async Task<ServiceResponseCreateStatus> CreateFlightSchedule(FlightScheduleManagementRM dto, Guid id)
         {
 
             var flightDetail = await _flightService.GetDetailAsync(new FlightDetailQM() { Id = dto.FlightId, IsIncludeFlightSectors = true });
@@ -203,6 +155,7 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
                     flightSchedule.AircraftSubTypeId = dto.AircraftSubTypeId;
+                    flightSchedule.FlightScheduleManagementId = id;
 
                     foreach (var sector in flightDetail.FlightSectors)
                     {
@@ -241,6 +194,24 @@ namespace Aeroclub.Cargo.Application.Services
                 return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
 
             return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
+        }
+
+        public async Task GetUnAssignedAircraftAsync(Guid flightScheduleManagementId)
+        {
+            // Get relevent flight schedule mgt
+            var spec = new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM() { Id = flightScheduleManagementId });
+            var flightScheduleManagement = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(spec);
+
+            // take all assgined aircrafts
+            var spec2 = new FlightScheduleManagementSpecification(flightScheduleManagement.AircraftSubTypeId);
+            await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(spec2);
+
+            // filter assgined aircrafts according to time slots
+
+            // take all unassgined aircrafts
+
+
+            // filter available aircrafts
         }
     }
 }
