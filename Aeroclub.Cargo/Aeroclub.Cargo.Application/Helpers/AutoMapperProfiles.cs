@@ -46,6 +46,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.MasterScheduleVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -232,6 +233,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<CountryDto, Country>().ReverseMap();
 
             CreateMap<MasterScheduleRM, MasterSchedule>().ReverseMap();
+            CreateMap<MasterSchedule, MasterScheduleVM>().ReverseMap();
             CreateMap<AircraftScheduleRM, AircraftSchedule>().ReverseMap();
 
         }

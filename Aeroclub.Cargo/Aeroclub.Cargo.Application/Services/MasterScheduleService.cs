@@ -1,8 +1,11 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.MasterScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.MasterScheduleVMs;
+using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
@@ -75,5 +78,13 @@ namespace Aeroclub.Cargo.Application.Services
 
             return response;
         }
+
+        public async Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query)
+        {
+            var spec = new MasterScheduleSpecification(query);
+            var entity = await _unitOfWork.Repository<MasterSchedule>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<MasterSchedule, MasterScheduleVM>(entity);
+        }
+
     }
 }

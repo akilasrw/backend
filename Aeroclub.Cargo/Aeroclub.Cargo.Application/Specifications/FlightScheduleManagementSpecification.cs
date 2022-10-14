@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
-    internal class FlightScheduleManagementSpecification : BaseSpecification<FlightScheduleManagement>
+    public class FlightScheduleManagementSpecification : BaseSpecification<FlightScheduleManagement>
     {
 
         public FlightScheduleManagementSpecification(FlightScheduleManagementFilteredListQM query, bool isCount = false)
