@@ -81,12 +81,10 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<bool> ValidAirportLatitudeAsync(Guid countryId, double lat)
         {
             var country = await _countryService.GetAsync(countryId);
-            if (TimeZoneExtension.GetTimeZoneByCountryId(country.CodeISO3166).Count() > 0)
-            {
-                var zone = TimeZoneExtension.GetBestTimeZoneByCountryId(country.CodeISO3166, lat);
-                if(zone == null)
-                    return false;
-            }
+            var zone = TimeZoneExtension.GetBestTimeZoneByCountryId(country.CodeISO3166, lat);
+            if(zone == null)
+                return false;
+
             return true;
         }
 

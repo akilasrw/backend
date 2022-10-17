@@ -204,12 +204,23 @@ namespace Aeroclub.Cargo.Application.Services
 
             // take all assgined aircrafts
             var spec2 = new FlightScheduleManagementSpecification(flightScheduleManagement.AircraftSubTypeId);
-            await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(spec2);
+            var fsmgtList = await _unitOfWork.Repository<FlightScheduleManagement>().GetListWithSpecAsync(spec2);
 
             // filter assgined aircrafts according to time slots
+            var assignedAircraftList = fsmgtList.Where(x => x.FlightSchedules.Any(y => y.AircraftId != null)).ToList();
+            List<Guid> aircraftIdList = new List<Guid>();
+            foreach (var a in assignedAircraftList)
+            {
+                foreach (var s in a.FlightSchedules)
+                {
+                    if (s.AircraftId != null && !aircraftIdList.Any(x => x == s.AircraftId.Value))
+                        aircraftIdList.Add(s.AircraftId.Value);
+                }
+            }
 
             // take all unassgined aircrafts
-
+            var Aircraftlist = await _unitOfWork.Repository<Aircraft>().GetListAsync();
+            Aircraftlist.Where(x => x.AircraftSubType == fsmgtList.First().AircraftSubType.Type).ToList();
 
             // filter available aircrafts
         }
