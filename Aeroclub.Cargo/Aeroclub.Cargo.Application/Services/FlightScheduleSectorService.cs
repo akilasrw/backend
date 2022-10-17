@@ -60,8 +60,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in dtoList)
             {
-                flightScheduleSector.ScheduledDepartureDateTime = await GetMappedTimeAsync(flightScheduleSector.ScheduledDepartureDateTime, flightScheduleSector.OriginAirportId);
-                flightScheduleSector.ActualDepartureDateTime = flightScheduleSector.ScheduledDepartureDateTime;
+                // flightScheduleSector.ScheduledDepartureDateTime = await GetMappedTimeAsync(flightScheduleSector.ScheduledDepartureDateTime, flightScheduleSector.OriginAirportId);
+                // flightScheduleSector.ActualDepartureDateTime = flightScheduleSector.ScheduledDepartureDateTime;
 
                 flightScheduleSector.AcceptanceCutoffTime = string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]) ?
                     flightScheduleSector.ScheduledDepartureDateTime : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]));
@@ -384,15 +384,15 @@ namespace Aeroclub.Cargo.Application.Services
             return await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(spec);
         }
 
-        private async Task<DateTime> GetMappedTimeAsync(DateTime date, Guid airportId)
-        {
-            TimeSpan offsetTime = new TimeSpan();
-            var res = await _airportService.GetAsync(new AirportQM() { Id = airportId, IsCountryInclude = true});
+        //private async Task<DateTime> GetMappedTimeAsync(DateTime date, Guid airportId)
+        //{
+        //    TimeSpan offsetTime = new TimeSpan();
+        //    var res = await _airportService.GetAsync(new AirportQM() { Id = airportId, IsCountryInclude = true});
 
-            if (res != null && !string.IsNullOrEmpty(res.CountryCode))
-                offsetTime = date.TimeOfDay.ToInternationalTimeSpan(res.CountryCodeISO3166, res.Lat, false);
+        //    if (res != null && !string.IsNullOrEmpty(res.CountryCode))
+        //        offsetTime = date.TimeOfDay.ToInternationalTimeSpan(res.CountryCodeISO3166, res.Lat, false);
 
-            return date + offsetTime;
-        }
+        //    return date + offsetTime;
+        //}
     }
 }

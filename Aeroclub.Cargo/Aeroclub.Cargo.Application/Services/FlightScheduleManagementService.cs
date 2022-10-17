@@ -80,10 +80,10 @@ namespace Aeroclub.Cargo.Application.Services
             var countSpec = new FlightScheduleManagementSpecification(query, true);
             var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
 
-            foreach (var mgt in flightScheduleManagementList)
-            {
-                mgt.Flight = await _flightService.MappedFlightSectorData(mgt.Flight, false);
-            }
+            //foreach (var mgt in flightScheduleManagementList)
+            //{
+            //    mgt.Flight = await _flightService.MappedFlightSectorData(mgt.Flight, false);
+            //}
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementVM>>(flightScheduleManagementList);
             return new Pagination<FlightScheduleManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
@@ -129,7 +129,7 @@ namespace Aeroclub.Cargo.Application.Services
                     flightSchedule.ScheduledDepartureDateTime =
                                                 firstSector.DepartureDateTime == DateTime.MinValue ?
                                                 day :
-                                                day.Date.Add(firstSector.DepartureDateTime.TimeOfDay.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat));
+                                                day.Date.Add(firstSector.DepartureDateTime.TimeOfDay);
                     flightSchedule.ActualDepartureDateTime = flightSchedule.ScheduledDepartureDateTime;
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
@@ -141,7 +141,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         list = await _sectorService.GetSectorAirports(sector.SectorId);
                         var utcDepartureDateTime = sector.DepartureDateTime == DateTime.MinValue ? day
-                            : day.Date.Add(sector.DepartureDateTime.TimeOfDay.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat));
+                            : day.Date.Add(sector.DepartureDateTime.TimeOfDay);
 
                         flightScheduleSectors.Add(new FlightScheduleSectorCreateRM()
                         {

@@ -28,7 +28,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var spec = new FlightSpecification(query);
             var flight = await _unitOfWork.Repository<Flight>().GetEntityWithSpecAsync(spec);
-            flight = await MappedFlightSectorData(flight, false);
+            // flight = await MappedFlightSectorData(flight, false);
             return _mapper.Map<T>(flight);
         }
 
@@ -40,7 +40,7 @@ namespace Aeroclub.Cargo.Application.Services
             if (flight != null && flight.FlightSectors != null)
                 flight.FlightSectors.OrderBy(r => r.Sequence);
 
-            flight = await MappedFlightSectorData(flight, false);
+            // flight = await MappedFlightSectorData(flight, false);
             return _mapper.Map<FlightVM>(flight);
         }
 
@@ -65,7 +65,7 @@ namespace Aeroclub.Cargo.Application.Services
             if (entity.FlightSectors.Any())
             {
                 entity = await MappingFlight(entity);
-                entity = await MappedFlightSectorData(entity);               
+                // entity = await MappedFlightSectorData(entity);               
             }
 
             await _unitOfWork.Repository<Flight>().CreateAsync(entity);
@@ -117,8 +117,8 @@ namespace Aeroclub.Cargo.Application.Services
                         // create new flight sectors
                         foreach (var flightSector in flightSectors)
                         {
-                            flightSector.DepartureDateTime = await GetMappedTimeAsync(flightSector.DepartureDateTime, flightSector.SectorId);
-                            flightSector.ArrivalDateTime = await GetMappedTimeAsync(flightSector.ArrivalDateTime, flightSector.SectorId, false);
+                            //flightSector.DepartureDateTime = await GetMappedTimeAsync(flightSector.DepartureDateTime, flightSector.SectorId);
+                            //flightSector.ArrivalDateTime = await GetMappedTimeAsync(flightSector.ArrivalDateTime, flightSector.SectorId, false);
                             await _unitOfWork.Repository<FlightSector>().CreateAsync(flightSector);
                             await _unitOfWork.SaveChangesAsync();
                         }
@@ -196,33 +196,33 @@ namespace Aeroclub.Cargo.Application.Services
             return entity;
         }
 
-        private async Task<TimeSpan> GetMappedTimeAsync(TimeSpan? time, Guid sectorId, bool isOrigin = true, bool isSavedData = true)
-        {
-            TimeSpan offsetTime = new TimeSpan();
-            var list = await _sectorService.GetSectorAirports(sectorId);
+        //private async Task<TimeSpan> GetMappedTimeAsync(TimeSpan? time, Guid sectorId, bool isOrigin = true, bool isSavedData = true)
+        //{
+        //    TimeSpan offsetTime = new TimeSpan();
+        //    var list = await _sectorService.GetSectorAirports(sectorId);
 
-            if (isOrigin)
-            {
-                if (list[0] != null && !string.IsNullOrEmpty(list[0].CountryCode))
-                    offsetTime = time.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat, isSavedData);
-            }
-            else
-            {
-                if (list[1] != null && !string.IsNullOrEmpty(list[1].CountryCode))
-                    offsetTime = time.ToInternationalTimeSpan(list[1].CountryCodeISO3166, list[1].Lat, isSavedData);
-            }
-            return offsetTime;
-        }
+        //    if (isOrigin)
+        //    {
+        //        if (list[0] != null && !string.IsNullOrEmpty(list[0].CountryCode))
+        //            offsetTime = time.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat, isSavedData);
+        //    }
+        //    else
+        //    {
+        //        if (list[1] != null && !string.IsNullOrEmpty(list[1].CountryCode))
+        //            offsetTime = time.ToInternationalTimeSpan(list[1].CountryCodeISO3166, list[1].Lat, isSavedData);
+        //    }
+        //    return offsetTime;
+        //}
 
-        public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
-        {
-            foreach (var fSector in flight.FlightSectors)
-            {
-                fSector.DepartureDateTime =  await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
-                fSector.ArrivalDateTime =  await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
-            }
-            return flight;
-        }
+        //public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
+        //{
+        //    foreach (var fSector in flight.FlightSectors)
+        //    {
+        //        fSector.DepartureDateTime =  await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
+        //        fSector.ArrivalDateTime =  await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
+        //    }
+        //    return flight;
+        //}
 
     }
 }
