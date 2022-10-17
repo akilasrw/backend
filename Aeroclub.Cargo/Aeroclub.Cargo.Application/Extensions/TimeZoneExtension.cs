@@ -1,5 +1,7 @@
 ﻿using NodaTime;
 using NodaTime.TimeZones;
+using System.Security.Policy;
+using TimeZoneConverter;
 
 namespace Aeroclub.Cargo.Application.Extensions
 {
@@ -61,7 +63,9 @@ namespace Aeroclub.Cargo.Application.Extensions
                 zones = zones.OrderBy(o => Distance(o.Latitude, longitude, o.Latitude, o.Longitude, DistanceUnit.Kilometer));
             }
             var bestZone = zones.FirstOrDefault();
-            TimeZoneInfo sysTime = TimeZoneInfo.FindSystemTimeZoneById(bestZone.ZoneId);
+
+            string windowsZoneId = TZConvert.IanaToWindows(bestZone.ZoneId);//TZConvert.RailsToWindows(bestZone.ZoneId);
+            TimeZoneInfo sysTime = TimeZoneInfo.FindSystemTimeZoneById(windowsZoneId);
             return sysTime;
         }
 
@@ -75,7 +79,8 @@ namespace Aeroclub.Cargo.Application.Extensions
 
             foreach (string zoneId in zoneIds) // Eg: Asia/Kuala_Lumpur
             {
-                TimeZoneInfo sysTime = TimeZoneInfo.FindSystemTimeZoneById(zoneId);
+                string windowsZoneId = TZConvert.IanaToWindows(zoneId); // eg: Singapore Standard Time |  This line is not be required if it is working azure app service. 
+                TimeZoneInfo sysTime = TimeZoneInfo.FindSystemTimeZoneById(windowsZoneId);
                 sysTimeList.Add(sysTime);
             }
             return sysTimeList; // Eg: (UTC+08:00) Kuala Lumpur, Singapore
@@ -99,7 +104,8 @@ namespace Aeroclub.Cargo.Application.Extensions
                 zones = zones.OrderBy(o => Distance(o.Latitude, longitude, o.Latitude, o.Longitude, DistanceUnit.Kilometer));
             }
             var bestZone = zones.FirstOrDefault();
-            return TimeZoneInfo.FindSystemTimeZoneById(bestZone.ZoneId);
+            string windowsZoneId = TZConvert.IanaToWindows(bestZone.ZoneId);
+            return TimeZoneInfo.FindSystemTimeZoneById(windowsZoneId);
         }
 
         private static double Distance(double lat1, double lon1, double lat2, double lon2, DistanceUnit unit)
