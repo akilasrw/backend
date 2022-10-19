@@ -32,9 +32,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public IActionResult RefreshToken()
+        public IActionResult RefreshToken([FromBody] string refreshToken)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            // var refreshToken = Request.Cookies["refreshToken"]; // Cookies is not working at appService
 
             if (string.IsNullOrEmpty(refreshToken)) // Code added  by Yohan.
                 return Unauthorized("refresh token is not created.");
@@ -50,7 +50,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
         [AllowAnonymous]
         [HttpPost("mobile/refresh-token")]
-        public IActionResult RefreshToken([FromBody] string refreshToken)
+        public IActionResult RefreshTokenMobile([FromBody] string refreshToken)
         {
 
             if (string.IsNullOrEmpty(refreshToken))
@@ -108,6 +108,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             {
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7),
+                SameSite =  SameSiteMode.Lax,
+                Path = "/",
+                Secure = true
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
