@@ -944,7 +944,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b52d9503-db9b-43ae-abaf-4c45c1ffc62b",
+                            ConcurrencyStamp = "9577e275-b7d3-43be-8173-0f02a5c36066",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -960,7 +960,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aa09a0b1-f795-4bc1-9a53-60450babdc8f",
+                            ConcurrencyStamp = "5f9649b4-de15-49c9-a49b-15a55ec2703f",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -25934,6 +25934,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<Guid>("CargoBookingId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("ChargeableWeight")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
