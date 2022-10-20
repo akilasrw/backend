@@ -24,7 +24,15 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddDBContextServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.AddCors();
+var clientUrlSettings = builder.Configuration.GetSection("ClientSettings")["ClientBaseUrl"];
+var urlList = clientUrlSettings.Split(";");
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins(urlList);
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(auth =>
     {
@@ -81,12 +89,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// global cors policy
-app.UseCors(x => x
-    .SetIsOriginAllowed(origin => true)
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials());
+app.UseCors("CorsPolicy");
 
 // global error handler
 app.UseMiddleware<ErrorHandlerMiddleware>();
