@@ -40,6 +40,15 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        //public CargoBookingSpecification(CargoBookingListQM query)
+        //    : base(x => ((string.IsNullOrEmpty(query.FlightNumber) || x.FlightScheduleSector.FlightNumber.Contains(query.FlightNumber)) && 
+        //    (query.FlightDate == DateTime.MinValue || x.FlightScheduleSector.ScheduledDepartureDateTime.Date == query.FlightDate.Date)) && (!x.IsDeleted))
+        //{
+        //        AddInclude(x => x.Include(y => y.FlightScheduleSector));
+        //        AddInclude(x => x.Include(y => y.PackageItems));
+
+        //}
+
         public CargoBookingSpecification(CargoBookingCountQM query)
             : base(x => x.Created.Year == query.Year && x.Created.Month == query.Month)
         {

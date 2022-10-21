@@ -26,6 +26,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<Pagination<CargoBookingVM>>> GetFilteredListAsync([FromQuery] CargoBookingFilteredListQM query)
         {
             return Ok(await _bookingManagerService.GetBookingFilteredListAsync(query));
+        } 
+        
+        [HttpGet("GetList")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetListAsync([FromQuery] FlightScheduleSectorBookingListQM query)
+        {
+            return Ok(await _bookingManagerService.GetBookingListAsync(query));
         }
 
         [HttpGet()]

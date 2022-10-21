@@ -27,44 +27,47 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<CargoBookingSummaryDetailVM> GetAsync(CargoBookingSummaryDetailQM query)
         {
+            CargoBookingSummaryDetailVM? mappedEntity = null;
             var spec = new FlightScheduleSpecification(query);
-
             var entity = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
-
-            var mappedEntity = _mapper.Map<CargoBookingSummaryDetailVM>(entity);
-            if(entity.FlightScheduleSectors != null && entity.FlightScheduleSectors.Count>0)
+            if (entity != null)
             {
-                var positionSummary = new CargoPositionSummaryVM();
-                double totalAvailableWeight =0;
-                double totalWeight =0;
-                double totalAvailableVolume=0;
-                double totalVolume=0;
-
-                foreach (var sector in entity.FlightScheduleSectors)
+                mappedEntity = _mapper.Map<CargoBookingSummaryDetailVM>(entity);
+                if (entity.FlightScheduleSectors != null && entity.FlightScheduleSectors.Count > 0)
                 {
-                    Tuple<double, double> aircraftWeight = await GetAircraftWeight(sector.Id);
-                    Tuple<double, double> aircraftVolume = await GetAircraftVolume(sector.Id);
+                    var positionSummary = new CargoPositionSummaryVM();
+                    double totalAvailableWeight = 0;
+                    double totalWeight = 0;
+                    double totalAvailableVolume = 0;
+                    double totalVolume = 0;
 
-                    totalAvailableWeight += aircraftWeight.Item1;
-                    totalWeight += aircraftWeight.Item2;
+                    foreach (var sector in entity.FlightScheduleSectors)
+                    {
+                        Tuple<double, double> aircraftWeight = await GetAircraftWeight(sector.Id);
+                        Tuple<double, double> aircraftVolume = await GetAircraftVolume(sector.Id);
 
-                    totalAvailableVolume += aircraftVolume.Item1;
-                    totalVolume += aircraftVolume.Item2;
+                        totalAvailableWeight += aircraftWeight.Item1;
+                        totalWeight += aircraftWeight.Item2;
+
+                        totalAvailableVolume += aircraftVolume.Item1;
+                        totalVolume += aircraftVolume.Item2;
+                    }
+
+                    positionSummary.TotalBookedWeight = totalAvailableWeight;
+                    positionSummary.TotalWeight = totalWeight;
+                    positionSummary.WeightPercentage = Math.Round((decimal)positionSummary.TotalBookedWeight / (decimal)positionSummary.TotalWeight, 3);
+
+                    positionSummary.TotalBookedVolume = totalAvailableVolume;
+                    positionSummary.TotalVolume = totalVolume;
+                    positionSummary.VolumePercentage = Math.Round((decimal)positionSummary.TotalBookedVolume / (decimal)positionSummary.TotalVolume, 3);
+
+                    mappedEntity.CargoPositionSummary = positionSummary;
+
+                    mappedEntity.CargoPositions = await GetAircraftPositionList(entity.FlightScheduleSectors.First().Id);
+
                 }
-
-                positionSummary.TotalBookedWeight = totalAvailableWeight;
-                positionSummary.TotalWeight = totalWeight;
-                positionSummary.WeightPercentage = Math.Round((decimal)positionSummary.TotalBookedWeight / (decimal)positionSummary.TotalWeight, 3);
-
-                positionSummary.TotalBookedVolume = totalAvailableVolume;
-                positionSummary.TotalVolume = totalVolume;
-                positionSummary.VolumePercentage = Math.Round((decimal)positionSummary.TotalBookedVolume / (decimal)positionSummary.TotalVolume,3);
-
-                mappedEntity.CargoPositionSummary = positionSummary;
-
-                mappedEntity.CargoPositions = await GetAircraftPositionList(entity.FlightScheduleSectors.First().Id);
-
             }
+
             return mappedEntity;
         }
 
