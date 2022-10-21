@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
@@ -16,11 +17,13 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class CargoBookingService : BaseService, ICargoBookingService
     {
+        private readonly ICargoAgentService _cargoAgentService;
 
         public CargoBookingService(
             IUnitOfWork unitOfWork,
-            IMapper mapper) : base(unitOfWork, mapper)
+            IMapper mapper, ICargoAgentService cargoAgentService) : base(unitOfWork, mapper)
         {
+            _cargoAgentService = cargoAgentService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(CargoBookingRM rm)
@@ -66,6 +69,29 @@ namespace Aeroclub.Cargo.Application.Services
          
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
+        }
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetListAsync(FlightScheduleSectorBookingListQM query)
+        {
+            var spec = new FlightScheduleSectorSpecification(query);
+            var fSectorList = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
+            foreach (var f in fSectorList)
+            {
+                foreach (var booking in f.CargoBookings)
+                {
+                    var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+                    CargoBookingListVM vm = new CargoBookingListVM();
+                    vm.BookingNumber = booking.BookingNumber;
+                    vm.AWBNumber = booking.AWBInformation.AwbTrackingNumber.ToString();
+                    vm.BookingAgent = agent.AgentName;
+                    vm.BookingDate = booking.BookingDate;
+                    vm.BookingStatus = booking.BookingStatus;
+                    vm.NumberOfBoxes = booking.PackageItems==null? 0: booking.PackageItems.Count();
+                    vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+                    list.Add(vm);
+                }               
+            }
+            return list;
         }
 
         public async Task<ServiceResponseStatus> UpdateAWBStatus(Guid bookingId)

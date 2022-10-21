@@ -77,5 +77,14 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(y => y.Include(x => x.LoadPlan));
         }
+
+        public FlightScheduleSectorSpecification(FlightScheduleSectorBookingListQM query)
+           : base(x => ((string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
+           (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date)) && (!x.IsDeleted))
+        {
+            AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.PackageItems));
+            AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.AWBInformation));
+
+        }
     }
 }
