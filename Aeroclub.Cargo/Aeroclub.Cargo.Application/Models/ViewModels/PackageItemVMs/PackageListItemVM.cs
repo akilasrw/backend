@@ -13,5 +13,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM
         public double Width { get; set; }
         public double Length { get; set; }
         public double Weight { get; set; }
+        public double ChargeableWeight { get; set; }
     }
 }

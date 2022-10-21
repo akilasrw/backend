@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public double Height { get; set; }
         public Guid VolumeUnitId { get; set; }
         public double Weight { get; set; }
+        public double ChargeableWeight { get; set; }
         public Guid WeightUnitId { get; set; }
         public double DeclaredValue { get; set; }
         public PackageItemStatus PackageItemStatus { get; set; }

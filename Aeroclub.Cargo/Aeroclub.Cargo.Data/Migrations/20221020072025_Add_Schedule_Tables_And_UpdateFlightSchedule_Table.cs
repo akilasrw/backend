@@ -5,10 +5,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aeroclub.Cargo.Data.Migrations
 {
-    public partial class Add_Schedule_Tables : Migration
+    public partial class Add_Schedule_Tables_And_UpdateFlightSchedule_Table : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<double>(
+                name: "ChargeableWeight",
+                table: "PackageItems",
+                type: "float",
+                nullable: false,
+                defaultValue: 0.0);
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "FlightScheduleManagementId",
+                table: "FlightSchedules",
+                type: "uniqueidentifier",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "MasterSchedules",
                 columns: table => new
@@ -69,14 +82,19 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "b52d9503-db9b-43ae-abaf-4c45c1ffc62b");
+                value: "9577e275-b7d3-43be-8173-0f02a5c36066");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "aa09a0b1-f795-4bc1-9a53-60450babdc8f");
+                value: "5f9649b4-de15-49c9-a49b-15a55ec2703f");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FlightSchedules_FlightScheduleManagementId",
+                table: "FlightSchedules",
+                column: "FlightScheduleManagementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AircraftSchedules_AircraftId",
@@ -87,15 +105,38 @@ namespace Aeroclub.Cargo.Data.Migrations
                 name: "IX_AircraftSchedules_MasterScheduleId",
                 table: "AircraftSchedules",
                 column: "MasterScheduleId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_FlightSchedules_FlightScheduleManagements_FlightScheduleManagementId",
+                table: "FlightSchedules",
+                column: "FlightScheduleManagementId",
+                principalTable: "FlightScheduleManagements",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_FlightSchedules_FlightScheduleManagements_FlightScheduleManagementId",
+                table: "FlightSchedules");
+
             migrationBuilder.DropTable(
                 name: "AircraftSchedules");
 
             migrationBuilder.DropTable(
                 name: "MasterSchedules");
+
+            migrationBuilder.DropIndex(
+                name: "IX_FlightSchedules_FlightScheduleManagementId",
+                table: "FlightSchedules");
+
+            migrationBuilder.DropColumn(
+                name: "ChargeableWeight",
+                table: "PackageItems");
+
+            migrationBuilder.DropColumn(
+                name: "FlightScheduleManagementId",
+                table: "FlightSchedules");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
