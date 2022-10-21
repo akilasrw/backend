@@ -10,7 +10,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
     [Authorize]
-    public class AWBNumberStackController : ControllerBase
+    public class AWBNumberStackController : BaseApiController
     {
         private readonly IAWBNumberStackService _AWBNumberStackService;
         public AWBNumberStackController(IAWBNumberStackService aWBNumberStackService)
