@@ -27,6 +27,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IPackageItemService _packageItemService;
         private readonly IAWBService _AWBService;
         private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
+        private readonly IBaseUnitConverter _baseUnitConverter;
 
         public ULDCargoBookingManagerService(IUnitOfWork unitOfWork, 
             IMapper mapper, 
@@ -37,7 +38,8 @@ namespace Aeroclub.Cargo.Application.Services
             IPackageItemService packageItemService,
             IAWBService AWBService,
             IConfiguration configuration,
-            IULDContainerCargoPositionService uLDContainerCargoPositionService) :
+            IULDContainerCargoPositionService uLDContainerCargoPositionService,
+            IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
             _uldCargoBookingService = uldCargoBookingService;
@@ -48,7 +50,7 @@ namespace Aeroclub.Cargo.Application.Services
             _packageItemService = packageItemService;
             _AWBService = AWBService;
             _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
-
+            _baseUnitConverter = baseUnitConverter;
         }
 
         public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
@@ -100,26 +102,9 @@ namespace Aeroclub.Cargo.Application.Services
                 {
 
                     //Package volume calculation
-                    var cmVolumeUnitId = _configuration["BaseUnit:BaseVolumeUnitId"];
-                    if(package.VolumeUnitId != Guid.Empty && cmVolumeUnitId.ToLower() != package.VolumeUnitId.ToString())
-                    {
-                        var inchVolumeUnitId = _configuration["VolumeUnit:InchVolumeUnitId"];
-                        var meterVolumeUnitId = _configuration["VolumeUnit:MeterVolumeUnitId"];
-
-                        if(meterVolumeUnitId.ToLower() == package.VolumeUnitId.ToString())
-                        {
-                            package.Length = package.Length.MeterToCmConversion();
-                            package.Width = package.Width.MeterToCmConversion();
-                            package.Height = package.Height.MeterToCmConversion();
-                        }
-
-                        if (inchVolumeUnitId.ToLower() == package.VolumeUnitId.ToString())
-                        {
-                            package.Length = package.Length.InchToCmConversion();
-                            package.Width = package.Width.InchToCmConversion();
-                            package.Height = package.Height.InchToCmConversion();
-                        }
-                    }
+                    package.Length= await _baseUnitConverter.VolumeCalculatorAsync(package.Length, package.VolumeUnitId);
+                    package.Width= await _baseUnitConverter.VolumeCalculatorAsync(package.Width, package.VolumeUnitId);
+                    package.Height= await _baseUnitConverter.VolumeCalculatorAsync(package.Height, package.VolumeUnitId);
                     package.Volume = (package.Length * package.Width * package.Height);
 
                     //Package weight calculation

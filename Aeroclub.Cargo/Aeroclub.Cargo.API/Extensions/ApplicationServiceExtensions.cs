@@ -62,6 +62,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IMasterScheduleService, MasterScheduleService>();
             services.AddScoped<IAgentRateManagementService, AgentRateManagementService>();
             services.AddScoped<ILinkAircraftToScheduleService, LinkAircraftToScheduleService>();
+            services.AddScoped<IBaseUnitConverter, BaseUnitConverter>();
 
 
             return services;

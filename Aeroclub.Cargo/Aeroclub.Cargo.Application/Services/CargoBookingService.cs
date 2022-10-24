@@ -18,12 +18,14 @@ namespace Aeroclub.Cargo.Application.Services
     public class CargoBookingService : BaseService, ICargoBookingService
     {
         private readonly ICargoAgentService _cargoAgentService;
+        private readonly IBaseUnitConverter _baseUnitConverter;
 
         public CargoBookingService(
             IUnitOfWork unitOfWork,
-            IMapper mapper, ICargoAgentService cargoAgentService) : base(unitOfWork, mapper)
+            IMapper mapper, ICargoAgentService cargoAgentService, IBaseUnitConverter baseUnitConverter) : base(unitOfWork, mapper)
         {
             _cargoAgentService = cargoAgentService;
+            _baseUnitConverter = baseUnitConverter;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(CargoBookingRM rm)
@@ -82,12 +84,17 @@ namespace Aeroclub.Cargo.Application.Services
                     var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
                     CargoBookingListVM vm = new CargoBookingListVM();
                     vm.BookingNumber = booking.BookingNumber;
-                    vm.AWBNumber = booking.AWBInformation.AwbTrackingNumber.ToString();
+                    vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
                     vm.BookingAgent = agent.AgentName;
                     vm.BookingDate = booking.BookingDate;
                     vm.BookingStatus = booking.BookingStatus;
                     vm.NumberOfBoxes = booking.PackageItems==null? 0: booking.PackageItems.Count();
                     vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+                    vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => 
+                    ( _baseUnitConverter.VolumeCalculatorAsync(x.Height,x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                    ));
                     list.Add(vm);
                 }               
             }
