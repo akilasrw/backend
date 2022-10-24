@@ -7,6 +7,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IAWBNumberStackService
     {
+        Task<Pagination<AWBNumberStackVM>> GetFilteredListAsync(AWBNumberStackListQM query);
         Task<ServiceResponseCreateStatus> CreateAsync(AWBNumberStackCreateRM dto);
         Task<ServiceResponseCreateStatus> UpdateAsync(AWBNumberStackUpdateRM dto);
         Task<AWBNumberStackVM> GetAsync(AWBNumberStackQM query);

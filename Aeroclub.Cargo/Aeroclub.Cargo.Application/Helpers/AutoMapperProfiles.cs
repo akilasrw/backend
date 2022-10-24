@@ -238,9 +238,10 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<MasterSchedule, MasterScheduleVM>().ReverseMap();
             CreateMap<AircraftScheduleRM, AircraftSchedule>().ReverseMap();
 
-            CreateMap<AWBNumberStackCreateRM, AWBNumberStack>().ReverseMap();
-            CreateMap<AWBNumberStackUpdateRM, AWBNumberStack>().ReverseMap();
-            CreateMap<AWBNumberStack, AWBNumberStackVM>().ReverseMap();
+            CreateMap<AWBNumberStackCreateRM, AWBNumberStack>();
+            CreateMap<AWBNumberStackUpdateRM, AWBNumberStack>();
+            CreateMap<AWBNumberStack, AWBNumberStackVM>()
+                .ForMember(d => d.CargoAgentName, o => o.MapFrom(s=> s.CargoAgent != null? s.CargoAgent.AgentName:""));
 
         }
     }

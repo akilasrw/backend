@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AWBNumberStackQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberStackRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBNumberStackVMs;
@@ -72,6 +73,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             var result = await _AWBNumberStackService.DeleteAsync(id);
             return Ok(result);
+        }
+
+
+        [HttpGet("GetFilteredList")]
+        public async Task<ActionResult<Pagination<AWBNumberStackVM>>> GetFilteredListAsync([FromQuery] AWBNumberStackListQM query)
+        {
+            return Ok(await _AWBNumberStackService.GetFilteredListAsync(query));
         }
 
     }

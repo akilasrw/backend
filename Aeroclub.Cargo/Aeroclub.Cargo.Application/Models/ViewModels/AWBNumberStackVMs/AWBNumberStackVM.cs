@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AWBNumberStackVMs
     {
         public long AWMTrackingNumber { get; set; }
         public bool IsUsed { get; set; } = false;
+        public string CargoAgentName { get; set; } = null!;
         public Guid CargoAgentId { get; set; }
     }
 }

@@ -92,5 +92,19 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<AWBNumberStack>().Detach(entity);
             return (await _unitOfWork.SaveChangesAsync() > 0);
         }
+
+        public async Task<Pagination<AWBNumberStackVM>> GetFilteredListAsync(AWBNumberStackListQM query)
+        {
+            var spec = new AWBNumberStackSpecification(query);
+            var stackList = await _unitOfWork.Repository<AWBNumberStack>().GetListWithSpecAsync(spec);
+
+            var countSpec = new AWBNumberStackSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<AWBNumberStack>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<AWBNumberStackVM>>(stackList);
+
+            return new Pagination<AWBNumberStackVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
+
     }
 }
