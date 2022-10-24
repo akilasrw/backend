@@ -47,6 +47,8 @@ using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.MasterScheduleVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberStackRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AWBNumberStackVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -235,6 +237,11 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<MasterScheduleRM, MasterSchedule>().ReverseMap();
             CreateMap<MasterSchedule, MasterScheduleVM>().ReverseMap();
             CreateMap<AircraftScheduleRM, AircraftSchedule>().ReverseMap();
+
+            CreateMap<AWBNumberStackCreateRM, AWBNumberStack>();
+            CreateMap<AWBNumberStackUpdateRM, AWBNumberStack>();
+            CreateMap<AWBNumberStack, AWBNumberStackVM>()
+                .ForMember(d => d.CargoAgentName, o => o.MapFrom(s=> s.CargoAgent != null? s.CargoAgent.AgentName:""));
 
         }
     }
