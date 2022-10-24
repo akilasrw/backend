@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var number in existingNumbers)
                 {
-                    if (number.AWMTrackingNumber.Equals(dto.AWMTrackingNumber))
+                    if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber))
                     {
                         res.StatusCode = ServiceResponseStatus.ValidationError;
                         res.Message = "AWB number already taken.";
@@ -65,7 +65,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var number in existingNumbers)
                 {
-                    if (number.AWMTrackingNumber.Equals(dto.AWMTrackingNumber) && number.Id != dto.Id)
+                    if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber) && number.Id != dto.Id)
                     {
                         res.StatusCode = ServiceResponseStatus.ValidationError;
                         res.Message = "AWB number already taken.";

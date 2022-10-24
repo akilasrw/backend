@@ -14,7 +14,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AWMTrackingNumber = table.Column<long>(type: "bigint", nullable: false),
+                    AWBTrackingNumber = table.Column<long>(type: "bigint", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false),
                     CargoAgentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -40,14 +40,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "87312afc-e376-44d2-93da-374a656b513f");
+                value: "23101ea3-f702-4023-8403-d60600f21dee");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "31238709-a1c8-413b-8ed8-03d6318ea83f");
+                value: "c43f71d9-45ac-4f26-8e91-d539d1405b4a");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AWBNumberStacks_CargoAgentId",

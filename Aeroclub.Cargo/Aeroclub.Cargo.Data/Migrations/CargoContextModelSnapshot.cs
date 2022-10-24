@@ -944,7 +944,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "87312afc-e376-44d2-93da-374a656b513f",
+                            ConcurrencyStamp = "23101ea3-f702-4023-8403-d60600f21dee",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -960,7 +960,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31238709-a1c8-413b-8ed8-03d6318ea83f",
+                            ConcurrencyStamp = "c43f71d9-45ac-4f26-8e91-d539d1405b4a",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1113,7 +1113,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("AWMTrackingNumber")
+                    b.Property<long>("AWBTrackingNumber")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("CargoAgentId")
