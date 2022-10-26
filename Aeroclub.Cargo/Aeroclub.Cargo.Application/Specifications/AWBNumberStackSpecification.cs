@@ -29,6 +29,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public AWBNumberStackSpecification(AWBNumberStackListQM query, bool isCount = false)
             : base(x => (string.IsNullOrEmpty(query.CargoAgentName) || x.CargoAgent.AgentName.Contains(query.CargoAgentName)) &&
+            (query.AwbNumber ==  0 || x.AWBTrackingNumber == query.AwbNumber) &&
             (query.AWBNumberStatus == AWBNumberStatus.All || ((query.AWBNumberStatus == AWBNumberStatus.Used) ? x.IsUsed : !x.IsUsed)))
         {
 

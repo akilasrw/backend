@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.AWBNumberStackQMs
         public bool IsAgentInclude { get; set; } = false;
         public string? CargoAgentName { get; set; } = null;
         public AWBNumberStatus AWBNumberStatus { get; set; }
+        public long AwbNumber { get; set; }
 
     }
 }
