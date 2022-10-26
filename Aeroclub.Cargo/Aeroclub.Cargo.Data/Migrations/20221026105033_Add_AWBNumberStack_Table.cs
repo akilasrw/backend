@@ -9,6 +9,14 @@ namespace Aeroclub.Cargo.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<long>(
+                name: "AwbTrackingNumber",
+                table: "AWBInformations",
+                type: "bigint",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int");
+
             migrationBuilder.CreateTable(
                 name: "AWBNumberStacks",
                 columns: table => new
@@ -40,14 +48,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "23101ea3-f702-4023-8403-d60600f21dee");
+                value: "843b89d4-1db0-45b1-ba40-558fa4ec790c");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "c43f71d9-45ac-4f26-8e91-d539d1405b4a");
+                value: "5a3e8880-851c-4ee2-a417-ac10913b7c9f");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AWBNumberStacks_CargoAgentId",
@@ -59,6 +67,14 @@ namespace Aeroclub.Cargo.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AWBNumberStacks");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "AwbTrackingNumber",
+                table: "AWBInformations",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(long),
+                oldType: "bigint");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",

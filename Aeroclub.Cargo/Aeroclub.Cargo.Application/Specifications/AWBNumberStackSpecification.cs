@@ -18,6 +18,15 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public AWBNumberStackSpecification(AvailableAWBNumberStackQM query)
+            :base(x => x.CargoAgent.AppUser.Id == query.CargoAgentId && !x.IsUsed)
+        {
+            if (query.IsAgentInclude)
+            {
+                AddInclude(x => x.Include(y => y.CargoAgent));
+            }
+        }
+
         public AWBNumberStackSpecification(AWBNumberStackListQM query, bool isCount = false)
             : base(x => (string.IsNullOrEmpty(query.CargoAgentName) || x.CargoAgent.AgentName.Contains(query.CargoAgentName)) &&
             (query.AWBNumberStatus == AWBNumberStatus.All || ((query.AWBNumberStatus == AWBNumberStatus.Used) ? x.IsUsed : !x.IsUsed)))
