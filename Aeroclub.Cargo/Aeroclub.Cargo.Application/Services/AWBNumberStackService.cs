@@ -65,10 +65,22 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var number in existingNumbers)
                 {
+                    if (number.Id == dto.Id && number.IsUsed)
+                    {
+                        res.StatusCode = ServiceResponseStatus.ValidationError;
+                        res.Message = "AWB number already assigned.";
+                        return res;
+                    }
                     if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber) && number.Id != dto.Id)
                     {
                         res.StatusCode = ServiceResponseStatus.ValidationError;
                         res.Message = "AWB number already taken.";
+                        return res;
+                    }
+                    if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber) && dto.CargoAgentId == number.CargoAgentId && number.Id == dto.Id)
+                    {
+                        res.StatusCode = ServiceResponseStatus.ValidationError;
+                        res.Message = "AWB number already added.";
                         return res;
                     }
                     _unitOfWork.Repository<AWBNumberStack>().Detach(number);
