@@ -71,6 +71,7 @@ namespace Aeroclub.Cargo.Application.Services
                         res.Message = "AWB number already taken.";
                         return res;
                     }
+                    _unitOfWork.Repository<AWBNumberStack>().Detach(number);
                 }
             }
 
