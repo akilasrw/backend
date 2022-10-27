@@ -1020,8 +1020,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<double>("AmountOfInsurance")
                         .HasColumnType("float");
 
-                    b.Property<int>("AwbTrackingNumber")
-                        .HasColumnType("int");
+                    b.Property<long>("AwbTrackingNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("CargoBookingId")
                         .HasColumnType("uniqueidentifier");
@@ -1113,7 +1113,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("AWMTrackingNumber")
+                    b.Property<long>("AWBTrackingNumber")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("CargoAgentId")

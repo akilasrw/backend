@@ -4,7 +4,7 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class AWBNumberStack : AuditableEntity
     {
-        public long AWMTrackingNumber { get; set; }
+        public long AWBTrackingNumber { get; set; }
         public bool IsUsed { get; set; } = false;
         public Guid CargoAgentId { get; set; }
 

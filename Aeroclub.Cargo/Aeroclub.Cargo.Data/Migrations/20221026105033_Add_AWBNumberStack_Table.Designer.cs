@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20221021064211_Add_AWBNumberStack_Table")]
+    [Migration("20221026105033_Add_AWBNumberStack_Table")]
     partial class Add_AWBNumberStack_Table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -946,7 +946,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "87312afc-e376-44d2-93da-374a656b513f",
+                            ConcurrencyStamp = "843b89d4-1db0-45b1-ba40-558fa4ec790c",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -962,7 +962,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31238709-a1c8-413b-8ed8-03d6318ea83f",
+                            ConcurrencyStamp = "5a3e8880-851c-4ee2-a417-ac10913b7c9f",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1022,8 +1022,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<double>("AmountOfInsurance")
                         .HasColumnType("float");
 
-                    b.Property<int>("AwbTrackingNumber")
-                        .HasColumnType("int");
+                    b.Property<long>("AwbTrackingNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("CargoBookingId")
                         .HasColumnType("uniqueidentifier");
@@ -1115,7 +1115,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("AWMTrackingNumber")
+                    b.Property<long>("AWBTrackingNumber")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("CargoAgentId")

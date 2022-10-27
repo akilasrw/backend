@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var number in existingNumbers)
                 {
-                    if (number.AWMTrackingNumber.Equals(dto.AWMTrackingNumber))
+                    if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber))
                     {
                         res.StatusCode = ServiceResponseStatus.ValidationError;
                         res.Message = "AWB number already taken.";
@@ -65,12 +65,25 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var number in existingNumbers)
                 {
-                    if (number.AWMTrackingNumber.Equals(dto.AWMTrackingNumber) && number.Id != dto.Id)
+                    if (number.Id == dto.Id && number.IsUsed)
+                    {
+                        res.StatusCode = ServiceResponseStatus.ValidationError;
+                        res.Message = "AWB number already assigned.";
+                        return res;
+                    }
+                    if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber) && number.Id != dto.Id)
                     {
                         res.StatusCode = ServiceResponseStatus.ValidationError;
                         res.Message = "AWB number already taken.";
                         return res;
                     }
+                    if (number.AWBTrackingNumber.Equals(dto.AWBTrackingNumber) && dto.CargoAgentId == number.CargoAgentId && number.Id == dto.Id)
+                    {
+                        res.StatusCode = ServiceResponseStatus.ValidationError;
+                        res.Message = "AWB number already added.";
+                        return res;
+                    }
+                    _unitOfWork.Repository<AWBNumberStack>().Detach(number);
                 }
             }
 
@@ -104,6 +117,26 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<AWBNumberStackVM>>(stackList);
 
             return new Pagination<AWBNumberStackVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
+
+        public async Task<AWBNumberStackVM> GetNextAWBNumberAsync(AvailableAWBNumberStackQM query)
+        {
+            var spec = new AWBNumberStackSpecification(query);
+            var entity = await _unitOfWork.Repository<AWBNumberStack>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<AWBNumberStackVM>(entity);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateUsedAWBNumberAsync(Guid awbNumberId)
+        {
+            var entity = await _unitOfWork.Repository<AWBNumberStack>().GetByIdAsync(awbNumberId);
+            if (entity == null)return ServiceResponseStatus.Failed;
+
+            entity.IsUsed = true;
+            _unitOfWork.Repository<AWBNumberStack>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AWBNumberStack>().Detach(entity);
+            return ServiceResponseStatus.Success;
+
         }
 
     }

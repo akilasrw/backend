@@ -61,7 +61,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeleteAsync(Guid id)

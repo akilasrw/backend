@@ -204,9 +204,10 @@
 
     public enum AWBNumberStatus
     {
-        All = 0,
-        Avilable = 1,
-        Used = 2
+        None= 0,
+        All = 1,
+        Avilable = 2,
+        Used = 3
     }
 
 }

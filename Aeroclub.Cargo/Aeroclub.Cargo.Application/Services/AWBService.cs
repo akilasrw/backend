@@ -1,9 +1,8 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
-using Aeroclub.Cargo.Application.Models.Queries.AWBStackQMs;
+using Aeroclub.Cargo.Application.Models.Queries.AWBNumberStackQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
-using Aeroclub.Cargo.Application.Models.RequestModels.AWBStackRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -14,11 +13,11 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class AWBService : BaseService, IAWBService
     {
-        private readonly IAWBStackService _awbStackService;
+        private readonly IAWBNumberStackService _awbNumberStackService;
         private readonly ICargoBookingService _cargoBookingService;
-        public AWBService(ICargoBookingService cargoBookingService, IAWBStackService awbStackService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public AWBService(ICargoBookingService cargoBookingService, IAWBNumberStackService awbNumberStackService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
-            _awbStackService = awbStackService;
+            _awbNumberStackService = awbNumberStackService;
             _cargoBookingService = cargoBookingService;
         }
 
@@ -28,8 +27,8 @@ namespace Aeroclub.Cargo.Application.Services
 
 
             var awb = _mapper.Map<AWBInformation>(model);
-            var awbNumber = await _awbStackService.GetNextAWBNumberAsync(new AWBNumberStackQM() { CargoAgentId = model.UserId });
-            awb.AwbTrackingNumber = awbNumber.AWBNumber;
+            var awbNumber = await _awbNumberStackService.GetNextAWBNumberAsync(new AvailableAWBNumberStackQM() { CargoAgentId = model.UserId,IsAgentInclude=true });
+            if(awbNumber != null)awb.AwbTrackingNumber = awbNumber.AWBTrackingNumber;
 
             var createdAWB = await _unitOfWork.Repository<AWBInformation>().CreateAsync(awb);
             await _unitOfWork.SaveChangesAsync();
@@ -47,19 +46,21 @@ namespace Aeroclub.Cargo.Application.Services
                 response.StatusCode = ServiceResponseStatus.Failed;
                 return response;
             }
-
-            var awbNumberUpdate = await _awbStackService.UpdateUsedAWBNumberAsync(new AWBStackUpdateRM()
-            { CargoAgentId = model.UserId, LastUsedSequenceNumber = awbNumber.AWBNumber });
-
-            if (awbNumberUpdate == ServiceResponseStatus.Failed)
+            if(awbNumber != null)
             {
-                response.StatusCode = ServiceResponseStatus.Failed;
-                return response;
+                var awbNumberUpdate = await _awbNumberStackService.UpdateUsedAWBNumberAsync(awbNumber.Id);
+
+                if (awbNumberUpdate == ServiceResponseStatus.Failed)
+                {
+                    response.StatusCode = ServiceResponseStatus.Failed;
+                    return response;
+                }
+                else
+                {
+                    response.StatusCode = awbNumberUpdate;
+                }
             }
-            else
-            {
-                response.StatusCode = awbNumberUpdate;
-            }
+           
 
             return response;
         }

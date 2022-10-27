@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
         public double Weight { get; set; }
         public double ChargeableWeight { get; set; }
         public string? WeightUnit { get; set; }
-        public string? AwbTrackingNumber { get; set; }
+        public long AwbTrackingNumber { get; set; }
         public string? cargoManifestFilePath { get; set; }
 
     }
