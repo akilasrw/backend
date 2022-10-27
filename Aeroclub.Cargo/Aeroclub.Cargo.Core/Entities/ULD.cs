@@ -9,5 +9,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public string SerialNumber { get; set; } = null!;
         public Guid ULDMetaDataId { get; set; }
         public ULDMetaData ULDMetaData { get; set; }
+
+        public ULDCargoPosition ULDCargoPosition { get; set; }
     }
 }

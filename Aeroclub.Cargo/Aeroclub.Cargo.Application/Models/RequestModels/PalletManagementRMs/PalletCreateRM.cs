@@ -23,5 +23,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.PalletManagementRMs
         [Required(ErrorMessage = "Weight required.")]
         public double Weight { get; set; }
         public Guid WeightUnitId { get; set; }
+        public int Sequence { get; set; }
     }
 }

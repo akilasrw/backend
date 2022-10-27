@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IEnumerable<SeatDto>> GetSeatBookingSummaryLayoutAsync(FlightScheduleSectorSearchQuery query);
         Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm);
         Task<IReadOnlyList<CargoBookingListVM>> GetBookingListAsync(FlightScheduleSectorBookingListQM query);
+        Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query);
 
     }
 }

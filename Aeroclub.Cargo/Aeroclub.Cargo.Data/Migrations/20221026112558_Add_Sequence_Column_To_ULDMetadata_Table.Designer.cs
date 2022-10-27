@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20221026112558_Add_Sequence_Column_To_ULDMetadata_Table")]
+    partial class Add_Sequence_Column_To_ULDMetadata_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1020,8 +1022,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<double>("AmountOfInsurance")
                         .HasColumnType("float");
 
-                    b.Property<long>("AwbTrackingNumber")
-                        .HasColumnType("bigint");
+                    b.Property<int>("AwbTrackingNumber")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("CargoBookingId")
                         .HasColumnType("uniqueidentifier");
@@ -1113,7 +1115,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("AWBTrackingNumber")
+                    b.Property<long>("AWMTrackingNumber")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("CargoAgentId")

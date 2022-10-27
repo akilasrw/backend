@@ -101,6 +101,23 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
+        public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)
+        {
+            var spec = new FlightScheduleSectorSpecification(query);
+            var fSectorList = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            var bookings = fSectorList.Select(x => x.CargoBookings);
+            List<CargoBookingULDVM> list = new List<CargoBookingULDVM>();
+            foreach (var f in fSectorList)
+            {
+                var res = _mapper.Map<ICollection<CargoBooking>, IReadOnlyList<CargoBookingULDVM>>(f.CargoBookings);
+                if(res != null)
+                {
+                    list.AddRange(res);
+                }                     
+            }
+            return list;
+        }
+
         public async Task<ServiceResponseStatus> UpdateAWBStatus(Guid bookingId)
         {
             try

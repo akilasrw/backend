@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20221024103744_Added_ULDCargoPosition_table")]
+    partial class Added_ULDCargoPosition_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -944,7 +946,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2c2263aa-d28a-440f-b227-8d43f74d3107",
+                            ConcurrencyStamp = "01a5b745-2e46-42b4-aa28-7a4d48f15e84",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -960,7 +962,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "50e01fe6-c677-42c9-ae58-6e87a47aa414",
+                            ConcurrencyStamp = "ab753bbe-361f-4fe5-a103-372418bfd28e",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1020,8 +1022,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<double>("AmountOfInsurance")
                         .HasColumnType("float");
 
-                    b.Property<long>("AwbTrackingNumber")
-                        .HasColumnType("bigint");
+                    b.Property<int>("AwbTrackingNumber")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("CargoBookingId")
                         .HasColumnType("uniqueidentifier");
@@ -1113,7 +1115,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("AWBTrackingNumber")
+                    b.Property<long>("AWMTrackingNumber")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("CargoAgentId")
@@ -35939,9 +35941,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<double>("Length")
                         .HasColumnType("float");
-
-                    b.Property<int?>("Sequence")
-                        .HasColumnType("int");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");

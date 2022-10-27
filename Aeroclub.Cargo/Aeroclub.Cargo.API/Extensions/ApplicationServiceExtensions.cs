@@ -64,6 +64,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<ILinkAircraftToScheduleService, LinkAircraftToScheduleService>();
             services.AddScoped<IBaseUnitConverter, BaseUnitConverter>();
             services.AddScoped<IAWBNumberStackService, AWBNumberStackService>();
+            services.AddScoped<IAssignCargoToULDService, AssignCargoToULDService>();
 
 
             return services;

@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public double Length { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
+        public int? Sequence { get; set; }
         public virtual ICollection<ULD> ULDs { get; set; }
     }
 }

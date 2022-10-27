@@ -1,5 +1,7 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
@@ -25,6 +27,21 @@ namespace Aeroclub.Cargo.Application.Services
         {
             _flightScheduleSectorService = flightScheduleSectorService;
             _configuration = configuration;
+        }
+
+        public async Task<ServiceResponseCreateStatus> CreateAsync(ULDCargoPositionDto ULDCargoPositionDto)
+        {
+            var res = new ServiceResponseCreateStatus();
+
+            var model = _mapper.Map<ULDCargoPosition>(ULDCargoPositionDto);
+
+            var result = await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
+            await _unitOfWork.SaveChangesAsync();
+
+            res.Id = result.Id;
+            res.StatusCode = ServiceResponseStatus.Success;
+
+            return res;
         }
 
         public async Task<CargoPosition> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
