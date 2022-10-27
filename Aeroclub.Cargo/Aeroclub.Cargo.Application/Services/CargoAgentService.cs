@@ -107,5 +107,19 @@ namespace Aeroclub.Cargo.Application.Services
             var list = await _unitOfWork.Repository<CargoAgent>().GetListAsync();
             return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
         }
+
+        public async Task<Pagination<CargoAgentVM>> GetFilteredListAsync(CargoAgentListQM query)
+        {
+            var spec = new CargoAgentSpecification(query);
+
+            var agentList = await _unitOfWork.Repository<CargoAgent>().GetListWithSpecAsync(spec);
+
+            var countSpec = new CargoAgentSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<CargoAgent>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<CargoAgentVM>>(agentList);
+
+            return new Pagination<CargoAgentVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
     }
 }

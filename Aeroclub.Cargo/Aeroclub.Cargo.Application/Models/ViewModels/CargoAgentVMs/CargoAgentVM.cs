@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs
         public string PrimaryTelephoneNumber { get; set; } = null!;
         public string? SecondaryTelephoneNumber { get; set; }
         public string Email { get; set; } = null!;
+        public string BaseAirportName { get; set; } = null!;
         public string? CargoAccountNumber { get; set; }
         public Guid CountryId { get; set; }
         public Guid AppUserId { get; set; }

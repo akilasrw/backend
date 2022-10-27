@@ -17,5 +17,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<bool> DeleteAsync(Guid Id);
 
         Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync();
+
+        Task<Pagination<CargoAgentVM>> GetFilteredListAsync(CargoAgentListQM query);
+
     }
 }

@@ -18,6 +18,27 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public CargoAgentSpecification(CargoAgentListQM query, bool isCount = false)
+            : base(x => (string.IsNullOrEmpty(query.CargoAgentName) || x.AgentName.Contains(query.CargoAgentName)) )
+        {
+
+            if (!isCount)
+            {
+                AddInclude(d => d.Include(s => s.AppUser));
+
+                if (query.IsCountryInclude)
+                    AddInclude(x => x.Include(x => x.Country));
+
+                if(query.IsAirportInclude)
+                    AddInclude(x => x.Include(x => x.BaseAirport));
+
+                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
+            }
+           
+
+        }
+
     }
     
 }

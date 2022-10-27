@@ -100,6 +100,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<CargoAgent, CargoAgentVM>()
                 .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country.Name))
                 .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email))
+                .ForMember(d => d.BaseAirportName, o => o.MapFrom(s => s.BaseAirport.Name))
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName));
 
             CreateMap<CargoBooking, CargoBookingVM>()
