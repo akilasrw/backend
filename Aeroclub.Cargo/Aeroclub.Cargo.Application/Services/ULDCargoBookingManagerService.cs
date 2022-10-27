@@ -22,11 +22,9 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IULDCargoBookingService _uldCargoBookingService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly IConfiguration _configuration;
-        private readonly IULDCargoPositionService _uldcgoPositionService;
         private readonly IULDContainerService _uldContainerService;
         private readonly IPackageItemService _packageItemService;
         private readonly IAWBService _AWBService;
-        private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
         private readonly IBaseUnitConverter _baseUnitConverter;
 
         public ULDCargoBookingManagerService(IUnitOfWork unitOfWork, 
@@ -38,18 +36,15 @@ namespace Aeroclub.Cargo.Application.Services
             IPackageItemService packageItemService,
             IAWBService AWBService,
             IConfiguration configuration,
-            IULDContainerCargoPositionService uLDContainerCargoPositionService,
             IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
             _uldCargoBookingService = uldCargoBookingService;
             _flightScheduleSectorService = flightScheduleSectorService;
             _configuration = configuration;
-            _uldcgoPositionService = uldcgoPositionService;
             _uldContainerService = uldcontainerService;
             _packageItemService = packageItemService;
             _AWBService = AWBService;
-            _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
             _baseUnitConverter = baseUnitConverter;
         }
 
@@ -114,15 +109,15 @@ namespace Aeroclub.Cargo.Application.Services
                         package.Weight = package.Weight.GramToKilogramConversion();
                     }
 
-                    CargoPosition matchedCargoPosition = null;
-                    if (package.PackageContainerType == PackageContainerType.OnFloor)
-                        matchedCargoPosition = await _uldcgoPositionService.GetMatchingCargoPositionAsync(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType);
+                    //CargoPosition matchedCargoPosition = null;
+                    //if (package.PackageContainerType == PackageContainerType.OnFloor)
+                    //    matchedCargoPosition = await _uldcgoPositionService.GetMatchingCargoPositionAsync(package, flightSector.AircraftLayoutId.Value, (CargoPositionType)package.PackageContainerType);
 
-                    if (matchedCargoPosition == null)
-                    {
-                        transaction.Rollback();
-                        return BookingServiceResponseStatus.NoSpace;
-                    }
+                    //if (matchedCargoPosition == null)
+                    //{
+                    //    transaction.Rollback();
+                    //    return BookingServiceResponseStatus.NoSpace;
+                    //}
 
                     // Save ULD Container Details
                     var uldContainer = await _uldContainerService.CreateAsync(new ULDContainerDto()
@@ -153,17 +148,17 @@ namespace Aeroclub.Cargo.Application.Services
                     }
 
                     // Update ULDContainer Cargo Position
-                    await _uLDContainerCargoPositionService.CreateAsync(new ULDContainerCargoPositionDto()
-                    {
-                        CargoPositionId = matchedCargoPosition.Id,
-                        ULDContainerId = uldContainer.Id
-                    });
+                    //await _uLDContainerCargoPositionService.CreateAsync(new ULDContainerCargoPositionDto()
+                    //{
+                    //    CargoPositionId = matchedCargoPosition.Id,
+                    //    ULDContainerId = uldContainer.Id
+                    //});
 
-                    // Update Current Weights
-                    await UpdateCurrentWeightAsyncs(matchedCargoPosition.Id,package.Weight);
+                    //// Update Current Weights
+                    //await UpdateCurrentWeightAsyncs(matchedCargoPosition.Id,package.Weight);
 
-                    // Update Current Volume
-                    await UpdateCurrentVolumeAsyncs(matchedCargoPosition.Id, package.Volume);
+                    //// Update Current Volume
+                    //await UpdateCurrentVolumeAsyncs(matchedCargoPosition.Id, package.Volume);
 
                 }
                 transaction.Commit();

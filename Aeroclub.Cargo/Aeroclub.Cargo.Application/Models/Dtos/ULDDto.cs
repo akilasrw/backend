@@ -17,5 +17,6 @@ namespace Aeroclub.Cargo.Application.Models.Dtos
 
         public Guid ULDMetaDataId { get; set; }
         public ULDMetaDataDto ULDMetaData { get; set; }
+        public ULDCargoPositionDto ULDCargoPosition { get; set; }
     }
 }

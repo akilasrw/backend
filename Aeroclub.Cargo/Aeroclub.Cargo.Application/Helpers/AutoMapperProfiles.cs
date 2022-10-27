@@ -111,13 +111,17 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems.Sum(x => x.Weight)));
 
             CreateMap<CargoBookingRM, CargoBooking>();
+            CreateMap<CargoBooking, CargoBookingULDVM>()
+                .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems != null ? s.PackageItems.Sum(x => x.Weight) : 0))
+                .ForMember(d => d.TotalVolume, o => o.MapFrom(s => s.PackageItems != null ? s.PackageItems.Sum(x => x.Height * x.Length * x.Width) : 0))
+                .ForMember(d => d.AwbTrackingNumber, o => o.MapFrom(s => s.AWBInformation != null ? s.AWBInformation.AwbTrackingNumber : 0));
 
             CreateMap<ULDContainerDto, ULDContainer>();
             CreateMap<ULDContainerUpdateRM, ULDContainer>();
-            CreateMap<ULDDto, ULD>();
+            CreateMap<ULDDto, ULD>().ReverseMap();
             CreateMap<LoadPlanDto, LoadPlan>();
             CreateMap<ULDMetaDataDto, ULDMetaData>();
-            CreateMap<ULDMetaDataDto, ULDMetaData>();
+            CreateMap<ULDMetaData, ULDMetaDataDto>();
             CreateMap<PackageContainer, PackageContainerVM>().ReverseMap();
 
             CreateMap<CargoBooking, CargoBookingDetailVM>();
@@ -188,6 +192,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<CargoPosition, CargoPositionVM>();
 
             CreateMap<ULDContainer, ULDContainerVM>();
+            CreateMap<ULDCargoPositionDto, ULDCargoPosition>().ReverseMap();
             CreateMap<ULD, ULDVM>();
             CreateMap<ULDMetaData, ULDMetaDataVM>();
             CreateMap<ULDContainerCargoPosition, ULDContainerCargoPositionVM>();

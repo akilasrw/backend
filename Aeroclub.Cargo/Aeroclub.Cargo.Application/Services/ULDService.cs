@@ -3,6 +3,8 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
+using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -39,9 +41,12 @@ namespace Aeroclub.Cargo.Application.Services
             //return ServiceResponseStatus.Failed;
         }
 
-        public Task<ULDDto> GetAsync(ULDQM query)
+        public async Task<ULDDto> GetAsync(ULDQM query)
         {
-            throw new NotImplementedException();
+            var spec = new ULDSpecification(query);
+            var uld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(spec);
+
+            return _mapper.Map<ULD, ULDDto>(uld);
         }
     }
 }

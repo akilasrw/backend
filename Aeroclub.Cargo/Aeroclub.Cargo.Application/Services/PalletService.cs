@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PalletManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PalletManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
 using Aeroclub.Cargo.Application.Models.ViewModels.PalletVMs;
@@ -26,7 +27,9 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IULDService _uLDService;
         private readonly IULDContainerService _uLDContainerService;
         private readonly IConfiguration _configuration;
+        private readonly IULDCargoPositionService _uLDCargoPositionService;
         private readonly IAircraftService _aircraftService;
+        private readonly IBaseUnitConverter _baseUnitConverter;
         private readonly IULDContainerCargoPositionService _ULDContainerCargoPositionService;
         public PalletService(IUnitOfWork unitOfWork, 
             IMapper mapper,
@@ -34,16 +37,20 @@ namespace Aeroclub.Cargo.Application.Services
             IULDService uLDService,
             IULDContainerCargoPositionService uLDContainerCargoPositionService,
             IULDContainerService uLDContainerService,
-            IAircraftService aircraftService, 
-            IConfiguration configuration)
+            IAircraftService aircraftService,
+            IBaseUnitConverter baseUnitConverter, 
+            IConfiguration configuration,
+            IULDCargoPositionService uLDCargoPositionService)
             :base(unitOfWork, mapper)
         {
             _uLDMetaDataService = uLDMetaDataService;
             _uLDService = uLDService;
             _uLDContainerService = uLDContainerService;
             _configuration = configuration;
+            _uLDCargoPositionService = uLDCargoPositionService;
             _ULDContainerCargoPositionService = uLDContainerCargoPositionService;
             _aircraftService = aircraftService;
+            _baseUnitConverter = baseUnitConverter;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(PalletCreateRM dto)
@@ -55,41 +62,15 @@ namespace Aeroclub.Cargo.Application.Services
                 try
                 {
                     //Pallet volume conversion
-                    var cmVolumeUnitId = _configuration["BaseUnit:BaseVolumeUnitId"];
-                    if (dto.VolumeUnitId != Guid.Empty && cmVolumeUnitId.ToLower() != dto.VolumeUnitId.ToString())
-                    {
-                        var inchVolumeUnitId = _configuration["VolumeUnit:InchVolumeUnitId"];
-                        var meterVolumeUnitId = _configuration["VolumeUnit:MeterVolumeUnitId"];
-
-                        if (meterVolumeUnitId.ToLower() == dto.VolumeUnitId.ToString())
-                        {
-                            dto.Length = dto.Length.MeterToCmConversion();
-                            dto.Width = dto.Width.MeterToCmConversion();
-                            dto.Height = dto.Height.MeterToCmConversion();
-                        }
-
-                        if (inchVolumeUnitId.ToLower() == dto.VolumeUnitId.ToString())
-                        {
-                            dto.Length = dto.Length.InchToCmConversion();
-                            dto.Width = dto.Width.InchToCmConversion();
-                            dto.Height = dto.Height.InchToCmConversion();
-                        }
-                    }
+                    dto.Length =await _baseUnitConverter.VolumeCalculatorAsync(dto.Length, dto.VolumeUnitId);
+                    dto.Height =await _baseUnitConverter.VolumeCalculatorAsync(dto.Height, dto.VolumeUnitId);
+                    dto.Width =await _baseUnitConverter.VolumeCalculatorAsync(dto.Width, dto.VolumeUnitId);
 
                     //Pallet weight conversion
                     var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
                     if (dto.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != dto.WeightUnitId.ToString())
                     {
                         dto.Weight = dto.Weight.GramToKilogramConversion();
-                    }
-
-                    var cargoPosition = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(id: dto.PositionId);
-
-                    if (cargoPosition == null)
-                    {
-                        transaction.Rollback();
-                        response.StatusCode = ServiceResponseStatus.Failed;
-                        return response;
                     }
 
                     // Save ULD meta data
@@ -99,6 +80,7 @@ namespace Aeroclub.Cargo.Application.Services
                         Length = dto.Length,
                         Width = dto.Width,
                         Weight = dto.Weight,
+                        Sequence = dto.Sequence
                     });
 
                     if (uldMetaDeta == null)
@@ -113,8 +95,9 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         ULDType = ULDType.None,
                         SerialNumber = dto.SerialNumber,
-                        ULDMetaDataId = uldMetaDeta.Id
+                        ULDMetaDataId = uldMetaDeta.Id,
                     });
+
 
                     if (uld == null)
                     {
@@ -122,32 +105,43 @@ namespace Aeroclub.Cargo.Application.Services
                         response.StatusCode = ServiceResponseStatus.Failed;
                         return response;
                     }
-
-
-                    var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
-                    {
-                        IsIncludeULDContainer = true,
-                        CargoPositionId = cargoPosition.Id
-                    });
-
-                    if (positionContainers != null && positionContainers.Count > 0)
-                    {
-                        foreach (var positionContainer in positionContainers)
-                        {
-                            await _uLDContainerService.UpdateULDIdAsync(new ULDContainerUpdateRM()
-                            {
-                                Id = positionContainer.ULDContainer.Id,
-                                ULDId = uld.Id,
-                            });
-
-                        }
-                    }
                     else
                     {
-                        transaction.Rollback();
-                        response.StatusCode = ServiceResponseStatus.ValidationError;
-                        return response;
-                    }
+                        var position = await _uLDCargoPositionService.CreateAsync(new ULDCargoPositionDto() { CargoPositionId = dto.PositionId, ULDId = uld.Id });
+
+                        if (position == null)
+                        {
+                            transaction.Rollback();
+                            response.StatusCode = ServiceResponseStatus.Failed;
+                            return response;
+                        }
+                    }                    
+
+                    //var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
+                    //{
+                    //    IsIncludeULDContainer = true,
+                    //    CargoPositionId = cargoPosition.Id
+                    //});
+
+                    // assgined boxes to Pallet. 
+                    //if (positionContainers != null && positionContainers.Count > 0)
+                    //{
+                    //    foreach (var positionContainer in positionContainers)
+                    //    {
+                    //        await _uLDContainerService.UpdateULDIdAsync(new ULDContainerUpdateRM()
+                    //        {
+                    //            Id = positionContainer.ULDContainer.Id,
+                    //            ULDId = uld.Id,
+                    //        });
+
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    transaction.Rollback();
+                    //    response.StatusCode = ServiceResponseStatus.ValidationError;
+                    //    return response;
+                    //}
 
                     transaction.Commit();
                 }
@@ -195,26 +189,17 @@ namespace Aeroclub.Cargo.Application.Services
                 var palletPosition = new PalletDetailVM();
                 palletPosition.CargoPositionId = cargoPosition.Id;
 
-                var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
+                var uld = await _uLDService.GetAsync(new ULDQM() { PositionId = cargoPosition.Id });
+                
+                if (uld != null && uld.ULDMetaData != null)
                 {
-                    IsIncludeULDContainer = true,
-                    CargoPositionId = cargoPosition.Id
-                });
-
-                if(positionContainers != null && positionContainers.Count >0)
-                {
-                    var firstContainer = positionContainers.First();
-                    if(firstContainer.ULDContainer.ULD != null)
-                    {
-                        palletPosition.IsPalletAssigned = true;
-                        palletPosition.Length = firstContainer.ULDContainer.ULD.ULDMetaData.Length;
-                        palletPosition.Width = firstContainer.ULDContainer.ULD.ULDMetaData.Width;
-                        palletPosition.Height = firstContainer.ULDContainer.ULD.ULDMetaData.Height;
-                        palletPosition.Weight = firstContainer.ULDContainer.ULD.ULDMetaData.Weight;
-                        palletPosition.SerialNumber = firstContainer.ULDContainer.ULD.SerialNumber;
-                    }
+                    palletPosition.IsPalletAssigned = true;
+                    palletPosition.Length = uld.ULDMetaData.Length;
+                    palletPosition.Width = uld.ULDMetaData.Width;
+                    palletPosition.Height = uld.ULDMetaData.Height;
+                    palletPosition.Weight = uld.ULDMetaData.Weight;
+                    palletPosition.SerialNumber = uld.SerialNumber;
                 }
-
                 palletPositions.Add(palletPosition);
             }
             return palletPositions;

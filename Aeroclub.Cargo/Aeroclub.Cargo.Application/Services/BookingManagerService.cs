@@ -283,8 +283,13 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _cargoBookingService.GetFilteredListAsync(query);
         }
-        
-        public async Task<IReadOnlyList<CargoBookingListVM>> GetBookingListAsync(FlightScheduleSectorBookingListQM query)
+
+        public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)
+        {
+            return await _cargoBookingService.GetFreighterBookingListAsync(query);
+        }
+
+            public async Task<IReadOnlyList<CargoBookingListVM>> GetBookingListAsync(FlightScheduleSectorBookingListQM query)
         {
             return await _cargoBookingService.GetListAsync(query);
         }
