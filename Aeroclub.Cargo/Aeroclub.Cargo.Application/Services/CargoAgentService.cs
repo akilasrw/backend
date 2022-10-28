@@ -111,7 +111,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
         {
-            var list = await _unitOfWork.Repository<CargoAgent>().GetListAsync();
+            var list = await _unitOfWork.Repository<CargoAgent>().GetListWithSpecAsync(new CargoAgentSpecification());
             return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
         }
 
