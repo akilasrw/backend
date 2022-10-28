@@ -12,6 +12,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IUserService
     {
         ServiceResponse<AuthenticateResponse> Authenticate(AuthenticateRequest model, string ipAddress);
+        ServiceResponse<AuthenticateResponse> CargoAgentAuthenticate(AuthenticateRequest model, string ipAddress);
         ServiceResponse<AuthenticateResponse> RefreshToken(string token, string ipAddress);
         void RevokeToken(string token, string ipAddress);
         IEnumerable<AppUser> GetAll();

@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Data;
@@ -40,6 +41,40 @@ namespace Aeroclub.Cargo.Application.Services
             // validate
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
                 return  new ServiceResponse<AuthenticateResponse>(null, "Username or Password is incorrect.", ServiceResponseStatus.ValidationError);
+
+            // authentication successful so generate jwt and refresh tokens
+            var jwtToken = _jwtUtils.GenerateJwtToken(user);
+            var refreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
+            user.RefreshTokens.Add(refreshToken);
+
+            // remove old refresh tokens from user
+            removeOldRefreshTokens((AppUser)user);
+
+            // save changes to db
+            _context.Update(user);
+            _context.SaveChanges();
+
+            var result = new AuthenticateResponse(user, jwtToken, refreshToken.Token);
+            return new ServiceResponse<AuthenticateResponse>(result);
+        }
+
+        public ServiceResponse<AuthenticateResponse> CargoAgentAuthenticate(AuthenticateRequest model, string ipAddress)
+        {
+            var user = _context.AppUsers.SingleOrDefault(x => x.UserName == model.Username);
+
+            // validate
+            if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
+                return new ServiceResponse<AuthenticateResponse>(null, "Username or Password is incorrect.", ServiceResponseStatus.ValidationError);
+
+            var cargoAgent = _context.CargoAgents.SingleOrDefault(x => x.AppUserId == user.Id);
+            if (cargoAgent == null)
+                return new ServiceResponse<AuthenticateResponse>(null, "User not found.", ServiceResponseStatus.ValidationError);
+
+            if(cargoAgent.Status == CargoAgentStatus.Suspended)
+                return new ServiceResponse<AuthenticateResponse>(null, "Access denied.", ServiceResponseStatus.ValidationError);
+
+            if (cargoAgent.Status == CargoAgentStatus.Pending || cargoAgent.Status == CargoAgentStatus.None)
+                return new ServiceResponse<AuthenticateResponse>(null, "Pending approval.", ServiceResponseStatus.ValidationError);
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
