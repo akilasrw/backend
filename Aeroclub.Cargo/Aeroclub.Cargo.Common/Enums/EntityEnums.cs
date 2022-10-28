@@ -210,4 +210,12 @@
         Used = 3
     }
 
+    public enum CargoAgentStatus
+    {
+        None = 0,
+        Pending = 1,
+        Active = 2,
+        Suspended = 3
+    }
+
 }

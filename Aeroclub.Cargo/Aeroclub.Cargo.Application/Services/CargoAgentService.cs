@@ -86,6 +86,13 @@ namespace Aeroclub.Cargo.Application.Services
             return ServiceResponseStatus.Success;
         }
 
+        public async Task<bool> StatusUpdateAsync(CargoAgentStatusUpdateRM rm)
+        {
+            var entity = await _unitOfWork.Repository<CargoAgent>().GetByIdAsync(rm.Id, false);
+            entity.Status = rm.Status ;
+            return await _unitOfWork.SaveChangesAsync() > 0;
+        }
+
         public async Task<CargoAgentVM> GetAsync(CargoAgentQM query)
         {
 

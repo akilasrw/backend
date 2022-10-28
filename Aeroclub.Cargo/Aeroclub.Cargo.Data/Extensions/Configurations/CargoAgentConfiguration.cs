@@ -15,6 +15,7 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
             builder.Property(p => p.CargoAccountNumber).HasColumnType("varchar(20)");
             builder.Property(p => p.City).HasColumnType("nvarchar(20)").IsRequired();
             builder.Property(p => p.AgentIATACode).HasColumnType("varchar(20)");
+            builder.Property(p => p.Status).HasColumnType("tinyint").IsRequired();
         }
     }
 }

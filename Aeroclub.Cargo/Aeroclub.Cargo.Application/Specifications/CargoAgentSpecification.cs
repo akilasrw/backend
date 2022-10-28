@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public CargoAgentSpecification(CargoAgentListQM query, bool isCount = false)
-            : base(x => (string.IsNullOrEmpty(query.CargoAgentName) || x.AgentName.Contains(query.CargoAgentName)) )
+            : base(x => (string.IsNullOrEmpty(query.CargoAgentName) || x.AgentName.Contains(query.CargoAgentName)) &&
+            (query.Status == CargoAgentStatus.None ||x.Status == query.Status)
+            )
         {
 
             if (!isCount)

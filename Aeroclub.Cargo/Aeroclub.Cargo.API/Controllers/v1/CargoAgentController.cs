@@ -41,13 +41,24 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPut()]
         public async Task<IActionResult> UpdateAsync([FromBody] CargoAgentUpdateRM model)
         {
-            if (!ModelState.IsValid) return BadRequest("Some fields are missing");
+            if (!ModelState.IsValid) return BadRequest("Some fields are missing.");
 
             await cargoAgentService.UpdateAsync(model);
 
             return NoContent();
         }
 
+        [Authorize]
+        [HttpPut("StatusUpdate")]
+        public async Task<IActionResult> StatusUpdateAsync([FromBody] CargoAgentStatusUpdateRM model)
+        {
+            if (!ModelState.IsValid) return BadRequest("Some fields are missing.");
+            if(model.Id == Guid.Empty) return BadRequest("Cargo agent Id required.");
+
+            await cargoAgentService.StatusUpdateAsync(model);
+
+            return NoContent();
+        }
 
         [HttpGet()]
         [ActionName(nameof(GetAsync))]

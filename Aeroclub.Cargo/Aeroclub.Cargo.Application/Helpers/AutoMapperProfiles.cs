@@ -93,6 +93,7 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<CargoAgentCreateRM, CargoAgent>();
             CreateMap<CargoAgentCreateRM, AppUser>()
+                .ForMember(d => d.FirstName, o => o.MapFrom(s => s.AgentName))
                 .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.PrimaryTelephoneNumber));
 
             CreateMap<CargoAgentUpdateRM, CargoAgent>();

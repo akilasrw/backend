@@ -1,9 +1,11 @@
 ﻿
+using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
+
 namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs
 {
-    public class CargoAgentVM
+    public class CargoAgentVM : BaseVM
     {
-       // public Guid Id { get; set; }
         public string AgentName { get; set; } = null!;
         public string UserName { get; set; } = null!;
         public string Address { get; set; } = null!;
@@ -18,6 +20,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs
         public string? CountryName { get; set; }
         public string City { get; set; } = null!;
         public string? AgentIATACode { get; set; }
-  
+        public CargoAgentStatus Status { get; set; }
     }
 }
