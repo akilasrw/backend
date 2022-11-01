@@ -36,6 +36,14 @@ namespace Aeroclub.Cargo.Common.Extentions
             else
                 return volume * 2.54;
         }
+        
+        public static double CubicMeterToCubicCmConversion(this double volume, bool isReverse = false)
+        {
+            if (isReverse)
+                return volume / 1000000;
+            else
+                return volume * 1000000;
+        }
 
     }
 }

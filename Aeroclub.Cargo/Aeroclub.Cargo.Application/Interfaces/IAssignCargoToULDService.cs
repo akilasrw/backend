@@ -1,4 +1,6 @@
-﻿using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IAssignCargoToULDService
     {
-        Task CreateAsync(Guid poisitonId, PackageItemCreateRM package);
+        Task<ServiceResponseCreateStatus> CreateAsync(ULDContainerCargoPositionDto package);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -16,13 +18,16 @@ namespace Aeroclub.Cargo.Application.Services
     public class CargoBookingSummaryService : BaseService, ICargoBookingSummaryService
     {
         private readonly IULDContainerCargoPositionService _ULDContainerCargoPositionService;
+        private readonly IULDService _uLDService;
 
         public CargoBookingSummaryService(IUnitOfWork unitOfWork,
             IULDContainerCargoPositionService ULDContainerCargoPositionService,
+            IULDService uLDService,
             IMapper mapper)
             :base(unitOfWork,mapper)
         {
             _ULDContainerCargoPositionService = ULDContainerCargoPositionService;
+            _uLDService = uLDService;
         }
 
         public async Task<CargoBookingSummaryDetailVM> GetAsync(CargoBookingSummaryDetailQM query)
@@ -176,21 +181,27 @@ namespace Aeroclub.Cargo.Application.Services
                     var firstContainer = positionContainers.First();
                     if (firstContainer.ULDContainer.ULD != null)
                     {
-                        cargoPosition.IsPalletAssigned = true;
-                       
+                        //cargoPosition.IsPalletAssigned = true;                       
                         cargoPosition.ULDNumber = firstContainer.ULDContainer.ULD.SerialNumber;
                     }
                 }
+                var  uld = await _uLDService.GetAsync(new ULDQM() { PositionId = position.Id });
 
-                   
+                if (uld != null && uld.ULDMetaData != null)
+                {
+                    cargoPosition.IsPalletAssigned = true;
+                }
+                int val;
+                cargoPosition.Id = position.Id;
                 cargoPosition.MaxWeight = position.MaxWeight;
                 cargoPosition.Weight = position.CurrentWeight;
                 cargoPosition.MaxVolume = position.MaxVolume;
                 cargoPosition.Volume = position.CurrentVolume;
+                cargoPosition.Position = int.TryParse(position.Name, out val) ? int.Parse(position.Name) : 0;
                 list.Add(cargoPosition);
             }
 
-            return list;
+            return list.OrderBy(x=>x.Position).ToList();
         }
 
     }

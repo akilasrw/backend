@@ -126,7 +126,9 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<PackageContainer, PackageContainerVM>().ReverseMap();
 
             CreateMap<CargoBooking, CargoBookingDetailVM>();
-            CreateMap<PackageItem, PackageItemVM>();
+            CreateMap<PackageItem, PackageItemVM>()
+                .ForMember(d => d.CargoPositionId, o => o.MapFrom(s => s.ULDContainer.ULDContainerCargoPositions !=null && s.ULDContainer.ULDContainerCargoPositions.Count > 0 ? 
+                s.ULDContainer.ULDContainerCargoPositions.First().CargoPositionId : Guid.Empty));
 
             CreateMap<CargoBooking, CargoBookingLookupVM>();
 

@@ -9,12 +9,15 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class ULDContainerCargoPositionSpecification : BaseSpecification<ULDContainerCargoPosition>
     {
         public ULDContainerCargoPositionSpecification(ULDCOntainerCargoPositionQM query)
-            : base(x => x.CargoPositionId == query.CargoPositionId)
+            : base(x => (query.CargoPositionId == Guid.Empty || x.CargoPositionId == query.CargoPositionId) &&
+                        (query.CargoPositionId == Guid.Empty || x.ULDContainerId == query.ULDContainerId))
         {
             if (query.IsIncludeULDContainer)
-            {
                 AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.ULD).ThenInclude(b => b.ULDMetaData));
-            }
+            
+            if (query.IsIncludeCargoPosition)
+                AddInclude(x => x.Include(y => y.CargoPosition));
+
         }
 
     }
