@@ -29,7 +29,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM() { DaysOfWeek = dto.DaysOfWeek, ScheduleStartDate = dto.ScheduleStartDateTime, ScheduleEndDate = dto.ScheduleEndDateTime });
+                var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM() { DaysOfWeek = dto.DaysOfWeek, ScheduleStartDate = dto.ScheduleStartDate, ScheduleEndDate = dto.ScheduleEndDate });
 
                 if (bookingDays == null || bookingDays.Count <1)
                 {
