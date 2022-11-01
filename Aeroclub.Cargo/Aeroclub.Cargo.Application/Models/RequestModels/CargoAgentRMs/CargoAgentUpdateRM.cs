@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
 {
-    public class CargoAgentUpdateRM
+    public class CargoAgentUpdateRM : BaseRM
     {
-        [Required]
-        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Aagent name required")]
         public string AgentName { get; set; } = null!;
@@ -42,7 +42,8 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
         [Required(ErrorMessage = "Confirm Password required")]
         public string ConfirmPassword { get; set; } = null!;
 
-
+        [Required(ErrorMessage = "Status required")]
+        public CargoAgentStatus Status { get; set; }
 
     }
 }

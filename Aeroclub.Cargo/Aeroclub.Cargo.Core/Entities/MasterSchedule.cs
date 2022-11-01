@@ -5,8 +5,10 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class MasterSchedule : AuditableEntity
     {
-        public DateTime ScheduleStartDateTime { get; set; }
-        public DateTime ScheduleEndDateTime { get; set; }
+        public DateTime ScheduleStartDate { get; set; }
+        public DateTime ScheduleEndDate { get; set; }
+        public TimeSpan ScheduleStartTime { get; set; }
+        public double NumberOfHours { get; set; }
         public string DaysOfWeek { get; set; } = null!;
         public ScheduleStatus ScheduleStatus { get; set; }
         public CalendarType CalendarType { get; set; }

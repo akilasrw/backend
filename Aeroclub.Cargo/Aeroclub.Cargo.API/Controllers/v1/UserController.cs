@@ -31,6 +31,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [AllowAnonymous]
+        [HttpPost("cargo-agent-authenticate")]
+        public IActionResult CargoAgentAuthenticate(AuthenticateRequest model)
+        {
+            var response = _userService.CargoAgentAuthenticate(model, ipAddress());
+
+            if (response.Status == Application.Enums.ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            setTokenCookie(response.Response.RefreshToken);
+            return Ok(response.Response);
+        }
+
+
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public IActionResult RefreshToken([FromBody] string refreshToken)
         {

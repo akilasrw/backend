@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Core.Entities.Core;
+﻿using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Core.Entities.Core;
 
 namespace Aeroclub.Cargo.Core.Entities
 {
@@ -11,6 +12,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public string? CargoAccountNumber { get; set; }
         public string City { get; set; }=null !;
         public string? AgentIATACode { get; set; }
+        public CargoAgentStatus Status { get; set; }
         public Guid AppUserId { get; set; }
         public Guid CountryId { get; set; }
         public Guid BaseAirportId { get; set; }
