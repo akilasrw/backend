@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
@@ -54,6 +55,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
 
             return NoContent();
+        }
+
+        [HttpPost("AssignCargoToULD")]
+        public async Task<IActionResult> AssignCargoToULDAsync(ULDContainerCargoPositionDto UldContainerCargoPosition)
+        {
+            return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPosition));
         }
 
     }

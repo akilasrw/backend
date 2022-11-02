@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20221028104425_Add_PalletName_To_CargoPosition_Seed")]
+    partial class Add_PalletName_To_CargoPosition_Seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1250,9 +1252,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<string>("SecondaryTelephoneNumber")
                         .HasColumnType("varchar(12)");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -23495,17 +23494,11 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("NumberOfHours")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("ScheduleEndDate")
+                    b.Property<DateTime>("ScheduleEndDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ScheduleStartDate")
+                    b.Property<DateTime>("ScheduleStartDateTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("ScheduleStartTime")
-                        .HasColumnType("time");
 
                     b.Property<byte>("ScheduleStatus")
                         .HasColumnType("tinyint");

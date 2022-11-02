@@ -1,9 +1,10 @@
-﻿using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerVMs;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs
 {
-    public class ULDContainerCargoPositionVM
+    public class ULDContainerCargoPositionVM: BaseVM
     {
         public Guid ULDContainerId { get; set; }
         public Guid CargoPositionId { get; set; }

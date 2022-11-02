@@ -1,7 +1,9 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
+using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

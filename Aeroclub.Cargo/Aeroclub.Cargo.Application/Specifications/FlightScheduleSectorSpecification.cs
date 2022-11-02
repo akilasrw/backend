@@ -82,7 +82,7 @@ namespace Aeroclub.Cargo.Application.Specifications
            : base(x => ((string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
            (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date)) && (!x.IsDeleted))
         {
-            AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.PackageItems));
+            AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.PackageItems).ThenInclude(a=>a.ULDContainer).ThenInclude(b=>b.ULDContainerCargoPositions));
             AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.AWBInformation));
 
         }

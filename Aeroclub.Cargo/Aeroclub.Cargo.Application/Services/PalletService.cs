@@ -188,6 +188,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 var palletPosition = new PalletDetailVM();
                 palletPosition.CargoPositionId = cargoPosition.Id;
+                palletPosition.Position = int.Parse(cargoPosition.Name);
 
                 var uld = await _uLDService.GetAsync(new ULDQM() { PositionId = cargoPosition.Id });
                 
@@ -202,7 +203,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
                 palletPositions.Add(palletPosition);
             }
-            return palletPositions;
+            return palletPositions.OrderBy(x=>x.Position).ToList();
         }
     }
 }

@@ -24,8 +24,8 @@ namespace Aeroclub.Cargo.Application.Services
             var res = new ServiceResponseCreateStatus();
 
             var model = _mapper.Map<ULDContainerCargoPosition>(ULDContainerCargoPositionDto);
-
             var result = await _unitOfWork.Repository<ULDContainerCargoPosition>().CreateAsync(model);
+            await _unitOfWork.SaveChangesAsync();
 
             res.Id = result.Id;
             res.StatusCode = ServiceResponseStatus.Success;

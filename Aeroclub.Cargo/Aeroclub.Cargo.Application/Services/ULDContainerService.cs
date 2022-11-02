@@ -38,9 +38,10 @@ namespace Aeroclub.Cargo.Application.Services
             return ServiceResponseStatus.Success;
         }
 
-        public Task<ULDContainerDto> GetAsync(ULDContainerQM query)
+        public async Task<ULDContainerDto> GetAsync(ULDContainerQM query)
         {
-            throw new NotImplementedException();
+            var res = await _unitOfWork.Repository<ULDContainer>().GetByIdAsync(query.Id);
+            return _mapper.Map<ULDContainer, ULDContainerDto>(res);
         }
     }
 }
