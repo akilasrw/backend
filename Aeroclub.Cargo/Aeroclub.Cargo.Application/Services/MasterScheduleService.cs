@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.MasterScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
@@ -23,21 +24,19 @@ namespace Aeroclub.Cargo.Application.Services
             _dateGeneratorService = dateGeneratorService;
         }
 
+        public async Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query)
+        {
+            var spec = new MasterScheduleSpecification(query);
+            var entity = await _unitOfWork.Repository<MasterSchedule>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<MasterSchedule, MasterScheduleVM>(entity);
+        }
+
         public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleRM dto)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success};
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM() { DaysOfWeek = dto.DaysOfWeek, ScheduleStartDate = dto.ScheduleStartDate, ScheduleEndDate = dto.ScheduleEndDate });
-
-                if (bookingDays == null || bookingDays.Count <1)
-                {
-                    transaction.Rollback();
-                    response.StatusCode = ServiceResponseStatus.ValidationError;
-                    response.Message = "Booking days validation error.";
-                    return response;
-                }
 
                 var masterScheduleEntity = _mapper.Map<MasterSchedule>(dto);
                 var masterScheduleResponse = await _unitOfWork.Repository<MasterSchedule>().CreateAsync(masterScheduleEntity);
@@ -51,40 +50,72 @@ namespace Aeroclub.Cargo.Application.Services
                     return response;
                 }
 
-
-                foreach (var day in bookingDays)
+                if (dto.CalendarType == CalendarType.Daily)
                 {
-                    var aircraftSchedule = new AircraftScheduleRM();
-                   // aircraftSchedule.ScheduleStartDateTime = 
 
-                    var aircraftScheduleEntity = _mapper.Map<AircraftSchedule>(aircraftSchedule);
-                    var aircraftScheduleResponse = await _unitOfWork.Repository<AircraftSchedule>().CreateAsync(aircraftScheduleEntity);
-                    await _unitOfWork.SaveChangesAsync();
+                    response = await CreateAircraftSchedule(dto.ScheduleStartDate, dto, masterScheduleResponse);
 
-                    if (aircraftScheduleResponse== null)
+                    if (response.StatusCode == ServiceResponseStatus.Failed)
                     {
                         transaction.Rollback();
-                        response.StatusCode = ServiceResponseStatus.Failed;
-                        response.Message = "Aircraft schedule creation fails.";
                         return response;
                     }
+                }else{
+                    var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM() { DaysOfWeek = dto.DaysOfWeek, ScheduleStartDate = dto.ScheduleStartDate, ScheduleEndDate = dto.ScheduleEndDate });
+
+                    if (bookingDays == null || bookingDays.Count < 1)
+                    {
+                        transaction.Rollback();
+                        response.StatusCode = ServiceResponseStatus.ValidationError;
+                        response.Message = "Booking days validation error.";
+                        return response;
+                    }
+
+                    foreach (var day in bookingDays)
+                    {
+
+                        response =  await CreateAircraftSchedule(day,dto,masterScheduleResponse);
+
+                        if (response.StatusCode == ServiceResponseStatus.Failed)
+                        {
+                            transaction.Rollback();
+                            return response;
+                        }
+                    }
+
                 }
-
-
-
-
                 transaction.Commit();
             }
 
             return response;
         }
 
-        public async Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query)
+        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleRM dto, MasterSchedule masterScheduleResponse)
         {
-            var spec = new MasterScheduleSpecification(query);
-            var entity = await _unitOfWork.Repository<MasterSchedule>().GetEntityWithSpecAsync(spec);
-            return _mapper.Map<MasterSchedule, MasterScheduleVM>(entity);
+            var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
+
+            var aircraftSchedule = new AircraftScheduleRM();
+            aircraftSchedule.AircraftId = dto.AircraftId;
+            aircraftSchedule.MasterScheduleId = masterScheduleResponse.Id;
+            aircraftSchedule.ScheduleStartDateTime = day.Date.Add(masterScheduleResponse.ScheduleStartTime);
+
+            var scheduleStartDateTimeInMili = aircraftSchedule.ScheduleStartDateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+            scheduleStartDateTimeInMili += dto.NumberOfHours * 60 * 60 * 1000;
+            var scheduleEndDateTime = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds(scheduleStartDateTimeInMili).ToLocalTime();
+            aircraftSchedule.ScheduleEndDateTime = scheduleEndDateTime;
+
+            var aircraftScheduleEntity = _mapper.Map<AircraftSchedule>(aircraftSchedule);
+            var aircraftScheduleResponse = await _unitOfWork.Repository<AircraftSchedule>().CreateAsync(aircraftScheduleEntity);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (aircraftScheduleResponse == null)
+            {
+                response.StatusCode = ServiceResponseStatus.Failed;
+                response.Message = "Aircraft schedule creation fails.";
+            }
+            return response;
         }
+
 
     }
 }

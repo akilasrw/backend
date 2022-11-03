@@ -12,7 +12,11 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs
         [Required(ErrorMessage = "Schedule start date required.")]
         public DateTime ScheduleStartDate { get; set; }
         public DateTime ScheduleEndDate { get; set; }
-        public TimeSpan ScheduleStartTime { get; set; }
+
+        [Required(ErrorMessage = "Schedule start time required.")]
+        public string ScheduleStartTime { get; set; } = null!;
+
+        [Required(ErrorMessage = "Number of hours required.")]
         public double NumberOfHours { get; set; }
         public string DaysOfWeek { get; set; } = null!;
 
