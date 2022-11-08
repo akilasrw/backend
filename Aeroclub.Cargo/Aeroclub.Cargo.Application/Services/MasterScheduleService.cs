@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AircraftScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.MasterScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
@@ -50,12 +51,14 @@ namespace Aeroclub.Cargo.Application.Services
                     return response;
                 }
 
+                var previousSchedules = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(new AircraftScheduleSpecification(new AircraftScheduleQM { IsScheduleCompleted = false, AircraftId = dto.AircraftId }));
+
                 if (dto.CalendarType == CalendarType.Daily)
                 {
 
-                    response = await CreateAircraftSchedule(dto.ScheduleStartDate, dto, masterScheduleResponse);
+                    response = await CreateAircraftSchedule(dto.ScheduleStartDate, dto, masterScheduleResponse,previousSchedules);
 
-                    if (response.StatusCode == ServiceResponseStatus.Failed)
+                    if (response.StatusCode != ServiceResponseStatus.Success)
                     {
                         transaction.Rollback();
                         return response;
@@ -74,9 +77,9 @@ namespace Aeroclub.Cargo.Application.Services
                     foreach (var day in bookingDays)
                     {
 
-                        response =  await CreateAircraftSchedule(day,dto,masterScheduleResponse);
+                        response =  await CreateAircraftSchedule(day,dto,masterScheduleResponse,previousSchedules);
 
-                        if (response.StatusCode == ServiceResponseStatus.Failed)
+                        if (response.StatusCode != ServiceResponseStatus.Success )
                         {
                             transaction.Rollback();
                             return response;
@@ -90,7 +93,7 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
-        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleRM dto, MasterSchedule masterScheduleResponse)
+        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleRM dto, MasterSchedule masterScheduleResponse, IReadOnlyList<AircraftSchedule> previousSchedules)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
@@ -103,6 +106,19 @@ namespace Aeroclub.Cargo.Application.Services
             scheduleStartDateTimeInMili += dto.NumberOfHours * 60 * 60 * 1000;
             var scheduleEndDateTime = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds(scheduleStartDateTimeInMili).ToLocalTime();
             aircraftSchedule.ScheduleEndDateTime = scheduleEndDateTime;
+
+            if(previousSchedules != null && previousSchedules.Count>0)
+            {
+                foreach(var schedule in previousSchedules)
+                {
+                    if (schedule.ScheduleStartDateTime < aircraftSchedule.ScheduleEndDateTime && aircraftSchedule.ScheduleStartDateTime < schedule.ScheduleEndDateTime)
+                    {
+                        response.StatusCode = ServiceResponseStatus.ValidationError;
+                        response.Message = "Already scheduled this time slot.(" + schedule.ScheduleStartDateTime + " - "+ schedule.ScheduleEndDateTime+".";
+                        return response;
+                    }
+                }
+            }
 
             var aircraftScheduleEntity = _mapper.Map<AircraftSchedule>(aircraftSchedule);
             var aircraftScheduleResponse = await _unitOfWork.Repository<AircraftSchedule>().CreateAsync(aircraftScheduleEntity);
