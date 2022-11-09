@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.AircraftScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.MasterScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.MasterScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -23,6 +24,20 @@ namespace Aeroclub.Cargo.Application.Services
         public MasterScheduleService(IUnitOfWork unitOfWork,IMapper mapper, IDateGeneratorService dateGeneratorService) :base(unitOfWork,mapper)
         {
             _dateGeneratorService = dateGeneratorService;
+        }
+
+        public async Task<IReadOnlyList<AircraftScheduleVM>> GetAircraftScheduleAsync(MasterScheduleListQM query)
+        {
+            List<AircraftSchedule> scheduleList = new List<AircraftSchedule>();
+            var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM() { DaysOfWeek = "1,2,3,4,5,6,7", ScheduleStartDate = query.ScheduleStartDate, ScheduleEndDate = query.ScheduleEndDate });
+
+            foreach (var bookingDay in bookingDays)
+            {
+                var spec = new AircraftScheduleSpecification(new AircraftScheduleListQM() { IsIncludeAircraft = true,ScheduleStartDate= bookingDay });
+                var list = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(spec);
+                scheduleList.AddRange(list);
+            }          
+            return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(scheduleList);
         }
 
         public async Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query)
