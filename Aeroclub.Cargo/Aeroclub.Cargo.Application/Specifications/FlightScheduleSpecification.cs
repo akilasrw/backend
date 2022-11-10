@@ -52,5 +52,16 @@ namespace Aeroclub.Cargo.Application.Specifications
             }
         }
 
+        public FlightScheduleSpecification(FlightScheduleLinkQM query)
+            : base(x => (query.FlightScheduleManagementId == x.FlightScheduleManagementId))
+        {
+            if (query.IncludeFlightScheduleSectors)
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors));
+
+            if (query.IncludeAircrafts)
+                AddInclude(x => x.Include(y => y.Aircraft));
+
+        }
+
     }
 }

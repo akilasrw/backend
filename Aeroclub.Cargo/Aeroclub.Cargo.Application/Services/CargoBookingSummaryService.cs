@@ -169,27 +169,13 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var position in positions)
             {
                 var cargoPosition = new CargoPositionDetailVM();
-
-                var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
-                {
-                    IsIncludeULDContainer = true,
-                    CargoPositionId = position.Id
-                });
-
-                if (positionContainers != null && positionContainers.Count > 0)
-                {
-                    var firstContainer = positionContainers.First();
-                    if (firstContainer.ULDContainer.ULD != null)
-                    {
-                        //cargoPosition.IsPalletAssigned = true;                       
-                        cargoPosition.ULDNumber = firstContainer.ULDContainer.ULD.SerialNumber;
-                    }
-                }
-                var  uld = await _uLDService.GetAsync(new ULDQM() { PositionId = position.Id });
+                var uld = await _uLDService.GetAsync(new ULDQM() { PositionId = position.Id });
 
                 if (uld != null && uld.ULDMetaData != null)
                 {
                     cargoPosition.IsPalletAssigned = true;
+                    cargoPosition.ULDNumber = uld.SerialNumber;
+                    cargoPosition.Dimention = string.Format("{0} x {1} x {2}", uld.ULDMetaData.Length, uld.ULDMetaData.Width, uld.ULDMetaData.Height);
                 }
                 int val;
                 cargoPosition.Id = position.Id;
@@ -201,7 +187,7 @@ namespace Aeroclub.Cargo.Application.Services
                 list.Add(cargoPosition);
             }
 
-            return list.OrderBy(x=>x.Position).ToList();
+            return list.OrderBy(x => x.Position).ToList();
         }
 
     }

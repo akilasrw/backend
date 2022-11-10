@@ -134,5 +134,13 @@ namespace Aeroclub.Cargo.Application.Services
             var list = await _unitOfWork.Repository<FlightSchedule>().GetListAsync();
             return _mapper.Map<IReadOnlyList<FlightScheduleVM>>(list);
         }
+
+        public async Task<IReadOnlyList<FlightScheduleLinkVM>> GetListByMasterIdAsync(FlightScheduleLinkQM query)
+        {
+            var spec = new FlightScheduleSpecification(query);
+            var list = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(spec);
+            return _mapper.Map<IReadOnlyList<FlightScheduleLinkVM>>(list);
+
+        }
     }
 }
