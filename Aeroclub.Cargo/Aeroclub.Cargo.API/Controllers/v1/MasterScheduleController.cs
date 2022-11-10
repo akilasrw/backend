@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.MasterScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.MasterScheduleVMs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return NotFound();
 
             return Ok(result);
+        }
+
+        [HttpGet("GetAircraftSchedule")]
+        public async Task<ActionResult<IReadOnlyList<AircraftScheduleVM>>> GetAircraftScheduleAsync(MasterScheduleListQM query)
+        {
+            return Ok(await _masterScheduleService.GetAircraftScheduleAsync(query));
         }
 
         [HttpPost]
