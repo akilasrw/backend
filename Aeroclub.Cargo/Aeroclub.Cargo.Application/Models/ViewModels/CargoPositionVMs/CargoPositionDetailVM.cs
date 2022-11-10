@@ -17,5 +17,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs
         public double MaxVolume { get; set; }
         public string Destination { get; set; }
         public int Position { get; set; }
+        public string? Dimention { get; set; }
     }
 }

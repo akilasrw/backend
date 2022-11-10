@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
@@ -7,6 +8,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRM
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -33,7 +35,7 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)  
         {
             var status = ServiceResponseStatus.Success;
-            var spec = new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM() { Id = query.FlightScheduleManagementId});
+            var spec = new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM() { Id = query.FlightScheduleId});
             var flightScheduleManagements = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(spec);
             if (flightScheduleManagements.FlightSchedules != null)
                 foreach (FlightSchedule schedule in flightScheduleManagements.FlightSchedules)
@@ -55,7 +57,7 @@ namespace Aeroclub.Cargo.Application.Services
             return status;
         }
 
-        public async Task<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query)
+        public async Task<Pagination<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query)
         {
             var spec = new FlightScheduleManagementSpecification(query);
             var flightScheduleManagementList = await _unitOfWork.Repository<FlightScheduleManagement>().GetListWithSpecAsync(spec);
@@ -67,19 +69,9 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var dto in dtoList)
             {
                 var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { FlightId = dto.FlightId });
-
-                //if (schedule != null && schedule.AircraftId != null)
-                //{
-                //    dto.AircraftId = schedule.AircraftId;
-                //    dto.IsAircraftLinked = true;
-                //}
-                //else
-                //{
-                //    dto.IsAircraftLinked = false;
-                //}
             }
-            var list = dtoList.Where(x => x.IsAircraftLinked == query.IsLink).ToList();
-            return list;
+            // var list = dtoList.Where(x => x.IsAircraftLinked == query.IsLink).ToList();
+            return   new Pagination<FlightScheduleManagementLinkAircraftVM>(query.PageIndex, query.PageSize, totalCount, dtoList);;
         }
     }
 }

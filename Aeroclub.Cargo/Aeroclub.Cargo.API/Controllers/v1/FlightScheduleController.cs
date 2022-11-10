@@ -33,6 +33,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(result);
         }
 
+        [HttpGet("GetListByMasterId")]
+        public async Task<ActionResult<FlightScheduleLinkVM>> GetListByMasterIdAsync([FromQuery] FlightScheduleLinkQM query)
+        {
+            return Ok(await _flightScheduleService.GetListByMasterIdAsync(query));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleCreateRM flightScheduleCreateRM)
         {

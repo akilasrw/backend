@@ -12,5 +12,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> UpdateAsync(FlightScheduleUpdateRM model);
         Task<FlightScheduleVM> GetAsync(FlightScheduleQM query);
         Task<IReadOnlyList<FlightScheduleVM>> GetListAsync();
+        Task<IReadOnlyList<FlightScheduleLinkVM>> GetListByMasterIdAsync(FlightScheduleLinkQM query);
     }
 }
