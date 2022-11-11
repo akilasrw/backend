@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Core;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using System.Text.Json.Serialization;
 
 namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs
@@ -16,6 +17,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs
         public bool? IsLink { get; set; }
         public string? FlightNumber { get; set; }
         public string? AircraftRegistration { get; set; }
+        public AircaftAssignedStatus Status { get; set; } = AircaftAssignedStatus.None;
 
     }
 }
