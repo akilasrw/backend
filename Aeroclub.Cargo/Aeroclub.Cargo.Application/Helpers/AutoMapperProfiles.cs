@@ -256,7 +256,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.CargoAgentName, o => o.MapFrom(s=> s.CargoAgent != null? s.CargoAgent.AgentName:""));
 
             CreateMap<AircraftSchedule, AircraftScheduleVM>()
-                .ForMember(d => d.RegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""));
+                .ForMember(d => d.RegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""))
+                .ForMember(d => d.ScheduleStatus, o => o.MapFrom(s => s.MasterSchedule != null ? s.MasterSchedule.ScheduleStatus : ScheduleStatus.None));
 
         }
     }
