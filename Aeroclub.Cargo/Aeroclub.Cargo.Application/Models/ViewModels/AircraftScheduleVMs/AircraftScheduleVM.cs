@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs
 {
@@ -9,5 +10,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs
         public bool IsCompleted { get; set; }
         public Guid AircraftId { get; set; }
         public string? RegNo { get; set; }
+        public ScheduleStatus ScheduleStatus { get; set; }
+
     }
 }

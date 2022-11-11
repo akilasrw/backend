@@ -16,7 +16,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         public AircraftScheduleSpecification(AircraftScheduleListQM query)
             : base(x=> x.ScheduleStartDateTime.Date == query.ScheduleStartDate.Date || (query.ScheduleStartDate.Date > x.ScheduleStartDateTime.Date && query.ScheduleStartDate.Date <= x.ScheduleEndDateTime.Date))
         {
-            if(query.IsIncludeAircraft)
+            AddInclude(x => x.Include(y => y.MasterSchedule));
+
+            if (query.IsIncludeAircraft)
                 AddInclude(x => x.Include(y => y.Aircraft));
 
         }
