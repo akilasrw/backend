@@ -23,4 +23,12 @@ namespace Aeroclub.Cargo.Application.Enums
         NoSpace = 3,
 
     }
+
+    public enum AircaftAssignedStatus
+    {
+        None =0,
+        Pending = 1,
+        PartiallyCompleted = 2,
+        Completed = 3
+    }
 }

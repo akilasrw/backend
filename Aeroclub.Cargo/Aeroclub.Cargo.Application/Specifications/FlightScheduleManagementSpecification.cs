@@ -36,14 +36,25 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightScheduleManagementSpecification(FlightScheduleManagemenLinktFilteredListQM query, bool isCount = false)
             : base(x=> (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
         {
-            if (query.IsLink == true)
+            if (query.Status != Enums.AircaftAssignedStatus.None)
             {
-                AddInclude(c => c.Include(v => v.FlightSchedules));
-                And(y => y.FlightSchedules.Any(c => c.AircraftId != null));
+                if(query.Status == Enums.AircaftAssignedStatus.PartiallyCompleted)
+                {
+                    And(c => c.FlightSchedules.Count() > 0 && c.FlightSchedules.Count() > c.FlightSchedules.Where(x => x.AircraftId != null).Count() && c.FlightSchedules.Where(x => x.AircraftId != null).Count() > 0);
+                }
+                else if (query.Status == Enums.AircaftAssignedStatus.PartiallyCompleted)
+                {
+                    And(s=> s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == s.FlightSchedules.Count());
+                }
+                else if (query.Status == Enums.AircaftAssignedStatus.Pending)
+                {
+                    And(s => s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == 0);
+                }                
             }
 
             if (!isCount)
             {
+                AddInclude(c => c.Include(v => v.FlightSchedules));
                 AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
             }

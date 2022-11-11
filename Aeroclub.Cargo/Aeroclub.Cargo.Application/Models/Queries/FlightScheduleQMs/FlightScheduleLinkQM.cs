@@ -8,6 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs
 {
     public class FlightScheduleLinkQM
     {
+        public Guid? FlightScheduleId { get; set; }
         public Guid? FlightScheduleManagementId { get; set; }
         public bool IncludeFlightScheduleSectors { get; set; } = false;
         public bool IncludeAircrafts { get; set; } = false;

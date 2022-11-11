@@ -32,28 +32,26 @@ namespace Aeroclub.Cargo.Application.Services
         {
             _flightScheduleService = flightScheduleService;
         }
-        public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)  
+        public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)
         {
             var status = ServiceResponseStatus.Success;
-            var spec = new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM() { Id = query.FlightScheduleId});
-            var flightScheduleManagements = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(spec);
-            if (flightScheduleManagements.FlightSchedules != null)
-                foreach (FlightSchedule schedule in flightScheduleManagements.FlightSchedules)
-                {
-                    schedule.AircraftId = query.AircraftId;
-                    var mappedSchedule = _mapper.Map<FlightSchedule, FlightScheduleUpdateRM>(schedule);
-                    status = await _flightScheduleService.UpdateAsync(mappedSchedule);
+            var spec = new FlightScheduleSpecification(new FlightScheduleLinkQM { FlightScheduleId = query.FlightScheduleId });
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+            if (flightSchedule.FlightScheduleSectors != null)
+                flightSchedule.AircraftId = query.AircraftId;
+            var mappedSchedule = _mapper.Map<FlightSchedule, FlightScheduleUpdateRM>(flightSchedule);
+            status = await _flightScheduleService.UpdateAsync(mappedSchedule);
 
-                    var specSector = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = schedule.Id });
-                    var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specSector);
-                    foreach (var sector in flightScheduleSectors)
-                    {
-                        sector.AircraftId = query.AircraftId;
-                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
-                        await _unitOfWork.SaveChangesAsync();
-                        _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
-                    }
-                }        
+            var specSector = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = query.FlightScheduleId });
+            var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specSector);
+            foreach (var sector in flightScheduleSectors)
+            {
+                sector.AircraftId = query.AircraftId;
+                _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+            }
+
             return status;
         }
 
@@ -66,11 +64,6 @@ namespace Aeroclub.Cargo.Application.Services
             var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>>(flightScheduleManagementList);
-            foreach (var dto in dtoList)
-            {
-                var schedule = await _flightScheduleService.GetAsync(new FlightScheduleQM() { FlightId = dto.FlightId });
-            }
-            // var list = dtoList.Where(x => x.IsAircraftLinked == query.IsLink).ToList();
             return   new Pagination<FlightScheduleManagementLinkAircraftVM>(query.PageIndex, query.PageSize, totalCount, dtoList);;
         }
     }
