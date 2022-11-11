@@ -34,7 +34,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetAircraftSchedule")]
-        public async Task<ActionResult<IReadOnlyList<AircraftScheduleVM>>> GetAircraftScheduleAsync(MasterScheduleListQM query)
+        public async Task<ActionResult<IReadOnlyList<AircraftScheduleVM>>> GetAircraftScheduleAsync([FromQuery] MasterScheduleListQM query)
         {
             return Ok(await _masterScheduleService.GetAircraftScheduleAsync(query));
         }
