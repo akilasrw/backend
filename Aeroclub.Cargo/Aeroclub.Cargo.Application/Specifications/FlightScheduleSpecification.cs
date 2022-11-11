@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
@@ -61,6 +62,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IncludeAircrafts)
                 AddInclude(x => x.Include(y => y.Aircraft));
 
+        }
+
+        public FlightScheduleSpecification(DateTime startDate, DateTime endDate)
+            : base(x=> x.ActualDepartureDateTime >= startDate && x.ActualDepartureDateTime <= endDate)
+        {
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors));
+                AddInclude(x => x.Include(y => y.Aircraft));
         }
 
     }

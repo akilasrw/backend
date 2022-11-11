@@ -85,7 +85,7 @@ namespace Aeroclub.Cargo.Application.Services
                     CargoBookingListVM vm = new CargoBookingListVM();
                     vm.BookingNumber = booking.BookingNumber;
                     vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
-                    vm.BookingAgent = agent.AgentName;
+                    vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
                     vm.BookingDate = booking.BookingDate;
                     vm.BookingStatus = booking.BookingStatus;
                     vm.NumberOfBoxes = booking.PackageItems==null? 0: booking.PackageItems.Count();

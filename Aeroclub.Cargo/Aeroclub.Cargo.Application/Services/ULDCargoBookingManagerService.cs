@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
@@ -154,12 +155,13 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseCreateStatus> AssginCargoToULDAsync(ULDContainerCargoPositionDto uLDContainerCargoPosition)
         {
-            var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success};
+            var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
             var spec = new ULDContainerCargoPositionSpecification(new ULDCOntainerCargoPositionQM()
             {
                 ULDContainerId = uLDContainerCargoPosition.ULDContainerId,
-                IsIncludeULDContainer = true
+                IsIncludeULDContainer = true,
+                IsIncludePackageItem = true,
             });
             var entity = await _unitOfWork.Repository<ULDContainerCargoPosition>().GetEntityWithSpecAsync(spec);
             bool needToCreate = true;
@@ -179,6 +181,7 @@ namespace Aeroclub.Cargo.Application.Services
                     // reset existing volume
                     await UpdateCurrentWeightAsyncs(entity.CargoPositionId, entity.ULDContainer.PackageItems.Sum(x => x.Weight) * -1);
                     await UpdateCurrentVolumeAsyncs(entity.CargoPositionId, (entity.ULDContainer.Length * entity.ULDContainer.Width * entity.ULDContainer.Height) * -1);
+                    _unitOfWork.Repository<ULDContainer>().Detach(entity.ULDContainer);
                     needToCreate = true;
                 }
             }
@@ -191,21 +194,42 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var containter = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(
                     new ULDContainerSpecification(new ULDContainerQM() { Id = uLDContainerCargoPosition.ULDContainerId }));
-                _unitOfWork.Repository<ULDContainer>().Detach(containter);
+                // _unitOfWork.Repository<ULDContainer>().Detach(containter);
 
-                double packageWeight = containter.PackageItems.Sum(x=>x.Weight);
-                if(position.MaxWeight < (position.CurrentWeight + packageWeight))
+                var uld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(new ULDSpecification(new ULDQM() { PositionId = uLDContainerCargoPosition.CargoPositionId }));
+
+                string exeedType = "";
+                double uldPackageWeght = containter.PackageItems.Sum(x => x.Weight) + uld.ULDMetaData.Weight;
+
+                if (position.MaxWeight < (uldPackageWeght + position.CurrentWeight)) exeedType = "pallete";
+                if (position.ZoneArea.MaxWeight < (uldPackageWeght + position.ZoneArea.CurrentWeight)) exeedType = "zone area";
+                if (position.ZoneArea.AircraftCabin.MaxWeight < (uldPackageWeght + position.ZoneArea.AircraftCabin.CurrentWeight)) exeedType = "aircraft cabin";
+                if (position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight < (uldPackageWeght + position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight)) exeedType = "aircraft deck";
+
+                if (exeedType != "")
                 {
                     response.StatusCode = ServiceResponseStatus.ValidationError;
-                    response.Message = "Max weight is exceeded.";
+                    response.Message = string.Format("Max {0} weight is exceeded.", exeedType); ;
                     return response;
                 }
 
-                if (position.MaxVolume < (position.CurrentVolume + (containter.Width+ containter.Height + containter.Length)))
+                if (position.MaxVolume < (position.CurrentVolume + (containter.Width + containter.Height + containter.Length)))
                 {
                     response.StatusCode = ServiceResponseStatus.ValidationError;
-                    response.Message = "Max Volume is exceeded.";
+                    response.Message = "Max pallete volume is exceeded.";
                     return response;
+                }
+
+                try
+                {
+                    containter.ULDId = uld.Id;
+                    _unitOfWork.Repository<ULDContainer>().Update(containter);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<ULDContainer>().Detach(containter);
+                }
+                catch (Exception ex)
+                {
+                    throw;
                 }
 
                 await _uLDContainerCargoPositionService.CreateAsync(uLDContainerCargoPosition);
