@@ -22,5 +22,11 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.Aircraft));
 
         }
+
+        public AircraftScheduleSpecification(DateTime startDate, DateTime endDate)
+           : base(x => (x.ScheduleStartDateTime <= startDate && endDate <= x.ScheduleEndDateTime) && !x.IsCompleted && !x.IsDeleted)
+        {
+            AddInclude(x => x.Include(y => y.Aircraft));
+        }
     }
 }

@@ -264,6 +264,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.RegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""))
                 .ForMember(d => d.ScheduleStatus, o => o.MapFrom(s => s.MasterSchedule != null ? s.MasterSchedule.ScheduleStatus : ScheduleStatus.None));
 
+            CreateMap <Aircraft,AircraftDto>().ReverseMap();
+
         }
     }
 }

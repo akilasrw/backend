@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
@@ -13,5 +14,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<FlightScheduleVM> GetAsync(FlightScheduleQM query);
         Task<IReadOnlyList<FlightScheduleVM>> GetListAsync();
         Task<IReadOnlyList<FlightScheduleLinkVM>> GetListByMasterIdAsync(FlightScheduleLinkQM query);
+        Task<IReadOnlyList<AircraftDto>> GetAvailableAircrafts_ByFlightScheduleIdAsync(Guid flightScheduleId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
@@ -44,6 +45,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             var response = await _flightScheduleService.CreateAsync(flightScheduleCreateRM);
             return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, flightScheduleCreateRM);
+        }
+
+        [HttpGet("GetAircraftsByFlightScheduleId/{flightScheduleId}")]
+        public async Task<ActionResult<AircraftDto>> GetAvailableAircrafts_ByFlightScheduleIdAsync(Guid flightScheduleId)
+        {
+            return Ok(await _flightScheduleService.GetAvailableAircrafts_ByFlightScheduleIdAsync(flightScheduleId));
         }
 
     }

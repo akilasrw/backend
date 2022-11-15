@@ -49,7 +49,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
             if (query.IsIncludeFlightScheduleSectors)
             {
-                AddInclude(x => x.Include(y => y.FlightScheduleSectors));
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f=>f.Flight).ThenInclude(p=> p.FlightSectors));
             }
         }
 
