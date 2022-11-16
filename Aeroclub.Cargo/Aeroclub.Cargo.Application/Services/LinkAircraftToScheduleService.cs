@@ -52,6 +52,8 @@ namespace Aeroclub.Cargo.Application.Services
                 _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
             }
 
+            // TODO: update flight schedule with aircraft schedule
+
             return status;
         }
 

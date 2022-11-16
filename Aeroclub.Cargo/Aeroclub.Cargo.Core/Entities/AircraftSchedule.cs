@@ -12,6 +12,8 @@ namespace Aeroclub.Cargo.Core.Entities
 
         public virtual MasterSchedule MasterSchedule { get; set; } = null!;  
         public virtual Aircraft? Aircraft { get; set; }
+        public virtual ICollection<FlightSchedule>? FlightSchedules { get; set; }
+
         //public virtual AircraftCharteredSchedule? AircraftCharteredSchedule { get; set; }
         //public virtual AircraftMaintainanceSchedule? AircraftMaintainanceSchedule { get; set; }
     }
