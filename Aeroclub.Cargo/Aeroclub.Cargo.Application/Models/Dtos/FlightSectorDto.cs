@@ -9,7 +9,7 @@ namespace Aeroclub.Cargo.Application.Models.Dtos
         public int Sequence { get; set; }
         public string DepartureDateDisplayTime { get; set; }
         public string ArrivalDateDisplayTime { get; set; }
-        public double OriginBlockTimeHrs { get; set; }
-        public double DestinationBlockTimeHrs { get; set; }
+        public double OriginBlockTimeMin { get; set; }
+        public double DestinationBlockTimeMin { get; set; }
     }
 }

@@ -944,7 +944,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "824e0cf1-e65f-436d-b554-69e22b57ce93",
+                            ConcurrencyStamp = "65389a6f-9628-464c-a10e-8576f4ac1572",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -960,7 +960,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d3644df7-c0bf-4aaa-bbdd-458d3de616d0",
+                            ConcurrencyStamp = "5411f356-8486-4ef4-b15c-ac6cc784dcc7",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -23397,7 +23397,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<TimeSpan?>("DepartureDateTime")
                         .HasColumnType("time");
 
-                    b.Property<double?>("DestinationBlockTimeHrs")
+                    b.Property<double?>("DestinationBlockTimeMin")
                         .HasColumnType("float");
 
                     b.Property<Guid>("Id")
@@ -23415,7 +23415,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double?>("OriginBlockTimeHrs")
+                    b.Property<double?>("OriginBlockTimeMin")
                         .HasColumnType("float");
 
                     b.Property<byte>("Sequence")

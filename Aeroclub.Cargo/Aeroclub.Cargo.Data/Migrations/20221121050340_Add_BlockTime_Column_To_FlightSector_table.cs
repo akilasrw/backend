@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aeroclub.Cargo.Data.Migrations
 {
-    public partial class Add_BlockTime_To_FlightSector_table : Migration
+    public partial class Add_BlockTime_Column_To_FlightSector_table : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
-                name: "DestinationBlockTimeHrs",
+                name: "DestinationBlockTimeMin",
                 table: "FlightSectors",
                 type: "float",
                 nullable: true);
 
             migrationBuilder.AddColumn<double>(
-                name: "OriginBlockTimeHrs",
+                name: "OriginBlockTimeMin",
                 table: "FlightSectors",
                 type: "float",
                 nullable: true);
@@ -26,24 +26,24 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "824e0cf1-e65f-436d-b554-69e22b57ce93");
+                value: "65389a6f-9628-464c-a10e-8576f4ac1572");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "d3644df7-c0bf-4aaa-bbdd-458d3de616d0");
+                value: "5411f356-8486-4ef4-b15c-ac6cc784dcc7");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "DestinationBlockTimeHrs",
+                name: "DestinationBlockTimeMin",
                 table: "FlightSectors");
 
             migrationBuilder.DropColumn(
-                name: "OriginBlockTimeHrs",
+                name: "OriginBlockTimeMin",
                 table: "FlightSectors");
 
             migrationBuilder.UpdateData(

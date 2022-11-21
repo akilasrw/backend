@@ -10,8 +10,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public int Sequence { get; set; }
         public TimeSpan? DepartureDateTime { get; set; }
         public TimeSpan? ArrivalDateTime { get; set; }
-        public double? OriginBlockTimeHrs { get; set; }
-        public double? DestinationBlockTimeHrs { get; set; }
+        public double? OriginBlockTimeMin { get; set; }
+        public double? DestinationBlockTimeMin { get; set; }
 
         public virtual Flight Flight { get; set; }
         public virtual Sector Sector { get; set; }
