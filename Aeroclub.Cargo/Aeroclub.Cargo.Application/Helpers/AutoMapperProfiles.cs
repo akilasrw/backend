@@ -221,8 +221,10 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportCode : ""))
                 .ForMember(d => d.TotalRecordCount, o => o.MapFrom(s => s.FlightSchedules != null? s.FlightSchedules.Count():0))
                 .ForMember(d => d.LinkedAircraftsCount, o => o.MapFrom(s => s.FlightSchedules != null ? s.FlightSchedules.Where(x=>x.AircraftId != null).Count():0))
-                .ForMember(d => d.Status, o => o.MapFrom(s => s.FlightSchedules != null && s.FlightSchedules.Count()> 0 && s.FlightSchedules.Where(x=>x.AircraftId != null).Count()== s.FlightSchedules.Count()? AircaftAssignedStatus.Completed: 
-                            s.FlightSchedules.Where(x => x.AircraftId != null).Count() < s.FlightSchedules.Count()? AircaftAssignedStatus.PartiallyCompleted: AircaftAssignedStatus.Pending))
+                .ForMember(d => d.Status, o => o.MapFrom(s => s.FlightSchedules == null?AircaftAssignedStatus.None: 
+                            (s.FlightSchedules != null && s.FlightSchedules.Count()> 0 && s.FlightSchedules.Where(x=>x.AircraftId != null).Count()== s.FlightSchedules.Count())? AircaftAssignedStatus.Completed: 
+                            (s.FlightSchedules.Where(x => x.AircraftId != null).Count()>0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() < s.FlightSchedules.Count())? AircaftAssignedStatus.PartiallyCompleted: 
+                            AircaftAssignedStatus.Pending))
                 .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportName : ""))
                 .ForMember(d => d.ScheduledTime, o => o.MapFrom(s => (s.Flight != null && s.Flight.FlightSectors != null) ? new DateTime()
                 .Add((TimeSpan)s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime) : new DateTime()));

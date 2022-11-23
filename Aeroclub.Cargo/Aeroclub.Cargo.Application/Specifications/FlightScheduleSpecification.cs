@@ -54,7 +54,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(FlightScheduleLinkQM query)
-            : base(x => (query.FlightScheduleManagementId == x.FlightScheduleManagementId))
+            : base(x => (query.FlightScheduleManagementId == null || query.FlightScheduleManagementId == x.FlightScheduleManagementId) && 
+                (query.FlightScheduleId == null || x.Id == query.FlightScheduleId))
         {
             if (query.IncludeFlightScheduleSectors)
                 AddInclude(x => x.Include(y => y.FlightScheduleSectors));
@@ -64,8 +65,8 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
-        public FlightScheduleSpecification(DateTime startDate, DateTime endDate)
-            : base(x=> x.ActualDepartureDateTime >= startDate && x.ActualDepartureDateTime <= endDate)
+        public FlightScheduleSpecification(Guid aircraftScheduleId)
+            : base(x=> x.AircraftScheduleId == aircraftScheduleId)
         {
                 AddInclude(x => x.Include(y => y.FlightScheduleSectors));
                 AddInclude(x => x.Include(y => y.Aircraft));

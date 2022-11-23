@@ -26,7 +26,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] ScheduleAircraftRM query)
         {
-            return Ok(await _linkAircraftToScheduleService.CreateAsync(query));
+            var res = await _linkAircraftToScheduleService.CreateAsync(query);
+            if (res == Application.Enums.ServiceResponseStatus.ValidationError)
+                return BadRequest(new { message = "Aircraft is not available. Please select another one." });
+           
+            return Ok(res);
         }
 
 
