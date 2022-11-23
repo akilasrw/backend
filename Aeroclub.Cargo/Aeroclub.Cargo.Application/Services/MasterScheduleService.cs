@@ -36,8 +36,10 @@ namespace Aeroclub.Cargo.Application.Services
                 var spec = new AircraftScheduleSpecification(new AircraftScheduleListQM() { IsIncludeAircraft = true,ScheduleStartDate= bookingDay });
                 var list = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(spec);
                 scheduleList.AddRange(list);
-            }          
-            return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(scheduleList);
+            }
+            var disList = scheduleList.DistinctBy(x => x.Id).ToList();
+
+            return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(disList);
         }
 
         public async Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query)
