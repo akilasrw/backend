@@ -21,6 +21,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IsIncludeAircraft)
                 AddInclude(x => x.Include(y => y.Aircraft));
 
+            if (query.IsIncludeFlightSchedules)
+                AddInclude(x => x.Include(y => y.FlightSchedules).ThenInclude(a=>a.FlightScheduleSectors).ThenInclude(b=>b.Sector).ThenInclude(c=>c.FlightSectors));
+
         }
 
         public AircraftScheduleSpecification(DateTime startDate, DateTime endDate)
