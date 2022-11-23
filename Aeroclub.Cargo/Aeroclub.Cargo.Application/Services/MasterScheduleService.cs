@@ -33,12 +33,82 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var bookingDay in bookingDays)
             {
-                var spec = new AircraftScheduleSpecification(new AircraftScheduleListQM() { IsIncludeAircraft = true,ScheduleStartDate= bookingDay });
+                var spec = new AircraftScheduleSpecification(new AircraftScheduleListQM() { IsIncludeAircraft = query.IsIncludeAircraft, IsIncludeFlightSchedules = query.IsIncludeFlightSchedules,ScheduleStartDate= bookingDay });
                 var list = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(spec);
                 scheduleList.AddRange(list);
-            }          
-            return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(scheduleList);
+            }
+            var disList = scheduleList.DistinctBy(x => x.Id).ToList();
+            var filterdList = GetFlightScheduleDetails(disList);
+
+            return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(filterdList);
         }
+
+        private List<AircraftScheduleVM> GetFlightScheduleDetails(List<AircraftSchedule> list )
+        {
+            List < AircraftScheduleVM > scheduleList = new List<AircraftScheduleVM>();
+            foreach (var schedule in list)
+            {
+                if(schedule.MasterSchedule.ScheduleStatus == ScheduleStatus.Schedule && 
+                    schedule.FlightSchedules != null && schedule.FlightSchedules.Count>0)
+                {
+                    List<AircraftScheduleFlightVM> flightList = new List<AircraftScheduleFlightVM>();
+                    foreach (var flightSchedule in schedule.FlightSchedules)
+                    {
+                        flightSchedule.FlightScheduleSectors.OrderBy(x => x.SequenceNo);
+                        var flight = new AircraftScheduleFlightVM();
+                        flight.Id = flightSchedule.Id;
+                        flight.OriginAirportId = flightSchedule.OriginAirportId;
+                        flight.DestinationAirportId = flightSchedule.DestinationAirportId;
+                        flight.OriginAirportName = flightSchedule.OriginAirportName;
+                        flight.DestinationAirportName = flightSchedule.DestinationAirportName;
+                        flight.OriginAirportCode = flightSchedule.OriginAirportCode;
+                        flight.DestinationAirportCode = flightSchedule.DestinationAirportCode;
+
+
+                        foreach (var flightSchedulesector in flightSchedule.FlightScheduleSectors)
+                        {
+                            var flightSector = flightSchedulesector.Sector.FlightSectors?.OrderBy(x => x.Sequence).First();
+                            if(flightSector != null && flightSchedulesector.SequenceNo == 1)
+                            {
+                     
+                                    var departureDate = flightSchedulesector.ActualDepartureDateTime.Date;
+                                    var departureDateTime = departureDate + flightSector.DepartureDateTime;
+                                    var actualDepartureDateTime = departureDateTime?.AddHours(-(double)flightSector.OriginBlockTimeMin);
+                                    flight.FlightScheduleStartDateTime = (DateTime)actualDepartureDateTime;
+                            }
+
+                            var arrivalDateTime = flight.FlightScheduleStartDateTime;
+
+                            if (flightSector != null)
+                            {
+                                arrivalDateTime.AddHours((double)flightSector.OriginBlockTimeMin);
+                                var sectorTimeGap = flightSector.DepartureDateTime.Value.Subtract((TimeSpan)flightSector.ArrivalDateTime);
+                                var sectorHours = sectorTimeGap.TotalHours;
+                                arrivalDateTime.AddHours(sectorHours);
+                                arrivalDateTime.AddHours((double)flightSector.DestinationBlockTimeMin);
+                            }
+
+                            flight.FlightScheduleEndDateTime = arrivalDateTime;
+                        }
+
+                        flightList.Add(flight);
+                    }
+
+                    var mapedSchedule = _mapper.Map<AircraftSchedule, AircraftScheduleVM>(schedule);
+                    mapedSchedule.AircraftScheduleFlights = flightList;
+                    scheduleList.Add(mapedSchedule);
+                }
+                else
+                {
+                    scheduleList.Add(_mapper.Map<AircraftSchedule, AircraftScheduleVM>(schedule));
+                }
+
+            }
+
+            return scheduleList;
+
+        }
+
 
         public async Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query)
         {

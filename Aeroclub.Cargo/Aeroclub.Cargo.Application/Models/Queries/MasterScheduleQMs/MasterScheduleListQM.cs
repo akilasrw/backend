@@ -8,5 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.MasterScheduleQMs
         public DateTime ScheduleStartDate { get; set; }
         public DateTime ScheduleEndDate { get; set; }
         public bool IsIncludeAircraft { get; set; }
+        public bool IsIncludeFlightSchedules { get; set; }
+
     }
 }
