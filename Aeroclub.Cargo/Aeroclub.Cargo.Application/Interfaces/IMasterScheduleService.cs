@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Core;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.MasterScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs;
@@ -8,7 +9,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IMasterScheduleService
     {
-        Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleRM dto);
+        Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleCreateRM dto);
+        Task<ServiceResponseStatus> UpdateAsync(MasterScheduleUpdateRM dto);
         Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query);
         Task<IReadOnlyList<AircraftScheduleVM>> GetAircraftScheduleAsync(MasterScheduleListQM query);
 

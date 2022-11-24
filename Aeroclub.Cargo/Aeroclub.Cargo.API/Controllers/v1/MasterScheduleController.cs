@@ -39,8 +39,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _masterScheduleService.GetAircraftScheduleAsync(query));
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] MasterScheduleRM dto)
+        public async Task<IActionResult> CreateAsync([FromBody] MasterScheduleCreateRM dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -57,8 +58,21 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
 
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] MasterScheduleUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var response = await _masterScheduleService.UpdateAsync(dto);
 
+            if (response == ServiceResponseStatus.ValidationError)
+                return BadRequest("Schedule unable to edit.");
+
+            if (response == ServiceResponseStatus.Failed)
+                return BadRequest("Schedule update fails.");
+
+            return NoContent();
+        }
 
 
 

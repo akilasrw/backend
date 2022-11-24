@@ -115,7 +115,7 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<MasterSchedule, MasterScheduleVM>(entity);
         }
 
-        public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleRM dto)
+        public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleCreateRM dto)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
@@ -178,7 +178,7 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
-        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleRM dto, MasterSchedule masterScheduleResponse, IReadOnlyList<AircraftSchedule> previousSchedules)
+        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleCreateRM dto, MasterSchedule masterScheduleResponse, IReadOnlyList<AircraftSchedule> previousSchedules)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
@@ -217,6 +217,20 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
+        public async Task<ServiceResponseStatus> UpdateAsync(MasterScheduleUpdateRM dto)
+        {
+            var existingSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(dto.Id);
 
+            if (existingSchedule == null || existingSchedule.FlightSchedules != null || (existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count >0))
+            {
+                return ServiceResponseStatus.ValidationError;
+            }
+
+         /*   var entity = _mapper.Map<Airport>(model);
+            _unitOfWork.Repository<Airport>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<Airport>().Detach(entity);*/
+            return ServiceResponseStatus.Success;
+        }
     }
 }

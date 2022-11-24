@@ -252,7 +252,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<AgentRateManagementUpdateRM, AgentRateManagement>();
             CreateMap<CountryDto, Country>().ReverseMap();
 
-            CreateMap<MasterScheduleRM, MasterSchedule>()
+            CreateMap<MasterScheduleCreateRM, MasterSchedule>()
                                 .ForMember(d => d.ScheduleStartTime, o => o.MapFrom(s => TimeSpan.Parse(s.ScheduleStartTime)));
             CreateMap<MasterSchedule, MasterScheduleVM>();
             CreateMap<AircraftScheduleRM, AircraftSchedule>();
