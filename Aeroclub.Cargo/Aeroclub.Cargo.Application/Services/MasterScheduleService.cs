@@ -21,7 +21,7 @@ namespace Aeroclub.Cargo.Application.Services
     {
         IDateGeneratorService _dateGeneratorService;
 
-        public MasterScheduleService(IUnitOfWork unitOfWork,IMapper mapper, IDateGeneratorService dateGeneratorService) :base(unitOfWork,mapper)
+        public MasterScheduleService(IUnitOfWork unitOfWork, IMapper mapper, IDateGeneratorService dateGeneratorService) : base(unitOfWork, mapper)
         {
             _dateGeneratorService = dateGeneratorService;
         }
@@ -33,7 +33,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var bookingDay in bookingDays)
             {
-                var spec = new AircraftScheduleSpecification(new AircraftScheduleListQM() { IsIncludeAircraft = query.IsIncludeAircraft, IsIncludeFlightSchedules = query.IsIncludeFlightSchedules,ScheduleStartDate= bookingDay });
+                var spec = new AircraftScheduleSpecification(new AircraftScheduleListQM() { IsIncludeAircraft = query.IsIncludeAircraft, IsIncludeFlightSchedules = query.IsIncludeFlightSchedules, ScheduleStartDate = bookingDay });
                 var list = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(spec);
                 scheduleList.AddRange(list);
             }
@@ -43,13 +43,13 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(filterdList);
         }
 
-        private List<AircraftScheduleVM> GetFlightScheduleDetails(List<AircraftSchedule> list )
+        private List<AircraftScheduleVM> GetFlightScheduleDetails(List<AircraftSchedule> list)
         {
-            List < AircraftScheduleVM > scheduleList = new List<AircraftScheduleVM>();
+            List<AircraftScheduleVM> scheduleList = new List<AircraftScheduleVM>();
             foreach (var schedule in list)
             {
-                if(schedule.MasterSchedule.ScheduleStatus == ScheduleStatus.Schedule && 
-                    schedule.FlightSchedules != null && schedule.FlightSchedules.Count>0)
+                if (schedule.MasterSchedule.ScheduleStatus == ScheduleStatus.Schedule &&
+                    schedule.FlightSchedules != null && schedule.FlightSchedules.Count > 0)
                 {
                     List<AircraftScheduleFlightVM> flightList = new List<AircraftScheduleFlightVM>();
                     foreach (var flightSchedule in schedule.FlightSchedules)
@@ -57,6 +57,7 @@ namespace Aeroclub.Cargo.Application.Services
                         flightSchedule.FlightScheduleSectors.OrderBy(x => x.SequenceNo);
                         var flight = new AircraftScheduleFlightVM();
                         flight.Id = flightSchedule.Id;
+                        flight.FlightNumber = flightSchedule.FlightNumber;
                         flight.OriginAirportId = flightSchedule.OriginAirportId;
                         flight.DestinationAirportId = flightSchedule.DestinationAirportId;
                         flight.OriginAirportName = flightSchedule.OriginAirportName;
@@ -67,28 +68,28 @@ namespace Aeroclub.Cargo.Application.Services
 
                         foreach (var flightSchedulesector in flightSchedule.FlightScheduleSectors)
                         {
-                            var flightSector = flightSchedulesector.Sector.FlightSectors?.OrderBy(x => x.Sequence).First();
-                            if(flightSector != null && flightSchedulesector.SequenceNo == 1)
-                            {
-                     
-                                    var departureDate = flightSchedulesector.ActualDepartureDateTime.Date;
-                                    var departureDateTime = departureDate + flightSector.DepartureDateTime;
-                                    var actualDepartureDateTime = departureDateTime?.AddHours(-(double)flightSector.OriginBlockTimeMin);
-                                    flight.FlightScheduleStartDateTime = (DateTime)actualDepartureDateTime;
-                            }
-
-                            var arrivalDateTime = flight.FlightScheduleStartDateTime;
+                            var flightSector = flightSchedulesector.Sector.FlightSectors?.Where(x => x.FlightId == flightSchedulesector.FlightId && x.SectorId == flightSchedulesector.SectorId).FirstOrDefault();
 
                             if (flightSector != null)
                             {
-                                arrivalDateTime.AddHours((double)flightSector.OriginBlockTimeMin);
-                                var sectorTimeGap = flightSector.DepartureDateTime.Value.Subtract((TimeSpan)flightSector.ArrivalDateTime);
-                                var sectorHours = sectorTimeGap.TotalHours;
-                                arrivalDateTime.AddHours(sectorHours);
-                                arrivalDateTime.AddHours((double)flightSector.DestinationBlockTimeMin);
-                            }
+                                if (flightSchedulesector.SequenceNo == 1)
+                                {
 
-                            flight.FlightScheduleEndDateTime = arrivalDateTime;
+                                    var departureDate = flightSchedulesector.ActualDepartureDateTime.Date;
+                                    var departureDateTime = departureDate + flightSector.DepartureDateTime;
+                                    var actualDepartureDateTime = (flightSector.OriginBlockTimeMin != null) ? departureDateTime?.AddMinutes(-(double)flightSector.OriginBlockTimeMin) : departureDateTime;
+                                    flight.FlightScheduleStartDateTime = (DateTime)actualDepartureDateTime;
+                                }
+
+                                var arrivalDateTime = flight.FlightScheduleStartDateTime;
+                                arrivalDateTime = (flightSector.OriginBlockTimeMin != null) ? arrivalDateTime.AddMinutes((double)flightSector.OriginBlockTimeMin) : arrivalDateTime;
+                                var sectorTimeGap = flightSector.ArrivalDateTime.Value.Subtract((TimeSpan)flightSector.DepartureDateTime);
+                                var sectorMinutes = sectorTimeGap.TotalMinutes;
+                                arrivalDateTime = arrivalDateTime.AddMinutes(sectorMinutes);
+                                arrivalDateTime = (flightSector.DestinationBlockTimeMin != null) ? arrivalDateTime.AddMinutes((double)flightSector.DestinationBlockTimeMin) : arrivalDateTime;
+
+                                flight.FlightScheduleEndDateTime = arrivalDateTime;
+                            }
                         }
 
                         flightList.Add(flight);
@@ -102,11 +103,8 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     scheduleList.Add(_mapper.Map<AircraftSchedule, AircraftScheduleVM>(schedule));
                 }
-
             }
-
             return scheduleList;
-
         }
 
 
@@ -119,7 +117,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleRM dto)
         {
-            var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success};
+            var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
@@ -141,14 +139,16 @@ namespace Aeroclub.Cargo.Application.Services
                 if (dto.CalendarType == CalendarType.Daily)
                 {
 
-                    response = await CreateAircraftSchedule(dto.ScheduleStartDate, dto, masterScheduleResponse,previousSchedules);
+                    response = await CreateAircraftSchedule(dto.ScheduleStartDate, dto, masterScheduleResponse, previousSchedules);
 
                     if (response.StatusCode != ServiceResponseStatus.Success)
                     {
                         transaction.Rollback();
                         return response;
                     }
-                }else{
+                }
+                else
+                {
                     var bookingDays = _dateGeneratorService.GetDates(new DateGeneratorRM() { DaysOfWeek = dto.DaysOfWeek, ScheduleStartDate = dto.ScheduleStartDate, ScheduleEndDate = dto.ScheduleEndDate });
 
                     if (bookingDays == null || bookingDays.Count < 1)
@@ -162,9 +162,9 @@ namespace Aeroclub.Cargo.Application.Services
                     foreach (var day in bookingDays)
                     {
 
-                        response =  await CreateAircraftSchedule(day,dto,masterScheduleResponse,previousSchedules);
+                        response = await CreateAircraftSchedule(day, dto, masterScheduleResponse, previousSchedules);
 
-                        if (response.StatusCode != ServiceResponseStatus.Success )
+                        if (response.StatusCode != ServiceResponseStatus.Success)
                         {
                             transaction.Rollback();
                             return response;
@@ -192,14 +192,14 @@ namespace Aeroclub.Cargo.Application.Services
             var scheduleEndDateTime = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds(scheduleStartDateTimeInMili).ToLocalTime();
             aircraftSchedule.ScheduleEndDateTime = scheduleEndDateTime;
 
-            if(previousSchedules != null && previousSchedules.Count>0)
+            if (previousSchedules != null && previousSchedules.Count > 0)
             {
-                foreach(var schedule in previousSchedules)
+                foreach (var schedule in previousSchedules)
                 {
                     if (schedule.ScheduleStartDateTime < aircraftSchedule.ScheduleEndDateTime && aircraftSchedule.ScheduleStartDateTime < schedule.ScheduleEndDateTime)
                     {
                         response.StatusCode = ServiceResponseStatus.ValidationError;
-                        response.Message = "Already scheduled this time slot.(" + schedule.ScheduleStartDateTime + " - "+ schedule.ScheduleEndDateTime+".";
+                        response.Message = "Already scheduled this time slot.(" + schedule.ScheduleStartDateTime + " - " + schedule.ScheduleEndDateTime + ".";
                         return response;
                     }
                 }
