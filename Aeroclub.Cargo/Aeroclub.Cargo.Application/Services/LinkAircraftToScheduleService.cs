@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
@@ -24,23 +25,35 @@ namespace Aeroclub.Cargo.Application.Services
     public class LinkAircraftToScheduleService : BaseService, ILinkAircraftToScheduleService
     {
         private readonly IFlightScheduleService _flightScheduleService;
+        private readonly IAircraftService _aircraftService;
 
         public LinkAircraftToScheduleService(IUnitOfWork unitOfWork,
             IMapper mapper, 
-            IFlightScheduleService flightScheduleService) 
+            IFlightScheduleService flightScheduleService,
+            IAircraftService aircraftService) 
             : base(unitOfWork, mapper)
         {
             _flightScheduleService = flightScheduleService;
+            _aircraftService = aircraftService;
         }
         public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)
         {
             var status = ServiceResponseStatus.Success;
-            var spec = new FlightScheduleSpecification(new FlightScheduleLinkQM { FlightScheduleId = query.FlightScheduleId });
+            if (!await ValidAircraftAsync(query))
+                return ServiceResponseStatus.ValidationError;
+
+            var spec = new FlightScheduleSpecification(new FlightScheduleLinkQM { FlightScheduleId = query.FlightScheduleId, IncludeFlightScheduleSectors = true, IncludeAircrafts=true });
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
-            if (flightSchedule.FlightScheduleSectors != null)
+            if (flightSchedule != null)
+            {
                 flightSchedule.AircraftId = query.AircraftId;
-            var mappedSchedule = _mapper.Map<FlightSchedule, FlightScheduleUpdateRM>(flightSchedule);
-            status = await _flightScheduleService.UpdateAsync(mappedSchedule);
+                flightSchedule.AircraftRegNo = await _aircraftService.GetAircraftRegNo(query.AircraftId);
+                flightSchedule.AircraftScheduleId = query.AircraftScheduleId;
+            }
+
+            _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
 
             var specSector = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = query.FlightScheduleId });
             var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specSector);
@@ -51,9 +64,6 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
             }
-
-            // TODO: update flight schedule with aircraft schedule
-
             return status;
         }
 
@@ -67,6 +77,15 @@ namespace Aeroclub.Cargo.Application.Services
 
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>>(flightScheduleManagementList);
             return   new Pagination<FlightScheduleManagementLinkAircraftVM>(query.PageIndex, query.PageSize, totalCount, dtoList);;
+        }
+
+        private async Task<bool> ValidAircraftAsync(ScheduleAircraftRM query)
+        {
+            IReadOnlyList<AircraftDto> availableAircrafts = await _flightScheduleService.GetAvailableAircrafts_ByFlightScheduleIdAsync(query.FlightScheduleId);
+            if (availableAircrafts.Where(x => x.Id == query.AircraftId).ToList().Count() > 0)
+                return true;
+
+            return false;
         }
     }
 }

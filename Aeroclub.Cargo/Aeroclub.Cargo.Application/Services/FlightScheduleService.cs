@@ -165,29 +165,39 @@ namespace Aeroclub.Cargo.Application.Services
             var aircraftConfig = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubTypeId);
 
             var aircraftlist = await _unitOfWork.Repository<Aircraft>().GetListAsync();
-            var filteredAircraftlist = aircraftlist.Where(x => x.ConfigurationType == aircraftConfig);
+            var filteredAircraftlist = aircraftlist.Where(x => x.ConfigurationType == aircraftConfig); // filtered by types - ex: Freighter type
 
             // Get times from Flight sector
             var orderedfSector = flightSchedule.FlightScheduleSectors.OrderBy(x => x.SequenceNo);
-            TimeSpan depTime = orderedfSector.FirstOrDefault().Flight.FlightSectors.FirstOrDefault().DepartureDateTime.Value;
-            TimeSpan arrTime = orderedfSector.LastOrDefault().Flight.FlightSectors.LastOrDefault().ArrivalDateTime.Value;
+            var firstSector = orderedfSector.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
+            var lastSector = orderedfSector.LastOrDefault().Flight.FlightSectors.LastOrDefault();
+            TimeSpan depTime = firstSector.DepartureDateTime.Value;
+            TimeSpan arrTime = lastSector.ArrivalDateTime.Value;
+            double originBlockTimeMin = firstSector.OriginBlockTimeMin != null ? firstSector.OriginBlockTimeMin.Value : 0;
+            double destinationBlockTimeMin = lastSector.DestinationBlockTimeMin != null ? lastSector.DestinationBlockTimeMin.Value : 0;
 
             // Get master schedule time from Aircraft Schedule according to times of Flight sector  (Only Extracly matched/ between).
-            var specAircraftSc = new AircraftScheduleSpecification(flightSchedule.ScheduledDepartureDateTime, flightSchedule.ScheduledDepartureDateTime.Date + arrTime);
+            var specAircraftSc = new AircraftScheduleSpecification(flightSchedule.ScheduledDepartureDateTime.AddMinutes(-originBlockTimeMin), flightSchedule.ScheduledDepartureDateTime.Date.AddMinutes(destinationBlockTimeMin) + arrTime);
             var allMatchingAircratSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(specAircraftSc);
 
             // logic
             foreach (var aircraftSchedule in allMatchingAircratSchedule)
             {
                 var avaialbleAircraft = filteredAircraftlist.Where(x => x.Id == aircraftSchedule.AircraftId).FirstOrDefault();
-                if (!list.Any(x => x.Id == avaialbleAircraft.Id))
+
+                //var fsSpec = new FlightScheduleSpecification(aircraftSchedule.Id); // Get FlightSchedule from aircraft Schedule Id. 
+                //IReadOnlyList<FlightSchedule> flightSchedule_AlreadyLinked = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(fsSpec);
+
+                //if (flightSchedule_AlreadyLinked == null || flightSchedule_AlreadyLinked.Count == 0)
+                //{
+                if (!list.Any(x => x.Id == avaialbleAircraft.Id)) // check already exists to avoid duplicates values in the aircraft list. 
                     if (avaialbleAircraft != null)
                     {
                         var mappedAricraft = _mapper.Map<Aircraft, AircraftDto>(avaialbleAircraft);
                         mappedAricraft.AircraftScheduleId = aircraftSchedule.Id;
                         list.Add(mappedAricraft);
                     }
-                        
+               // }
             }
             return list;
         }
