@@ -81,11 +81,18 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<bool> ValidAircraftAsync(ScheduleAircraftRM query)
         {
+            bool valid = false;
             IReadOnlyList<AircraftDto> availableAircrafts = await _flightScheduleService.GetAvailableAircrafts_ByFlightScheduleIdAsync(query.FlightScheduleId);
             if (availableAircrafts.Where(x => x.Id == query.AircraftId).ToList().Count() > 0)
-                return true;
+                valid = true;
 
-            return false;
+            var fsSpec = new FlightScheduleSpecification(query.AircraftScheduleId.Value); // Get FlightSchedule from aircraft Schedule Id. 
+            IReadOnlyList<FlightSchedule> flightSchedule_AlreadyLinked = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(fsSpec);
+
+            if (flightSchedule_AlreadyLinked == null || flightSchedule_AlreadyLinked.Count == 0)
+                valid = true;
+
+            return valid;
         }
     }
 }
