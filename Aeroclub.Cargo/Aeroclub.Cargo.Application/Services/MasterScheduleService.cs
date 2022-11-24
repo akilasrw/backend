@@ -217,20 +217,24 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
-        public async Task<ServiceResponseStatus> UpdateAsync(MasterScheduleUpdateRM dto)
+        public async Task<ServiceResponseCreateStatus> UpdateAsync(MasterScheduleUpdateRM dto)
         {
+            var response = new ServiceResponseCreateStatus();
+
             var existingSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(dto.Id);
 
             if (existingSchedule == null || existingSchedule.FlightSchedules != null || (existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count >0))
             {
-                return ServiceResponseStatus.ValidationError;
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                return response;
             }
 
          /*   var entity = _mapper.Map<Airport>(model);
             _unitOfWork.Repository<Airport>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<Airport>().Detach(entity);*/
-            return ServiceResponseStatus.Success;
+            response.StatusCode= ServiceResponseStatus.Success;
+            return response;
         }
     }
 }

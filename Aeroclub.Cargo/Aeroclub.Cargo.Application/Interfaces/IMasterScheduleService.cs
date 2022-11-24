@@ -10,7 +10,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IMasterScheduleService
     {
         Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleCreateRM dto);
-        Task<ServiceResponseStatus> UpdateAsync(MasterScheduleUpdateRM dto);
+        Task<ServiceResponseCreateStatus> UpdateAsync(MasterScheduleUpdateRM dto);
         Task<MasterScheduleVM> GetAsync(MasterScheduleDetailQM query);
         Task<IReadOnlyList<AircraftScheduleVM>> GetAircraftScheduleAsync(MasterScheduleListQM query);
 
