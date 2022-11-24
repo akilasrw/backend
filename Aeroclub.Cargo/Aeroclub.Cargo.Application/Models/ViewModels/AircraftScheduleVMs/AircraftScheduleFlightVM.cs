@@ -4,6 +4,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs
 {
     public class AircraftScheduleFlightVM : BaseVM
     {
+        public string? FlightNumber { get; set; } = null;
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
         public string OriginAirportCode { get; set; } = null!;

@@ -57,6 +57,7 @@ namespace Aeroclub.Cargo.Application.Services
                         flightSchedule.FlightScheduleSectors.OrderBy(x => x.SequenceNo);
                         var flight = new AircraftScheduleFlightVM();
                         flight.Id = flightSchedule.Id;
+                        flight.FlightNumber = flightSchedule.FlightNumber;
                         flight.OriginAirportId = flightSchedule.OriginAirportId;
                         flight.DestinationAirportId = flightSchedule.DestinationAirportId;
                         flight.OriginAirportName = flightSchedule.OriginAirportName;
