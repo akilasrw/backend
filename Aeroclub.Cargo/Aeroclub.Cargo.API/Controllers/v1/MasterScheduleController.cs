@@ -65,10 +65,10 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             var response = await _masterScheduleService.UpdateAsync(dto);
 
-            if (response == ServiceResponseStatus.ValidationError)
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
                 return BadRequest("Schedule unable to edit.");
 
-            if (response == ServiceResponseStatus.Failed)
+            if (response.StatusCode == ServiceResponseStatus.Failed)
                 return BadRequest("Schedule update fails.");
 
             return NoContent();
