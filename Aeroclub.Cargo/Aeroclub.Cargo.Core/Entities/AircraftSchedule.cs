@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Core.Entities.Core;
+﻿using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Core.Entities.Core;
 
 namespace Aeroclub.Cargo.Core.Entities
 {
@@ -9,6 +10,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public bool IsCompleted { get; set; }
         public Guid MasterScheduleId { get; set; }
         public Guid? AircraftId { get; set; }
+        public ScheduleStatus ScheduleStatus { get; set; }
 
         public virtual MasterSchedule MasterSchedule { get; set; } = null!;  
         public virtual Aircraft? Aircraft { get; set; }

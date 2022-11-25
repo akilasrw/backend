@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.Application.Services
             List<AircraftScheduleVM> scheduleList = new List<AircraftScheduleVM>();
             foreach (var schedule in list)
             {
-                if (schedule.MasterSchedule.ScheduleStatus == ScheduleStatus.Schedule &&
+                if (schedule.ScheduleStatus == ScheduleStatus.Schedule &&
                     schedule.FlightSchedules != null && schedule.FlightSchedules.Count > 0)
                 {
                     List<AircraftScheduleFlightVM> flightList = new List<AircraftScheduleFlightVM>();
@@ -115,7 +115,13 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<MasterSchedule, MasterScheduleVM>(entity);
         }
 
-        public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleRM dto)
+        public async Task<AircraftScheduleVM> GetAircraftScheduleAsync(Guid id)
+        {
+            var entity = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(id);
+            return _mapper.Map<AircraftSchedule, AircraftScheduleVM>(entity);
+        }
+
+        public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleCreateRM dto)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
@@ -178,7 +184,7 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
-        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleRM dto, MasterSchedule masterScheduleResponse, IReadOnlyList<AircraftSchedule> previousSchedules)
+        private async Task<ServiceResponseCreateStatus> CreateAircraftSchedule(DateTime day, MasterScheduleCreateRM dto, MasterSchedule masterScheduleResponse, IReadOnlyList<AircraftSchedule> previousSchedules)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
@@ -217,6 +223,53 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            var aircraftSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(Id);
+            var masterSchedule = await _unitOfWork.Repository<MasterSchedule>().GetByIdAsync(aircraftSchedule.MasterScheduleId,false);
 
+            if (masterSchedule != null && masterSchedule.CalendarType == CalendarType.Daily)
+            {
+                masterSchedule.IsDeleted= true;
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<MasterSchedule>().Detach(masterSchedule);
+            }
+
+            _unitOfWork.Repository<AircraftSchedule>().Delete(aircraftSchedule);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AircraftSchedule>().Detach(aircraftSchedule);
+            return (await _unitOfWork.SaveChangesAsync() > 0);
+        }
+
+
+        public async Task<ServiceResponseCreateStatus> UpdateAsync(MasterScheduleUpdateRM dto)
+        {
+            var response = new ServiceResponseCreateStatus();
+            response.Id = dto.Id;
+
+            var existingSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(dto.Id);
+
+            if (existingSchedule == null)
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                response.Message = "Schedule not found.";
+                return response;
+            }
+
+            if (existingSchedule.FlightSchedules != null ||(existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count > 0))
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                response.Message = "Unable to edit. Flights already assigned.";
+                return response;
+            }
+
+            var entity = _mapper.Map<AircraftSchedule>(dto);
+            entity.MasterScheduleId = existingSchedule.MasterScheduleId;
+            _unitOfWork.Repository<AircraftSchedule>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AircraftSchedule>().Detach(entity);
+            response.StatusCode= ServiceResponseStatus.Success;
+            return response;
+        }
     }
 }

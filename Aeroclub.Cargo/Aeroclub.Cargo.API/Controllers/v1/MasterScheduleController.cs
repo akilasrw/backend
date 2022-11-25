@@ -39,8 +39,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _masterScheduleService.GetAircraftScheduleAsync(query));
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] MasterScheduleRM dto)
+        public async Task<IActionResult> CreateAsync([FromBody] MasterScheduleCreateRM dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -57,8 +58,36 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
 
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] MasterScheduleUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var response = await _masterScheduleService.UpdateAsync(dto);
 
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            if (response.StatusCode == ServiceResponseStatus.Failed)
+                return BadRequest("Schedule update fails.");
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            var schedule = await _masterScheduleService.GetAircraftScheduleAsync(id);
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _masterScheduleService.DeleteAsync(id);
+            return Ok(result);
+        }
 
 
 

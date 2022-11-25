@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.MasterScheduleRMs
 {
-    public class MasterScheduleRM
+    public class MasterScheduleCreateRM
     {
         [Required(ErrorMessage = "Aircraft ID required.")]
         public Guid AircraftId { get; set; }
