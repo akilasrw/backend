@@ -35,9 +35,15 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetListByMasterId")]
-        public async Task<ActionResult<FlightScheduleLinkVM>> GetListByMasterIdAsync([FromQuery] FlightScheduleLinkQM query)
+        public async Task<ActionResult<IReadOnlyList<FlightScheduleLinkVM>>> GetListByMasterIdAsync([FromQuery] FlightScheduleLinkQM query)
         {
             return Ok(await _flightScheduleService.GetListByMasterIdAsync(query));
+        }
+        
+        [HttpGet("GetByIdAsync")]
+        public async Task<ActionResult<FlightScheduleLinkVM>> GetByIdAsync([FromQuery] FlightScheduleLinkQM query)
+        {
+            return Ok(await _flightScheduleService.GetByIdAsync(query));
         }
 
         [HttpPost]
