@@ -10,7 +10,6 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
         {
             builder.Property(p => p.DaysOfWeek).HasColumnType("varchar(20)").IsRequired();
             builder.Property(p => p.CalendarType).HasColumnType("tinyint").IsRequired();
-            builder.Property(p => p.ScheduleStatus).HasColumnType("tinyint").IsRequired();
         }
     }
 }

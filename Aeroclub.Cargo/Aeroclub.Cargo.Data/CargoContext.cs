@@ -58,6 +58,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new AgentRateConfiguration());
             modelBuilder.ApplyConfiguration(new AgentRateManagementHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new MasterScheduleConfiguration());
+            modelBuilder.ApplyConfiguration(new AircraftScheduleConfiguration());
             
             
             

@@ -74,6 +74,21 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            var schedule = await _masterScheduleService.GetAircraftScheduleAsync(id);
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _masterScheduleService.DeleteAsync(id);
+            return Ok(result);
+        }
+
 
 
 

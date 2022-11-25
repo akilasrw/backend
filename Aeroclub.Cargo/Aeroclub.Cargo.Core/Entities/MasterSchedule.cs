@@ -10,7 +10,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public TimeSpan ScheduleStartTime { get; set; }
         public double NumberOfHours { get; set; }
         public string DaysOfWeek { get; set; } = null!;
-        public ScheduleStatus ScheduleStatus { get; set; }
         public CalendarType CalendarType { get; set; }
 
         public virtual ICollection<AircraftSchedule>? AircraftSchedules { get; set; }

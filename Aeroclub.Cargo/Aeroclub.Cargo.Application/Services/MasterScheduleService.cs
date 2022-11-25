@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.Application.Services
             List<AircraftScheduleVM> scheduleList = new List<AircraftScheduleVM>();
             foreach (var schedule in list)
             {
-                if (schedule.MasterSchedule.ScheduleStatus == ScheduleStatus.Schedule &&
+                if (schedule.ScheduleStatus == ScheduleStatus.Schedule &&
                     schedule.FlightSchedules != null && schedule.FlightSchedules.Count > 0)
                 {
                     List<AircraftScheduleFlightVM> flightList = new List<AircraftScheduleFlightVM>();
@@ -113,6 +113,12 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new MasterScheduleSpecification(query);
             var entity = await _unitOfWork.Repository<MasterSchedule>().GetEntityWithSpecAsync(spec);
             return _mapper.Map<MasterSchedule, MasterScheduleVM>(entity);
+        }
+
+        public async Task<AircraftScheduleVM> GetAircraftScheduleAsync(Guid id)
+        {
+            var entity = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(id);
+            return _mapper.Map<AircraftSchedule, AircraftScheduleVM>(entity);
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(MasterScheduleCreateRM dto)
@@ -216,6 +222,24 @@ namespace Aeroclub.Cargo.Application.Services
             }
             return response;
         }
+
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            var aircraftSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetByIdAsync(Id);
+            var masterSchedule = await _unitOfWork.Repository<MasterSchedule>().GetByIdAsync(aircraftSchedule.MasterScheduleId);
+
+            if (masterSchedule != null && masterSchedule.CalendarType == CalendarType.Daily)
+            {
+                _unitOfWork.Repository<MasterSchedule>().Delete(masterSchedule);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<MasterSchedule>().Detach(masterSchedule);
+            }
+            _unitOfWork.Repository<AircraftSchedule>().Delete(aircraftSchedule);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AircraftSchedule>().Detach(aircraftSchedule);
+            return (await _unitOfWork.SaveChangesAsync() > 0);
+        }
+
 
         public async Task<ServiceResponseCreateStatus> UpdateAsync(MasterScheduleUpdateRM dto)
         {
