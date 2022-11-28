@@ -256,10 +256,10 @@ namespace Aeroclub.Cargo.Application.Services
                 return response;
             }
 
-            if (existingSchedule.FlightSchedules != null ||(existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count > 0))
+            if (existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count > 0)
             {
                 response.StatusCode = ServiceResponseStatus.ValidationError;
-                response.Message = "Unable to edit. Flights already assigned.";
+                response.Message = "Unable to update. Flights already assigned.";
                 return response;
             }
 
