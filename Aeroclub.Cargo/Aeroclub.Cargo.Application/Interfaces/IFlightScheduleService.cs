@@ -15,5 +15,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<FlightScheduleVM>> GetListAsync();
         Task<IReadOnlyList<FlightScheduleLinkVM>> GetListByMasterIdAsync(FlightScheduleLinkQM query);
         Task<IReadOnlyList<AircraftDto>> GetAvailableAircrafts_ByFlightScheduleIdAsync(Guid flightScheduleId);
+        Task<FlightScheduleLinkVM> GetByIdAsync(FlightScheduleLinkQM query);
     }
 }

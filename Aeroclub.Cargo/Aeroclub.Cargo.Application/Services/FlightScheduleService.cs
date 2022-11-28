@@ -147,6 +147,13 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
+        public async Task<FlightScheduleLinkVM> GetByIdAsync(FlightScheduleLinkQM query)
+        {
+            var spec = new FlightScheduleSpecification(query);
+            var data = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+            return _mapper.Map<FlightSchedule,FlightScheduleLinkVM>(data);
+        }
+
         public async Task<IReadOnlyList<AircraftDto>> GetAvailableAircrafts_ByFlightScheduleIdAsync(Guid flightScheduleId)
         {
             List<AircraftDto> list = new List<AircraftDto>();

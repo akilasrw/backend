@@ -68,8 +68,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightScheduleSpecification(Guid aircraftScheduleId)
             : base(x=> x.AircraftScheduleId == aircraftScheduleId)
         {
-                AddInclude(x => x.Include(y => y.FlightScheduleSectors));
-                AddInclude(x => x.Include(y => y.Aircraft));
+            AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.Flight).ThenInclude(p => p.FlightSectors));
+            AddInclude(x => x.Include(y => y.Aircraft));
+            AddInclude(x => x.Include(y => y.AircraftSchedule));
         }
 
     }
