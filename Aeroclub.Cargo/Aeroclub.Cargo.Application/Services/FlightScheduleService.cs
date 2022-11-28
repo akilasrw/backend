@@ -13,6 +13,7 @@ using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using System.Security.Cryptography.X509Certificates;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Services
@@ -22,18 +23,21 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IFlightService _flightService;
         private readonly IAircraftService _aircraftService;
         private readonly ILayoutCloneService _layoutCloneService;
+        private readonly ISectorService _sectorService;
 
         public FlightScheduleService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IFlightService flightService,
             IAircraftService aircraftService,
-            ILayoutCloneService layoutCloneService) :
+            ILayoutCloneService layoutCloneService,
+            ISectorService sectorService) :
             base(unitOfWork, mapper)
         {
             _flightService = flightService;
             _aircraftService = aircraftService;
             _layoutCloneService = layoutCloneService;
+            _sectorService = sectorService;
         }
 
         public async Task<FlightScheduleCreateStatusRM> CreateAsync(FlightScheduleCreateRM model)
@@ -207,6 +211,74 @@ namespace Aeroclub.Cargo.Application.Services
                // }
             }
             return list;
+        }
+
+        public async Task<IReadOnlyList<AircraftIdleReportVM>> GetAircraftsIdleReportAsync(FlightScheduleReportQM query)
+        {
+            List<AircraftIdleReportVM> aircraftIdleReports = new List<AircraftIdleReportVM>();
+            var fsSepc = new FlightScheduleSpecification(query);
+            var list = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(fsSepc);
+            list.GroupBy(c=>c.ScheduledDepartureDateTime.Date).ToList();
+            foreach (var fsList in list.GroupBy(c => c.ScheduledDepartureDateTime.Date).ToList())
+            {
+                foreach (FlightSchedule fs in fsList)
+                {
+                    var firstSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
+                    TimeSpan tsDeparture =  firstSector.DepartureDateTime.Value;
+                    var lastSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault(); 
+                    TimeSpan tsArrival =  lastSector.ArrivalDateTime.Value;
+
+                    TimeSpan utcDepTime = await GetMappedTimeAsync(tsDeparture, firstSector.SectorId);
+                    TimeSpan utcArrTime = await GetMappedTimeAsync(tsArrival, lastSector.SectorId, false);
+                    
+                    // Get UTC diff of flightSchedule. -> X
+                    double totalAllcatedTime = utcArrTime.TotalMinutes - utcDepTime.TotalMinutes;
+                    double totalBlockTime = firstSector.DestinationBlockTimeMin == null ? 0 : firstSector.DestinationBlockTimeMin.Value +
+                        lastSector.OriginBlockTimeMin == null ? 0 : lastSector.OriginBlockTimeMin.Value;
+
+                    double totalFlightTime = totalAllcatedTime + totalBlockTime;
+                    var idelTime = totalFlightTime - (fs.AircraftSchedule.ScheduleStartDateTime.TimeOfDay - fs.AircraftSchedule.ScheduleEndDateTime.TimeOfDay).TotalMinutes; // Get  UTC
+                    // Get UTC diff of AircraftSchedule -> Y
+                    // Get Idle time Y-X
+                    // Add to list and pass it.
+                    aircraftIdleReports.Add(new AircraftIdleReportVM() 
+                    { 
+                        Day = fsList.Key.Day, 
+                        NoOfHours = idelTime, 
+                        AircraftRegNo= fs.AircraftRegNo, 
+                        AircraftId= fs.AircraftId.Value 
+                    });
+                }
+            }
+            return aircraftIdleReports;
+        }
+
+        private async Task<TimeSpan> GetMappedTimeAsync(TimeSpan? time, Guid sectorId, bool isOrigin = true, bool isSavedData = true)
+        {
+            TimeSpan offsetTime = new TimeSpan();
+            var list = await _sectorService.GetSectorAirports(sectorId);
+
+            if (isOrigin)
+            {
+                if (list[0] != null && !string.IsNullOrEmpty(list[0].CountryCode))
+                    offsetTime = time.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat, isSavedData);
+            }
+            else
+            {
+                if (list[1] != null && !string.IsNullOrEmpty(list[1].CountryCode))
+                    offsetTime = time.ToInternationalTimeSpan(list[1].CountryCodeISO3166, list[1].Lat, isSavedData);
+            }
+            return offsetTime;
+        }
+
+        public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
+        {
+            foreach (var fSector in flight.FlightSectors)
+            {
+                fSector.DepartureDateTime = await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
+                fSector.ArrivalDateTime = await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
+            }
+            return flight;
         }
     }
 }

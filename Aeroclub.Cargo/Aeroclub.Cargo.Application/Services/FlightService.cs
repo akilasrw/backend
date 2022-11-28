@@ -196,33 +196,5 @@ namespace Aeroclub.Cargo.Application.Services
             return entity;
         }
 
-        //private async Task<TimeSpan> GetMappedTimeAsync(TimeSpan? time, Guid sectorId, bool isOrigin = true, bool isSavedData = true)
-        //{
-        //    TimeSpan offsetTime = new TimeSpan();
-        //    var list = await _sectorService.GetSectorAirports(sectorId);
-
-        //    if (isOrigin)
-        //    {
-        //        if (list[0] != null && !string.IsNullOrEmpty(list[0].CountryCode))
-        //            offsetTime = time.ToInternationalTimeSpan(list[0].CountryCodeISO3166, list[0].Lat, isSavedData);
-        //    }
-        //    else
-        //    {
-        //        if (list[1] != null && !string.IsNullOrEmpty(list[1].CountryCode))
-        //            offsetTime = time.ToInternationalTimeSpan(list[1].CountryCodeISO3166, list[1].Lat, isSavedData);
-        //    }
-        //    return offsetTime;
-        //}
-
-        //public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
-        //{
-        //    foreach (var fSector in flight.FlightSectors)
-        //    {
-        //        fSector.DepartureDateTime =  await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
-        //        fSector.ArrivalDateTime =  await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
-        //    }
-        //    return flight;
-        //}
-
     }
 }
