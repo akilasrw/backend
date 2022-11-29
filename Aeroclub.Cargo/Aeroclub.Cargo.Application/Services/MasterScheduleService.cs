@@ -197,6 +197,7 @@ namespace Aeroclub.Cargo.Application.Services
             scheduleStartDateTimeInMili += dto.NumberOfHours * 60 * 60 * 1000;
             var scheduleEndDateTime = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds(scheduleStartDateTimeInMili).ToLocalTime();
             aircraftSchedule.ScheduleEndDateTime = scheduleEndDateTime;
+            aircraftSchedule.ScheduleStatus = dto.ScheduleStatus;
 
             if (previousSchedules != null && previousSchedules.Count > 0)
             {
@@ -256,10 +257,10 @@ namespace Aeroclub.Cargo.Application.Services
                 return response;
             }
 
-            if (existingSchedule.FlightSchedules != null ||(existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count > 0))
+            if (existingSchedule.FlightSchedules != null && existingSchedule.FlightSchedules.Count > 0)
             {
                 response.StatusCode = ServiceResponseStatus.ValidationError;
-                response.Message = "Unable to edit. Flights already assigned.";
+                response.Message = "Unable to update. Flights already assigned.";
                 return response;
             }
 
