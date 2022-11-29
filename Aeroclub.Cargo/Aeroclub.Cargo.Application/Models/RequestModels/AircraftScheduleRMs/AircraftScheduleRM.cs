@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Aeroclub.Cargo.Common.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs
 {
@@ -13,6 +14,9 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AircraftScheduleRMs
 
         [Required(ErrorMessage = "Master schedule required.")]
         public Guid MasterScheduleId { get; set; }
+
+        [Required(ErrorMessage = "Schedule status required.")]
+        public ScheduleStatus ScheduleStatus { get; set; }
         public Guid? AircraftId { get; set; }
     }
 }

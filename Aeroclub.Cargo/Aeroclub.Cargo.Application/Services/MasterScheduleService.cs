@@ -197,6 +197,7 @@ namespace Aeroclub.Cargo.Application.Services
             scheduleStartDateTimeInMili += dto.NumberOfHours * 60 * 60 * 1000;
             var scheduleEndDateTime = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds(scheduleStartDateTimeInMili).ToLocalTime();
             aircraftSchedule.ScheduleEndDateTime = scheduleEndDateTime;
+            aircraftSchedule.ScheduleStatus = dto.ScheduleStatus;
 
             if (previousSchedules != null && previousSchedules.Count > 0)
             {
