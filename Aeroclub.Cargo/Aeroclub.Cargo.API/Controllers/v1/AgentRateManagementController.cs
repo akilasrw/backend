@@ -54,7 +54,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _agentRateManagementService.CreateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest(new { message = response.Message });
+                return BadRequest(response.Message);
 
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return Ok(new { message = "Rate created successfully." });
@@ -71,7 +71,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _agentRateManagementService.UpdateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest(new { message = response.Message });
+                return BadRequest( response.Message);
 
             if (response.StatusCode == ServiceResponseStatus.Failed)
                 return BadRequest("Rate update fails.");
@@ -92,12 +92,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _agentRateManagementService.DeleteAsync(id);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest(new { message = response.Message });
+                return BadRequest( response.Message );
 
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return Ok(new { message = "Rate deleted successfully." });
 
-            return BadRequest(new { message = "Rate delete fail." });
+            return BadRequest("Rate delete fail.");
         }
     }
 }
