@@ -86,7 +86,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var token = model.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new { message = "Token is required" });
+                return BadRequest("Token is required");
 
             _userService.RevokeToken(token, ipAddress());
             return Ok(new { message = "Token revoked" });
