@@ -31,4 +31,10 @@ namespace Aeroclub.Cargo.Application.Enums
         PartiallyCompleted = 2,
         Completed = 3
     }
+
+    public enum FlightScheduleReportType
+    {
+        None = 0,
+        Idle = 1,
+    }
 }

@@ -73,5 +73,16 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.AircraftSchedule));
         }
 
+        public FlightScheduleSpecification(FlightScheduleReportQM query)
+            : base(x=> query.StartDate == null || (x.ScheduledDepartureDateTime.Date >= new DateTime(query.StartDate.Value.Year, query.StartDate.Value.Month,1).Date) &&
+                 query.EndDate == null || (x.ScheduledDepartureDateTime.Date <= new DateTime(query.EndDate.Value.Year, query.EndDate.Value.Month, DateTime.DaysInMonth(query.EndDate.Value.Year, query.EndDate.Value.Month)).Date) &&
+                ((query.Month == null && query.Year == null) || (x.ScheduledDepartureDateTime.Year == query.Year && x.ScheduledDepartureDateTime.Date.Month == query.Month)) && 
+            x.AircraftId.HasValue)
+        {
+            AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.Flight).ThenInclude(p => p.FlightSectors));
+            AddInclude(x => x.Include(y => y.Aircraft));
+            AddInclude(x => x.Include(y => y.AircraftSchedule));
+        }
+
     }
 }
