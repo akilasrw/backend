@@ -36,5 +36,6 @@ namespace Aeroclub.Cargo.Application.Enums
     {
         None = 0,
         Idle = 1,
+        Running = 2
     }
 }

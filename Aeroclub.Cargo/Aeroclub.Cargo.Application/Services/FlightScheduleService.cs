@@ -214,9 +214,10 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
-        public async Task<IReadOnlyList<AircraftIdleReportVM>> GetAircraftsIdleReportAsync(FlightScheduleReportQM query)
+        public async Task<IReadOnlyList<AircraftIdleReportVM>> GetAircraftsIdleReportAsyncOld(FlightScheduleReportQM query)
         {
             List<AircraftIdleReportVM> aircraftIdleReports = new List<AircraftIdleReportVM>();
+            const int HOURS_OF_DAY = 24 * 60;
             try
             {
                 if (query.Year != null && query.Month != null)
@@ -230,38 +231,46 @@ namespace Aeroclub.Cargo.Application.Services
                         {
                             var fsList = group.Where(x => x.ScheduledDepartureDateTime.Date == date);
 
-                            if(fsList.Any())
-                            foreach (FlightSchedule fs in fsList)
-                            {
-                                var firstSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
-                                TimeSpan tsDeparture = firstSector.DepartureDateTime.Value;
-                                var lastSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
-                                TimeSpan tsArrival = lastSector.ArrivalDateTime.Value;
+                            if (fsList.Any())
+                                foreach (FlightSchedule fs in fsList)
+                                {
+                                    var firstSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
+                                    TimeSpan tsDeparture = firstSector.DepartureDateTime.Value;
+                                    var lastSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
+                                    TimeSpan tsArrival = lastSector.ArrivalDateTime.Value;
 
-                                TimeSpan utcDepTime = await GetMappedTimeAsync(tsDeparture, firstSector.SectorId);
-                                TimeSpan utcArrTime = await GetMappedTimeAsync(tsArrival, lastSector.SectorId, false);
+                                    TimeSpan utcDepTime = await GetMappedTimeAsync(tsDeparture, firstSector.SectorId);
+                                    TimeSpan utcArrTime = await GetMappedTimeAsync(tsArrival, lastSector.SectorId, false);
 
-                                // Get UTC diff of flightSchedule. -> X
-                                double totalAllcatedTime = utcArrTime.TotalMinutes - utcDepTime.TotalMinutes;
-                                double totalBlockTime = firstSector.DestinationBlockTimeMin == null ? 0 : firstSector.DestinationBlockTimeMin.Value +
-                                    lastSector.OriginBlockTimeMin == null ? 0 : lastSector.OriginBlockTimeMin.Value;
+                                    // Get UTC diff of flightSchedule. -> X
+                                    double totalAllcatedTime = utcArrTime.TotalMinutes - utcDepTime.TotalMinutes;
+                                    double totalBlockTime = firstSector.DestinationBlockTimeMin == null ? 0 : firstSector.DestinationBlockTimeMin.Value +
+                                        lastSector.OriginBlockTimeMin == null ? 0 : lastSector.OriginBlockTimeMin.Value;
 
-                                double totalFlightTime = totalAllcatedTime + totalBlockTime;
-                                TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
-                                if (fs.AircraftSchedule != null)
-                                    aircrafScheduleDiff = fs.AircraftSchedule.ScheduleStartDateTime.TimeOfDay - fs.AircraftSchedule.ScheduleEndDateTime.TimeOfDay;
-
-                                var idelTimeMin = totalFlightTime - (aircrafScheduleDiff).TotalMinutes;
-                                                                                                   
-                                if (fs.AircraftId != null)                                                            
-                                    aircraftIdleReports.Add(new AircraftIdleReportVM()
+                                    double totalFlightTime = totalAllcatedTime + totalBlockTime;
+                                    TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
+                                    double idleTimeMin = 0;
+                                    if (fs.AircraftSchedule != null)
                                     {
-                                        Day = date.Day,
-                                        Month = date.Month,
-                                        NoOfHours = idelTimeMin/60,
-                                        AircraftRegNo = fs.AircraftRegNo,
-                                        AircraftId = fs.AircraftId.Value
-                                    });
+                                        aircrafScheduleDiff = fs.AircraftSchedule.ScheduleStartDateTime.TimeOfDay - fs.AircraftSchedule.ScheduleEndDateTime.TimeOfDay;
+
+                                        if (fs.AircraftSchedule.ScheduleStatus == ScheduleStatus.Schedule)
+                                        {
+                                            idleTimeMin = HOURS_OF_DAY - totalFlightTime;
+                                        }
+                                    }
+
+                                    idleTimeMin = totalFlightTime - (aircrafScheduleDiff).TotalMinutes;
+
+                                    if (fs.AircraftId != null)
+                                        aircraftIdleReports.Add(new AircraftIdleReportVM()
+                                        {
+                                            Day = date.Day,
+                                            Month = date.Month,
+                                            NoOfHours = idleTimeMin / 60,
+                                            AircraftRegNo = fs.AircraftRegNo,
+                                            AircraftId = fs.AircraftId.Value
+                                        });
                                 }
                             else
                             {
@@ -274,6 +283,98 @@ namespace Aeroclub.Cargo.Application.Services
                                 });
 
                             }
+                        }
+
+                    }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return aircraftIdleReports.OrderBy(z=>z.Day).ToList();
+        }
+
+        public async Task<IReadOnlyList<AircraftIdleReportVM>> GetAircraftsIdleReportAsync(FlightScheduleReportQM query)
+        {
+            List<AircraftIdleReportVM> aircraftIdleReports = new List<AircraftIdleReportVM>();
+            const int MINUTES_OF_DAY = 24 * 60;
+            double idleTimeMin = MINUTES_OF_DAY;
+            double reservedTime = 0;
+            try
+            {
+                if (query.Year != null && query.Month != null)
+                    foreach (DateTime date in DateExtention.AllDatesInMonth(query.Year.Value, query.Month.Value))
+                    {
+                        var fsSepc = new AircraftScheduleSpecification(query);
+                        var list = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(fsSepc);
+                        var groupsList = list.Where(x => x.AircraftId != null).GroupBy(c => c.AircraftId).ToList();
+
+                        foreach (var group in groupsList)
+                        {
+                            var asList = group.Where(x => x.ScheduleStartDateTime.Date == date);
+
+                            if (asList.Any())
+                            {
+                                foreach (var aircraftSchedule in asList)
+                                {
+                                    idleTimeMin = 0; reservedTime = 0;
+                                    if (aircraftSchedule.ScheduleStatus == ScheduleStatus.Schedule)
+                                    {
+                                        var flightSchedules = aircraftSchedule.FlightSchedules;
+                                        foreach (var fs in flightSchedules)
+                                        {
+                                            var firstSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
+                                            TimeSpan tsDeparture = firstSector.DepartureDateTime.Value;
+                                            var lastSector = fs.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
+                                            TimeSpan tsArrival = lastSector.ArrivalDateTime.Value;
+
+                                            TimeSpan utcDepTime = await GetMappedTimeAsync(tsDeparture, firstSector.SectorId);
+                                            TimeSpan utcArrTime = await GetMappedTimeAsync(tsArrival, lastSector.SectorId, false);
+
+                                            // Get UTC diff of flightSchedule. -> X
+                                            double totalAllcatedTime = utcArrTime.TotalMinutes - utcDepTime.TotalMinutes;
+                                            double totalBlockTime = firstSector.DestinationBlockTimeMin == null ? 0 : firstSector.DestinationBlockTimeMin.Value +
+                                                lastSector.OriginBlockTimeMin == null ? 0 : lastSector.OriginBlockTimeMin.Value;
+
+                                            double totalFlightTime = totalAllcatedTime + totalBlockTime;
+                                            TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
+
+                                            if (fs.AircraftSchedule != null)
+                                            {
+                                                if (fs.AircraftSchedule.ScheduleStatus == ScheduleStatus.Schedule)
+                                                {
+                                                    idleTimeMin += MINUTES_OF_DAY - totalFlightTime;
+                                                    reservedTime += totalFlightTime;
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                    else
+                                    {
+                                        reservedTime += asList.Sum(x => x.ScheduleEndDateTime.TimeOfDay.TotalMinutes - x.ScheduleStartDateTime.TimeOfDay.TotalMinutes);
+                                        idleTimeMin += MINUTES_OF_DAY - reservedTime;
+                                    }
+                                }
+                                
+                            }                                
+                            else
+                            {
+                                idleTimeMin = MINUTES_OF_DAY;
+                                reservedTime = 0;
+
+                            }
+
+                            aircraftIdleReports.Add(new AircraftIdleReportVM()
+                            {
+                                Day = date.Day,
+                                Month = date.Month,
+                                NoOfHours = (query.FlightScheduleReportType == FlightScheduleReportType.Idle? idleTimeMin: reservedTime) / 60,
+                                AircraftId = group.Key.Value,
+                                AircraftRegNo = await _aircraftService.GetAircraftRegNo(group.Key.Value)
+                            });
                         }
 
                     }
