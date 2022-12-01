@@ -301,7 +301,11 @@ namespace Aeroclub.Cargo.Application.Services
             List<AircraftIdleReportVM> aircraftIdleReports = new List<AircraftIdleReportVM>();
             const int MINUTES_OF_DAY = 24 * 60;
             double idleTimeMin = MINUTES_OF_DAY;
-            double reservedTime = 0;
+            double allocatedTime = 0;
+            double totalFlightTime = 0;
+            string orign = "";
+            string destination = "";
+            ScheduleStatus scheduleStatus = ScheduleStatus.None;
             try
             {
                 if (query.Year != null && query.Month != null)
@@ -319,8 +323,10 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 foreach (var aircraftSchedule in asList)
                                 {
-                                    idleTimeMin = 0; reservedTime = 0;
-                                    if (aircraftSchedule.ScheduleStatus == ScheduleStatus.Schedule)
+                                    idleTimeMin = 0; allocatedTime = 0; totalFlightTime = 0;
+                                    orign = ""; destination = "";
+                                    scheduleStatus = aircraftSchedule.ScheduleStatus;
+                                    if (scheduleStatus == ScheduleStatus.Schedule)
                                     {
                                         var flightSchedules = aircraftSchedule.FlightSchedules;
                                         foreach (var fs in flightSchedules)
@@ -333,29 +339,30 @@ namespace Aeroclub.Cargo.Application.Services
                                             TimeSpan utcDepTime = await GetMappedTimeAsync(tsDeparture, firstSector.SectorId);
                                             TimeSpan utcArrTime = await GetMappedTimeAsync(tsArrival, lastSector.SectorId, false);
 
+                                            orign = fs.OriginAirportCode;
+                                            destination = fs.DestinationAirportCode;
+
                                             // Get UTC diff of flightSchedule. -> X
                                             double totalAllcatedTime = utcArrTime.TotalMinutes - utcDepTime.TotalMinutes;
                                             double totalBlockTime = firstSector.DestinationBlockTimeMin == null ? 0 : firstSector.DestinationBlockTimeMin.Value +
                                                 lastSector.OriginBlockTimeMin == null ? 0 : lastSector.OriginBlockTimeMin.Value;
 
-                                            double totalFlightTime = totalAllcatedTime + totalBlockTime;
+                                            totalFlightTime = totalAllcatedTime + totalBlockTime;
                                             TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
 
                                             if (fs.AircraftSchedule != null)
                                             {
-                                                if (fs.AircraftSchedule.ScheduleStatus == ScheduleStatus.Schedule)
-                                                {
-                                                    idleTimeMin += MINUTES_OF_DAY - totalFlightTime;
-                                                    reservedTime += totalFlightTime;
-                                                }
+                                                idleTimeMin += MINUTES_OF_DAY - totalFlightTime;
+                                                allocatedTime += totalFlightTime;
                                             }
                                         }
                                         
                                     }
-                                    else
+                                    else // maintain
                                     {
-                                        reservedTime += asList.Sum(x => x.ScheduleEndDateTime.TimeOfDay.TotalMinutes - x.ScheduleStartDateTime.TimeOfDay.TotalMinutes);
-                                        idleTimeMin += MINUTES_OF_DAY - reservedTime;
+                                        allocatedTime += asList.Sum(x => x.ScheduleEndDateTime.TimeOfDay.TotalMinutes - x.ScheduleStartDateTime.TimeOfDay.TotalMinutes);
+                                        idleTimeMin += MINUTES_OF_DAY - allocatedTime;
+                                        totalFlightTime = allocatedTime;
                                     }
                                 }
                                 
@@ -363,7 +370,7 @@ namespace Aeroclub.Cargo.Application.Services
                             else
                             {
                                 idleTimeMin = MINUTES_OF_DAY;
-                                reservedTime = 0;
+                                allocatedTime = 0;
 
                             }
 
@@ -371,9 +378,13 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 Day = date.Day,
                                 Month = date.Month,
-                                NoOfHours = (query.FlightScheduleReportType == FlightScheduleReportType.Idle? idleTimeMin: reservedTime) / 60,
+                                NoOfHours = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? idleTimeMin : allocatedTime) / 60,
                                 AircraftId = group.Key.Value,
-                                AircraftRegNo = await _aircraftService.GetAircraftRegNo(group.Key.Value)
+                                AircraftRegNo = await _aircraftService.GetAircraftRegNo(group.Key.Value),
+                                TotalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? totalFlightTime / 60 : 0),
+                                Origin = orign,
+                                Destination = destination,
+                                ScheduleStatus = scheduleStatus
                             });
                         }
 
