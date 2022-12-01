@@ -19,5 +19,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
         public string? Origin { get; set; }
         public string? Destination { get; set; }
         public ScheduleStatus ScheduleStatus { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
     }
 }

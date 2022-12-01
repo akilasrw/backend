@@ -305,6 +305,9 @@ namespace Aeroclub.Cargo.Application.Services
             double totalFlightTime = 0;
             string orign = "";
             string destination = "";
+            TimeSpan? startTime = null;
+            TimeSpan? endTime = null;
+
             ScheduleStatus scheduleStatus = ScheduleStatus.None;
             try
             {
@@ -350,6 +353,9 @@ namespace Aeroclub.Cargo.Application.Services
                                             totalFlightTime = totalAllcatedTime + totalBlockTime;
                                             TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
 
+                                            startTime = utcDepTime;
+                                            endTime= utcArrTime;
+
                                             if (fs.AircraftSchedule != null)
                                             {
                                                 idleTimeMin += MINUTES_OF_DAY - totalFlightTime;
@@ -363,6 +369,8 @@ namespace Aeroclub.Cargo.Application.Services
                                         allocatedTime += asList.Sum(x => x.ScheduleEndDateTime.TimeOfDay.TotalMinutes - x.ScheduleStartDateTime.TimeOfDay.TotalMinutes);
                                         idleTimeMin += MINUTES_OF_DAY - allocatedTime;
                                         totalFlightTime = allocatedTime;
+                                        startTime = asList.FirstOrDefault().ScheduleStartDateTime.TimeOfDay;
+                                        endTime = asList.FirstOrDefault().ScheduleEndDateTime.TimeOfDay;
                                     }
                                 }
                                 
@@ -371,7 +379,9 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 idleTimeMin = MINUTES_OF_DAY;
                                 allocatedTime = 0;
-
+                                totalFlightTime = 0;
+                                startTime = null;
+                                endTime = null;
                             }
 
                             aircraftIdleReports.Add(new AircraftIdleReportVM()
@@ -384,7 +394,9 @@ namespace Aeroclub.Cargo.Application.Services
                                 TotalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? totalFlightTime / 60 : 0),
                                 Origin = orign,
                                 Destination = destination,
-                                ScheduleStatus = scheduleStatus
+                                ScheduleStatus = scheduleStatus,
+                                StartTime = startTime,
+                                EndTime = endTime,  
                             });
                         }
 
