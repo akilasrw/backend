@@ -3,22 +3,15 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
-using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
-using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
-using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
-using Aeroclub.Cargo.Application.Extensions;
-using System.Runtime.CompilerServices;
-using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Models;
 
@@ -59,7 +52,13 @@ namespace Aeroclub.Cargo.Application.Services
             }
             else
             {
-                return await CreateFlightSchedule(dto, flightScheduleManagementResponse.Id);
+                var flightScheduleResponse = await CreateFlightSchedule(dto, flightScheduleManagementResponse.Id);
+                if(flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed || flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError)
+                {
+                    await DeleteAsync(flightScheduleManagementResponse.Id);
+                }
+
+                res= flightScheduleResponse;
             }
 
             return res;
@@ -204,5 +203,15 @@ namespace Aeroclub.Cargo.Application.Services
 
             // filter available aircrafts
         }
+
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            var entity = await _unitOfWork.Repository<FlightScheduleManagement>().GetByIdAsync(Id);
+            _unitOfWork.Repository<FlightScheduleManagement>().Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightScheduleManagement>().Detach(entity);
+            return (await _unitOfWork.SaveChangesAsync() > 0);
+        }
+
     }
 }
