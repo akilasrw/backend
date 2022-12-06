@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -33,6 +34,8 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IAWBService _AWBService;
         private readonly IBaseUnitConverter _baseUnitConverter;
         private readonly IAssignCargoToULDService _assignCargoToULDService;
+        private readonly ICargoAgentService _cargoAgentService;
+
         public ULDCargoBookingManagerService(IUnitOfWork unitOfWork, 
             IMapper mapper, 
             IULDCargoBookingService uldCargoBookingService, 
@@ -44,7 +47,8 @@ namespace Aeroclub.Cargo.Application.Services
             IAssignCargoToULDService assignCargoToULDService,
             IAWBService AWBService,
             IConfiguration configuration,
-            IBaseUnitConverter baseUnitConverter) :
+            ICargoAgentService cargoAgentService,
+        IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
             _uldCargoBookingService = uldCargoBookingService;
@@ -56,6 +60,7 @@ namespace Aeroclub.Cargo.Application.Services
             _AWBService = AWBService;
             _baseUnitConverter = baseUnitConverter;
             _assignCargoToULDService = assignCargoToULDService;
+            _cargoAgentService = cargoAgentService;
         }
 
         public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
@@ -293,5 +298,67 @@ namespace Aeroclub.Cargo.Application.Services
 
             return BookingServiceResponseStatus.Success;
         }
+
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetULDBookingListAsync(ULDContainerCargoPositionDto uLDContainerCargoPosition)
+        {
+            var spec = new ULDContainerCargoPositionSpecification(new ULDCOntainerCargoPositionQM()
+            {
+                ULDContainerId = uLDContainerCargoPosition.ULDContainerId,
+                IsIncludePackageItem = true,
+            });
+            var entity = await _unitOfWork.Repository<ULDContainerCargoPosition>().GetEntityWithSpecAsync(spec);
+            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
+
+            if (entity!= null)
+            {
+                foreach (var package in entity.ULDContainer.PackageItems)
+                {
+                    var booking = package.CargoBooking;
+                    var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+                    CargoBookingListVM vm = new CargoBookingListVM();
+                    vm.BookingNumber = booking.BookingNumber;
+                    vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
+                    vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
+                    vm.BookingDate = booking.BookingDate;
+                    vm.BookingStatus = booking.BookingStatus;
+                    vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
+                    vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+                    vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
+                    (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                    ));
+                    list.Add(vm);
+                }
+
+            }
+/*
+            var spec = new FlightScheduleSectorSpecification(query);
+            var fSectorList = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
+            foreach (var f in fSectorList)
+            {
+                foreach (var booking in f.CargoBookings)
+                {
+                    var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+                    CargoBookingListVM vm = new CargoBookingListVM();
+                    vm.BookingNumber = booking.BookingNumber;
+                    vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
+                    vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
+                    vm.BookingDate = booking.BookingDate;
+                    vm.BookingStatus = booking.BookingStatus;
+                    vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
+                    vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+                    vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
+                    (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                    ));
+                    list.Add(vm);
+                }
+            }*/
+            return list;
+        }
+
     }
 }

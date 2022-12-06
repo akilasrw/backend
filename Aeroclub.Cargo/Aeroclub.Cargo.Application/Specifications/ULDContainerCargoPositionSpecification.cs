@@ -16,7 +16,7 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.ULD).ThenInclude(b => b.ULDMetaData));
 
             if (query.IsIncludePackageItem)
-                AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.PackageItems));
+                AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.PackageItems).ThenInclude(a => a.CargoBooking));
 
             if (query.IsIncludeCargoPosition)
                 AddInclude(x => x.Include(y => y.CargoPosition));
