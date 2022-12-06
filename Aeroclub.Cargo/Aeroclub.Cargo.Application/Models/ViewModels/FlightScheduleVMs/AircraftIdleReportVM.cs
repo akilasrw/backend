@@ -19,7 +19,34 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
         public string? Origin { get; set; }
         public string? Destination { get; set; }
         public ScheduleStatus ScheduleStatus { get; set; }
-        public TimeSpan? StartTime { get; set; }
-        public TimeSpan? EndTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public List<Tuple<DateTime,DateTime, double>> IdleDateRangeList { get; set; } // TODO: remove
+        public IEnumerable<AircraftIdleDateRange> AircraftIdleDateRangeList { get; set; }
+    }
+
+    public class AircraftIdleDateRange
+    {
+        public AircraftIdleDateRange()
+        {
+
+        }
+
+        //public AircraftIdleDateRange(AircraftIdleDateRange aircraftIdleDateRange) : this()
+        //{
+        //    StartTime = aircraftIdleDateRange.StartTime;
+        //    EndTime = aircraftIdleDateRange.EndTime;
+        //    TotalHours = aircraftIdleDateRange.TotalHours;
+        //}
+
+        public AircraftIdleDateRange(DateTime startTime, DateTime endTime, double totalHours): this()
+        {
+            StartTime= startTime;
+            EndTime = endTime;
+            TotalHours= totalHours;
+        }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public double TotalHours { get; set; }
     }
 }
