@@ -299,37 +299,42 @@ namespace Aeroclub.Cargo.Application.Services
             return BookingServiceResponseStatus.Success;
         }
 
-        public async Task<IReadOnlyList<CargoBookingListVM>> GetULDBookingListAsync(ULDContainerCargoPositionDto uLDContainerCargoPosition)
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetULDBookingListAsync(CargoPositionULDContainerListQM query)
         {
-            var spec = new ULDContainerCargoPositionSpecification(new ULDCOntainerCargoPositionQM()
+            var spec = new ULDContainerCargoPositionSpecification(new CargoPositionULDContainerListQM()
             {
-                ULDContainerId = uLDContainerCargoPosition.ULDContainerId,
+                CargoPositionId = query.CargoPositionId,
                 IsIncludePackageItem = true,
             });
-            var entity = await _unitOfWork.Repository<ULDContainerCargoPosition>().GetEntityWithSpecAsync(spec);
+            var entities = await _unitOfWork.Repository<ULDContainerCargoPosition>().GetListWithSpecAsync(spec);
             List<CargoBookingListVM> list = new List<CargoBookingListVM>();
 
-            if (entity!= null)
+            if (entities != null)
             {
-                foreach (var package in entity.ULDContainer.PackageItems)
+                foreach (var entity in entities)
                 {
-                    var booking = package.CargoBooking;
-                    var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
-                    CargoBookingListVM vm = new CargoBookingListVM();
-                    vm.BookingNumber = booking.BookingNumber;
-                    vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
-                    vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
-                    vm.BookingDate = booking.BookingDate;
-                    vm.BookingStatus = booking.BookingStatus;
-                    vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
-                    vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-                    vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
-                    (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
-                    ));
-                    list.Add(vm);
+                    foreach (var package in entity.ULDContainer.PackageItems)
+                    {
+                        var booking = package.CargoBooking;
+                        var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+                        CargoBookingListVM vm = new CargoBookingListVM();
+                        vm.BookingNumber = booking.BookingNumber;
+                        vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
+                        vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
+                        vm.BookingDate = booking.BookingDate;
+                        vm.BookingStatus = booking.BookingStatus;
+                        vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
+                        vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+                        vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
+                        (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+                         _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                         _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                        ));
+                        list.Add(vm);
+                    }
+
                 }
+                
 
             }
 /*

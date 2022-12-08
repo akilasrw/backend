@@ -16,11 +16,18 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.ULD).ThenInclude(b => b.ULDMetaData));
 
             if (query.IsIncludePackageItem)
-                AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.PackageItems).ThenInclude(a => a.CargoBooking));
+                AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.PackageItems));
 
             if (query.IsIncludeCargoPosition)
                 AddInclude(x => x.Include(y => y.CargoPosition));
 
+        }
+
+        public ULDContainerCargoPositionSpecification(CargoPositionULDContainerListQM query)
+          : base(x =>  x.CargoPositionId == query.CargoPositionId)
+        {
+            if (query.IsIncludePackageItem)
+                AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.PackageItems).ThenInclude(a => a.CargoBooking));
         }
 
     }
