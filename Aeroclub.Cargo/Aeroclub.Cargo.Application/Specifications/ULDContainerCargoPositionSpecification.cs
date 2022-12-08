@@ -23,5 +23,12 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public ULDContainerCargoPositionSpecification(CargoPositionULDContainerListQM query)
+          : base(x =>  x.CargoPositionId == query.CargoPositionId)
+        {
+            if (query.IsIncludePackageItem)
+                AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(a => a.PackageItems).ThenInclude(a => a.CargoBooking));
+        }
+
     }
 }
