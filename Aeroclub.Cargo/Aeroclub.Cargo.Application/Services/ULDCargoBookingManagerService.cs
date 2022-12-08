@@ -332,36 +332,8 @@ namespace Aeroclub.Cargo.Application.Services
                         ));
                         list.Add(vm);
                     }
-
                 }
-                
-
             }
-/*
-            var spec = new FlightScheduleSectorSpecification(query);
-            var fSectorList = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
-            foreach (var f in fSectorList)
-            {
-                foreach (var booking in f.CargoBookings)
-                {
-                    var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
-                    CargoBookingListVM vm = new CargoBookingListVM();
-                    vm.BookingNumber = booking.BookingNumber;
-                    vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
-                    vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
-                    vm.BookingDate = booking.BookingDate;
-                    vm.BookingStatus = booking.BookingStatus;
-                    vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
-                    vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-                    vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
-                    (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
-                    ));
-                    list.Add(vm);
-                }
-            }*/
             return list;
         }
 
