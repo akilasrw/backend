@@ -21,6 +21,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
         public ScheduleStatus ScheduleStatus { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public IEnumerable<ScheduleTime> ScheduleTimeList { get; set; }
         public IEnumerable<AircraftIdleDateRange> AircraftIdleDateRangeList { get; set; }
     }
 }

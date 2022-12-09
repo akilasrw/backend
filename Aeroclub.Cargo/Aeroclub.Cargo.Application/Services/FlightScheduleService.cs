@@ -311,8 +311,9 @@ namespace Aeroclub.Cargo.Application.Services
             DateTime? endTime = null;
             List<AircraftIdleDateRange> aircraftIdleDateRangeList = new List<AircraftIdleDateRange>();
             int aircraftSchedulesCount = 0;
+            List<ScheduleTime> scheduleTimes = new List<ScheduleTime>();
 
-            ScheduleStatus scheduleStatus = ScheduleStatus.None;
+            ScheduleStatus scheduleStatus;
             try
             {
                 if (query.Year != null && query.Month != null)
@@ -321,16 +322,18 @@ namespace Aeroclub.Cargo.Application.Services
                         var fsSepc = new AircraftScheduleSpecification(query);
                         var list = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(fsSepc);
                         var groupsList = list.Where(x => x.AircraftId != null).GroupBy(c => c.AircraftId).ToList();
-
+                        
                         foreach (var group in groupsList)
                         {
                             var asList = group.Where(x => x.ScheduleStartDateTime.Date == date);
-
+                            scheduleStatus = ScheduleStatus.None;
                             if (asList.Any())
                             {
                                 idleTimeMin = 0; allocatedTime = 0; totalFlightTime = 0;
                                 orign = ""; destination = "";
                                 aircraftSchedulesCount = 0;
+                                scheduleTimes = new List<ScheduleTime>();
+
                                 foreach (var aircraftSchedule in asList)
                                 {
                                     ++aircraftSchedulesCount;
@@ -357,14 +360,16 @@ namespace Aeroclub.Cargo.Application.Services
 
                                                 // Get UTC diff of flightSchedule. -> X
                                                 double totalAllcatedTime = tsArrival.TotalMinutes - tsDeparture.TotalMinutes;
-                                                double totalBlockTime = firstSector.DestinationBlockTimeMin == null ? 0 : firstSector.DestinationBlockTimeMin.Value +
-                                                    lastSector.OriginBlockTimeMin == null ? 0 : lastSector.OriginBlockTimeMin.Value;
+                                                double totalBlockTime = (firstSector.DestinationBlockTimeMin != null ? firstSector.DestinationBlockTimeMin.Value : 0) +
+                                                    (lastSector.OriginBlockTimeMin != null ? lastSector.OriginBlockTimeMin.Value : 0);
 
                                                 totalFlightTime += totalAllcatedTime + totalBlockTime;
                                                 TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
 
                                                 startTime = fs.ScheduledDepartureDateTime.Date + tsDeparture;
                                                 endTime = fs.ScheduledDepartureDateTime.Date + tsArrival;
+
+                                                scheduleTimes.Add(new ScheduleTime() { StartTime = startTime, EndTime = endTime });
 
                                                 if (fs.AircraftSchedule != null)
                                                 {
@@ -374,8 +379,7 @@ namespace Aeroclub.Cargo.Application.Services
                                                 
                                                 // Arrange idle time ranges- Need to be tested - Yohan.
                                                 if (aircraftSchedulesCount == 1 && asList.Count() > 0) // the first round of the loop.
-                                                { 
-                                                   
+                                                {                                                    
                                                     if (DateTime.MinValue.TimeOfDay != tsDeparture)
                                                     {
                                                         var lastTime = (startTime.Value.Date + tsDeparture).Subtract(TimeSpan.FromMinutes(firstSector.DestinationBlockTimeMin.Value));
@@ -383,10 +387,14 @@ namespace Aeroclub.Cargo.Application.Services
                                                     }
                                                 }
 
-                                                if (aircraftIdleDateRangeList.Count() > 1 && aircraftSchedulesCount < asList.Count()) // have aircraftSchedules more than 1.  but the middle of round of the loop.
+                                                if (aircraftSchedulesCount < asList.Count()) // have aircraftSchedules more than 1.  but the middle of round of the loop.
                                                 {
-                                                    var firstTime = aircraftIdleDateRangeList[aircraftIdleDateRangeList.Count() - 2].EndTime;
-                                                    var lastTime = (startTime.Value.Date + tsDeparture).Subtract(TimeSpan.FromMinutes(firstSector.DestinationBlockTimeMin.Value));
+                                                    List<AircraftSchedule> alist = asList.ToList();
+                                                    var firstTime = (endTime.Value.Date + tsArrival).Add(TimeSpan.FromMinutes(lastSector.DestinationBlockTimeMin.Value));
+                                                    var nextFlightShedule = alist[aircraftSchedulesCount].FlightSchedules.FirstOrDefault().FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
+                                                    TimeSpan lastTimeTS = nextFlightShedule.DepartureDateTime.Value;
+                                                    double blockTime = nextFlightShedule.DestinationBlockTimeMin.Value;
+                                                    var lastTime = (fs.ScheduledDepartureDateTime.Date + lastTimeTS).Subtract(TimeSpan.FromMinutes(blockTime));
                                                     var duration = lastTime.TimeOfDay.Subtract(firstTime.TimeOfDay).TotalHours;
                                                     aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, lastTime, duration));
                                                 }
@@ -465,6 +473,7 @@ namespace Aeroclub.Cargo.Application.Services
                                 ScheduleStatus = scheduleStatus,
                                 StartTime = startTime,
                                 EndTime = endTime,
+                                ScheduleTimeList = scheduleTimes,
                                 AircraftIdleDateRangeList = query.FlightScheduleReportType == FlightScheduleReportType.Idle ? aircraftIdleDateRangeList : new List<AircraftIdleDateRange>()
                             });
                             aircraftIdleDateRangeList = new List<AircraftIdleDateRange>();
