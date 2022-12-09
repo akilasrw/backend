@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -36,9 +37,9 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IAssignCargoToULDService _assignCargoToULDService;
         private readonly ICargoAgentService _cargoAgentService;
 
-        public ULDCargoBookingManagerService(IUnitOfWork unitOfWork, 
-            IMapper mapper, 
-            IULDCargoBookingService uldCargoBookingService, 
+        public ULDCargoBookingManagerService(IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IULDCargoBookingService uldCargoBookingService,
             IFlightScheduleSectorService flightScheduleSectorService,
             IULDCargoPositionService uldcgoPositionService,
             IULDContainerCargoPositionService uLDContainerCargoPositionService,
@@ -100,7 +101,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var clonedPackages = new List<PackageItemCreateRM>();
                 foreach (var package in packages)
                 {
-                    for(int i= 0; i < package.Pieces; i++)
+                    for (int i = 0; i < package.Pieces; i++)
                     {
                         var clonePackage = new PackageItemCreateRM();
                         clonePackage = package;
@@ -112,9 +113,9 @@ namespace Aeroclub.Cargo.Application.Services
                 {
 
                     //Package volume calculation
-                    package.Length= await _baseUnitConverter.VolumeCalculatorAsync(package.Length, package.VolumeUnitId);
-                    package.Width= await _baseUnitConverter.VolumeCalculatorAsync(package.Width, package.VolumeUnitId);
-                    package.Height= await _baseUnitConverter.VolumeCalculatorAsync(package.Height, package.VolumeUnitId);
+                    package.Length = await _baseUnitConverter.VolumeCalculatorAsync(package.Length, package.VolumeUnitId);
+                    package.Width = await _baseUnitConverter.VolumeCalculatorAsync(package.Width, package.VolumeUnitId);
+                    package.Height = await _baseUnitConverter.VolumeCalculatorAsync(package.Height, package.VolumeUnitId);
                     package.Volume = (package.Length * package.Width * package.Height);
 
                     //Package weight calculation
@@ -269,7 +270,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(new CargoPositionSpecification(new CargoPositionQM() { Id = positionId }));
             position.CurrentVolume += volume;
-          
+
             _unitOfWork.Repository<CargoPosition>().Update(position);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<CargoPosition>().Detach(position);
@@ -284,7 +285,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-     
+
                 // Update Cargo Booking Details
                 var response = await _uldCargoBookingService.UpdateAsync(rm);
                 if (response.StatusCode == ServiceResponseStatus.Failed)
@@ -299,7 +300,7 @@ namespace Aeroclub.Cargo.Application.Services
             return BookingServiceResponseStatus.Success;
         }
 
-        public async Task<IReadOnlyList<CargoBookingListVM>> GetULDBookingListAsync(CargoPositionULDContainerListQM query)
+        public async Task<IReadOnlyList<ULDCargoBookingListVM>> GetULDBookingListAsync(CargoPositionULDContainerListQM query)
         {
             var spec = new ULDContainerCargoPositionSpecification(new CargoPositionULDContainerListQM()
             {
@@ -307,7 +308,8 @@ namespace Aeroclub.Cargo.Application.Services
                 IsIncludePackageItem = true,
             });
             var entities = await _unitOfWork.Repository<ULDContainerCargoPosition>().GetListWithSpecAsync(spec);
-            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
+            List<ULDCargoBookingListVM> list = new List<ULDCargoBookingListVM>();
+            List<CargoBooking> bookingList = new List<CargoBooking>();
 
             if (entities != null)
             {
@@ -316,16 +318,30 @@ namespace Aeroclub.Cargo.Application.Services
                     foreach (var package in entity.ULDContainer.PackageItems)
                     {
                         var booking = package.CargoBooking;
+                        var cargoBooking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(new CargoBookingSpecification(new CargoBookingQM() { Id = booking.Id, IsIncludePackageDetail = true }));
+                        if (!bookingList.Exists(x => x.Id == cargoBooking.Id))
+                            bookingList.Add(cargoBooking);
+                    }
+                }
+
+                if (bookingList != null)
+                {
+                    foreach (var booking in bookingList)
+                    {
                         var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
-                        CargoBookingListVM vm = new CargoBookingListVM();
+                        ULDCargoBookingListVM vm = new ULDCargoBookingListVM();
                         vm.BookingNumber = booking.BookingNumber;
                         vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
                         vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
-                        vm.BookingDate = booking.BookingDate;
-                        vm.BookingStatus = booking.BookingStatus;
                         vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
-                        vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-                        vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
+
+                        List<PackageItem> packages = new List<PackageItem>();
+                        if (booking.PackageItems != null)
+                            packages.AddRange(booking.PackageItems.Where(x => entities.Any(y => y.ULDContainerId.Equals(x.ULDContainerId))));
+                        
+                        vm.NumberOfAssignedBoxes = packages.Count();
+                        vm.TotalWeight = packages == null ? 0 : packages.Sum(x => x.Weight);
+                        vm.TotalVolume = packages == null ? 0 : packages.Sum(x =>
                         (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
                          _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
                          _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
