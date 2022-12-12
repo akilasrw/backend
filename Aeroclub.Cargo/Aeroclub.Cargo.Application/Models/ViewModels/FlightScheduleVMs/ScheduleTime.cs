@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
 {
-    public class ScheduleTime
+    public class ScheduleTimeVM
     {
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
