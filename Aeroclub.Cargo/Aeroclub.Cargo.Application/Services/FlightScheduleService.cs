@@ -330,6 +330,7 @@ namespace Aeroclub.Cargo.Application.Services
                                 aircraftSchedulesCount = 0;
                                 scheduleTimes = new List<ScheduleTimeVM>();
                                 flightLocations = new List<FlightLocationVM>();
+                                asList = asList.OrderBy(x => x.ScheduleStartDateTime).ToList();
 
                                 foreach (var aircraftSchedule in asList)
                                 {
