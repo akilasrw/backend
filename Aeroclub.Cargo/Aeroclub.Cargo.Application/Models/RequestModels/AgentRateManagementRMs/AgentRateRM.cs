@@ -15,6 +15,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs
 
         [Required(ErrorMessage = "Weight type required.")]
         public WeightType WeightType { get; set; }
-       
+
     }
 }

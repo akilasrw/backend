@@ -11,6 +11,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public string DestinationAirportCode { get; set; } = null!;
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public virtual CargoAgent CargoAgent { get; set; } = null!;
         public virtual Airport OriginAirport { get; set; } = null!;

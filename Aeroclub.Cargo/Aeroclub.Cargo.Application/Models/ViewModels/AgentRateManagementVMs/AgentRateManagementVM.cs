@@ -12,6 +12,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
         public string CargoAgentName { get; set; } = null!;
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public IReadOnlyList<AgentRateVM> AgentRates { get; set; }
     }
 }
