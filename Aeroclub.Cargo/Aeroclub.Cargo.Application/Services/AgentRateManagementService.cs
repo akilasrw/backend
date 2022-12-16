@@ -54,18 +54,24 @@ namespace Aeroclub.Cargo.Application.Services
                 foreach (var item in dto!.AgentRateManagements)
                 {
 
-                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM {
+                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM 
+                    {
                         IncludeAgentRates = false,
                         CargoAgentId = item.CargoAgentId,
                         DestinationAirportId = item.DestinationAirportId,
-                        OriginAirportId = item.OriginAirportId});
+                        OriginAirportId = item.OriginAirportId,
+                        ValidStartDate = item.StartDate,
+                        ValidEndDate = item.EndDate,
+
+                    });
                     var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
 
                     if (agentRate != null)
                     {
                         transaction.Rollback();
                         response.StatusCode = ServiceResponseStatus.ValidationError;
-                        response.Message = agentRate.OriginAirportCode +" and "+agentRate.DestinationAirportCode+" already exist for selected user.";
+                        response.Message = string.Format("{0} and {1} already exist for selected user and selected dates ({2} - {3})", 
+                            agentRate.OriginAirportCode, agentRate.DestinationAirportCode, agentRate.StartDate.ToShortDateString(), agentRate.EndDate.ToShortDateString());
                         return response;
                     }
 
@@ -180,12 +186,14 @@ namespace Aeroclub.Cargo.Application.Services
                     return response;
                 }
 
-                var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM
+                var spec = new AgentRateManagementSpecification(new AgentRateManagementUpdateQM
                 {
                     IncludeAgentRates = true,
                     CargoAgentId = entity.CargoAgentId,
                     DestinationAirportId = entity.DestinationAirportId,
-                    OriginAirportId = entity.OriginAirportId
+                    OriginAirportId = entity.OriginAirportId,
+                    ValidEndDate = entity.EndDate, 
+                    ValidStartDate = entity.StartDate,
                 });
                 var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
 

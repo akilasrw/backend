@@ -14,7 +14,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
         [Required(ErrorMessage = "Destination airport required.")]
         public Guid DestinationAirportId { get; set; }
 
-        [Required(ErrorMessage = "Start Datet required.")]
+        [Required(ErrorMessage = "Start Date required.")]
         public DateTime StartDate { get; set; }
 
         [Required(ErrorMessage = "End Date required.")]

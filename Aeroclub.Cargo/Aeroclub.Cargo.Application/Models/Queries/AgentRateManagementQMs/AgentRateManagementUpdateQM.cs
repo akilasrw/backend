@@ -1,7 +1,7 @@
 ﻿
 namespace Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs
 {
-    public class AgentRateManagementValidationQM
+    public class AgentRateManagementUpdateQM
     {
         public Guid CargoAgentId { get; set; }
         public Guid OriginAirportId { get; set; }
