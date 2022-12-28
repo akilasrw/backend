@@ -11,7 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
     public class CargoBookingULDVM : BaseVM
     {
         public string BookingNumber { get; set; } = null!;
-        public int AwbTrackingNumber { get; set; }
+        public long AwbTrackingNumber { get; set; }
         public double TotalWeight { get; set; }
         public double TotalVolume { get; set; }
         public IReadOnlyList<PackageItemVM> PackageItems { get; set; }
