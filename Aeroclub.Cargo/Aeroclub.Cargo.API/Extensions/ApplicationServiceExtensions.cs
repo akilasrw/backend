@@ -6,6 +6,8 @@ using Aeroclub.Cargo.Infrastructure.Authorization.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Authorization.Services;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Services;
+using Aeroclub.Cargo.Infrastructure.Interfaces;
+using Aeroclub.Cargo.Infrastructure.Services;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Services;
 
@@ -65,6 +67,8 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IBaseUnitConverter, BaseUnitConverter>();
             services.AddScoped<IAWBNumberStackService, AWBNumberStackService>();
             services.AddScoped<IAssignCargoToULDService, AssignCargoToULDService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IFirebaseService, FirebaseService>();
 
 
             return services;

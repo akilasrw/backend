@@ -51,6 +51,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.AWBNumberStackRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AWBNumberStackVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AircraftScheduleVMs;
 using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.ViewModels.NotificationVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -267,6 +268,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.RegNo, o => o.MapFrom(s => s.Aircraft != null ? s.Aircraft.RegNo : ""));
 
             CreateMap <Aircraft,AircraftDto>().ReverseMap();
+
+            CreateMap <Notification,NotificationVM>().ReverseMap();
 
         }
     }
