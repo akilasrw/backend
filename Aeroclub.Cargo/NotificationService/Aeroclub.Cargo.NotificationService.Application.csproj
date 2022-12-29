@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aeroclub.Cargo.Common\Aeroclub.Cargo.Common.csproj" />
+    <ProjectReference Include="..\Aeroclub.Cargo.Data\Aeroclub.Cargo.Data.csproj" />
+    <ProjectReference Include="..\Aeroclub.Cargo.Infrastructure\Aeroclub.Cargo.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Processors\" />
+  </ItemGroup>
+
+</Project>
