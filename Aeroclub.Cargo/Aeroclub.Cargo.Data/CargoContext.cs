@@ -59,6 +59,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new AgentRateManagementHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new MasterScheduleConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftScheduleConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             
             
             
@@ -115,6 +116,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AircraftSchedule> AircraftSchedules { get; set; } = null!;
         public DbSet<AWBNumberStack> AWBNumberStacks { get; set; } = null!;
         public DbSet<ULDCargoPosition> ULDCargoPositions { get; set; } = null!;
+        public DbSet<Notification> Notifications { get; set; } = null!;
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
      
         //  public DbSet<AircraftCharteredSchedule> AircraftCharteredSchedules { get; set; } = null!;

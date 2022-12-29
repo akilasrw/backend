@@ -218,4 +218,10 @@
         Suspended = 3
     }
 
+    public enum NotificationType
+    {
+        None = 0,
+
+    }
+
 }
