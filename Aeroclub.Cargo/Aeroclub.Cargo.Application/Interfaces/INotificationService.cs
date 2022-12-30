@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.NotificationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.NotificationRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.NotificationVMs;
 
 namespace Aeroclub.Cargo.Application.Interfaces
@@ -15,6 +16,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Tuple<bool, Guid>> MarkAsReadAsync(Guid id);
         Task<bool> MarkAllAsReadAsync(Guid userId);
         Task<int> CountAsync(NotificationCountQM query);
+        Task<ServiceResponseCreateStatus> CreateAsync(NotificationRM dto);
 
     }
 }

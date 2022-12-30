@@ -27,7 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E638E4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aeroclub.Cargo.Common", "Aeroclub.Cargo.Common\Aeroclub.Cargo.Common.csproj", "{AA8B8FE3-D401-4ABE-8E26-8318F0626328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aeroclub.Cargo.NotificationService.Application", "NotificationService\Aeroclub.Cargo.NotificationService.Application.csproj", "{C2F72F40-F4A9-4B46-811A-8CF74E6D484A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aeroclub.Cargo.NotificationService.Application", "NotificationService\Aeroclub.Cargo.NotificationService.Application.csproj", "{C2F72F40-F4A9-4B46-811A-8CF74E6D484A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FunctionApp", "FunctionApp", "{889782C0-E2EF-4631-91BF-D57EA0EF9501}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aeroclub.Cargo.Func.NotificationService", "Func.NotificationService\Aeroclub.Cargo.Func.NotificationService.csproj", "{88AF1059-EDA7-4A30-B53B-91AF490A8F9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,10 @@ Global
 		{C2F72F40-F4A9-4B46-811A-8CF74E6D484A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2F72F40-F4A9-4B46-811A-8CF74E6D484A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2F72F40-F4A9-4B46-811A-8CF74E6D484A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88AF1059-EDA7-4A30-B53B-91AF490A8F9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88AF1059-EDA7-4A30-B53B-91AF490A8F9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88AF1059-EDA7-4A30-B53B-91AF490A8F9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88AF1059-EDA7-4A30-B53B-91AF490A8F9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +83,7 @@ Global
 		{E659F0F1-C8D9-4A5D-B7B3-AB42EAFC5919} = {D432D39D-8921-4BEE-9EA4-B729EDACB8A3}
 		{AA8B8FE3-D401-4ABE-8E26-8318F0626328} = {E638E47A-9538-4507-885A-86436EC4BA8E}
 		{C2F72F40-F4A9-4B46-811A-8CF74E6D484A} = {720E7BD2-2651-45B2-940D-249FF3D64AEB}
+		{88AF1059-EDA7-4A30-B53B-91AF490A8F9C} = {889782C0-E2EF-4631-91BF-D57EA0EF9501}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F67B726C-2BC3-4932-88F4-0315417B98C0}

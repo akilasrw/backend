@@ -1,8 +1,12 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.NotificationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.NotificationRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.NotificationVMs;
+using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Infrastructure.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Models.FirebaseModels;
 using Microsoft.AspNetCore.Authorization;
@@ -90,5 +94,23 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             return Ok();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody] NotificationRM dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _notificationService.CreateAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return CreatedAtAction(nameof(GetAsync), new { id = response.Id }, dto);
+
+            return BadRequest("Notification add fails.");
+        }
+
     }
 }

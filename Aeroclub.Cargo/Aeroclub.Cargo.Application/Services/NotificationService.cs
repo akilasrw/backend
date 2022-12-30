@@ -1,7 +1,10 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.NotificationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.NotificationRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.NotificationVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -79,5 +82,15 @@ namespace Aeroclub.Cargo.Application.Services
             return count;
         }
 
+        public async Task<ServiceResponseCreateStatus> CreateAsync(NotificationRM dto)
+        {
+            var response = new ServiceResponseCreateStatus();
+            var notification = _mapper.Map<Notification>(dto);
+            await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+            await _unitOfWork.SaveChangesAsync();
+            response.Id = notification.Id;
+            response.StatusCode = ServiceResponseStatus.Success;
+            return response;
+        }
     }
 }
