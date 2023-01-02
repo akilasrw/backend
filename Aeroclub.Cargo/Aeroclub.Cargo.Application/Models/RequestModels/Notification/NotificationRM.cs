@@ -1,16 +1,21 @@
 ﻿using Aeroclub.Cargo.Common.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.Notification
 {
     public class NotificationRM
     {
-        public string? Title;
+        [Required(ErrorMessage = "Title required.")]
+        public string Title { get; set; } = null!;
 
-        public string? Body;
+        [Required(ErrorMessage = "Content required.")]
+        public string Body { get; set; } = null!;
 
-        public NotificationType NotificationType;
+        [Required(ErrorMessage = "Type required.")]
+        public NotificationType NotificationType { get; set; }
 
-        public Guid UserId;
+        [Required(ErrorMessage = "User ID required.")]
+        public Guid UserId { get; set; }
 
     }
 }

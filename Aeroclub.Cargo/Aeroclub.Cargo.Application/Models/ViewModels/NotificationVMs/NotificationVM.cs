@@ -6,18 +6,12 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.NotificationVMs
 {
     public class NotificationVM : BaseVM
     {
-        public string? Title;
-
-        public string? Body;
-
-        public NotificationType NotificationType;
-
-        public bool IsRead;
-
-        public Guid UserId;
-
-        public DateTime Created;
-
-        public string? SerializedData;
+        public string? Title { get; set; }
+        public string? Body { get; set; }
+        public NotificationType NotificationType { get; set; }
+        public bool IsRead { get; set; }
+        public Guid UserId { get; set; }
+        public DateTime Created { get; set; }
+        public string? SerializedData { get; set; }
     }
 }
