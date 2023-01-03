@@ -50,7 +50,9 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _unitOfWork.Repository<Notification>().GetByIdAsync(id);
-            entity.IsDeleted = true;
+            _unitOfWork.Repository<Notification>().Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<Notification>().Detach(entity);
             return (await _unitOfWork.SaveChangesAsync() > 0);
         }
 

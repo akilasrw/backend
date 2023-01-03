@@ -50,6 +50,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeleteAsync(Guid id)
         {
             return Ok(await _notificationService.DeleteAsync(id));
