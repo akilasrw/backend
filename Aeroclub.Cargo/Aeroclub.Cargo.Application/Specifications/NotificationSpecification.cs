@@ -23,10 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public NotificationSpecification(NotificationFilterListQM query, bool isCount = false)
             : base(x => (query.UserId == Guid.Empty || x.UserId == query.UserId) && 
-            (query.filterType == NotificationFilterType.All || 
-            ((query.filterType == NotificationFilterType.Read) ? x.IsRead: !x.IsRead)
-            )
-            )
+            (query.filterType == NotificationFilterType.All || ((query.filterType == NotificationFilterType.Read) ? x.IsRead: !x.IsRead)))
         {
             if (!isCount)
             {
