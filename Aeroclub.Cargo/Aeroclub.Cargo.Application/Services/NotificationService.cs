@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using static Grpc.Core.Metadata;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -61,9 +62,13 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var spec = new NotificationSpecification(new NotificationListQM { UserId = userId, IsUnread = true });
             var list = await _unitOfWork.Repository<Notification>().GetListWithSpecAsync(spec);
-            foreach (var item in list)
+            foreach (var entity in list)
             {
-                item.IsRead = true;
+                entity.IsRead = true;
+                _unitOfWork.Repository<Notification>().Update(entity);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<Notification>().Detach(entity);
+
             }
             return (await _unitOfWork.SaveChangesAsync() > 0);
         }
@@ -72,6 +77,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var entity = await _unitOfWork.Repository<Notification>().GetByIdAsync(id);
             entity.IsRead = true;
+            _unitOfWork.Repository<Notification>().Update(entity);
             var response = await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<Notification>().Detach(entity);
             return Tuple.Create(response > 0, entity.UserId);
