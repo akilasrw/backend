@@ -93,6 +93,11 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> CreateAsync(NotificationRM dto)
         {
             var response = new ServiceResponseCreateStatus();
+            if(dto.CargoAgentId != Guid.Empty)
+            {
+                var agent = await _unitOfWork.Repository<CargoAgent>().GetByIdAsync(dto.CargoAgentId);
+                dto.UserId = agent.AppUserId;
+            }
             var notification = _mapper.Map<Notification>(dto);
             await _unitOfWork.Repository<Notification>().CreateAsync(notification);
             await _unitOfWork.SaveChangesAsync();

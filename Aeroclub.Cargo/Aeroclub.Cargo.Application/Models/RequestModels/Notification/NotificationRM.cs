@@ -13,9 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.Notification
 
         [Required(ErrorMessage = "Type required.")]
         public NotificationType NotificationType { get; set; }
-
-        [Required(ErrorMessage = "User ID required.")]
         public Guid UserId { get; set; }
-
+        public Guid CargoAgentId { get; set; }
     }
 }
