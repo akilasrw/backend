@@ -326,7 +326,7 @@ namespace Aeroclub.Cargo.Application.Services
                             scheduleStatus = ScheduleStatus.None;
                             if (asList.Any())
                             {
-                                idleTimeMin = 0; allocatedTime = 0; totalFlightTime = 0;
+                                idleTimeMin = MINUTES_OF_DAY; allocatedTime = 0; totalFlightTime = 0;
                                 aircraftSchedulesCount = 0;
                                 scheduleTimes = new List<ScheduleTimeVM>();
                                 flightLocations = new List<FlightLocationVM>();

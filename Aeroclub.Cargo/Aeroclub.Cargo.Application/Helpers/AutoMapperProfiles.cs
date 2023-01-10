@@ -261,7 +261,9 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<AWBNumberStackCreateRM, AWBNumberStack>();
             CreateMap<AWBNumberStackUpdateRM, AWBNumberStack>();
-            CreateMap<MasterScheduleUpdateRM, AircraftSchedule>();
+            CreateMap<MasterScheduleUpdateRM, AircraftSchedule>()
+                .ForMember(d => d.ScheduleStartDateTime, o=> o.MapFrom(s=> s.ScheduleStartDate.Date + TimeSpan.Parse(s.ScheduleStartTime)))
+                .ForMember(d => d.ScheduleEndDateTime, o=> o.MapFrom(s=> s.ScheduleEndDate.Date + TimeSpan.Parse(s.ScheduleEndTime)));
             CreateMap<AWBNumberStack, AWBNumberStackVM>()
                 .ForMember(d => d.CargoAgentName, o => o.MapFrom(s=> s.CargoAgent != null? s.CargoAgent.AgentName:""));
 
