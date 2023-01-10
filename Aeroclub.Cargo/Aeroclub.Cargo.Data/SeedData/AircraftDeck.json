@@ -16,5 +16,11 @@
     "AircraftDeckType": "1",
     "MaxWeight": 17500,
     "AircraftLayoutId": "4FABEBE4-0300-42AE-9A8F-3239E485F5D5"
+  },
+  {
+    "Id": "B987B1B8-B11D-4D37-ADAA-2181A55F6E55",
+    "AircraftDeckType": "1",
+    "MaxWeight": 23950,
+    "AircraftLayoutId": "229C3FBD-7F2E-4031-9C25-3B379ED3E384"
   }
 ]
