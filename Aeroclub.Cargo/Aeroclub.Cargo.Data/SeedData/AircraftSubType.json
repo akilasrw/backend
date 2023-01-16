@@ -26,5 +26,12 @@
     "Name": "B737-800-TypeOne",
     "Type": "4",
     "ConfigType": "2"
+  },
+  {
+    "Id": "B7A3EF2D-E39A-4684-8FB8-C16CF14402CE",
+    "AircraftTypeId": "09BA043C-5E15-4B65-AF7A-673B7B75D393",
+    "Name": "B737-300-TypeOne",
+    "Type": "5",
+    "ConfigType": "2"
   }
 ]

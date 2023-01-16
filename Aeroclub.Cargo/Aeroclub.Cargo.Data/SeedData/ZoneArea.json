@@ -47,6 +47,12 @@
     "AircraftCabinId": "734B679E-FB85-4000-BF05-96B98C644BBC",
     "MaxWeight": "23950",
     "Name": "OA"
+  },
+  {
+    "Id": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "AircraftCabinId": "5BF67920-3D3E-457F-9F45-589388AC432A",
+    "MaxWeight": "19460",
+    "Name": "OA"
   }
-  
+
 ]

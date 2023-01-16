@@ -8,6 +8,8 @@
         A320200TypeOne = 2,
         B737400TypeOne = 3,
         B737800TypeOne = 4,
+        B737300TypeOne = 5
+
     }
 
     public enum AircraftTypes
@@ -17,6 +19,7 @@
         A320200 = 2,
         B737400 = 3,
         B737800 = 4,
+        B737300 = 5
     }
 
     public enum AircraftConfigType
