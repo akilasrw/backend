@@ -382,13 +382,16 @@ namespace Aeroclub.Cargo.Application.Services
                                                 if (aircraftSchedulesCount < asList.Count()) // have aircraftSchedules more than 1.  but the middle of round of the loop.
                                                 {
                                                     List<AircraftSchedule> alist = asList.ToList();
-                                                    var firstTime = (endTime.Date + tsArrival).Add(TimeSpan.FromMinutes(lastSector.DestinationBlockTimeMin.Value));
-                                                    var nextFlightShedule = alist[aircraftSchedulesCount].FlightSchedules.FirstOrDefault().FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
-                                                    TimeSpan lastTimeTS = nextFlightShedule.DepartureDateTime.Value;
-                                                    double blockTime = nextFlightShedule.DestinationBlockTimeMin.Value;
-                                                    var lastTime = (fs.ScheduledDepartureDateTime.Date + lastTimeTS).Subtract(TimeSpan.FromMinutes(blockTime));
-                                                    var duration = lastTime.TimeOfDay.Subtract(firstTime.TimeOfDay).TotalHours;
-                                                    aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, lastTime, duration));
+                                                    if (alist[aircraftSchedulesCount].FlightSchedules.Count > 0)
+                                                    {
+                                                        var firstTime = (endTime.Date + tsArrival).Add(TimeSpan.FromMinutes(lastSector.DestinationBlockTimeMin.Value));
+                                                        var nextFlightShedule = alist[aircraftSchedulesCount].FlightSchedules.FirstOrDefault().FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
+                                                        TimeSpan lastTimeTS = nextFlightShedule.DepartureDateTime.Value;
+                                                        double blockTime = nextFlightShedule.DestinationBlockTimeMin.Value;
+                                                        var lastTime = (fs.ScheduledDepartureDateTime.Date + lastTimeTS).Subtract(TimeSpan.FromMinutes(blockTime));
+                                                        var duration = lastTime.TimeOfDay.Subtract(firstTime.TimeOfDay).TotalHours;
+                                                        aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, lastTime, duration));
+                                                    }
                                                 }
                                                 
                                                 if (aircraftSchedulesCount > 0 && aircraftSchedulesCount == asList.Count()) // the last of round of the loop.
