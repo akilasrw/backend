@@ -8120,5 +8120,69 @@
     "CargoPositionType": "1",
     "MaxWeight": "1814",
     "MaxVolume": "9000000"
+  },
+  {
+    "Id": "B204A0C4-5615-4871-ACD1-BC570DFB96E1",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "1",
+    "CargoPositionType": "1",
+    "MaxWeight": "1814",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "9BDAD1DE-3849-4D9B-830D-5EC84E74CA3B",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "2",
+    "CargoPositionType": "1",
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "507388E5-7101-476A-AFBA-523033832484",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "3",
+    "CargoPositionType": "1",
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "7A98DA3D-6DF3-461A-951D-8FB0CB5256AB",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "4",
+    "CargoPositionType": "1",
+    "MaxWeight": "3628",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "963354D6-5D9A-4C58-9A00-68C43D491D9C",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "5",
+    "CargoPositionType": "1",
+    "MaxWeight": "3628",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "99C84A72-A3EF-454A-AECC-ACF508C9D73C",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "6",
+    "CargoPositionType": "1",
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "AB24CFCB-056D-4405-B8CB-50CA45682FA0",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "7",
+    "CargoPositionType": "1",
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
+  },
+  {
+    "Id": "5271D1B5-B157-4984-B463-1967C0E899E4",
+    "ZoneAreaId": "DA2CB73F-23D0-48C3-969E-16B788A31A0B",
+    "Name": "8",
+    "CargoPositionType": "1",
+    "MaxWeight": "2948",
+    "MaxVolume": "9000000"
   }
 ]
