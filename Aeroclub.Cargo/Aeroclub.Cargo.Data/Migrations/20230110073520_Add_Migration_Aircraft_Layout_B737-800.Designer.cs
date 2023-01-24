@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20230110073520_Add_Migration_Aircraft_Layout_B737-800")]
+    partial class Add_Migration_Aircraft_Layout_B737800
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,19 +337,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             MaxWeight = 23950.0,
                             Name = ""
-                        },
-                        new
-                        {
-                            Id = new Guid("5bf67920-3d3e-457f-9f45-589388ac432a"),
-                            AircraftDeckId = new Guid("d1511f6c-94a0-4da1-82db-b13fd59fadfa"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 19460.0,
-                            Name = ""
                         });
                 });
 
@@ -445,19 +434,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             MaxWeight = 23950.0
-                        },
-                        new
-                        {
-                            Id = new Guid("d1511f6c-94a0-4da1-82db-b13fd59fadfa"),
-                            AircraftDeckType = (short)1,
-                            AircraftLayoutId = new Guid("9df78fa4-09dc-4c96-b2c3-bc813ceb825f"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 19460.0
                         });
                 });
 
@@ -526,16 +502,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         new
                         {
                             Id = new Guid("229c3fbd-7f2e-4031-9c25-3b379ed3e384"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsBaseLayout = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000")
-                        },
-                        new
-                        {
-                            Id = new Guid("9df78fa4-09dc-4c96-b2c3-bc813ceb825f"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
@@ -645,18 +611,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             AircraftLayoutId = new Guid("229c3fbd-7f2e-4031-9c25-3b379ed3e384"),
                             AircraftSubTypeId = new Guid("0c4aaa7f-1946-4298-9e07-c0b98b15ecb1"),
                             AircraftTypeId = new Guid("1dba5394-c448-4572-a213-ca5efed3ac4a"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000")
-                        },
-                        new
-                        {
-                            Id = new Guid("3fa43888-8cf7-43f6-87e0-172c34503997"),
-                            AircraftLayoutId = new Guid("9df78fa4-09dc-4c96-b2c3-bc813ceb825f"),
-                            AircraftSubTypeId = new Guid("b7a3ef2d-e39a-4684-8fb8-c16cf14402ce"),
-                            AircraftTypeId = new Guid("09ba043c-5e15-4b65-af7a-673b7b75d393"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsActive = true,
@@ -811,19 +765,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "B737-800-TypeOne",
                             Type = (short)4
-                        },
-                        new
-                        {
-                            Id = new Guid("b7a3ef2d-e39a-4684-8fb8-c16cf14402ce"),
-                            AircraftTypeId = new Guid("09ba043c-5e15-4b65-af7a-673b7b75d393"),
-                            ConfigType = (short)2,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B737-300-TypeOne",
-                            Type = (short)5
                         });
                 });
 
@@ -913,18 +854,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "B737-800",
                             Type = (short)4
-                        },
-                        new
-                        {
-                            Id = new Guid("09ba043c-5e15-4b65-af7a-673b7b75d393"),
-                            ConfigType = (short)2,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Name = "B737-300",
-                            Type = (short)5
                         });
                 });
 
@@ -1099,7 +1028,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e7d54cc-4fde-4511-8e5a-e11766340528",
+                            ConcurrencyStamp = "9fac9deb-6c6a-4f16-8f2b-4268aa2a18da",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1115,7 +1044,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "05e20a2c-54b2-4562-ae07-76d07a5a6b5a",
+                            ConcurrencyStamp = "af12ba28-1c40-4e23-8a40-837d42ce4680",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -18774,134 +18703,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             MaxWeight = 1814.0,
                             Name = "11",
                             ZoneAreaId = new Guid("1bfe1a97-4bac-48ff-8570-284658b725d4")
-                        },
-                        new
-                        {
-                            Id = new Guid("b204a0c4-5615-4871-acd1-bc570dfb96e1"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 1814.0,
-                            Name = "1",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("9bdad1de-3849-4d9b-830d-5ec84e74ca3b"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 2948.0,
-                            Name = "2",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("507388e5-7101-476a-afba-523033832484"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 2948.0,
-                            Name = "3",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("7a98da3d-6df3-461a-951d-8fb0cb5256ab"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 3628.0,
-                            Name = "4",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("963354d6-5d9a-4c58-9a00-68c43d491d9c"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 3628.0,
-                            Name = "5",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("99c84a72-a3ef-454a-aecc-acf508c9d73c"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 2948.0,
-                            Name = "6",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("ab24cfcb-056d-4405-b8cb-50ca45682fa0"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 2948.0,
-                            Name = "7",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
-                        },
-                        new
-                        {
-                            Id = new Guid("5271d1b5-b157-4984-b463-1967c0e899e4"),
-                            CargoPositionType = 1,
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentVolume = 0.0,
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxVolume = 9000000.0,
-                            MaxWeight = 2948.0,
-                            Name = "8",
-                            ZoneAreaId = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b")
                         });
                 });
 
@@ -36757,19 +36558,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                             IsDeleted = false,
                             LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             MaxWeight = 23950.0,
-                            Name = "OA"
-                        },
-                        new
-                        {
-                            Id = new Guid("da2cb73f-23d0-48c3-969e-16b788a31a0b"),
-                            AircraftCabinId = new Guid("5bf67920-3d3e-457f-9f45-589388ac432a"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CurrentWeight = 0.0,
-                            IsActive = true,
-                            IsDeleted = false,
-                            LastModifiedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            MaxWeight = 19460.0,
                             Name = "OA"
                         });
                 });

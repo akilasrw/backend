@@ -38,4 +38,12 @@ namespace Aeroclub.Cargo.Application.Enums
         Idle = 1,
         Running = 2
     }
+
+    public enum NotificationFilterType
+    {
+        None = 0,
+        All = 1,
+        Read = 2,
+        UnRead = 3,
+    }
 }

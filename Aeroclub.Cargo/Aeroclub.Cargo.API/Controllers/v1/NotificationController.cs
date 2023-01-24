@@ -50,6 +50,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeleteAsync(Guid id)
         {
             return Ok(await _notificationService.DeleteAsync(id));
@@ -59,19 +61,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<bool>> MarkAsReadAsync([FromBody] Guid id)
         {
             var response = await _notificationService.MarkAsReadAsync(id);
-
+            /*
             if (response.Item1)
             {
                 var count = await _notificationService.CountAsync(new NotificationCountQM { UserId = response.Item2, IsUnread = true });
 
-                var model = new FirebaseUserModel
-                {
-                    UnreadNotificationAvailable = count != 0,
-                    UnreadNotificationCount = count
-                };
+                 var model = new FirebaseUserModel
+                 {
+                     UnreadNotificationAvailable = count != 0,
+                     UnreadNotificationCount = count
+                 };
 
-                await _firebaseService.SetDocumentAsync("users", response.Item2.ToString(), model);
-            }
+                 await _firebaseService.SetDocumentAsync("users", response.Item2.ToString(), model);
+             }*/
 
             return Ok(response.Item1);
         }
@@ -80,7 +82,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<bool>> MarkAllAsReadAsync([FromBody] Guid userId)
         {
             var response = await _notificationService.MarkAllAsReadAsync(userId);
-            if (response)
+            /*if (response)
             {
                 var count = await _notificationService.CountAsync(new NotificationCountQM { UserId = userId, IsUnread = true });
 
@@ -91,8 +93,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 };
 
                 await _firebaseService.SetDocumentAsync("users", userId.ToString(), model);
-            }
-            return Ok();
+            }*/
+            return Ok(response);
         }
 
         [HttpPost]

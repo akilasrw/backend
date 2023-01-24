@@ -16,5 +16,17 @@
     "Name": "B737-400",
     "Type": "3",
     "ConfigType": "2"
+  },
+  {
+    "Id": "1DBA5394-C448-4572-A213-CA5EFED3AC4A",
+    "Name": "B737-800",
+    "Type": "4",
+    "ConfigType": "2"
+  },
+  {
+    "Id": "09BA043C-5E15-4B65-AF7A-673B7B75D393",
+    "Name": "B737-300",
+    "Type": "5",
+    "ConfigType": "2"
   }
 ]

@@ -42,7 +42,7 @@ namespace Aeroclub.Cargo.Application.Specifications
                 {
                     And(c => c.FlightSchedules.Count() > 0 && c.FlightSchedules.Count() > c.FlightSchedules.Where(x => x.AircraftId != null).Count() && c.FlightSchedules.Where(x => x.AircraftId != null).Count() > 0);
                 }
-                else if (query.Status == Enums.AircaftAssignedStatus.PartiallyCompleted)
+                else if (query.Status == Enums.AircaftAssignedStatus.Completed)
                 {
                     And(s=> s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == s.FlightSchedules.Count());
                 }

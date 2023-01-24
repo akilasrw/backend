@@ -180,7 +180,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             var aircraftlist = await _unitOfWork.Repository<Aircraft>().GetListAsync();
             var filteredAircraftlist = aircraftlist.Where(x => x.ConfigurationType == aircraftConfig); // filtered by types - ex: Freighter type
-
+            filteredAircraftlist = aircraftlist.Where(x => x.AircraftSubType == flightSchedule.AircraftSubType.Type);
+             
             // Get times from Flight sector
             var orderedfSector = flightSchedule.FlightScheduleSectors.OrderBy(x => x.SequenceNo);
             var firstSector = orderedfSector.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
@@ -199,19 +200,13 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 var avaialbleAircraft = filteredAircraftlist.Where(x => x.Id == aircraftSchedule.AircraftId).FirstOrDefault();
 
-                //var fsSpec = new FlightScheduleSpecification(aircraftSchedule.Id); // Get FlightSchedule from aircraft Schedule Id. 
-                //IReadOnlyList<FlightSchedule> flightSchedule_AlreadyLinked = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(fsSpec);
-
-                //if (flightSchedule_AlreadyLinked == null || flightSchedule_AlreadyLinked.Count == 0)
-                //{
-                if (!list.Any(x => x.Id == avaialbleAircraft.Id)) // check already exists to avoid duplicates values in the aircraft list. 
-                    if (avaialbleAircraft != null)
+                if (avaialbleAircraft != null)
+                    if (!list.Any(x => x.Id == avaialbleAircraft.Id)) // check already exists to avoid duplicates values in the aircraft list.                     
                     {
                         var mappedAricraft = _mapper.Map<Aircraft, AircraftDto>(avaialbleAircraft);
                         mappedAricraft.AircraftScheduleId = aircraftSchedule.Id;
                         list.Add(mappedAricraft);
                     }
-               // }
             }
             return list;
         }
@@ -380,27 +375,30 @@ namespace Aeroclub.Cargo.Application.Services
                                                     if (DateTime.MinValue.TimeOfDay != tsDeparture)
                                                     {
                                                         var lastTime = (startTime.Date + tsDeparture).Subtract(TimeSpan.FromMinutes(firstSector.DestinationBlockTimeMin.Value));
-                                                        aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(DateTime.MinValue, lastTime, lastTime.TimeOfDay.Subtract(DateTime.MinValue.TimeOfDay).Hours));
+                                                        aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(DateTime.MinValue, lastTime, lastTime.TimeOfDay.Subtract(DateTime.MinValue.TimeOfDay).TotalHours));
                                                     }
                                                 }
 
                                                 if (aircraftSchedulesCount < asList.Count()) // have aircraftSchedules more than 1.  but the middle of round of the loop.
                                                 {
                                                     List<AircraftSchedule> alist = asList.ToList();
-                                                    var firstTime = (endTime.Date + tsArrival).Add(TimeSpan.FromMinutes(lastSector.DestinationBlockTimeMin.Value));
-                                                    var nextFlightShedule = alist[aircraftSchedulesCount].FlightSchedules.FirstOrDefault().FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
-                                                    TimeSpan lastTimeTS = nextFlightShedule.DepartureDateTime.Value;
-                                                    double blockTime = nextFlightShedule.DestinationBlockTimeMin.Value;
-                                                    var lastTime = (fs.ScheduledDepartureDateTime.Date + lastTimeTS).Subtract(TimeSpan.FromMinutes(blockTime));
-                                                    var duration = lastTime.TimeOfDay.Subtract(firstTime.TimeOfDay).TotalHours;
-                                                    aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, lastTime, duration));
+                                                    if (alist[aircraftSchedulesCount].FlightSchedules.Count > 0)
+                                                    {
+                                                        var firstTime = (endTime.Date + tsArrival).Add(TimeSpan.FromMinutes(lastSector.DestinationBlockTimeMin.Value));
+                                                        var nextFlightShedule = alist[aircraftSchedulesCount].FlightSchedules.FirstOrDefault().FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.LastOrDefault();
+                                                        TimeSpan lastTimeTS = nextFlightShedule.DepartureDateTime.Value;
+                                                        double blockTime = nextFlightShedule.DestinationBlockTimeMin.Value;
+                                                        var lastTime = (fs.ScheduledDepartureDateTime.Date + lastTimeTS).Subtract(TimeSpan.FromMinutes(blockTime));
+                                                        var duration = lastTime.TimeOfDay.Subtract(firstTime.TimeOfDay).TotalHours;
+                                                        aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, lastTime, duration));
+                                                    }
                                                 }
                                                 
                                                 if (aircraftSchedulesCount > 0 && aircraftSchedulesCount == asList.Count()) // the last of round of the loop.
                                                 {
                                                     var firstTime = (endTime.Date + tsArrival).Add(TimeSpan.FromMinutes(lastSector.DestinationBlockTimeMin.Value));
                                                     var duration = Math.Ceiling(DateTime.MaxValue.TimeOfDay.Subtract(firstTime.TimeOfDay).TotalHours);
-                                                    aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, DateTime.MinValue, firstTime.TimeOfDay.Subtract(DateTime.MinValue.TimeOfDay).Hours));
+                                                    aircraftIdleDateRangeList.Add(new AircraftIdleDateRange(firstTime, DateTime.MinValue, firstTime.TimeOfDay.Subtract(DateTime.MinValue.TimeOfDay).TotalHours));
                                                 }
                                             }
                                             else
