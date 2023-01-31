@@ -14,26 +14,27 @@ using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
-using Newtonsoft.Json.Linq;
-using NodaTime;
-using System.Security.Cryptography.X509Certificates;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Extensions.Configuration;
 
 namespace Aeroclub.Cargo.Application.Services
 {
     public class FlightScheduleService : BaseService, IFlightScheduleService
     {
         private readonly IFlightService _flightService;
+        private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly IAircraftService _aircraftService;
         private readonly ILayoutCloneService _layoutCloneService;
         private readonly ISectorService _sectorService;
+        private readonly IConfiguration _configuration;
 
         public FlightScheduleService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IFlightService flightService,
+            IFlightScheduleSectorService flightScheduleSectorService,
             IAircraftService aircraftService,
             ILayoutCloneService layoutCloneService,
+            IConfiguration configuration,
             ISectorService sectorService) :
             base(unitOfWork, mapper)
         {
@@ -41,6 +42,8 @@ namespace Aeroclub.Cargo.Application.Services
             _aircraftService = aircraftService;
             _layoutCloneService = layoutCloneService;
             _sectorService = sectorService;
+            _configuration = configuration;
+            _flightScheduleSectorService= flightScheduleSectorService;
         }
 
         public async Task<FlightScheduleCreateStatusRM> CreateAsync(FlightScheduleCreateRM model)
@@ -89,6 +92,70 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return responseStatus;
+        }
+
+        public async Task<Pagination<FlightScheduleSearchVM>> GetFilteredListAsync(FlightScheduleFilteredListQM query)
+        {
+            var flightScheduleDtos = new List<FlightScheduleSearchVM>();
+
+            var flightScheduleQuery = new FlightScheduleListQM()
+            {
+                OriginAirportId = query.OriginAirportId,
+                FlightDate = query.ScheduledDepartureDateTime,
+                IncludeAircraftSubType = true,
+                IncludeFlightScheduleSectors = true
+            };
+
+            var flightScheduleSpec = new FlightScheduleSpecification(flightScheduleQuery);
+            var flightSchedules = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(flightScheduleSpec);
+
+            var countSpec = new FlightScheduleSpecification(flightScheduleQuery, true);
+            var totalCount = await _unitOfWork.Repository<FlightSchedule>().CountAsync(countSpec);
+
+            if (flightSchedules.Count < 1)
+            {
+                return new Pagination<FlightScheduleSearchVM>(query.PageIndex, query.PageSize, totalCount, flightScheduleDtos);
+
+            }
+
+            foreach (var flightSchedule in flightSchedules)
+            {
+                var flightScheduleSearch = new FlightScheduleSearchVM();
+
+                foreach (var flightSctor in flightSchedule.FlightScheduleSectors)
+                {
+                    if (flightSctor.DestinationAirportId == query.DestinationAirportId)
+                    {
+                        flightScheduleSearch = _mapper.Map<FlightSchedule, FlightScheduleSearchVM>(flightSchedule);
+
+                        flightScheduleSearch.DestinationAirportId = flightSctor.DestinationAirportId;
+                        flightScheduleSearch.DestinationAirportCode = flightSctor.DestinationAirportCode;
+                        flightScheduleSearch.DestinationAirportName = flightSctor.DestinationAirportName;
+
+
+                        flightScheduleSearch.AcceptanceCutoffTime = string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]) ?
+                            flightSchedule.ScheduledDepartureDateTime : flightSchedule.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]));
+
+                        flightScheduleSearch.BookingCutoffTime = string.IsNullOrEmpty(_configuration["Booking:BookingCutoffTimeHrs"]) ?
+                            flightSchedule.ScheduledDepartureDateTime : flightSchedule.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:BookingCutoffTimeHrs"]));
+
+                        if (flightScheduleSearch.AircraftConfigType == AircraftConfigType.Freighter)
+                        {
+                            flightScheduleSearch.AvailableWeight = await _flightScheduleSectorService.GetAircraftAvailableWeight(flightSctor.Id);
+                            flightScheduleSearch.AvailableVolume = await _flightScheduleSectorService.GetAircraftAvailableVolume(flightSctor.Id);
+                            flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetFreighterAircraftAvailableSpace(flightSctor.Id);
+                        }
+                        else
+                        {
+                            flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetAircraftAvailableSpace(flightSctor.Id);
+                        }
+                        flightScheduleDtos.Add(flightScheduleSearch);
+                    }
+                }
+            }
+
+            return new Pagination<FlightScheduleSearchVM>(query.PageIndex, query.PageSize, totalCount, flightScheduleDtos);
+
         }
 
         private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)

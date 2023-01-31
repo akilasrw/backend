@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -20,34 +21,6 @@ namespace Aeroclub.Cargo.Application.Specifications
                 (!query.OriginAirportOnly || x.OriginAirportId == query.OriginAirportId)
             )
         {
-        }
-
-        public FlightScheduleSectorSpecification(FlightScheduleSectorFilteredListQM query, bool isCount = false)
-            : base(x =>
-                (query.ScheduledDepartureDateTime == DateTime.MinValue ||
-                 x.ScheduledDepartureDateTime.Date == query.ScheduledDepartureDateTime.Date) &&
-                (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
-                (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
-                ((query.ScheduledDepartureStartDateTime == DateTime.MinValue &&
-                  query.ScheduledDepartureEndDateTime == DateTime.MinValue)
-                 || (query.ScheduledDepartureStartDateTime.Date <= x.ScheduledDepartureDateTime.Date) &&
-                 (query.ScheduledDepartureEndDateTime >= x.ScheduledDepartureDateTime.Date)) &&
-                (!query.OriginAirportOnly || x.OriginAirportId == query.OriginAirportId) &&
-                (!query.DestinationAirportOnly || x.DestinationAirportId == query.DestinationAirportId)
-            )
-        {
-           
-            if (!isCount)
-            {
-                if (query.IncludeAircraftSubType)
-                {
-                    AddInclude(y => y.Include(x => x.AircraftSubType));
-
-                }
-                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
-                AddOrderByDescending(x => x.Created);
-            }
-
         }
 
         public FlightScheduleSectorSpecification(FlightScheduleSectorQM query)

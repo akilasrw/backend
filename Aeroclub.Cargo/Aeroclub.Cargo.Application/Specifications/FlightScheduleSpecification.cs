@@ -23,7 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
 
                 if (query.IncludeAircraftSubType)
-                    AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.AircraftSubType));
+                    AddInclude(x => x.Include(y => y.AircraftSubType));
             }
 
         }
