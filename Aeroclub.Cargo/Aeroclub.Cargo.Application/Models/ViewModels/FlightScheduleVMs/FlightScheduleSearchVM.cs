@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
         public DateTime? AcceptanceCutoffTime { get; set; }
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
+        public List<Guid> FlightScheduleSectorIds { get; set; } = null!;
         public IList<FlightScheduleSectorCargoPosition> FlightScheduleSectorCargoPositions { get; set; }
 
     }

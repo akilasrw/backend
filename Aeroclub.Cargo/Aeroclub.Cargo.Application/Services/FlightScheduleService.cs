@@ -121,13 +121,18 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var flightSchedule in flightSchedules)
             {
                 var flightScheduleSearch = new FlightScheduleSearchVM();
+                var flightScheduleSectorIds = new List<Guid>();
+
+                flightSchedule.FlightScheduleSectors.OrderBy(r => r.SequenceNo);
 
                 foreach (var flightSctor in flightSchedule.FlightScheduleSectors)
                 {
+                    flightScheduleSectorIds.Add(flightSctor.Id);
+
                     if (flightSctor.DestinationAirportId == query.DestinationAirportId)
                     {
                         flightScheduleSearch = _mapper.Map<FlightSchedule, FlightScheduleSearchVM>(flightSchedule);
-
+                        flightScheduleSearch.FlightScheduleSectorIds = flightScheduleSectorIds;
                         flightScheduleSearch.DestinationAirportId = flightSctor.DestinationAirportId;
                         flightScheduleSearch.DestinationAirportCode = flightSctor.DestinationAirportCode;
                         flightScheduleSearch.DestinationAirportName = flightSctor.DestinationAirportName;
@@ -150,6 +155,7 @@ namespace Aeroclub.Cargo.Application.Services
                             flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetAircraftAvailableSpace(flightSctor.Id);
                         }
                         flightScheduleDtos.Add(flightScheduleSearch);
+                        break;
                     }
                 }
             }
