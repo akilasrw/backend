@@ -177,66 +177,84 @@ namespace Aeroclub.Cargo.Application.Services
 
             var response = new ValidateResponse() { IsValid=true};
 
-            var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId, IncludeLoadPlan = true });
-
-            if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
+            foreach(var flightScheduleSectorId in rm.FlightScheduleSectorIds)
             {
-                return new ValidateResponse()
-                {
-                    IsValid = false,
-                    ValidationMessage = "No available space for this."
-                };
-            }
+                var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightScheduleSectorId, IncludeLoadPlan = true });
 
-            if (rm.PackageItem.PackageContainerType != PackageContainerType.OnThreeSeats)
-            {
-                var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
-
-                if (cargoPositions != CargoPositionType.OnFloor && cargoPositions != CargoPositionType.None)
-                {
-                    var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-                    { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true, IncludeOverhead = true });
-
-                    var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-
-                    var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
-
-                    return GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea,rm.PackageItem.WeightUnitId);
-                
-                }
-            }
-            else
-            {
-                SeatConfiguration? config = null;
-
-               var seatConfigurationSpec = new SeatConfigurationSpecification(new SeatConfigurationListQM
-                { SeatLayoutId = flightSector.SeatLayoutId.Value, IncludeSeats = true,IncludeZones = true, SeatConfigurationType = SeatConfigurationType.ThreeSeats });
-
-                var seatConfigurationList = await _unitOfWork.Repository<SeatConfiguration>().GetListWithSpecAsync(seatConfigurationSpec);
-
-                if (seatConfigurationList != null)
-                {
-                    foreach (var seatConfig in seatConfigurationList)
-                    {
-                        if (seatConfig.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
-                        {
-                            config = seatConfig;
-                            break;
-                        }
-                    }
-                }
-
-                if (config != null && config.Seats != null)
-                {
-                    return GetWeightValidationResponse(rm.PackageItem.Weight, config.MaxWeight, config.Seats.First().ZoneArea,rm.PackageItem.WeightUnitId);
-                }
-                else
+                if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
                 {
                     return new ValidateResponse()
                     {
                         IsValid = false,
                         ValidationMessage = "No available space for this."
                     };
+                }
+
+                if (rm.PackageItem.PackageContainerType != PackageContainerType.OnThreeSeats)
+                {
+                    var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
+
+                    if (cargoPositions != CargoPositionType.OnFloor && cargoPositions != CargoPositionType.None)
+                    {
+                        var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                        { AircraftLayoutId = flightSector.AircraftLayoutId.Value, IncludeSeat = true, IncludeOverhead = true });
+
+                        var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+                        var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions);
+
+                        var weightValidationResponse = GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea, rm.PackageItem.WeightUnitId);
+                        if (weightValidationResponse.IsValid)
+                        {
+                            response = weightValidationResponse;
+                        }
+                        else
+                        {
+                            return weightValidationResponse;
+                        }
+                    }
+                }
+                else
+                {
+                    SeatConfiguration? config = null;
+
+                    var seatConfigurationSpec = new SeatConfigurationSpecification(new SeatConfigurationListQM
+                    { SeatLayoutId = flightSector.SeatLayoutId.Value, IncludeSeats = true, IncludeZones = true, SeatConfigurationType = SeatConfigurationType.ThreeSeats });
+
+                    var seatConfigurationList = await _unitOfWork.Repository<SeatConfiguration>().GetListWithSpecAsync(seatConfigurationSpec);
+
+                    if (seatConfigurationList != null)
+                    {
+                        foreach (var seatConfig in seatConfigurationList)
+                        {
+                            if (seatConfig.Seats.Where(x => !x.IsOnSeatOccupied).Count() > 2)
+                            {
+                                config = seatConfig;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (config != null && config.Seats != null)
+                    { 
+                        var weightValidationResponse = GetWeightValidationResponse(rm.PackageItem.Weight, config.MaxWeight, config.Seats.First().ZoneArea, rm.PackageItem.WeightUnitId);
+                        if (weightValidationResponse.IsValid)
+                        {
+                            response = weightValidationResponse;
+                        }
+                        else
+                        {
+                            return weightValidationResponse;
+                        }
+                    }
+                    else
+                    {
+                        return new ValidateResponse()
+                        {
+                            IsValid = false,
+                            ValidationMessage = "No available space for this."
+                        };
+                    }
                 }
             }
 

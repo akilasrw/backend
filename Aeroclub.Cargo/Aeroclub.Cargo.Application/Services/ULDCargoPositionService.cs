@@ -77,32 +77,41 @@ namespace Aeroclub.Cargo.Application.Services
                 ValidationMessage = "No available space for this."
             };
 
-            var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId, IncludeLoadPlan = true });
-            
             var cargoPositions = (CargoPositionType)rm.PackageItem.PackageContainerType;
 
-            if (cargoPositions == CargoPositionType.OnFloor)
+            foreach(var flightScheduleSectorId in rm.FlightScheduleSectorIds)
             {
+                var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightScheduleSectorId, IncludeLoadPlan = true });
+
+                if (cargoPositions == CargoPositionType.OnFloor)
+                {
                     var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                     { AircraftLayoutId = flightSector.AircraftLayoutId.Value });
 
                     var cargoPositionList = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-                    var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions && x.CurrentWeight<x.MaxWeight);
+                    var position = cargoPositionList.First(x => x.CargoPositionType == cargoPositions && x.CurrentWeight < x.MaxWeight);
 
-                var weightValidationResponse = GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea, rm.PackageItem.WeightUnitId);
+                    var weightValidationResponse = GetWeightValidationResponse(rm.PackageItem.Weight, position.MaxWeight, position.ZoneArea, rm.PackageItem.WeightUnitId);
 
-                if (weightValidationResponse.IsValid)
-                {
-                    return GetVolumeValidationResponse(rm.PackageItem,position.MaxVolume);
+                    if (weightValidationResponse.IsValid)
+                    {
+                        var volumeValidationResponse = GetVolumeValidationResponse(rm.PackageItem, position.MaxVolume);
+                        if (volumeValidationResponse.IsValid)
+                        {
+                            response = volumeValidationResponse;
+                        }
+                        else
+                        {
+                            return volumeValidationResponse;
+                        }
+                    }
+                    else
+                    {
+                        return weightValidationResponse;
+                    }
                 }
-                else
-                {
-                    return weightValidationResponse;
-                }
-
-            }
-            
+            }            
             return response;
         }
 

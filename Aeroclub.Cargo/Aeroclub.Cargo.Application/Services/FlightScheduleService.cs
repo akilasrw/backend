@@ -144,15 +144,16 @@ namespace Aeroclub.Cargo.Application.Services
                         flightScheduleSearch.BookingCutoffTime = string.IsNullOrEmpty(_configuration["Booking:BookingCutoffTimeHrs"]) ?
                             flightSchedule.ScheduledDepartureDateTime : flightSchedule.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:BookingCutoffTimeHrs"]));
 
+                        var firstFlightSector = flightSchedule.FlightScheduleSectors.First();
                         if (flightScheduleSearch.AircraftConfigType == AircraftConfigType.Freighter)
                         {
-                            flightScheduleSearch.AvailableWeight = await _flightScheduleSectorService.GetAircraftAvailableWeight(flightSctor.Id);
-                            flightScheduleSearch.AvailableVolume = await _flightScheduleSectorService.GetAircraftAvailableVolume(flightSctor.Id);
-                            flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetFreighterAircraftAvailableSpace(flightSctor.Id);
+                            flightScheduleSearch.AvailableWeight = await _flightScheduleSectorService.GetAircraftAvailableWeight(firstFlightSector.Id);
+                            flightScheduleSearch.AvailableVolume = await _flightScheduleSectorService.GetAircraftAvailableVolume(firstFlightSector.Id);
+                            flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetFreighterAircraftAvailableSpace(firstFlightSector.Id);
                         }
                         else
                         {
-                            flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetAircraftAvailableSpace(flightSctor.Id);
+                            flightScheduleSearch.FlightScheduleSectorCargoPositions = await _flightScheduleSectorService.GetAircraftAvailableSpace(firstFlightSector.Id);
                         }
                         flightScheduleDtos.Add(flightScheduleSearch);
                         break;
