@@ -11,6 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ChatVMs
         public string ChatBody { get; set; } = null!;
         public string? ParticipantEmail { get; set; }
         public string? SId { get; set; }
-        public Boolean IsRead { get; set; }
+        public bool IsRead { get; set; }
+        public bool? isExistedUser { get; set; }
     }
 }

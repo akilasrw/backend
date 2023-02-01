@@ -1,5 +1,7 @@
-﻿using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+﻿using Aeroclub.Cargo.Application.Models.Dtos.Chatting;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Core.Entities;
+using System.Security.Policy;
 
 namespace Aeroclub.Cargo.Application.Extensions
 {
@@ -27,6 +29,26 @@ namespace Aeroclub.Cargo.Application.Extensions
             position.Id = positionId;
             position.OverheadCompartmentId = overheadId;
             return position;
+        }
+
+        public static ChatUserDto MapChatUser(this ChatUserDto user, string sid, string accountSid, string identity, string friendlyName, Uri url)
+        {
+            user.Sid = sid;
+            user.AccountSid = accountSid;
+            user.Identity = identity;
+            user.FriendlyName = friendlyName;
+            user.Url = url;
+
+            return user;
+        }
+        
+        
+        public static ParticipantDto MapParticipant(this ParticipantDto participant, string sid, string accountSid, string identity)
+        {
+            participant.Sid = sid;
+            participant.Identity = identity;
+            participant.AccountSid = accountSid;
+            return participant;
         }
     }
 }
