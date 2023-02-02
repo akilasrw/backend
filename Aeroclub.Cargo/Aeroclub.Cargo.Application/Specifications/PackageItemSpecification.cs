@@ -19,8 +19,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.VolumeUnit));
             AddInclude(x => x.Include(y => y.WeightUnit));
-            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.FlightScheduleSector));
-            AddInclude(x => x.Include(y => y.ULDContainer).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z=>z.CargoPosition));
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
+            AddInclude(x => x.Include(y => y.PackageULDContainers).ThenInclude(z=>z.ULDContainer).ThenInclude(a => a.ULDContainerCargoPositions).ThenInclude(b=>b.CargoPosition));
         }
 
         public PackageItemSpecification(PackageListQM query, bool isCount = false)
@@ -30,7 +30,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (!isCount)
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
-                AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y=>y.FlightScheduleSector));
+                AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y=>y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
                 AddOrderByDescending(x => x.Created);
             }
         }

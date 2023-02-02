@@ -71,13 +71,17 @@ namespace Aeroclub.Cargo.Application.Services
                 var packages = rm.PackageItems.ToList();
                 rm.PackageItems.Clear();
 
+
+
                 // Get Flight Schedule Sector Data
                 var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId.Value, IncludeLoadPlan = true });
-                rm.OriginAirportId = flightSector.OriginAirportId;
-                rm.DestinationAirportId = flightSector.DestinationAirportId;
+
+
 
                 // Save Cargo Booking Details
                 var response = await _uldCargoBookingService.CreateAsync(rm);
+                
+
                 if (response.StatusCode == ServiceResponseStatus.Failed)
                 {
                     transaction.Rollback();
@@ -125,6 +129,8 @@ namespace Aeroclub.Cargo.Application.Services
                         package.Weight = package.Weight.GramToKilogramConversion();
                     }
 
+
+
                     // Save ULD Container Details
                     var uldContainer = await _uldContainerService.CreateAsync(new ULDContainerDto()
                     {
@@ -152,6 +158,8 @@ namespace Aeroclub.Cargo.Application.Services
                         transaction.Rollback();
                         return BookingServiceResponseStatus.Failed;
                     }
+
+
                 }
                 transaction.Commit();
             }
@@ -337,7 +345,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                         List<PackageItem> packages = new List<PackageItem>();
                         if (booking.PackageItems != null)
-                            packages.AddRange(booking.PackageItems.Where(x => entities.Any(y => y.ULDContainerId.Equals(x.ULDContainerId))));
+                            packages.AddRange(booking.PackageItems.Where(x => entities.Any(y => y.ULDContainerId.Equals(x.PackageULDContainers.FirstOrDefault(z=>z.ULDContainerId == y.ULDContainerId)))));
                         
                         vm.NumberOfAssignedBoxes = packages.Count();
                         vm.TotalWeight = packages == null ? 0 : packages.Sum(x => x.Weight);

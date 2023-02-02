@@ -79,8 +79,6 @@ namespace Aeroclub.Cargo.Application.Services
                     
                     // Get Flight Schedule Sector Data
                     var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId.Value, IncludeLoadPlan = true });
-                    rm.OriginAirportId = flightSector.OriginAirportId;
-                    rm.DestinationAirportId = flightSector.DestinationAirportId;
 
                     // Check available Positions
                     if (!flightSector.FlightScheduleSectorCargoPositions.Any(x=>x.AvailableSpaceCount > 0))
