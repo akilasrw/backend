@@ -8,11 +8,15 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -20,6 +24,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Services
@@ -68,30 +73,37 @@ namespace Aeroclub.Cargo.Application.Services
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                var packages = rm.PackageItems.ToList();
-                rm.PackageItems.Clear();
-
-
-
-                // Get Flight Schedule Sector Data
-                var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId.Value, IncludeLoadPlan = true });
-
-
-
-                // Save Cargo Booking Details
-                var response = await _uldCargoBookingService.CreateAsync(rm);
-                
-
-                if (response.StatusCode == ServiceResponseStatus.Failed)
+                if(rm.FlightScheduleSectorIds == null)
                 {
                     transaction.Rollback();
                     return BookingServiceResponseStatus.Failed;
                 }
 
+                var packages = rm.PackageItems.ToList();
+                rm.PackageItems.Clear();
+
+                // Save Cargo Booking Details
+                var cargoBooking = await _uldCargoBookingService.CreateAsync(rm);
+                if (cargoBooking.StatusCode == ServiceResponseStatus.Failed)
+                {
+                    transaction.Rollback();
+                    return BookingServiceResponseStatus.Failed;
+                }
+
+                foreach(var flightSectorId in rm.FlightScheduleSectorIds)
+                {
+                    var createdBookingFlightSector = await _uldCargoBookingService.BookingFlightScheduleSectorCreate(new CargoBookingFlightScheduleSectorRM() {CargoBookingId= cargoBooking.Id,FlightScheduleSectorId=flightSectorId});
+                    if (createdBookingFlightSector.StatusCode == ServiceResponseStatus.Failed)
+                    {
+                        transaction.Rollback();
+                        return BookingServiceResponseStatus.Failed;
+                    }
+                }
+
                 //Save AWB Details
                 if (rm.AWBDetail != null)
                 {
-                    rm.AWBDetail.CargoBookingId = response.Id;
+                    rm.AWBDetail.CargoBookingId = cargoBooking.Id;
                     var awbResponse = await _AWBService.CreateAsync(rm.AWBDetail);
 
                     if (awbResponse.StatusCode == ServiceResponseStatus.Failed)
@@ -129,28 +141,8 @@ namespace Aeroclub.Cargo.Application.Services
                         package.Weight = package.Weight.GramToKilogramConversion();
                     }
 
-
-
-                    // Save ULD Container Details
-                    var uldContainer = await _uldContainerService.CreateAsync(new ULDContainerDto()
-                    {
-                        LoadPlanId = flightSector.LoadPlanId.Value,
-                        ULDContainerType = ULDContainerType.ULD,
-                        ULDId = null, //ToDo  Need to assign after ULD creation
-                        Height = package.Height,
-                        Length = package.Length,
-                        Width = package.Width,
-                    });
-
-                    if (uldContainer == null)
-                    {
-                        transaction.Rollback();
-                        return BookingServiceResponseStatus.Failed;
-                    }
-
                     // Save Package Items
-                    package.CargoBookingId = response.Id;
-                    package.ULDContainerId = uldContainer.Id;
+                    package.CargoBookingId = cargoBooking.Id;
                     var createdPackage = await _packageItemService.CreateAsync(package);
 
                     if (createdPackage.StatusCode == ServiceResponseStatus.Failed)
@@ -159,7 +151,44 @@ namespace Aeroclub.Cargo.Application.Services
                         return BookingServiceResponseStatus.Failed;
                     }
 
+                
+                    foreach (var flightSectorId in rm.FlightScheduleSectorIds)
+                    {
+                        var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightSectorId, IncludeLoadPlan = true });
+                        if(flightSector != null && flightSector.LoadPlanId != null )
+                        {
+                            // Save ULD Container Details
+                            var createdULDContainer = await _uldContainerService.CreateAsync(new ULDContainerDto()
+                            {
+                                LoadPlanId = flightSector.LoadPlanId.Value,
+                                ULDContainerType = ULDContainerType.ULD,
+                                ULDId = null, //ToDo  Need to assign after ULD creation
+                                Height = package.Height,
+                                Length = package.Length,
+                                Width = package.Width,
+                            });
 
+                            if (createdULDContainer == null || createdULDContainer.Id == Guid.Empty)
+                            {
+                                transaction.Rollback();
+                                return BookingServiceResponseStatus.Failed;
+                            }
+
+                            var createdPackageULDContainer = await _packageItemService.PackageULDContainerCreate(new PackageULDContainerRM() { PackageItemId = createdPackage.Id, ULDContainerId = createdULDContainer.Id });
+
+                            if (createdPackageULDContainer.StatusCode == ServiceResponseStatus.Failed)
+                            {
+                                transaction.Rollback();
+                                return BookingServiceResponseStatus.Failed;
+                            }
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.Failed;
+                        }
+                    }
+                   
                 }
                 transaction.Commit();
             }

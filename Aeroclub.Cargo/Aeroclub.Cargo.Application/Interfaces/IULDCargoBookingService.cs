@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 
@@ -10,6 +11,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> CreateAsync(CargoBookingRM dto);
         Task<CargoBookingDetailVM> GetAsync(CargoBookingDetailQM query);
         Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM dto);
+        Task<ServiceResponseCreateStatus> BookingFlightScheduleSectorCreate(CargoBookingFlightScheduleSectorRM rm);
 
 
 
