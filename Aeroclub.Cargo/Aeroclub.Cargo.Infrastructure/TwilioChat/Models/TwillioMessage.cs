@@ -11,5 +11,6 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Models
         public string? Auther { get; set; }
         public string? Body { get; set; }
         public string? PathConversationSid { get; set; }
+        public string? pathSid { get; set; }
     }
 }

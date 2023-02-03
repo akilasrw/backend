@@ -10,5 +10,6 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Models
     {
         public string? FriendlyName { get; set; }
         public string? UniqueName { get; set; }
+
     }
 }

@@ -61,36 +61,16 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             return userConversation;
         }
 
-
-
         public async Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string userId, string pathChatServiceSid, int? limit = null)
         {
 
             var userConversations = await UserConversationResource.ReadAsync(
                 pathUserSid: userId,// "USXXXXXXXXXXXXX",
-                pathChatServiceSid: pathChatServiceSid,
+                pathChatServiceSid: pathChatServiceSid, // ISXXX
                 limit: limit
             );
 
             return userConversations;
-        }
-
-        public async Task<ResourceSet<MessageResource>> ReadConversationMessagesAsync(string pathConversationSid, int? limit = null)
-        {
-            var messages = await MessageResource.ReadAsync(
-                pathConversationSid: pathConversationSid,
-                limit: limit);
-            return messages;
-        }
-
-        public async Task<ResourceSet<MessageResource>> FetchLatestConversationMessagesAsync(string pathConversationSid, int? limit = null)
-        {
-            var messages = await MessageResource.ReadAsync(
-                order: MessageResource.OrderTypeEnum.Desc,
-                pathConversationSid: pathConversationSid,
-                limit: limit
-            );
-            return messages;
         }
 
         public async Task<ParticipantResource> FetchConversationParticipantAsync(string pathConversationSid, string pathSid)
@@ -131,13 +111,13 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
 
         public async Task<UserResource> UpdateUserAsync(string friendlyName, string roleSid, string pathSid)
         {
-            var user = UserResource.UpdateAsync(
+            var user = await UserResource.UpdateAsync(
                friendlyName: friendlyName, // "new name",
                roleSid: roleSid, // "RLXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                pathSid: pathSid // "USXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
            );
 
-            return user.Result;
+            return user;
         }
 
         public async Task<UserResource> FetchUserAsync(string pathId)
@@ -173,6 +153,53 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
                 dateCreated: DateTime.Now
             );
         }
+
+        public async Task<MessageResource> UpdateMessageAsync(TwillioMessage message)
+        {
+            return await MessageResource.UpdateAsync(
+                author: message.Auther, // identity
+                body: message.Body,
+                pathConversationSid: message.PathConversationSid,
+                pathSid: message.pathSid,
+                dateUpdated: DateTime.Now
+            );
+        } 
+        
+        public async Task<bool> DeleteMessageAsync(TwillioMessage message)
+        {
+            return await MessageResource.DeleteAsync(
+                pathConversationSid: message.PathConversationSid,
+                pathSid: message.pathSid
+            );
+        }
+
+        public async Task<ResourceSet<MessageResource>> ReadConversationMessagesAsync(string pathConversationSid, int? limit = null)
+        {
+            var messages = await MessageResource.ReadAsync(
+                pathConversationSid: pathConversationSid,
+                limit: limit);
+            return messages;
+        }
+
+        public async Task<MessageResource> FetchMessagesAsync(string pathConversationSid, string pathSid)
+        {
+            var message = await MessageResource.FetchAsync(
+                pathConversationSid: pathConversationSid, //"CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                pathSid: pathSid // "IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            );
+            return message;
+        }
+
+        public async Task<ResourceSet<MessageResource>> ReadMessagesAsync(string pathConversationSid, int? limit = null)
+        {
+            var messages = await MessageResource.ReadAsync(
+                order: MessageResource.OrderTypeEnum.Desc,
+                pathConversationSid: pathConversationSid,
+                limit: limit
+            );
+            return messages;
+        }
+
         #endregion Messages
 
 
