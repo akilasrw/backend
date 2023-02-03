@@ -75,8 +75,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 if(rm.FlightScheduleSectorIds == null)
                 {
-                    transaction.Rollback();
-                    return BookingServiceResponseStatus.Failed;
+                    return BookingServiceResponseStatus.ValidationError;
                 }
 
                 var packages = rm.PackageItems.ToList();

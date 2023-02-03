@@ -74,17 +74,27 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 try
                 {
-                    var packages = rm.PackageItems.ToList();
-                    rm.PackageItems.Clear();
-                    
-                    // Get Flight Schedule Sector Data
-                    var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId.Value, IncludeLoadPlan = true });
-
-                    // Check available Positions
-                    if (!flightSector.FlightScheduleSectorCargoPositions.Any(x=>x.AvailableSpaceCount > 0))
+                    if (rm.FlightScheduleSectorIds == null)
                     {
                         return BookingServiceResponseStatus.ValidationError;
                     }
+
+                    var packages = rm.PackageItems.ToList();
+                    rm.PackageItems.Clear();
+                    
+                    foreach(var flightScheduleSectorId in rm.FlightScheduleSectorIds)
+                    {
+                        // Get Flight Schedule Sector Data
+                        var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightScheduleSectorId, IncludeLoadPlan = true });
+                        
+                        // Check available Positions
+                        if (!flightSector.FlightScheduleSectorCargoPositions.Any(x => x.AvailableSpaceCount > 0))
+                        {
+                            return BookingServiceResponseStatus.ValidationError;
+                        }
+                    }
+
+                   
                     
                     // Save Cargo Booking Details
                     var response = await _cargoBookingService.CreateAsync(rm);
