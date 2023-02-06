@@ -30,7 +30,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             :base(x => (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && (x.Id == query.Id) && (!x.IsDeleted))
         {
             if (query.IsIncludeFlightDetail)
-                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w=>w.AircraftSubType));
+                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(a=>a.FlightSchedule));
 
             if (query.IsIncludeAWBDetail)
                 AddInclude(x => x.Include(y=>y.AWBInformation));

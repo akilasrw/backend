@@ -50,10 +50,12 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new CargoBookingSpecification(query);
 
             var entity = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
-
             var mappedEntity = _mapper.Map<CargoBookingDetailVM>(entity);
 
+            mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
+
             return mappedEntity;
+
         }
 
         public async Task<Pagination<CargoBookingVM>> GetFilteredListAsync(CargoBookingFilteredListQM query)
@@ -157,6 +159,21 @@ namespace Aeroclub.Cargo.Application.Services
                 res.StatusCode = ServiceResponseStatus.Failed;
             }
             return res;
+        }
+
+        private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)
+        {
+            var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();
+            var lastCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.Last();
+            bookingDetail.DestinationAirportCode = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportCode;
+            bookingDetail.DestinationAirportId = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportId;
+            bookingDetail.DestinationAirportName = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportName;
+            bookingDetail.ScheduledDepartureDateTime = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightSchedule.ScheduledDepartureDateTime;
+            bookingDetail.FlightNumber = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightNumber;
+
+            var firstCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.First();
+            bookingDetail.OriginAirportCode = firstCrgoBookingFlightScheduleSector.FlightScheduleSector.OriginAirportCode;
+            return bookingDetail;
         }
 
     }
