@@ -73,7 +73,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                if(rm.FlightScheduleSectorIds == null)
+                if (rm.FlightScheduleSectorIds == null)
                 {
                     return BookingServiceResponseStatus.ValidationError;
                 }
@@ -89,9 +89,9 @@ namespace Aeroclub.Cargo.Application.Services
                     return BookingServiceResponseStatus.Failed;
                 }
 
-                foreach(var flightSectorId in rm.FlightScheduleSectorIds)
+                foreach (var flightSectorId in rm.FlightScheduleSectorIds)
                 {
-                    var createdBookingFlightSector = await _uldCargoBookingService.BookingFlightScheduleSectorCreate(new CargoBookingFlightScheduleSectorRM() {CargoBookingId= cargoBooking.Id,FlightScheduleSectorId=flightSectorId});
+                    var createdBookingFlightSector = await _uldCargoBookingService.BookingFlightScheduleSectorCreate(new CargoBookingFlightScheduleSectorRM() { CargoBookingId = cargoBooking.Id, FlightScheduleSectorId = flightSectorId });
                     if (createdBookingFlightSector.StatusCode == ServiceResponseStatus.Failed)
                     {
                         transaction.Rollback();
@@ -150,44 +150,44 @@ namespace Aeroclub.Cargo.Application.Services
                         return BookingServiceResponseStatus.Failed;
                     }
 
-                
+
                     foreach (var flightSectorId in rm.FlightScheduleSectorIds)
                     {
                         var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightSectorId, IncludeLoadPlan = true });
-                        if(flightSector != null && flightSector.LoadPlanId != null )
-                        {
-                            // Save ULD Container Details
-                            var createdULDContainer = await _uldContainerService.CreateAsync(new ULDContainerDto()
-                            {
-                                LoadPlanId = flightSector.LoadPlanId.Value,
-                                ULDContainerType = ULDContainerType.ULD,
-                                ULDId = null, //ToDo  Need to assign after ULD creation
-                                Height = package.Height,
-                                Length = package.Length,
-                                Width = package.Width,
-                            });
 
-                            if (createdULDContainer == null || createdULDContainer.Id == Guid.Empty)
-                            {
-                                transaction.Rollback();
-                                return BookingServiceResponseStatus.Failed;
-                            }
-
-                            var createdPackageULDContainer = await _packageItemService.PackageULDContainerCreate(new PackageULDContainerRM() { PackageItemId = createdPackage.Id, ULDContainerId = createdULDContainer.Id });
-
-                            if (createdPackageULDContainer.StatusCode == ServiceResponseStatus.Failed)
-                            {
-                                transaction.Rollback();
-                                return BookingServiceResponseStatus.Failed;
-                            }
-                        }
-                        else
+                        if (flightSector == null || flightSector.LoadPlanId == null)
                         {
                             transaction.Rollback();
                             return BookingServiceResponseStatus.Failed;
                         }
+
+                        // Save ULD Container Details
+                        var createdULDContainer = await _uldContainerService.CreateAsync(new ULDContainerDto()
+                        {
+                            LoadPlanId = flightSector.LoadPlanId.Value,
+                            ULDContainerType = ULDContainerType.ULD,
+                            ULDId = null, //ToDo  Need to assign after ULD creation
+                            Height = package.Height,
+                            Length = package.Length,
+                            Width = package.Width,
+                        });
+
+                        if (createdULDContainer == null || createdULDContainer.Id == Guid.Empty)
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.Failed;
+                        }
+
+                        var createdPackageULDContainer = await _packageItemService.PackageULDContainerCreate(new PackageULDContainerRM() { PackageItemId = createdPackage.Id, ULDContainerId = createdULDContainer.Id });
+
+                        if (createdPackageULDContainer.StatusCode == ServiceResponseStatus.Failed)
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.Failed;
+                        }
+
                     }
-                   
+
                 }
                 transaction.Commit();
             }
@@ -373,8 +373,8 @@ namespace Aeroclub.Cargo.Application.Services
 
                         List<PackageItem> packages = new List<PackageItem>();
                         if (booking.PackageItems != null)
-                            packages.AddRange(booking.PackageItems.Where(x => entities.Any(y => y.ULDContainerId.Equals(x.PackageULDContainers.FirstOrDefault(z=>z.ULDContainerId == y.ULDContainerId)))));
-                        
+                            packages.AddRange(booking.PackageItems.Where(x => entities.Any(y => y.ULDContainerId.Equals(x.PackageULDContainers.FirstOrDefault(z => z.ULDContainerId == y.ULDContainerId)))));
+
                         vm.NumberOfAssignedBoxes = packages.Count();
                         vm.TotalWeight = packages == null ? 0 : packages.Sum(x => x.Weight);
                         vm.TotalVolume = packages == null ? 0 : packages.Sum(x =>
