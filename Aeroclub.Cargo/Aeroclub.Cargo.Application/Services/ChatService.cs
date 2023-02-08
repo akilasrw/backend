@@ -24,9 +24,19 @@ namespace Aeroclub.Cargo.Application.Services
         {
             if (!message.IsExistedUser.Value)
             {               
-                await CreateParticipantAsync(message.ParticipantEmail);
-                await CreateUserAsync( message.ParticipantEmail);
             }
+        }
+
+        public async Task<MessageDto> CreateMessageAsync(MessageDto message)
+        {
+            var res = await _conversationService.CreateMessageAsync(
+                new TwillioMessage() { 
+                    Auther= message.Auther, 
+                    PathConversationSid= message.PathConversationSid, 
+                    Body=message.Body,
+                });
+
+            return new MessageDto().MapMessage(res.ConversationSid, res.Body, res.Author);
         }
 
         public async Task<ChatUserDto> CreateUserAsync(string email)
@@ -35,10 +45,27 @@ namespace Aeroclub.Cargo.Application.Services
             return new ChatUserDto().MapChatUser(res.Sid, res.AccountSid, res.Identity, res.FriendlyName,res.Url);
         }
         
-        public async Task<ParticipantDto> CreateParticipantAsync(string email)
+        public async Task<ParticipantDto> CreateParticipantAsync(ParticipantDto participant)
         {
-            var res =  await _conversationService.CreateParticipantAsync(new TwillioParticipant() { Identity = email});
+            var res =  await _conversationService.CreateParticipantAsync(
+                new TwillioParticipant() { Identity = participant.Identity, PathConversationSid = participant.ConversationSid });
             return new ParticipantDto().MapParticipant(res.Sid,res.AccountSid, res.Identity);
+        }
+
+        public async Task<ConversationDto> CreateConversationAsync(ConversationDto conversation)
+        {
+           var res =  await _conversationService.CreateConversationAsync(new TwillioConversation() { FriendlyName= conversation.FriendlyName, UniqueName=  conversation.FriendlyName });
+            return new ConversationDto().MapConversation(res.Sid,res.FriendlyName, res.UniqueName);
+        }
+
+        public async Task<IReadOnlyList<TwillioConversation>> GetConversationsAsync()
+        {
+            List<TwillioConversation> list = new List<TwillioConversation>();
+            var res =  await _conversationService.ReadConversationsAsync();
+            foreach (var item in res)
+                list.Add(new TwillioConversation() { Sid = item.Sid, FriendlyName = item.FriendlyName, UniqueName = item.UniqueName });
+
+             return list;
         }
 
         public async Task<IReadOnlyList<TwillioUser>> GetUsersAsync()
@@ -47,7 +74,7 @@ namespace Aeroclub.Cargo.Application.Services
             var users = await _conversationService.ReadUserAsync(1000);
             foreach (var user in users) 
             {
-                list.Add(new TwillioUser { Identity = user.Identity, Sid = user.Sid }); 
+                list.Add(new TwillioUser { Identity = user.Identity, Sid = user.Sid, ChatServiceSid = user.ChatServiceSid }); 
             }
             return list;
 
@@ -73,12 +100,20 @@ namespace Aeroclub.Cargo.Application.Services
 
         } 
         
-        public async Task<IReadOnlyList<TwillioUser>> GetUserConversationAsync(string userId)
+        public async Task<IReadOnlyList<TwillioUserConversation>> GetUserConversationAsync(string identity, string pathConversationSid)
         {
-            List<TwillioUser> list = new List<TwillioUser>();
-            var users = await _conversationService.ReadUserAsync(1000);
+            List<TwillioUserConversation> list = new List<TwillioUserConversation>();
+            var users = await _conversationService.ReadUserConversationAsync(identity, pathConversationSid);
             foreach (var user in users) 
-                list.Add(new TwillioUser { Identity = user.Identity, Sid = user.Sid }); 
+                list.Add(new TwillioUserConversation { 
+                    ConversationSid = user.ConversationSid, 
+                    ParticipantSid = user.ParticipantSid, 
+                    CreatedBy=user.CreatedBy,
+                    ChatServiceSid=user.ChatServiceSid,
+                    FriendlyName=user.FriendlyName,
+                    UniqueName=user.UniqueName,
+                    UserSid = user.UserSid
+                }); 
             
             return list;
 

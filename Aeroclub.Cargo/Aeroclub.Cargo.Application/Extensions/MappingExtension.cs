@@ -41,14 +41,31 @@ namespace Aeroclub.Cargo.Application.Extensions
 
             return user;
         }
+        public static MessageDto MapMessage(this MessageDto message, string pathConversationSid, string body, string auther, string? pathSid =null)
+        {
+            message.PathConversationSid = pathConversationSid;
+            message.Auther = auther;
+            message.Body = body;
+            message.pathSid = pathSid;
+
+            return message;
+        }
         
         
         public static ParticipantDto MapParticipant(this ParticipantDto participant, string sid, string accountSid, string identity)
         {
             participant.Sid = sid;
             participant.Identity = identity;
-            participant.AccountSid = accountSid;
+            //participant.AccountSid = accountSid;
             return participant;
+        }
+        
+        public static ConversationDto MapConversation(this ConversationDto conversation, string sid, string friendlyName, string uniqueName)
+        {
+            conversation.Sid = sid;
+            conversation.FriendlyName = friendlyName;
+            conversation.UniqueName = uniqueName;
+            return conversation;
         }
     }
 }

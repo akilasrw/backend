@@ -31,10 +31,22 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         #region Conversation
         public async Task<ConversationResource> CreateConversationAsync(TwillioConversation conversation)
         {
+            var cons = await ReadConversationsAsync();
+            if(cons.Any(x=>x.UniqueName == conversation.UniqueName))
+            {
+                conversation.UniqueName= string.Format("{0}_{1}{2}{3}",conversation.UniqueName, DateTime.Now.Hour,DateTime.Now.Minute, DateTime.Now.Second);
+                conversation.FriendlyName = conversation.UniqueName;
+            }               
+
             return await ConversationResource.CreateAsync(
                 friendlyName: conversation.FriendlyName,
                 uniqueName: conversation.UniqueName
                 );
+        }
+
+        public async Task<ResourceSet<ConversationResource>> ReadConversationsAsync()
+        {
+            return await ConversationResource.ReadAsync();
         }
 
         public async Task<ResourceSet<ParticipantConversationResource>> ReadParticipantConversationAsync(TwillioParticipant participant, int limit = 20)
@@ -61,11 +73,11 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             return userConversation;
         }
 
-        public async Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string userId, string pathChatServiceSid, int? limit = null)
+        public async Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string identity, string pathChatServiceSid, int? limit = null)
         {
 
             var userConversations = await UserConversationResource.ReadAsync(
-                pathUserSid: userId,// "USXXXXXXXXXXXXX",
+                pathUserSid: identity,// "USXXXXXXXXXXXXX",
                 pathChatServiceSid: pathChatServiceSid, // ISXXX
                 limit: limit
             );
@@ -106,7 +118,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         #region User
         public async Task<UserResource> CreateUserAsync(TwillioUser user)
         {
-            return await UserResource.CreateAsync(identity: user.Identity);
+            return await UserResource.CreateAsync(identity: user.Identity, friendlyName: user.FriendlyName);
         }
 
         public async Task<UserResource> UpdateUserAsync(string friendlyName, string roleSid, string pathSid)

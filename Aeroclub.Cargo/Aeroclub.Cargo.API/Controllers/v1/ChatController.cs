@@ -19,6 +19,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             _chatService.SendChat(message);
             return Ok();
+        } 
+        
+        [HttpPost("CreateMessage")]
+        public async Task<IActionResult> CreateMessageAsync([FromBody]MessageDto message)
+        {
+            return Ok(await _chatService.CreateMessageAsync(message));
         }
         
         
@@ -29,17 +35,15 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
         
         [HttpPost("createParticipant")]
-        public async Task<IActionResult> CreateParticipantAsync([FromBody] string userName)
+        public async Task<IActionResult> CreateParticipantAsync([FromBody] ParticipantDto participant)
         {
-            await _chatService.CreateParticipantAsync(userName);
-            return Ok();
+            return Ok(await _chatService.CreateParticipantAsync(participant));
         }
         
         [HttpPost("createConversation")]
-        public async Task<IActionResult> CreateConversationAsync([FromBody] ChatDto message)
+        public async Task<IActionResult> CreateConversationAsync([FromBody] ConversationDto conversation)
         {
-            await _chatService.CreateParticipantAsync(message.ParticipantEmail);
-            return Ok();
+            return Ok(await _chatService.CreateConversationAsync(conversation));
         }
 
         [HttpGet("GetUserList")]
@@ -52,10 +56,22 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyList<TwillioParticipantConversation>>> GetParticipantConversationAsync([FromQuery] string userName)
         {
             return Ok(await _chatService.GetParticipantConversationAsync(userName));
+        } 
+        
+        [HttpGet("GetUserConversation")]
+        public async Task<ActionResult<IReadOnlyList<TwillioUserConversation>>> GetUserConversationAsync([FromQuery] string identity, string pathConversationSid)
+        {
+            return Ok(await _chatService.GetUserConversationAsync(identity, pathConversationSid));
+        } 
+        
+        [HttpGet("GetConversations")]
+        public async Task<ActionResult<IReadOnlyList<TwillioConversation>>> GetConversationAsync()
+        {
+            return Ok(await _chatService.GetConversationsAsync());
         }
         
         [HttpGet("GetMessages")]
-        public async Task<ActionResult<IReadOnlyList<TwillioMessage>>> GetMessagesAsync([FromBody] string pathConversationSid)
+        public async Task<ActionResult<IReadOnlyList<TwillioMessage>>> GetMessagesAsync([FromQuery] string pathConversationSid)
         {
             return Ok(await _chatService.GetMessagesAsync(pathConversationSid));
         }

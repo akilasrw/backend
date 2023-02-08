@@ -14,6 +14,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces
     public interface IConversationService
     {
         Task<ConversationResource> CreateConversationAsync(TwillioConversation conversation);
+        Task<ResourceSet<ConversationResource>> ReadConversationsAsync();
 
         Task<ResourceSet<ParticipantConversationResource>> ReadParticipantConversationAsync(TwillioParticipant participant, int limit = 20);
 
@@ -21,7 +22,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces
 
         Task<UserConversationResource> FetchUserConversationAsync(string userId, string pathConversationSid, string pathChatServiceSid);
 
-        Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string userId, string pathChatServiceSid, int? limit = null);
+        Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string identity, string pathChatServiceSid, int? limit = null);
 
         Task<ParticipantResource> FetchConversationParticipantAsync(string pathConversationSid, string pathSid);
 
@@ -48,5 +49,6 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces
         Task<ResourceSet<MessageResource>> ReadMessagesAsync(string pathConversationSid, int? limit = null);
 
         Task<MessageResource> FetchMessagesAsync(string pathConversationSid, string pathSid);
+
     }
 }
