@@ -32,6 +32,7 @@ namespace Aeroclub.Cargo.Application.Services
     public class ULDCargoBookingManagerService : BaseService, IULDCargoBookingManagerService
     {
         private readonly IULDCargoBookingService _uldCargoBookingService;
+        private readonly ICargoBookingFlightScheduleSectorService _cargoBookingFlightScheduleSectorService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
         private readonly IConfiguration _configuration;
@@ -54,9 +55,11 @@ namespace Aeroclub.Cargo.Application.Services
             IAWBService AWBService,
             IConfiguration configuration,
             ICargoAgentService cargoAgentService,
+            ICargoBookingFlightScheduleSectorService cargoBookingFlightScheduleSectorService,
         IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
+            _cargoBookingFlightScheduleSectorService = cargoBookingFlightScheduleSectorService;
             _uldCargoBookingService = uldCargoBookingService;
             _flightScheduleSectorService = flightScheduleSectorService;
             _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
@@ -91,7 +94,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 foreach (var flightSectorId in rm.FlightScheduleSectorIds)
                 {
-                    var createdBookingFlightSector = await _uldCargoBookingService.BookingFlightScheduleSectorCreate(new CargoBookingFlightScheduleSectorRM() { CargoBookingId = cargoBooking.Id, FlightScheduleSectorId = flightSectorId });
+                    var createdBookingFlightSector = await _cargoBookingFlightScheduleSectorService.BookingFlightScheduleSectorCreate(new CargoBookingFlightScheduleSectorRM() { CargoBookingId = cargoBooking.Id, FlightScheduleSectorId = flightSectorId });
                     if (createdBookingFlightSector.StatusCode == ServiceResponseStatus.Failed)
                     {
                         transaction.Rollback();

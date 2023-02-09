@@ -3,9 +3,9 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
@@ -76,48 +76,71 @@ namespace Aeroclub.Cargo.Application.Services
         }
         public async Task<IReadOnlyList<CargoBookingListVM>> GetListAsync(FlightScheduleSectorBookingListQM query)
         {
-            var spec = new FlightScheduleSectorSpecification(query);
-            var fSectorList = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+            var spec = new CargoBookingFlightScheduleSectorSpecification(query);
+            var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
+
             List<CargoBookingListVM> list = new List<CargoBookingListVM>();
-            foreach (var f in fSectorList)
+
+            foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
-                foreach (var booking in f.CargoBookings)
-                {
-                    var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
-                    CargoBookingListVM vm = new CargoBookingListVM();
-                    vm.BookingNumber = booking.BookingNumber;
-                    vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
-                    vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
-                    vm.BookingDate = booking.BookingDate;
-                    vm.BookingStatus = booking.BookingStatus;
-                    vm.NumberOfBoxes = booking.PackageItems==null? 0: booking.PackageItems.Count();
-                    vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-                    vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => 
-                    ( _baseUnitConverter.VolumeCalculatorAsync(x.Height,x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
-                    ));
-                    list.Add(vm);
-                }               
+                var booking = sectorBooking.CargoBooking;
+                var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+                CargoBookingListVM vm = new CargoBookingListVM();
+                vm.Id = booking.Id;
+                vm.BookingNumber = booking.BookingNumber;
+                vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
+                vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
+                vm.BookingDate = booking.BookingDate;
+                vm.BookingStatus = booking.BookingStatus;
+                vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
+                vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+                vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
+                (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+                 _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                 _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                ));
+                list.Add(vm);
             }
+            list = list.DistinctBy(x => x.Id).ToList();
+            
             return list;
         }
 
         public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)
         {
-            var spec = new FlightScheduleSectorSpecification(query);
-            var fSectorList = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-            var bookings = fSectorList.Select(x => x.CargoBookings);
-            List<CargoBookingULDVM> list = new List<CargoBookingULDVM>();
-            foreach (var f in fSectorList)
+            var spec = new CargoBookingFlightScheduleSectorSpecification(query);
+            var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
+            List<CargoBookingULDVM> bookingList = new List<CargoBookingULDVM>();
+            foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
-                var res = _mapper.Map<ICollection<CargoBooking>, IReadOnlyList<CargoBookingULDVM>>(f.CargoBookings);
-                if(res != null)
-                {
-                    list.AddRange(res);
-                }                     
+               var res = _mapper.Map<CargoBooking,CargoBookingULDVM>(sectorBooking.CargoBooking);
+               if (res != null){
+                    var loadPlanId = sectorBooking.FlightScheduleSector.LoadPlanId;
+
+                    if(res.PackageItems!= null)
+                    {
+                        foreach(var package in res.PackageItems)
+                        {
+                            var uldSpec = new PackageULDContainerSpecification(new PackageULDContainerListQM() { PackageItemId = package.Id });
+                            var packageUldContainerList = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(uldSpec);
+                            if(packageUldContainerList != null)
+                            {
+                                foreach(var packageULDContainer in packageUldContainerList)
+                                {
+                                    if(packageULDContainer.ULDContainer.LoadPlanId == loadPlanId)
+                                    {
+                                        package.ULDContainerId = packageULDContainer.ULDContainer.Id;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    bookingList.Add(res);
+               }
             }
-            return list;
+
+           // bookingList = bookingList.DistinctBy(x => x.Id).ToList();
+            return bookingList;
         }
 
         public async Task<ServiceResponseStatus> UpdateAWBStatus(Guid bookingId)

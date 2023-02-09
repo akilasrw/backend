@@ -8,6 +8,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
@@ -26,6 +27,7 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class BookingManagerService : BaseService, IBookingManagerService
     {
+        private readonly ICargoBookingFlightScheduleSectorService _cargoBookingFlightScheduleSectorService;
         private readonly ICargoBookingService _cargoBookingService;
         private readonly IULDContainerService _uLDContainerService;
         private readonly IPackageItemService _packageItemService;
@@ -53,9 +55,11 @@ namespace Aeroclub.Cargo.Application.Services
             IOverheadService overheadService,
             IULDContainerCargoPositionService uLDContainerCargoPositionService,
             IAWBService aWBService,
+            ICargoBookingFlightScheduleSectorService cargoBookingFlightScheduleSectorService,
             IConfiguration configuration)
             : base(unitOfWork, mapper)
         {
+            _cargoBookingFlightScheduleSectorService = cargoBookingFlightScheduleSectorService;
             _cargoBookingService = cargoBookingService;
             _uLDContainerService = uLDContainerService;
             _packageItemService = packageItemService;
@@ -98,17 +102,27 @@ namespace Aeroclub.Cargo.Application.Services
                    
                     
                     // Save Cargo Booking Details
-                    var response = await _cargoBookingService.CreateAsync(rm);
-                    if (response == null)
+                    var cargoBooking = await _cargoBookingService.CreateAsync(rm);
+                    if (cargoBooking == null)
                     {
                         transaction.Rollback();
                         return BookingServiceResponseStatus.Failed;
                     }
 
+                    foreach (var flightSectorId in rm.FlightScheduleSectorIds)
+                    {
+                        var createdBookingFlightSector = await _cargoBookingFlightScheduleSectorService.BookingFlightScheduleSectorCreate(new CargoBookingFlightScheduleSectorRM() { CargoBookingId = cargoBooking.Id, FlightScheduleSectorId = flightSectorId });
+                        if (createdBookingFlightSector.StatusCode == ServiceResponseStatus.Failed)
+                        {
+                            transaction.Rollback();
+                            return BookingServiceResponseStatus.Failed;
+                        }
+                    }
+
                     //Save AWB Details
                     if (rm.AWBDetail != null)
                     {
-                        rm.AWBDetail.CargoBookingId = response.Id;
+                        rm.AWBDetail.CargoBookingId = cargoBooking.Id;
                         var awbResponse = await _AWBService.CreateAsync(rm.AWBDetail);
 
                         if (awbResponse.StatusCode == ServiceResponseStatus.Failed)
@@ -129,7 +143,7 @@ namespace Aeroclub.Cargo.Application.Services
                         }
 
                         // Save Package Items
-                        package.CargoBookingId = response.Id;
+                        package.CargoBookingId = cargoBooking.Id;
                         var createdPackage = await _packageItemService.CreateAsync(package);
 
                         if (createdPackage.StatusCode == ServiceResponseStatus.Failed)

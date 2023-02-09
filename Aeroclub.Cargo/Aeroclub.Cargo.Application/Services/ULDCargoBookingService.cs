@@ -2,7 +2,6 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
-using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -80,24 +79,7 @@ namespace Aeroclub.Cargo.Application.Services
             return res;
         }
 
-        public async Task<ServiceResponseCreateStatus> BookingFlightScheduleSectorCreate(CargoBookingFlightScheduleSectorRM rm)
-        {
-            var res = new ServiceResponseCreateStatus();
-            var entity = _mapper.Map<CargoBookingFlightScheduleSector>(rm);
-            var response = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().CreateAsync(entity);
-            await _unitOfWork.SaveChangesAsync();
-            if (response != null)
-            {
-                res.StatusCode = ServiceResponseStatus.Success;
-                res.Id = response.Id;
-            }
-            else
-            {
-                res.StatusCode = ServiceResponseStatus.Failed;
-            }
-            return res;
-
-        }
+      
 
         private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)
         {

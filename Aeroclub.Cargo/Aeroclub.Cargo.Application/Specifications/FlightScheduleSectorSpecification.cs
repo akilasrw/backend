@@ -1,5 +1,4 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
-using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -49,15 +48,6 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x =>  x.FlightNumber.ToLower() == query.FlightNumber.ToLower() && query.FlightDate.Date == x.ScheduledDepartureDateTime.Date && x.AircraftId == query.AircraftId)
         {
             AddInclude(y => y.Include(x => x.LoadPlan));
-        }
-
-        public FlightScheduleSectorSpecification(FlightScheduleSectorBookingListQM query)
-           : base(x => ((string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
-           (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date)) && (!x.IsDeleted))
-        {
-            AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.PackageItems).ThenInclude(a=>a.PackageULDContainers).ThenInclude(b=>b.ULDContainer).ThenInclude(c=>c.ULDContainerCargoPositions));
-            AddInclude(x => x.Include(y => y.CargoBookings).ThenInclude(x=>x.AWBInformation));
-
         }
     }
 }

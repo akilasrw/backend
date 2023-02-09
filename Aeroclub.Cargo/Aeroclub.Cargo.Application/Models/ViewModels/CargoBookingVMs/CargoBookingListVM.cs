@@ -1,13 +1,9 @@
-﻿using Aeroclub.Cargo.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
 {
-    public class CargoBookingListVM
+    public class CargoBookingListVM :BaseVM
     {
         public string BookingNumber { get; set; } = null!;
         public string AWBNumber { get; set; }
