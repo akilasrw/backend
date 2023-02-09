@@ -28,19 +28,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
         
         
-        [HttpPost("createUser")]
+        [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUserAsync([FromBody]string userName)
         {
             return Ok(await _chatService.CreateUserAsync(userName));
         }
         
-        [HttpPost("createParticipant")]
+        [HttpPost("CreateParticipant")]
         public async Task<IActionResult> CreateParticipantAsync([FromBody] ParticipantDto participant)
         {
             return Ok(await _chatService.CreateParticipantAsync(participant));
         }
         
-        [HttpPost("createConversation")]
+        [HttpPost("CreateConversation")]
         public async Task<IActionResult> CreateConversationAsync([FromBody] ConversationDto conversation)
         {
             return Ok(await _chatService.CreateConversationAsync(conversation));

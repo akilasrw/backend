@@ -129,10 +129,11 @@ namespace Aeroclub.Cargo.Application.Services
                     Auther = message.Author,
                     Body = message.Body,
                     Sid = message.Sid,
-                    PathConversationSid = message.ConversationSid
+                    PathConversationSid = message.ConversationSid,
+                    Created = message.DateCreated.Value
                 });
 
-            return list;
+            return list.OrderBy(x=>x.Created).ToList();
         }
     }
 }
