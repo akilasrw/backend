@@ -106,7 +106,6 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
-
         public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)
         {
             var spec = new CargoBookingFlightScheduleSectorSpecification(query);

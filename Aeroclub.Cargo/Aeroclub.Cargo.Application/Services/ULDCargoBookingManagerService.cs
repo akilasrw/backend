@@ -198,7 +198,6 @@ namespace Aeroclub.Cargo.Application.Services
             return BookingServiceResponseStatus.Success;
         }
 
-
         public async Task<ServiceResponseCreateStatus> AssginCargoToULDAsync(List<ULDContainerCargoPositionDto> uLDContainerCargoPositions)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
