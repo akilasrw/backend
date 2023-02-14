@@ -365,10 +365,10 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var entity in entities)
                 {
-                    foreach (var package in entity.ULDContainer.PackageItems)
+                    foreach (var packageULDContainer in entity.ULDContainer.PackageULDContainers)
                     {
-                        var booking = package.CargoBooking;
-                        var cargoBooking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(new CargoBookingSpecification(new CargoBookingQM() { Id = booking.Id, IsIncludePackageDetail = true }));
+                        var booking = packageULDContainer.PackageItem.CargoBooking;
+                        var cargoBooking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(new CargoBookingSpecification(new CargoBookingQM() { Id = booking.Id, IsIncludePackageDetail = true, IsIncludeAWBDetail=true }));
                         if (!bookingList.Exists(x => x.Id == cargoBooking.Id))
                             bookingList.Add(cargoBooking);
                     }
@@ -387,7 +387,22 @@ namespace Aeroclub.Cargo.Application.Services
 
                         List<PackageItem> packages = new List<PackageItem>();
                         if (booking.PackageItems != null)
-                            packages.AddRange(booking.PackageItems.Where(x => entities.Any(y => y.ULDContainerId.Equals(x.PackageULDContainers.FirstOrDefault(z => z.ULDContainerId == y.ULDContainerId)))));
+                        {
+                            foreach(var packageItem in booking.PackageItems)
+                            {
+                                foreach(var uLDContainerCargoPosition in entities)
+                                {
+                                    foreach (var packageULDContainers in packageItem.PackageULDContainers)
+                                    {
+                                        if (uLDContainerCargoPosition.ULDContainerId == packageULDContainers.ULDContainerId && !packages.Exists(x => x.Id == packageItem.Id))
+                                        {
+                                            packages.Add(packageItem);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
 
                         vm.NumberOfAssignedBoxes = packages.Count();
                         vm.TotalWeight = packages == null ? 0 : packages.Sum(x => x.Weight);
