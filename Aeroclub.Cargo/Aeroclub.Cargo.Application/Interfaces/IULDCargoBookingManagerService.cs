@@ -14,7 +14,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm);
         Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm);
         Task<CargoBookingDetailVM> GetBookingAsync(CargoBookingDetailQM query);
-        Task<ServiceResponseCreateStatus> AssginCargoToULDAsync(ULDContainerCargoPositionDto uLDContainerCargoPosition);
+        Task<ServiceResponseCreateStatus> AssginCargoToULDAsync(List<ULDContainerCargoPositionDto> uLDContainerCargoPositions);
         Task<IReadOnlyList<ULDCargoBookingListVM>> GetULDBookingListAsync(CargoPositionULDContainerListQM query);
 
     }

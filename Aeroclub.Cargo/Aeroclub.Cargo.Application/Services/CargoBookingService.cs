@@ -106,6 +106,7 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
+
         public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)
         {
             var spec = new CargoBookingFlightScheduleSectorSpecification(query);
@@ -138,8 +139,6 @@ namespace Aeroclub.Cargo.Application.Services
                     bookingList.Add(res);
                }
             }
-
-           // bookingList = bookingList.DistinctBy(x => x.Id).ToList();
             return bookingList;
         }
 

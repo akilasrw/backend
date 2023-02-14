@@ -63,9 +63,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost("AssignCargoToULD")]
-        public async Task<IActionResult> AssignCargoToULDAsync(ULDContainerCargoPositionDto UldContainerCargoPosition)
+        public async Task<IActionResult> AssignCargoToULDAsync(List<ULDContainerCargoPositionDto> UldContainerCargoPositions)
         {
-            return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPosition));
+            return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPositions));
         }
 
         [HttpGet("GetULDBookingList")]
