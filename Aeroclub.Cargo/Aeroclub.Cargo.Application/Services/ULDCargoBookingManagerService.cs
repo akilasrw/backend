@@ -228,7 +228,7 @@ namespace Aeroclub.Cargo.Application.Services
                             await _unitOfWork.SaveChangesAsync();
                             _unitOfWork.Repository<ULDContainerCargoPosition>().Detach(entity);
                             // reset existing volume
-                            await UpdateCurrentWeightAsyncs(entity.CargoPositionId, entity.ULDContainer.PackageItems.Sum(x => x.Weight) * -1);
+                            await UpdateCurrentWeightAsyncs(entity.CargoPositionId, entity.ULDContainer.PackageULDContainers.Where(x => x.ULDContainerId == entity.ULDContainer.Id).Sum(x => x.PackageItem.Weight) * -1);
                             await UpdateCurrentVolumeAsyncs(entity.CargoPositionId, (entity.ULDContainer.Length * entity.ULDContainer.Width * entity.ULDContainer.Height) * -1);
                             _unitOfWork.Repository<ULDContainer>().Detach(entity.ULDContainer);
                             needToCreate = true;
@@ -248,7 +248,7 @@ namespace Aeroclub.Cargo.Application.Services
                         var uld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(new ULDSpecification(new ULDQM() { PositionId = uLDContainerCargoPosition.CargoPositionId }));
 
                         string exeedType = "";
-                        double uldPackageWeght = containter.PackageItems.Sum(x => x.Weight) + uld.ULDMetaData.Weight;
+                        double uldPackageWeght = containter.PackageULDContainers.Where(x => x.ULDContainerId == containter.Id).Sum(x => x.PackageItem.Weight) + uld.ULDMetaData.Weight;
 
                         if (position.MaxWeight < (uldPackageWeght + position.CurrentWeight)) exeedType = "pallete";
                         if (position.ZoneArea.MaxWeight < (uldPackageWeght + position.ZoneArea.CurrentWeight)) exeedType = "zone area";
