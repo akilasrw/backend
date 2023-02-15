@@ -26,7 +26,6 @@ namespace Aeroclub.Cargo.Application.Services
             _dateGeneratorService = dateGeneratorService;
         }
 
-
         public async Task<IReadOnlyList<AircraftScheduleVM>> GetAircraftScheduleAsync(MasterScheduleListQM query)
         {
             List<AircraftSchedule> scheduleList = new List<AircraftSchedule>();
@@ -44,7 +43,6 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IReadOnlyList<AircraftScheduleVM>>(filterdList);
         }
         
-
         private List<AircraftScheduleVM> GetFlightScheduleDetails(List<AircraftSchedule> list)
         {
             List<AircraftScheduleVM> scheduleList = new List<AircraftScheduleVM>();
@@ -82,7 +80,6 @@ namespace Aeroclub.Cargo.Application.Services
                             }
                         }
 
-
                         var lastFlightScheduleSector = orderedFlightScheduleSectors.Last();
                         if (lastFlightScheduleSector != null)
                         {
@@ -91,54 +88,12 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 var arrivalDate = lastFlightScheduleSector.ActualDepartureDateTime.Date;
                                 var arrivalDateTime = arrivalDate + flightSector.ArrivalDateTime;
-                               // arrivalDateTime = (flightSector.OriginBlockTimeMin != null) ? arrivalDateTime.AddMinutes((double)flightSector.OriginBlockTimeMin) : arrivalDateTime;
-                               // var sectorTimeGap = flightSector.ArrivalDateTime.Value.Subtract((TimeSpan)flightSector.DepartureDateTime);
-                               // var sectorMinutes = sectorTimeGap.TotalMinutes;
-                              ///  arrivalDateTime = arrivalDateTime?.AddMinutes(sectorMinutes);
                                 arrivalDateTime = (flightSector.DestinationBlockTimeMin != null) ? arrivalDateTime?.AddMinutes((double)flightSector.DestinationBlockTimeMin) : arrivalDateTime;
-
                                 flight.FlightScheduleEndDateTime = (DateTime)arrivalDateTime;
-
-
-
-                              
                             }
                         }
-
-
-/*
-
-                        foreach (var flightSchedulesector in orderedFlightScheduleSectors)
-                        {
-                            var flightSector = flightSchedulesector.Sector.FlightSectors?.Where(x => x.FlightId == flightSchedulesector.FlightId && x.SectorId == flightSchedulesector.SectorId).FirstOrDefault();
-
-                            if (flightSector != null)
-                            {
-                                if (flightSchedulesector.SequenceNo == 1)
-                                {
-
-                                    var departureDate = flightSchedulesector.ActualDepartureDateTime.Date;
-                                    var departureDateTime = departureDate + flightSector.DepartureDateTime;
-                                    var actualDepartureDateTime = (flightSector.OriginBlockTimeMin != null) ? departureDateTime?.AddMinutes(-(double)flightSector.OriginBlockTimeMin) : departureDateTime;
-                                    flight.FlightScheduleStartDateTime = (DateTime)actualDepartureDateTime;
-                                }
-
-
-                                var arrivalDateTime = flight.FlightScheduleStartDateTime;
-                                arrivalDateTime = (flightSector.OriginBlockTimeMin != null) ? arrivalDateTime.AddMinutes((double)flightSector.OriginBlockTimeMin) : arrivalDateTime;
-                                var sectorTimeGap = flightSector.ArrivalDateTime.Value.Subtract((TimeSpan)flightSector.DepartureDateTime);
-                                var sectorMinutes = sectorTimeGap.TotalMinutes;
-                                arrivalDateTime = arrivalDateTime.AddMinutes(sectorMinutes);
-                                arrivalDateTime = (flightSector.DestinationBlockTimeMin != null) ? arrivalDateTime.AddMinutes((double)flightSector.DestinationBlockTimeMin) : arrivalDateTime;
-
-                                flight.FlightScheduleEndDateTime = arrivalDateTime;
-                            }
-                        }*/
-
-
                         flightList.Add(flight);
                     }
-
                     var mapedSchedule = _mapper.Map<AircraftSchedule, AircraftScheduleVM>(schedule);
                     mapedSchedule.AircraftScheduleFlights = flightList;
                     scheduleList.Add(mapedSchedule);
