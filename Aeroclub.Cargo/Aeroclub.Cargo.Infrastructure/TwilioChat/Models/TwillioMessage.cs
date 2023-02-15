@@ -13,5 +13,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Models
         public string? PathConversationSid { get; set; }
         public string? pathSid { get; set; }
         public DateTime Created { get; set; }
+        public int Index { get; set; }
+        public string? Attributes { get; set; }
     }
 }

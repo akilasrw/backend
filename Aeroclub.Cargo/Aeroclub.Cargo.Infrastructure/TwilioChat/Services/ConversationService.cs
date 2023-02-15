@@ -1,13 +1,14 @@
 ﻿using Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces;
 using Aeroclub.Cargo.Infrastructure.TwilioChat.Models;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using Twilio;
 using Twilio.Base;
 using Twilio.Rest.Conversations.V1;
+//using Twilio.Rest.Conversations.V1.Service.Conversation;
 using Twilio.Rest.Conversations.V1.Conversation;
 using Twilio.Rest.Conversations.V1.Service.User;
-using Twilio.TwiML.Voice;
 
 namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
 {
@@ -42,6 +43,14 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
                 friendlyName: conversation.FriendlyName,
                 uniqueName: conversation.UniqueName
                 );
+        }
+
+        public async Task<Twilio.Rest.Conversations.V1.Service.ConversationResource> CreateServiceConversationAsync( string pathChatServiceSid, string? friendlyName = null)
+        {
+            return await Twilio.Rest.Conversations.V1.Service.ConversationResource.CreateAsync(
+            friendlyName: friendlyName,
+            pathChatServiceSid: pathChatServiceSid // "ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+           );
         }
 
         public async Task<ResourceSet<ConversationResource>> ReadConversationsAsync()
@@ -161,8 +170,8 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             return await MessageResource.CreateAsync(
                 author: message.Auther, // identity
                 body: message.Body,
-                pathConversationSid: message.PathConversationSid,
-                dateCreated: DateTime.Now
+                pathConversationSid: message.PathConversationSid
+                // attributes: message.Attributes != null ? JsonConvert.SerializeObject(message.Attributes) : null
             );
         }
 
@@ -172,8 +181,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
                 author: message.Auther, // identity
                 body: message.Body,
                 pathConversationSid: message.PathConversationSid,
-                pathSid: message.pathSid,
-                dateUpdated: DateTime.Now
+                pathSid: message.pathSid
             );
         } 
         
@@ -214,6 +222,21 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
 
         #endregion Messages
 
+        #region Services
+        public async Task<ServiceResource> CreateServiceAsync(string friendlyName) // need a services for each environments.
+        {
+            return await ServiceResource.CreateAsync(
+                friendlyName: friendlyName
+            );
+        }
+
+        public async Task<bool> DeleteServiceAsync(string sId)
+        {
+            return await ServiceResource.DeleteAsync(pathSid: sId); // ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        }
+
+       
+        #endregion Services
 
         // TODO: Use facotry method and use enum for diff types (User, Msg, Participant, conversion)
     }

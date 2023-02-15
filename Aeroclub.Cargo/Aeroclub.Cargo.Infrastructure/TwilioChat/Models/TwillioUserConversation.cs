@@ -21,6 +21,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Models
         public string? FriendlyName { get;  set; }
   
         public string? CreatedBy { get;  set; }
+        public DateTime? Created { get;  set; }
         public string? UniqueName { get;  set; }
     }
 }

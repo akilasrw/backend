@@ -12,5 +12,6 @@ namespace Aeroclub.Cargo.Application.Models.Dtos.Chatting
         public string? Body { get; set; }
         public string? PathConversationSid { get; set; }
         public string? pathSid { get; set; }
+        public string? Attributes { get; set; }
     }
 }

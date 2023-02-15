@@ -34,9 +34,10 @@ namespace Aeroclub.Cargo.Application.Services
                     Auther= message.Auther, 
                     PathConversationSid= message.PathConversationSid, 
                     Body=message.Body,
+                    Attributes = message.Attributes
                 });
 
-            return new MessageDto().MapMessage(res.ConversationSid, res.Body, res.Author);
+            return new MessageDto().MapMessage(res.ConversationSid, res.Body, res.Author, res.Attributes);
         }
 
         public async Task<ChatUserDto> CreateUserAsync(string email)
@@ -112,10 +113,11 @@ namespace Aeroclub.Cargo.Application.Services
                     ChatServiceSid=user.ChatServiceSid,
                     FriendlyName=user.FriendlyName,
                     UniqueName=user.UniqueName,
-                    UserSid = user.UserSid
+                    UserSid = user.UserSid,
+                    Created = user.DateCreated
                 }); 
             
-            return list;
+            return list.OrderByDescending(x=>x.Created).ToList();
 
         }
 
@@ -130,10 +132,11 @@ namespace Aeroclub.Cargo.Application.Services
                     Body = message.Body,
                     Sid = message.Sid,
                     PathConversationSid = message.ConversationSid,
-                    Created = message.DateCreated.Value
+                    Created = message.DateCreated.Value,
+                    Index = message.Index.Value
                 });
 
-            return list.OrderBy(x=>x.Created).ToList();
+            return list.OrderBy(x=>x.Index).ToList();
         }
     }
 }
