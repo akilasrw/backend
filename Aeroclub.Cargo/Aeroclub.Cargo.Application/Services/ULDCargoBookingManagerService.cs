@@ -12,6 +12,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightSchedule
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
@@ -198,17 +199,17 @@ namespace Aeroclub.Cargo.Application.Services
             return BookingServiceResponseStatus.Success;
         }
 
-        public async Task<ServiceResponseCreateStatus> AssginCargoToULDAsync(List<ULDContainerCargoPositionDto> uLDContainerCargoPositions)
+        public async Task<ServiceResponseCreateStatus> AssginCargoToULDAsync(ULDContainerCargoPositionRM uLDContainerCargoPosition)
         {
             var response = new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                foreach(var uLDContainerCargoPosition in uLDContainerCargoPositions)
+                foreach(var uldContainerId in uLDContainerCargoPosition.ULDContainerIds)
                 {
                     var spec = new ULDContainerCargoPositionSpecification(new ULDCOntainerCargoPositionQM()
                     {
-                        ULDContainerId = uLDContainerCargoPosition.ULDContainerId,
+                        ULDContainerId = uldContainerId,
                         IsIncludeULDContainer = true,
                         IsIncludePackageItem = true,
                     });
@@ -242,7 +243,7 @@ namespace Aeroclub.Cargo.Application.Services
                         _unitOfWork.Repository<CargoPosition>().Detach(position);
 
                         var containter = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(
-                            new ULDContainerSpecification(new ULDContainerQM() { Id = uLDContainerCargoPosition.ULDContainerId }));
+                            new ULDContainerSpecification(new ULDContainerQM() { Id = uldContainerId }));
                         // _unitOfWork.Repository<ULDContainer>().Detach(containter);
 
                         var uld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(new ULDSpecification(new ULDQM() { PositionId = uLDContainerCargoPosition.CargoPositionId }));
@@ -284,11 +285,11 @@ namespace Aeroclub.Cargo.Application.Services
                             throw;
                         }
 
-                        await _uLDContainerCargoPositionService.CreateAsync(uLDContainerCargoPosition);
-                        await UpdateCurrentWeightAsyncs(uLDContainerCargoPosition.CargoPositionId, uLDContainerCargoPosition.Weight);
-                        await UpdateCurrentVolumeAsyncs(uLDContainerCargoPosition.CargoPositionId, uLDContainerCargoPosition.Volume);
+                        await _uLDContainerCargoPositionService.CreateAsync(new ULDContainerCargoPositionDto() { CargoPositionId = uLDContainerCargoPosition.CargoPositionId , ULDContainerId=uldContainerId});
                     }
                 }
+                await UpdateCurrentWeightAsyncs(uLDContainerCargoPosition.CargoPositionId, uLDContainerCargoPosition.Weight);
+                await UpdateCurrentVolumeAsyncs(uLDContainerCargoPosition.CargoPositionId, uLDContainerCargoPosition.Volume);
                 transaction.Commit();
             }
             return response;

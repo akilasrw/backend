@@ -1,13 +1,11 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
-using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
-using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
-using Aeroclub.Cargo.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,9 +61,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost("AssignCargoToULD")]
-        public async Task<IActionResult> AssignCargoToULDAsync(List<ULDContainerCargoPositionDto> UldContainerCargoPositions)
+        public async Task<IActionResult> AssignCargoToULDAsync(ULDContainerCargoPositionRM UldContainerCargoPosition)
         {
-            return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPositions));
+            return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPosition));
         }
 
         [HttpGet("GetULDBookingList")]
