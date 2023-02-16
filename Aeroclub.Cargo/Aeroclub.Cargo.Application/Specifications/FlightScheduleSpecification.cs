@@ -9,14 +9,23 @@ namespace Aeroclub.Cargo.Application.Specifications
 {
     public class FlightScheduleSpecification : BaseSpecification<FlightSchedule>
     {
-        public FlightScheduleSpecification(FlightScheduleListQM query)
+        public FlightScheduleSpecification(FlightScheduleListQM query, bool isCount = false)
         : base(x=> 
             (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId)
         )
         {
-            
+            if (!isCount)
+            {
+                if (query.IncludeFlightScheduleSectors)
+                    AddInclude(x => x.Include(y => y.FlightScheduleSectors));
+
+
+                if (query.IncludeAircraftSubType)
+                    AddInclude(x => x.Include(y => y.AircraftSubType));
+            }
+
         }
 
         public FlightScheduleSpecification(FlightScheduleQM query)

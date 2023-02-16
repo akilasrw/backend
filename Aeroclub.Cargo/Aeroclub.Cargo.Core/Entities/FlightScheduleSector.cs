@@ -29,7 +29,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public virtual LoadPlan LoadPlan { get; set; }
         public virtual Aircraft Aircraft { get; set; }
         public virtual AircraftSubType AircraftSubType { get; set; }
-        public virtual ICollection<CargoBooking> CargoBookings { get; set; }
-        
+        public virtual ICollection<CargoBookingFlightScheduleSector> CargoBookingFlightScheduleSectors { get; set; }
+
     }
 }

@@ -20,6 +20,5 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
         public PackageContainerType PackageContainerType { get; set; } = PackageContainerType.None;
         public PackageItemStatus packageItemStatus { get; set; }
         public string? Description { get; set; }
-        public Guid? ULDContainerId { get; set; }
     }
 }

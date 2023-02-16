@@ -69,6 +69,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IAssignCargoToULDService, AssignCargoToULDService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFirebaseService, FirebaseService>();
+            services.AddScoped<ICargoBookingFlightScheduleSectorService, CargoBookingFlightScheduleSectorService>();
 
 
             return services;

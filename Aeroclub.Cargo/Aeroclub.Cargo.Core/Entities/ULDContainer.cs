@@ -18,7 +18,8 @@ namespace Aeroclub.Cargo.Core.Entities
 
         public virtual LoadPlan LoadPlan { get; set; }
         public virtual ULD? ULD { get; set; }
-        public virtual ICollection<PackageItem> PackageItems { get; set; }
+
+        public virtual ICollection<PackageULDContainer> PackageULDContainers { get; set; }
         public virtual ICollection<ULDContainerCargoPosition> ULDContainerCargoPositions { get; set; }
 
 

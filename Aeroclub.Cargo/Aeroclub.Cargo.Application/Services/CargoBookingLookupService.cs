@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingLookupQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -23,8 +24,23 @@ namespace Aeroclub.Cargo.Application.Services
 
             var mappedEntity = _mapper.Map<CargoBookingLookupVM>(entity);
 
+            mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
+
             return mappedEntity;
 
+        }
+
+        private CargoBookingLookupVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingLookupVM bookingDetail)
+        {
+            var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();
+            var lastCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.Last();
+            bookingDetail.DestinationAirportCode = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportCode;
+            bookingDetail.ScheduledDepartureDateTime = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.ScheduledDepartureDateTime;
+            bookingDetail.FlightNumber = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightNumber;
+
+            var firstCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.First();
+            bookingDetail.OriginAirportCode = firstCrgoBookingFlightScheduleSector.FlightScheduleSector.OriginAirportCode;
+            return bookingDetail;
         }
     }
 }

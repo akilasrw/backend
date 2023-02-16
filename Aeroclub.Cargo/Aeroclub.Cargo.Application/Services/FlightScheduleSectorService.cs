@@ -1,16 +1,14 @@
-﻿using Aeroclub.Cargo.Application.Extensions;
-using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
-using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
-using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
-using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
@@ -44,51 +42,6 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IReadOnlyList<T>>(flightScheduleSectorList);
         }
 
-
-        public async Task<Pagination<FlightScheduleSectorVM>> GetFilteredListAsync(FlightScheduleSectorFilteredListQM query)
-        {
-            query.IncludeAircraftSubType = true;
-            var spec = new FlightScheduleSectorSpecification(query);
-            var flightScheduleSectorList =
-                await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-
-            var countSpec = new FlightScheduleSectorSpecification(query, true);
-            var totalCount = await _unitOfWork.Repository<FlightScheduleSector>().CountAsync(countSpec);
-
-            var dtoList =
-                _mapper.Map<IReadOnlyList<FlightScheduleSectorVM>>(flightScheduleSectorList);
-
-            foreach (var flightScheduleSector in dtoList)
-            {
-                // flightScheduleSector.ScheduledDepartureDateTime = await GetMappedTimeAsync(flightScheduleSector.ScheduledDepartureDateTime, flightScheduleSector.OriginAirportId);
-                // flightScheduleSector.ActualDepartureDateTime = flightScheduleSector.ScheduledDepartureDateTime;
-
-                flightScheduleSector.AcceptanceCutoffTime = string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]) ?
-                    flightScheduleSector.ScheduledDepartureDateTime : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]));
-
-                flightScheduleSector.BookingCutoffTime = string.IsNullOrEmpty(_configuration["Booking:BookingCutoffTimeHrs"]) ?
-                    flightScheduleSector.ScheduledDepartureDateTime : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:BookingCutoffTimeHrs"]));
-            }
-
-            //TODO: Add condition to this process
-            foreach (var dto in dtoList)
-            {
-              
-                if(dto.AircraftConfigType == AircraftConfigType.Freighter)
-                {
-                    dto.AvailableWeight = await GetAircraftAvailableWeight(dto.Id);
-                    dto.AvailableVolume = await GetAircraftAvailableVolume(dto.Id);
-                    dto.FlightScheduleSectorCargoPositions = await GetFreighterAircraftAvailableSpace(dto.Id);
-                }
-                else
-                {
-                    dto.FlightScheduleSectorCargoPositions = await GetAircraftAvailableSpace(dto.Id);
-                }
-            }
-
-            return new Pagination<FlightScheduleSectorVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
-        }
-
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleSectorCreateRM dto)
         {
             var response = new ServiceResponseCreateStatus();
@@ -109,7 +62,7 @@ namespace Aeroclub.Cargo.Application.Services
             return flightSSVm;
         }
 
-        private async Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId) // Checking only Main Deck
+        public async Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId) // Checking only Main Deck
         {
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
@@ -131,7 +84,7 @@ namespace Aeroclub.Cargo.Application.Services
             return availableWeight;
         }
 
-        private async Task<double> GetAircraftAvailableVolume(Guid flightScheduleSectorId)
+        public async Task<double> GetAircraftAvailableVolume(Guid flightScheduleSectorId)
         {
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
@@ -160,7 +113,7 @@ namespace Aeroclub.Cargo.Application.Services
             return availableVolume;
         }
 
-        private async Task<List<FlightScheduleSectorCargoPosition>> GetFreighterAircraftAvailableSpace(Guid flightScheduleSectorId)
+        public async Task<List<FlightScheduleSectorCargoPosition>> GetFreighterAircraftAvailableSpace(Guid flightScheduleSectorId)
         {
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
@@ -204,7 +157,7 @@ namespace Aeroclub.Cargo.Application.Services
             return flightScheduleSectorCargoPositionsList;
         }
 
-        private async Task<List<FlightScheduleSectorCargoPosition>> GetAircraftAvailableSpace(Guid flightScheduleSectorId)
+        public async Task<List<FlightScheduleSectorCargoPosition>> GetAircraftAvailableSpace(Guid flightScheduleSectorId)
         {
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
@@ -339,43 +292,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             var seats = cargoPositionList.Where(x => x.CargoPositionType == query.CargoPositionType).Select(y =>y.Seat);
             return _mapper.Map<IEnumerable<Seat>, IEnumerable<SeatDto>>(seats);
-        }
-
-        public async Task TestMethod(FlightScheduleSectorFilteredListQM query)
-        {
-            var spec = new FlightScheduleSectorSpecification(query);
-            var flightScheduleSectorList =
-                await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
-
-            if (flightScheduleSectorList.Count < 4)
-            {
-                query.OriginAirportOnly = true;
-
-                var specWithOriginAirport = new FlightScheduleSectorSpecification(query);
-                var flightScheduleSectorListWithOriginAirportList =
-                    await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specWithOriginAirport);
-
-                query.OriginAirportOnly = false;
-                query.DestinationAirportOnly = true;
-
-                var specWithDestinationAirport = new FlightScheduleSectorSpecification(query);
-                var flightScheduleSectorListWithDestinationAirportList =
-                    await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specWithDestinationAirport);
-
-                var newList = new List<FlightScheduleSector>();
-
-                foreach (var flightScheduleSectorListWithOriginAirport in flightScheduleSectorListWithOriginAirportList)
-                {
-                    var matchingSector = flightScheduleSectorListWithDestinationAirportList
-                        .FirstOrDefault(x => x.OriginAirportId == flightScheduleSectorListWithOriginAirport.DestinationAirportId);
-
-                    if (matchingSector != null)
-                    {
-                        newList.Add(flightScheduleSectorListWithOriginAirport);
-                        newList.Add(matchingSector);
-                    }
-                }
-            }
         }
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)

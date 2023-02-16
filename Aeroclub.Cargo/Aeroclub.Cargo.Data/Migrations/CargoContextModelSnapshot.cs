@@ -1099,7 +1099,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e7d54cc-4fde-4511-8e5a-e11766340528",
+                            ConcurrencyStamp = "2d29d7cd-9b79-41ab-a56d-b5b890075da1",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1115,7 +1115,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "05e20a2c-54b2-4562-ae07-76d07a5a6b5a",
+                            ConcurrencyStamp = "b9e0c37b-7c94-4147-848d-b97f667cec0a",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1449,7 +1449,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FlightScheduleSectorId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
@@ -1476,6 +1475,27 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("OriginAirportId");
 
                     b.ToTable("CargoBookings");
+                });
+
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoBookingFlightScheduleSector", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CargoBookingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FlightScheduleSectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CargoBookingId");
+
+                    b.HasIndex("FlightScheduleSectorId");
+
+                    b.ToTable("CargoBookingFlightScheduleSectors");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoPosition", b =>
@@ -26548,7 +26568,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(40)");
 
-                    b.Property<Guid>("ULDContainerId")
+                    b.Property<Guid?>("ULDContainerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("VolumeUnitId")
@@ -26574,6 +26594,27 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasIndex("WeightUnitId");
 
                     b.ToTable("PackageItems");
+                });
+
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageULDContainer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PackageItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ULDContainerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PackageItemId");
+
+                    b.HasIndex("ULDContainerId");
+
+                    b.ToTable("PackageULDContainers");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Seat", b =>
@@ -37133,11 +37174,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", "FlightScheduleSector")
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", null)
                         .WithMany("CargoBookings")
-                        .HasForeignKey("FlightScheduleSectorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("FlightScheduleSectorId");
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "OriginAirport")
                         .WithMany()
@@ -37147,9 +37186,26 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Navigation("DestinationAirport");
 
-                    b.Navigation("FlightScheduleSector");
-
                     b.Navigation("OriginAirport");
+                });
+
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoBookingFlightScheduleSector", b =>
+                {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.CargoBooking", "CargoBooking")
+                        .WithMany("CargoBookingFlightScheduleSectors")
+                        .HasForeignKey("CargoBookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.FlightScheduleSector", "FlightScheduleSector")
+                        .WithMany()
+                        .HasForeignKey("FlightScheduleSectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CargoBooking");
+
+                    b.Navigation("FlightScheduleSector");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.CargoPosition", b =>
@@ -37377,11 +37433,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.ULDContainer", "ULDContainer")
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.ULDContainer", null)
                         .WithMany("PackageItems")
-                        .HasForeignKey("ULDContainerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ULDContainerId");
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Unit", "VolumeUnit")
                         .WithMany()
@@ -37397,11 +37451,28 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Navigation("CargoBooking");
 
-                    b.Navigation("ULDContainer");
-
                     b.Navigation("VolumeUnit");
 
                     b.Navigation("WeightUnit");
+                });
+
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageULDContainer", b =>
+                {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.PackageItem", "PackageItem")
+                        .WithMany("PackageULDContainers")
+                        .HasForeignKey("PackageItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.ULDContainer", "ULDContainer")
+                        .WithMany()
+                        .HasForeignKey("ULDContainerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PackageItem");
+
+                    b.Navigation("ULDContainer");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Seat", b =>
@@ -37613,6 +37684,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("AWBInformation")
                         .IsRequired();
 
+                    b.Navigation("CargoBookingFlightScheduleSectors");
+
                     b.Navigation("PackageItems");
                 });
 
@@ -37662,6 +37735,11 @@ namespace Aeroclub.Cargo.Data.Migrations
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.OverheadLayout", b =>
                 {
                     b.Navigation("OverheadCompartmentConfigurations");
+                });
+
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageItem", b =>
+                {
+                    b.Navigation("PackageULDContainers");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.SeatConfiguration", b =>

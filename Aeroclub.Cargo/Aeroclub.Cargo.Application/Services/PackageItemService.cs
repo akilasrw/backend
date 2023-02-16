@@ -3,7 +3,9 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Specifications;
@@ -93,6 +95,24 @@ namespace Aeroclub.Cargo.Application.Services
 
 
             return new Pagination<PackageListItemVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
+
+        public async Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm)
+        {
+            var res = new ServiceResponseCreateStatus();
+            var entity = _mapper.Map<PackageULDContainer>(rm);
+            var response = await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+            if (response != null)
+            {
+                res.StatusCode = ServiceResponseStatus.Success;
+                res.Id = response.Id;
+            }
+            else
+            {
+                res.StatusCode = ServiceResponseStatus.Failed;
+            }
+            return res;
         }
 
     }
