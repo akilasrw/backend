@@ -46,6 +46,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _chatService.CreateConversationAsync(conversation));
         }
 
+        [HttpPut("UpdateMessage")]
+        public async Task<IActionResult> UpdateMessageAsync([FromBody] MessageDto message)
+        {
+            return Ok(await _chatService.UpdateMessageAsync(message));
+        }
+
         [HttpGet("GetUserList")]
         public async Task<ActionResult<IReadOnlyList<TwillioUser>>> GetUserListAsync()
         {
@@ -71,7 +77,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
         
         [HttpGet("GetMessages")]
-        public async Task<ActionResult<IReadOnlyList<TwillioMessage>>> GetMessagesAsync([FromQuery] string pathConversationSid)
+        public async Task<ActionResult<IReadOnlyList<MessageViewDto>>> GetMessagesAsync([FromQuery] string pathConversationSid)
         {
             return Ok(await _chatService.GetMessagesAsync(pathConversationSid));
         }

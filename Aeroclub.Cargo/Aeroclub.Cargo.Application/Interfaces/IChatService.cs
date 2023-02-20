@@ -10,10 +10,11 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ParticipantDto> CreateParticipantAsync(ParticipantDto participant);
         Task<ConversationDto> CreateConversationAsync(ConversationDto conversation);
         Task<MessageDto> CreateMessageAsync(MessageDto message);
+        Task<MessageDto> UpdateMessageAsync(MessageDto message);
         Task<IReadOnlyList<TwillioConversation>> GetConversationsAsync();
         Task<IReadOnlyList<TwillioUser>> GetUsersAsync();
         Task<IReadOnlyList<TwillioParticipantConversation>> GetParticipantConversationAsync(string username);
-        Task<IReadOnlyList<TwillioMessage>> GetMessagesAsync(string pathConversationSid);
+        Task<IReadOnlyList<MessageViewDto>> GetMessagesAsync(string pathConversationSid);
         Task<IReadOnlyList<TwillioUserConversation>> GetUserConversationAsync(string identity, string pathConversationSid);
     }
 }

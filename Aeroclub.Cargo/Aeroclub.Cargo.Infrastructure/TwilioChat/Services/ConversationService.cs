@@ -170,18 +170,19 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             return await MessageResource.CreateAsync(
                 author: message.Auther, // identity
                 body: message.Body,
-                pathConversationSid: message.PathConversationSid
-                // attributes: message.Attributes != null ? JsonConvert.SerializeObject(message.Attributes) : null
+                pathConversationSid: message.PathConversationSid,
+                attributes: message.Attributes
             );
         }
 
         public async Task<MessageResource> UpdateMessageAsync(TwillioMessage message)
         {
-            return await MessageResource.UpdateAsync(
+            return await MessageResource.UpdateAsync(                
                 author: message.Auther, // identity
                 body: message.Body,
                 pathConversationSid: message.PathConversationSid,
-                pathSid: message.pathSid
+                pathSid: message.pathSid==null?message.Sid: message.pathSid, // "IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                attributes: message.Attributes
             );
         } 
         
@@ -196,6 +197,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<ResourceSet<MessageResource>> ReadConversationMessagesAsync(string pathConversationSid, int? limit = null)
         {
             var messages = await MessageResource.ReadAsync(
+                order: MessageResource.OrderTypeEnum.Desc,
                 pathConversationSid: pathConversationSid,
                 limit: limit);
             return messages;

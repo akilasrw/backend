@@ -5,6 +5,9 @@ using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces;
 using Aeroclub.Cargo.Infrastructure.TwilioChat.Models;
 using AutoMapper;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using Twilio.TwiML.Messaging;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -29,15 +32,18 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<MessageDto> CreateMessageAsync(MessageDto message)
         {
-            var res = await _conversationService.CreateMessageAsync(
-                new TwillioMessage() { 
-                    Auther= message.Auther, 
-                    PathConversationSid= message.PathConversationSid, 
-                    Body=message.Body,
-                    Attributes = message.Attributes
-                });
+            var res = await _conversationService
+                .CreateMessageAsync(MapMessage(message));
 
-            return new MessageDto().MapMessage(res.ConversationSid, res.Body, res.Author, res.Attributes);
+            return new MessageDto().MapMessage(res.ConversationSid, res.Body, res.Author, res.Sid, res.Attributes);
+        }
+        
+        public async Task<MessageDto> UpdateMessageAsync(MessageDto message)
+        {
+            var res = await _conversationService
+                .UpdateMessageAsync(MapMessage(message));
+
+            return new MessageDto().MapMessage(res.ConversationSid, res.Body, res.Author, res.Sid, res.Attributes);
         }
 
         public async Task<ChatUserDto> CreateUserAsync(string email)
@@ -121,22 +127,37 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<IReadOnlyList<TwillioMessage>> GetMessagesAsync(string pathConversationSid)
+        public async Task<IReadOnlyList<MessageViewDto>> GetMessagesAsync(string pathConversationSid)
         {
-            List<TwillioMessage> list = new List<TwillioMessage>();
+            List<MessageViewDto> list = new List<MessageViewDto>();
             var messages = await _conversationService.ReadMessagesAsync(pathConversationSid);
             foreach (var message in messages)
-                list.Add(new TwillioMessage()
+                list.Add(new MessageViewDto()
                 {
                     Auther = message.Author,
                     Body = message.Body,
                     Sid = message.Sid,
+                    PathSid = message.Sid,
                     PathConversationSid = message.ConversationSid,
                     Created = message.DateCreated.Value,
-                    Index = message.Index.Value
+                    Index = message.Index.Value,
+                    ChatStatus = JsonConvert.DeserializeObject<ChatStatus>(message.Attributes),
                 });
 
             return list.OrderBy(x=>x.Index).ToList();
+        }
+
+        private TwillioMessage MapMessage(MessageDto message)
+        {
+           return  new TwillioMessage()
+           {
+               Auther = message.Auther,
+               PathConversationSid = message.PathConversationSid,
+               Body = message.Body,
+               Attributes = message.ChatStatus != null ? JsonConvert.SerializeObject(message.ChatStatus) : null,
+               Sid = message.PathSid == null ? string.Empty : message.PathSid,
+               pathSid = message.PathSid
+           };
         }
     }
 }

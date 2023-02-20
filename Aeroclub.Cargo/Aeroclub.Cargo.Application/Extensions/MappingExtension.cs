@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Models.Dtos.Chatting;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Core.Entities;
+using Newtonsoft.Json;
 using System.Security.Policy;
 
 namespace Aeroclub.Cargo.Application.Extensions
@@ -46,8 +47,8 @@ namespace Aeroclub.Cargo.Application.Extensions
             message.PathConversationSid = pathConversationSid;
             message.Auther = auther;
             message.Body = body;
-            message.pathSid = pathSid;
-            message.Attributes = attribute;
+            message.PathSid = pathSid;
+            message.ChatStatus = attribute!= null && attribute.Length>0 ? JsonConvert.DeserializeObject<ChatStatus>(attribute) : null;
 
             return message;
         }
