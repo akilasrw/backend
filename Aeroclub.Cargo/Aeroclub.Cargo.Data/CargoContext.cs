@@ -117,6 +117,9 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AWBNumberStack> AWBNumberStacks { get; set; } = null!;
         public DbSet<ULDCargoPosition> ULDCargoPositions { get; set; } = null!;
         public DbSet<Notification> Notifications { get; set; } = null!;
+        public DbSet<CargoBookingFlightScheduleSector> CargoBookingFlightScheduleSectors { get; set; } = null!;
+        public DbSet<PackageULDContainer> PackageULDContainers { get; set; } = null!;
+
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
      
         //  public DbSet<AircraftCharteredSchedule> AircraftCharteredSchedules { get; set; } = null!;

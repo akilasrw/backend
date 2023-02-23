@@ -5,7 +5,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs
 {
     public class ValidateCargoPositionRM
     {
-        public Guid FlightScheduleSectorId { get; set; }
+        public IList<Guid> FlightScheduleSectorIds { get; set; } = null!;
         public PackageItemCreateRM PackageItem { get; set; } = null!;
     }
 }

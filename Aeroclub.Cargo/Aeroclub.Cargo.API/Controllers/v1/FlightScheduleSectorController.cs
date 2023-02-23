@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Aeroclub.Cargo.Application.Interfaces;
-using Aeroclub.Cargo.Application.Models.Core;
-using Aeroclub.Cargo.Application.Models.Dtos;
+﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
@@ -26,12 +22,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyList<FlightScheduleSectorVM>>> GetListAsync([FromQuery] FlightScheduleSectorListQM query)
         {
             return Ok(await _flightScheduleSectorService.GetListAsync<FlightScheduleSectorVM>(query));
-        }
-        
-        [HttpGet("GetFilteredList")]
-        public async Task<ActionResult<Pagination<FlightScheduleSectorVM>>> GetFilteredListAsync([FromQuery] FlightScheduleSectorFilteredListQM query)
-        {
-            return Ok(await _flightScheduleSectorService.GetFilteredListAsync(query));
         }
 
         [HttpGet()]
