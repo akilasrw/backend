@@ -14,6 +14,7 @@ using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Models;
+using static Grpc.Core.Metadata;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -37,6 +38,7 @@ namespace Aeroclub.Cargo.Application.Services
             _sectorService = sectorService;
             _dateGeneratorService = dateGeneratorService;
         }
+
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
         {
@@ -64,6 +66,36 @@ namespace Aeroclub.Cargo.Application.Services
             return res;
         }
 
+
+        public async Task<ServiceResponseCreateStatus> UpdateAsync(FlightScheduleManagementUpdateRM dto)
+        {
+            var res = new ServiceResponseCreateStatus();
+            var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
+
+            _unitOfWork.Repository<FlightScheduleManagement>().Update(flightScheduleManagementEntity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightScheduleManagement>().Detach(flightScheduleManagementEntity);
+
+
+          /*if (flightScheduleManagementResponse == null)
+            {
+                res.StatusCode = ServiceResponseStatus.Failed;
+            }
+            else
+            {
+                var flightScheduleResponse = await CreateFlightSchedule(dto, flightScheduleManagementResponse.Id);
+                if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed || flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError)
+                {
+                    await DeleteAsync(flightScheduleManagementResponse.Id);
+                }
+
+                res = flightScheduleResponse;
+            }*/
+
+            return res;
+        }
+
+
         public async Task<FlightScheduleManagementVM> GetAsync(FlightScheduleManagementDetailQM query)
         {
             var spec = new FlightScheduleManagementSpecification(query);
@@ -87,6 +119,7 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<FlightScheduleManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
         }
+
 
         private async Task<ServiceResponseCreateStatus> CreateFlightSchedule(FlightScheduleManagementRM dto, Guid id)
         {
@@ -174,6 +207,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
         }
+
 
         public async Task GetUnAssignedAircraftAsync(Guid flightScheduleManagementId)
         {

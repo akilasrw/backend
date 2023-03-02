@@ -12,5 +12,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
         Task<bool> CloneULDCargoLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
+        Task<bool> DeleteClonedULDCargoLayoutAsync(FlightSchedule flightSchedule);
     }
 }

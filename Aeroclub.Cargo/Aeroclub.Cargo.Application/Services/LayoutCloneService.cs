@@ -1,6 +1,10 @@
-﻿using Aeroclub.Cargo.Application.Extensions;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AircraftLayoutQMs;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
+using Aeroclub.Cargo.Application.Models.Queries.LoadPlanQMs;
 using Aeroclub.Cargo.Application.Models.Queries.OverheadLayoutQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -8,6 +12,11 @@ using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Google.Cloud.Firestore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Policy;
+using static Google.Rpc.Context.AttributeContext.Types;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -37,7 +46,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSchedule.AircraftSubTypeId);
                 if (aircraftSubTypeDetail == null) return false;
 
-                if(aircraftSubTypeDetail.ConfigType != AircraftConfigType.P2C) return false;
+                if (aircraftSubTypeDetail.ConfigType != AircraftConfigType.P2C) return false;
 
                 // Get Aircrat Layout Mapping
                 var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(aircraftSubTypeDetail.Id);
@@ -73,7 +82,7 @@ namespace Aeroclub.Cargo.Application.Services
                     var createdSeatLayout = await _unitOfWork.Repository<SeatLayout>().CreateAsync(newResetLayouts.Item2);
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<SeatLayout>().Detach(createdSeatLayout);
-                    foreach(var seatConfig in createdSeatLayout.SeatConfigurations)
+                    foreach (var seatConfig in createdSeatLayout.SeatConfigurations)
                         _unitOfWork.Repository<SeatConfiguration>().Detach(seatConfig);
                     // Save, if not success, go with this sequence | Seat <-- SeatConfiguration <-- Seat Layout
 
@@ -95,7 +104,7 @@ namespace Aeroclub.Cargo.Application.Services
                             _unitOfWork.Repository<CargoPosition>().Update(position);
                             await _unitOfWork.SaveChangesAsync();
                             _unitOfWork.Repository<CargoPosition>().Detach(position);
-                        }                           
+                        }
 
                     // Create Load Plan                    
                     var createdLoadPlanStatus = await _loadPlanService.CreateAsync(
@@ -105,7 +114,7 @@ namespace Aeroclub.Cargo.Application.Services
                             SeatLayoutId = createdSeatLayout.Id,
                             OverheadLayoutId = createdoverheadLayout.Id,
                             LoadPlanStatus = Common.Enums.LoadPlanStatus.None
-                        });                    
+                        });
 
                     // Save Flight Schedule Sector
                     sector.FlightScheduleId = flightSchedule.Id;
@@ -127,7 +136,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
         {
-            var spec = new AircraftLayoutMappingSpecification(new AircraftLayoutMappingQM(){ AircraftSubTypeId = subTypeId});
+            var spec = new AircraftLayoutMappingSpecification(new AircraftLayoutMappingQM() { AircraftSubTypeId = subTypeId });
             return await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(spec);
         }
 
@@ -199,11 +208,11 @@ namespace Aeroclub.Cargo.Application.Services
                 conf.Id = Guid.NewGuid();
                 foreach (var seat in conf.Seats)
                 {
-                    var seatID = seat.Id;   
+                    var seatID = seat.Id;
                     seat.SeatConfigurationId = conf.Id;
                     seat.Id = Guid.NewGuid();
                     seat.ZoneAreaId = zoneIDs.FirstOrDefault(x => x.Key == seat.ZoneAreaId).Value;
-                    if(!seatIDs.Any(x=>x.Key == seatID))
+                    if (!seatIDs.Any(x => x.Key == seatID))
                         seatIDs.Add(new KeyValuePair<Guid, Guid>(seatID, seat.Id));
                 }
             }
@@ -242,7 +251,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
-            Tuple<AircraftLayout, SeatLayout,OverheadLayout, List<CargoPosition>> layouts = new Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>>(aircraftLayout, seatLayout, overheadLayout,cargoPositionsList);
+            Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>> layouts = new Tuple<AircraftLayout, SeatLayout, OverheadLayout, List<CargoPosition>>(aircraftLayout, seatLayout, overheadLayout, cargoPositionsList);
             return Task.FromResult(layouts);
         }
 
@@ -326,14 +335,121 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                 }
             }
-           
-           Tuple<AircraftLayout> layouts = new Tuple<AircraftLayout>(aircraftLayout);
+
+            Tuple<AircraftLayout> layouts = new Tuple<AircraftLayout>(aircraftLayout);
             return Task.FromResult(layouts);
         }
 
+        public async Task<bool> DeleteClonedULDCargoLayoutAsync(FlightSchedule flightSchedule)
+        {
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                if (flightSchedule.FlightScheduleSectors == null) return false;
+
+                foreach (var sector in flightSchedule.FlightScheduleSectors)
+                {
+                    if (sector.LoadPlanId != null)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+                    // Delete Flight Schedule Sector
+                    var sectorDeleteResponse = await _flightScheduleSectorService.DeleteAsync(sector.Id);
+                    if (sectorDeleteResponse == ServiceResponseStatus.Failed)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+                    // Delete Aircraft Layout
+                    var spec = new LoadPlanSpecification(new LoadPlanQM() { Id = sector.LoadPlanId!.Value, IncludeAircraftLayout = true });
+                    var loadPlan = await _unitOfWork.Repository<LoadPlan>().GetEntityWithSpecAsync(spec);
+                    var deleteAircraftLayoutsResponse = await DeleteULDCargoLayoutAsync(loadPlan.AircraftLayout);
+                    if (deleteAircraftLayoutsResponse == ServiceResponseStatus.Failed)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+                    // Delete Load Plan
+                    var loadPlanDeleteResponse = await _loadPlanService.DeleteAsync(sector.LoadPlanId!.Value);
+                    if (loadPlanDeleteResponse == ServiceResponseStatus.Failed)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+                transaction.Commit();
+            }
+            return true;
+        }
+
+        private async Task<ServiceResponseStatus> DeleteULDCargoLayoutAsync(AircraftLayout aircraftLayout)
+        {
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                foreach (var cabin in deck.AircraftCabins)
+                {
+                    foreach (var zone in cabin.ZoneAreas)
+                    {
+                        foreach (var position in zone.CargoPositions)
+                        {
+                            if (position.CurrentWeight > 0 || position.CurrentVolume > 0) return ServiceResponseStatus.Failed;
+
+                            _unitOfWork.Repository<CargoPosition>().Delete(position);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<CargoPosition>().Detach(position);
+                        }
+                    }
+                }
+            }
+
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                foreach (var cabin in deck.AircraftCabins)
+                {
+                    foreach (var zone in cabin.ZoneAreas)
+                    {
+                        if (zone.CurrentWeight > 0) return ServiceResponseStatus.Failed;
+
+                        _unitOfWork.Repository<ZoneArea>().Delete(zone);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<ZoneArea>().Detach(zone);
+                    }
+                }
+            }
+
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                foreach (var cabin in deck.AircraftCabins)
+                {
+                    if (cabin.CurrentWeight > 0) return ServiceResponseStatus.Failed;
+
+                    _unitOfWork.Repository<AircraftCabin>().Delete(cabin);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AircraftCabin>().Detach(cabin);
+
+                }
+            }
+
+            foreach (var deck in aircraftLayout.AircraftDecks)
+            {
+                if (deck.CurrentWeight > 0) return ServiceResponseStatus.Failed;
+
+                _unitOfWork.Repository<AircraftDeck>().Delete(deck);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<AircraftDeck>().Detach(deck);
+            }
+
+            _unitOfWork.Repository<AircraftLayout>().Delete(aircraftLayout);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AircraftLayout>().Detach(aircraftLayout);
 
 
+            return ServiceResponseStatus.Success;
+        }
 
-
+      
     }
 }
