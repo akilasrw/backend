@@ -50,6 +50,13 @@
         OnTime = 1,
         Delayed = 2
     }
+    public enum FlightScheduleOrderStatus
+    {
+        None = 0,
+        InProgress = 1,
+        Dispatched = 2,
+        Cancelled = 3,
+    }
 
     public enum LoadPlanStatus
     {
@@ -72,7 +79,7 @@
         Box = 2
     }
 
-    public enum AircraftDeckType
+    public enum AircraftDeckType  
     {
         None = 0,
         MainDeck = 1,
@@ -91,7 +98,7 @@
         None = 0,
         Pending = 10,
         Accepted = 20,
-        Loading = 30,
+        Loaded = 30,
         Invoiced = 40,
         Dispatched = 50,
         Exported = 60
@@ -115,6 +122,13 @@
         None = 0,
         Pending = 1,
         AddedAWB = 2
+    } 
+    
+    public enum VerifyStatus
+    {
+        None = 0,
+        ActualLoad = 1,
+        OffLoad = 2
     }
 
     public enum PackageItemCategory
