@@ -582,5 +582,15 @@ namespace Aeroclub.Cargo.Application.Services
             }
             return flight;
         }
+
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            var entity = await _unitOfWork.Repository<FlightSchedule>().GetByIdAsync(Id);
+            _unitOfWork.Repository<FlightSchedule>().Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightSchedule>().Detach(entity);
+            return (await _unitOfWork.SaveChangesAsync() > 0);
+        }
+
     }
 }

@@ -239,6 +239,8 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<FlightScheduleManagementRM, FlightScheduleManagement>();
 
+            CreateMap<FlightScheduleManagementRM, FlightScheduleManagementUpdateRM>();
+
             CreateMap<FlightScheduleManagementUpdateRM, FlightScheduleManagement>();
 
             CreateMap<Aircraft, BaseSelectListModel>()

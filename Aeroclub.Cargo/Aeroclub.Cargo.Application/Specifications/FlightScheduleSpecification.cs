@@ -33,6 +33,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             (query.FlightId == Guid.Empty || x.FlightId == query.FlightId))
         {
 
+            if (query.IncludeFlightScheduleSectors)
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors));
+
         }
 
         public FlightScheduleSpecification(CargoBookingSummaryFilteredListQM query, bool isCount = false)

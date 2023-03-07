@@ -24,16 +24,19 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly ILoadPlanService _loadPlanService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
+        private readonly IAircraftService _aircraftService;
 
         public LayoutCloneService(
             ILoadPlanService loadPlanService,
             IFlightScheduleSectorService flightScheduleSectorService,
+            IAircraftService aircraftService,
             IUnitOfWork unitOfWork,
             IMapper mapper)
             : base(unitOfWork, mapper)
         {
             _loadPlanService = loadPlanService;
             _flightScheduleSectorService = flightScheduleSectorService;
+            _aircraftService = aircraftService;
         }
 
         public async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors)
@@ -340,47 +343,37 @@ namespace Aeroclub.Cargo.Application.Services
             return Task.FromResult(layouts);
         }
 
-        public async Task<bool> DeleteClonedULDCargoLayoutAsync(FlightSchedule flightSchedule)
+        public async Task<bool> DeleteClonedCargoLayoutAsync(FlightSchedule flightSchedule)
         {
-            using (var transaction = _unitOfWork.BeginTransaction())
+
+            if (flightSchedule.FlightScheduleSectors == null) return false;
+
+            var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubTypeId);
+
+
+            foreach (var sector in flightSchedule.FlightScheduleSectors)
             {
-                if (flightSchedule.FlightScheduleSectors == null) return false;
+                if (sector.LoadPlanId != null) return false;
 
-                foreach (var sector in flightSchedule.FlightScheduleSectors)
+
+                // Delete Flight Schedule Sector
+                var sectorDeleteResponse = await _flightScheduleSectorService.DeleteAsync(sector.Id);
+                if (sectorDeleteResponse == ServiceResponseStatus.Failed) return false;
+
+                // Delete Aircraft Layout
+                var spec = new LoadPlanSpecification(new LoadPlanQM() { Id = sector.LoadPlanId!.Value, IncludeAircraftLayout = true });
+                var loadPlan = await _unitOfWork.Repository<LoadPlan>().GetEntityWithSpecAsync(spec);
+                if (aircraftConfigType == AircraftConfigType.Freighter)
                 {
-                    if (sector.LoadPlanId != null)
-                    {
-                        transaction.Rollback();
-                        return false;
-                    }
-
-                    // Delete Flight Schedule Sector
-                    var sectorDeleteResponse = await _flightScheduleSectorService.DeleteAsync(sector.Id);
-                    if (sectorDeleteResponse == ServiceResponseStatus.Failed)
-                    {
-                        transaction.Rollback();
-                        return false;
-                    }
-
-                    // Delete Aircraft Layout
-                    var spec = new LoadPlanSpecification(new LoadPlanQM() { Id = sector.LoadPlanId!.Value, IncludeAircraftLayout = true });
-                    var loadPlan = await _unitOfWork.Repository<LoadPlan>().GetEntityWithSpecAsync(spec);
                     var deleteAircraftLayoutsResponse = await DeleteULDCargoLayoutAsync(loadPlan.AircraftLayout);
-                    if (deleteAircraftLayoutsResponse == ServiceResponseStatus.Failed)
-                    {
-                        transaction.Rollback();
-                        return false;
-                    }
-
-                    // Delete Load Plan
-                    var loadPlanDeleteResponse = await _loadPlanService.DeleteAsync(sector.LoadPlanId!.Value);
-                    if (loadPlanDeleteResponse == ServiceResponseStatus.Failed)
-                    {
-                        transaction.Rollback();
-                        return false;
-                    }
+                    if (deleteAircraftLayoutsResponse == ServiceResponseStatus.Failed) return false;
                 }
-                transaction.Commit();
+
+
+                // Delete Load Plan
+                var loadPlanDeleteResponse = await _loadPlanService.DeleteAsync(sector.LoadPlanId!.Value);
+                if (loadPlanDeleteResponse == ServiceResponseStatus.Failed) return false;
+
             }
             return true;
         }
@@ -450,6 +443,6 @@ namespace Aeroclub.Cargo.Application.Services
             return ServiceResponseStatus.Success;
         }
 
-      
+
     }
 }
