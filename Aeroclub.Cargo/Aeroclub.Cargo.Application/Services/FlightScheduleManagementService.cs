@@ -86,24 +86,14 @@ namespace Aeroclub.Cargo.Application.Services
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightScheduleManagement>().Detach(flightScheduleManagementEntity);
 
-            var flightScheduleResponse = await CreateFlightSchedule(dto, flightScheduleManagementEntity.Id);
+            var flightScheduleManagementDto = _mapper.Map<FlightScheduleManagementRM>(dto);
+
+            var flightScheduleResponse = await CreateFlightSchedule(flightScheduleManagementDto, flightScheduleManagementEntity.Id);
             if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed || flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError)
             {
-                await DeleteAsync(flightScheduleManagementResponse.Id);
+                await DeleteAsync(flightScheduleManagementEntity.Id);
             }
-
-            if (flightScheduleManagementResponse == null)
-            {
-                res.StatusCode = ServiceResponseStatus.Failed;
-            }
-            else
-            {
-
-
-                res = flightScheduleResponse;
-            }
-
-            return res;
+            return flightScheduleResponse;
         }
 
        

@@ -353,7 +353,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var sector in flightSchedule.FlightScheduleSectors)
             {
-                if (sector.LoadPlanId != null) return false;
+                if (sector.LoadPlanId == null) return false;
 
 
                 // Delete Flight Schedule Sector
@@ -363,11 +363,14 @@ namespace Aeroclub.Cargo.Application.Services
                 // Delete Aircraft Layout
                 var spec = new LoadPlanSpecification(new LoadPlanQM() { Id = sector.LoadPlanId!.Value, IncludeAircraftLayout = true });
                 var loadPlan = await _unitOfWork.Repository<LoadPlan>().GetEntityWithSpecAsync(spec);
+                // Delete Full Freighter Layouts
                 if (aircraftConfigType == AircraftConfigType.Freighter)
                 {
                     var deleteAircraftLayoutsResponse = await DeleteULDCargoLayoutAsync(loadPlan.AircraftLayout);
                     if (deleteAircraftLayoutsResponse == ServiceResponseStatus.Failed) return false;
                 }
+                // Delete P2C Layouts  TODO
+
 
 
                 // Delete Load Plan
