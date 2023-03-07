@@ -1,4 +1,5 @@
 ﻿
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs
@@ -16,6 +17,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementV
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
         public AircraftSubTypes AircraftSubType { get; set; }
+        public ICollection<FlightScheduleVM>? FlightSchedules { get; set; }
 
     }
 }

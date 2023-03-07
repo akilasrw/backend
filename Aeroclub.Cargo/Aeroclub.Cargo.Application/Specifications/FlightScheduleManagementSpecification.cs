@@ -16,6 +16,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
             if (!isCount)
             {
+                AddInclude(x => x.Include(y => y.FlightSchedules));
                 AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
                 AddInclude(x => x.Include(y => y.AircraftSubType));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
