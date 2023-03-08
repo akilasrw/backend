@@ -1,10 +1,11 @@
 ﻿
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs
 {
-    public class FlightScheduleManagementVM
+    public class FlightScheduleManagementVM : BaseVM
     {
         public string? FlightNumber { get; set; } = null;
         public Guid FlightId { get; set; }
