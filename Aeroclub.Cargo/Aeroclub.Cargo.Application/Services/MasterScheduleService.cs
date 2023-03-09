@@ -73,7 +73,7 @@ namespace Aeroclub.Cargo.Application.Services
                             var flightSector = firsrFlightScheduleSector.Sector.FlightSectors?.Where(x => x.FlightId == firsrFlightScheduleSector.FlightId && x.SectorId == firsrFlightScheduleSector.SectorId).FirstOrDefault();
                             if (flightSector != null)
                             {
-                                var departureDate = firsrFlightScheduleSector.ActualDepartureDateTime.Date;
+                                var departureDate = firsrFlightScheduleSector.ScheduledDepartureDateTime.Date;
                                 var departureDateTime = departureDate + flightSector.DepartureDateTime;
                                 var actualDepartureDateTime = (flightSector.OriginBlockTimeMin != null) ? departureDateTime?.AddMinutes(-(double)flightSector.OriginBlockTimeMin) : departureDateTime;
                                 flight.FlightScheduleStartDateTime = (DateTime)actualDepartureDateTime;
@@ -86,7 +86,7 @@ namespace Aeroclub.Cargo.Application.Services
                             var flightSector = lastFlightScheduleSector.Sector.FlightSectors?.Where(x => x.FlightId == lastFlightScheduleSector.FlightId && x.SectorId == lastFlightScheduleSector.SectorId).FirstOrDefault();
                             if (flightSector != null)
                             {
-                                var arrivalDate = lastFlightScheduleSector.ActualDepartureDateTime.Date;
+                                var arrivalDate = lastFlightScheduleSector.ScheduledDepartureDateTime.Date;
                                 var arrivalDateTime = arrivalDate + flightSector.ArrivalDateTime;
                                 arrivalDateTime = (flightSector.DestinationBlockTimeMin != null) ? arrivalDateTime?.AddMinutes((double)flightSector.DestinationBlockTimeMin) : arrivalDateTime;
                                 flight.FlightScheduleEndDateTime = (DateTime)arrivalDateTime;

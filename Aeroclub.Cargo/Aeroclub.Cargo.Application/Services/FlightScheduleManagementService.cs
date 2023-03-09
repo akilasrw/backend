@@ -129,7 +129,7 @@ namespace Aeroclub.Cargo.Application.Services
                                                 firstSector.DepartureDateTime == DateTime.MinValue ?
                                                 day :
                                                 day.Date.Add(firstSector.DepartureDateTime.TimeOfDay);
-                    flightSchedule.ActualDepartureDateTime = flightSchedule.ScheduledDepartureDateTime;
+                    flightSchedule.ActualDepartureDateTime = DateTime.MinValue;
                     flightSchedule.FlightScheduleStatus = FlightScheduleStatus.None;
                     flightSchedule.OriginAirportId = flightDetail.OriginAirportId;
                     flightSchedule.DestinationAirportId = flightDetail.DestinationAirportId;
@@ -157,7 +157,7 @@ namespace Aeroclub.Cargo.Application.Services
                             OriginAirportName = sector.Sector.OriginAirportName,
                             DestinationAirportName = sector.Sector.DestinationAirportName,
                             ScheduledDepartureDateTime = utcDepartureDateTime,
-                            ActualDepartureDateTime = utcDepartureDateTime,
+                            ActualDepartureDateTime = DateTime.MinValue,
                         });
                     }
                     flightSchedule.FlightScheduleSectors = flightScheduleSectors;
