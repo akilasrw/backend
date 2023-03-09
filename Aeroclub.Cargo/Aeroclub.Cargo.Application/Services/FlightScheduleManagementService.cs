@@ -80,6 +80,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return existingScheduleDeleteResponse;
             }
 
+            dto.IsFlightScheduleGenerated = true;
             var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
 
             _unitOfWork.Repository<FlightScheduleManagement>().Update(flightScheduleManagementEntity);
