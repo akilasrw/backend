@@ -589,7 +589,7 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<FlightSchedule>().Delete(entity);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightSchedule>().Detach(entity);
-            return (await _unitOfWork.SaveChangesAsync() > 0);
+            return true;
         }
 
     }

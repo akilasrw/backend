@@ -366,23 +366,20 @@ namespace Aeroclub.Cargo.Application.Services
                 // Delete Full Freighter Layouts
                 if (aircraftConfigType == AircraftConfigType.Freighter)
                 {
-                    var deleteAircraftLayoutsResponse = await DeleteULDCargoLayoutAsync(loadPlan.AircraftLayout);
+                    var deleteAircraftLayoutsResponse = await DeleteULDCargoLayoutAsync(loadPlan);
                     if (deleteAircraftLayoutsResponse == ServiceResponseStatus.Failed) return false;
                 }
                 // Delete P2C Layouts  TODO
 
 
-
-                // Delete Load Plan
-                var loadPlanDeleteResponse = await _loadPlanService.DeleteAsync(sector.LoadPlanId!.Value);
-                if (loadPlanDeleteResponse == ServiceResponseStatus.Failed) return false;
-
             }
             return true;
         }
 
-        private async Task<ServiceResponseStatus> DeleteULDCargoLayoutAsync(AircraftLayout aircraftLayout)
+        private async Task<ServiceResponseStatus> DeleteULDCargoLayoutAsync(LoadPlan loadplan)
         {
+            var aircraftLayout = loadplan.AircraftLayout;
+            //Delete CargoPositions
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
                 foreach (var cabin in deck.AircraftCabins)
@@ -401,6 +398,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            //Delete ZoneAreas
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
                 foreach (var cabin in deck.AircraftCabins)
@@ -416,6 +414,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            //Delete AircraftCabins
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
                 foreach (var cabin in deck.AircraftCabins)
@@ -429,6 +428,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            //Delete AircraftDecks
             foreach (var deck in aircraftLayout.AircraftDecks)
             {
                 if (deck.CurrentWeight > 0) return ServiceResponseStatus.Failed;
@@ -438,6 +438,11 @@ namespace Aeroclub.Cargo.Application.Services
                 _unitOfWork.Repository<AircraftDeck>().Detach(deck);
             }
 
+            // Delete Load Plan
+            var loadPlanDeleteResponse = await _loadPlanService.DeleteAsync(loadplan.Id);
+            if (loadPlanDeleteResponse == ServiceResponseStatus.Failed) return ServiceResponseStatus.Failed;
+
+            // Delete Aircraft Layout
             _unitOfWork.Repository<AircraftLayout>().Delete(aircraftLayout);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<AircraftLayout>().Detach(aircraftLayout);
