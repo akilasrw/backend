@@ -378,8 +378,6 @@ namespace Aeroclub.Cargo.Application.Services
                     var deleteAircraftLayoutsResponse = await DeleteP2CCargoLayoutAsync(loadPlan);
                     if (deleteAircraftLayoutsResponse == ServiceResponseStatus.Failed) return false;
                 }
-
-
             }
             return true;
         }
