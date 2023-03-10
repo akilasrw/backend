@@ -10,8 +10,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public LoadPlanSpecification(LoadPlanQM query)
             : base(p => (query.Id == Guid.Empty || p.Id == query.Id))
         {
-            if (query.IncludeAircraftLayout)
-                AddInclude(x => x.Include(y => y.AircraftLayout).ThenInclude(z=>z.AircraftDecks).ThenInclude(a=>a.AircraftCabins).ThenInclude(b=>b.ZoneAreas).ThenInclude(c=>c.CargoPositions));
+            
         }
     }
 }
