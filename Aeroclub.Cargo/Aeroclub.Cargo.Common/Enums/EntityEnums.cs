@@ -242,4 +242,18 @@
 
     }
 
+    public enum CargoType
+    {
+        None = 0,
+        General = 1,
+    }
+
+    public enum RateType {
+        None = 0,
+        SpotRate =1,
+        PromotionalRate=2,
+        ContractRate=3,
+        MarketPublishRate=4
+    }
+
 }
