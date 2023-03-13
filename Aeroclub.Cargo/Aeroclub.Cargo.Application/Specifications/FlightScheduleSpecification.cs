@@ -72,11 +72,13 @@ namespace Aeroclub.Cargo.Application.Specifications
                 (query.FlightScheduleId == null || x.Id == query.FlightScheduleId))
         {
             if (query.IncludeFlightScheduleSectors)
-                AddInclude(x => x.Include(y => y.FlightScheduleSectors));
+                AddInclude(c => c.Include(v => v.FlightScheduleSectors).ThenInclude(b => b.Flight.FlightSectors));
 
             if (query.IncludeAircrafts)
+            {
                 AddInclude(x => x.Include(y => y.Aircraft));
-
+                AddInclude(x => x.Include(y => y.AircraftSubType.AircraftType));
+            }               
         }
 
         public FlightScheduleSpecification(Guid aircraftScheduleId)
