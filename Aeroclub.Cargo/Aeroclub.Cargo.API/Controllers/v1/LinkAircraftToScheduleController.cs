@@ -1,8 +1,12 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Services;
@@ -35,7 +39,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpGet("GetFilteredList")]
-        public async Task<ActionResult<Pagination<FlightScheduleManagementLinkAircraftVM>>> GetFilteredListAsync([FromQuery] FlightScheduleManagemenLinktFilteredListQM query)
+        public async Task<ActionResult<Pagination<FlightScheduleLinkAircraftVM>>> GetFilteredListAsync([FromQuery] FlightScheduleManagemenLinktFilteredListQM query)
         {
             return Ok(await _linkAircraftToScheduleService.GetLinkAircraftFilteredListAsync(query));
         }

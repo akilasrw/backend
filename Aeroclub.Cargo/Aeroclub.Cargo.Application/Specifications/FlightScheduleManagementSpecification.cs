@@ -35,23 +35,21 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleManagementSpecification(FlightScheduleManagemenLinktFilteredListQM query, bool isCount = false)
-            : base(x=> (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
+            : base(x => (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
         {
-            if (query.Status != Enums.AircaftAssignedStatus.None)
-            {
-                if(query.Status == Enums.AircaftAssignedStatus.PartiallyCompleted)
-                {
-                    And(c => c.FlightSchedules.Count() > 0 && c.FlightSchedules.Count() > c.FlightSchedules.Where(x => x.AircraftId != null).Count() && c.FlightSchedules.Where(x => x.AircraftId != null).Count() > 0);
-                }
-                else if (query.Status == Enums.AircaftAssignedStatus.Completed)
-                {
-                    And(s=> s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == s.FlightSchedules.Count());
-                }
-                else if (query.Status == Enums.AircaftAssignedStatus.Pending)
-                {
-                    And(s => s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == 0);
-                }                
-            }
+            //if (query.Status == Enums.AircaftAssignedStatus.PartiallyCompleted)
+            //{
+            //    And(c => c.FlightSchedules.Count() > 0 && c.FlightSchedules.Count() > c.FlightSchedules.Where(x => x.AircraftId != null).Count() && c.FlightSchedules.Where(x => x.AircraftId != null).Count() > 0);
+            //}
+            //else if (query.Status == Enums.AircaftAssignedStatus.Completed)
+            //{
+            //    And(s => s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == s.FlightSchedules.Count());
+            //}
+            //else if (query.Status == Enums.AircaftAssignedStatus.Pending)
+            //{
+            //    And(s => s.FlightSchedules.Count() > 0 && s.FlightSchedules.Where(x => x.AircraftId != null).Count() == 0);
+            //}
+
 
             if (!isCount)
             {

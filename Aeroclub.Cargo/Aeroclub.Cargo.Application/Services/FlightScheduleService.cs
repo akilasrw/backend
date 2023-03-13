@@ -15,6 +15,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using static Grpc.Core.Metadata;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -555,6 +556,61 @@ namespace Aeroclub.Cargo.Application.Services
             return aircraftIdleReports.OrderBy(z => z.Day).ToList();
         }
 
+        public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
+        {
+            foreach (var fSector in flight.FlightSectors)
+            {
+                fSector.DepartureDateTime = await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
+                fSector.ArrivalDateTime = await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
+            }
+            return flight;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateATAAsync(UpdateATARM updateATARM)
+        {
+            // Get by id.
+            var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { Id = updateATARM.Id, IsIncludeFlightScheduleSectors = true });
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+            // Update ATA in flight schedule.
+            if (flightSchedule == null)
+                return ServiceResponseStatus.ValidationError;
+
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    var ata = flightSchedule.ActualArrivalDateTime == null ? flightSchedule.ScheduledDepartureDateTime : flightSchedule.ActualArrivalDateTime.Value;
+                    flightSchedule.ActualArrivalDateTime = ata.Date.Add(TimeSpan.Parse(updateATARM.ActualArrivalDateTime));
+                    _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+                    // Update ATA last flight schedule sector.
+                    var sector = flightSchedule.FlightScheduleSectors.LastOrDefault();
+                    if (sector != null)
+                    {
+                        sector.ActualArrivalDateTime = flightSchedule.ActualArrivalDateTime;
+                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);                        
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return ServiceResponseStatus.Failed;
+                    }                   
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return ServiceResponseStatus.Failed;
+                }
+            }
+
+            return ServiceResponseStatus.Success;
+        }
+
         private async Task<TimeSpan> GetMappedTimeAsync(TimeSpan? time, Guid sectorId, bool isOrigin = true, bool isSavedData = true)
         {
             TimeSpan offsetTime = new TimeSpan();
@@ -571,16 +627,6 @@ namespace Aeroclub.Cargo.Application.Services
                     offsetTime = time.ToInternationalTimeSpan(list[1].CountryCodeISO3166, list[1].Lat, isSavedData);
             }
             return offsetTime;
-        }
-
-        public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
-        {
-            foreach (var fSector in flight.FlightSectors)
-            {
-                fSector.DepartureDateTime = await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
-                fSector.ArrivalDateTime = await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
-            }
-            return flight;
         }
 
         public async Task<bool> DeleteAsync(Guid Id)

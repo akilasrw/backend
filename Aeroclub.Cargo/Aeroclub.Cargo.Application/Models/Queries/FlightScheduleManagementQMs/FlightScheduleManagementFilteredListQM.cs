@@ -14,10 +14,11 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs
     
     public class FlightScheduleManagemenLinktFilteredListQM : BasePaginationQM
     {
-        public bool? IsLink { get; set; }
+        public Guid OriginAirportId { get; set; }
+        public Guid DestinationAirportId { get; set; }
         public string? FlightNumber { get; set; }
-        public string? AircraftRegistration { get; set; }
-        public AircaftAssignedStatus Status { get; set; } = AircaftAssignedStatus.None;
+        public DateTime? FlightDate { get; set; }
+        public bool? IsHistory { get; set; }
 
     }
 }

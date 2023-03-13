@@ -19,6 +19,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<AircraftIdleReportVM>> GetAircraftsIdleReportAsync(FlightScheduleReportQM query);
         Task<Pagination<FlightScheduleSearchVM>> GetFilteredListAsync(FlightScheduleFilteredListQM query);
         Task<bool> DeleteAsync(Guid Id);
-
+        Task<ServiceResponseStatus> UpdateATAAsync(UpdateATARM updateATARM);
     }
 }

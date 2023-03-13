@@ -10,6 +10,9 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid FlightScheduleId { get; set; }
         public int SequenceNo { get; set; }
         public DateTime ScheduledDepartureDateTime { get; set; }
+        public DateTime? EstimatedDepartureDateTime { get; set; }
+        public DateTime? EstimatedArrivalDateTime { get; set; }
+        public DateTime? ActualArrivalDateTime { get; set; }
         public DateTime ActualDepartureDateTime { get; set; }
         public FlightScheduleStatus FlightScheduleStatus { get; set; } = FlightScheduleStatus.None;
         public Guid OriginAirportId { get; set; }

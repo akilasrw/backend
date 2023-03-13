@@ -1,8 +1,10 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Aeroclub.Cargo.Application.Specifications
@@ -90,10 +92,27 @@ namespace Aeroclub.Cargo.Application.Specifications
                  query.EndDate == null || (x.ScheduledDepartureDateTime.Date <= new DateTime(query.EndDate.Value.Year, query.EndDate.Value.Month, DateTime.DaysInMonth(query.EndDate.Value.Year, query.EndDate.Value.Month)).Date) &&
                 ((query.Month == null && query.Year == null) || (x.ScheduledDepartureDateTime.Year == query.Year && x.ScheduledDepartureDateTime.Date.Month == query.Month)) && 
             x.AircraftId.HasValue)
-        {
+        {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
             AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.Flight).ThenInclude(p => p.FlightSectors));
             AddInclude(x => x.Include(y => y.Aircraft));
             AddInclude(x => x.Include(y => y.AircraftSchedule));
+        }
+
+        public FlightScheduleSpecification(FlightScheduleManagemenLinktFilteredListQM query, bool isCount = false)
+            :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           base(x => (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
+           (query.FlightDate == null || query.FlightDate == DateTime.MinValue || query.FlightDate == x.ScheduledDepartureDateTime.Date) &&
+            (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
+            (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
+            //(query.IsHistory == null || x.IsHistory == query.IsHistory) &&
+             x.AircraftId != null)
+        {
+            if (!isCount)
+            {
+                AddInclude(c => c.Include(v => v.FlightScheduleSectors).ThenInclude(b=>b.Flight.FlightSectors));
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.CargoBookingFlightScheduleSectors));
+                AddInclude(x => x.Include(y => y.AircraftSubType.AircraftType));
+                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+            }
         }
 
     }

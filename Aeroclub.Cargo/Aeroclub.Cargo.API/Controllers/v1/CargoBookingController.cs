@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
+    [Authorize]  
     public class CargoBookingController : BaseApiController
     {
         private readonly IBookingManagerService _bookingManagerService;
@@ -45,7 +45,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<CargoBookingDetailVM>> GetAsync([FromQuery] CargoBookingDetailQM query)
         {
             if (query.Id == Guid.Empty) return BadRequest();
-
+              
             var result = await _bookingManagerService.GetBookingAsync(query);
 
             if (result == null)
