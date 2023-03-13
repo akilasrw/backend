@@ -1,8 +1,9 @@
-﻿using Aeroclub.Cargo.Common.Enums;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
 {
-    public class FlightScheduleVM
+    public class FlightScheduleVM : BaseVM
     {
         public string? FlightNumber { get; set; } = null;
         public DateTime ScheduledDepartureDateTime { get; set; }

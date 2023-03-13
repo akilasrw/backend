@@ -55,6 +55,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.NotificationVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
+using Aeroclub.Cargo.Application.Models.ViewModels.LoadPlanVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -131,6 +132,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<ULDContainerUpdateRM, ULDContainer>();
             CreateMap<ULDDto, ULD>().ReverseMap();
             CreateMap<LoadPlanDto, LoadPlan>();
+            CreateMap<LoadPlan, LoadPlanVM>();
             CreateMap<ULDMetaDataDto, ULDMetaData>();
             CreateMap<ULDMetaData, ULDMetaDataDto>();
             CreateMap<PackageContainer, PackageContainerVM>().ReverseMap();
@@ -229,6 +231,10 @@ namespace Aeroclub.Cargo.Application.Helpers
                     .Add((TimeSpan)s.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault(r => r.Sequence == 1).ArrivalDateTime)));
 
             CreateMap<FlightScheduleManagementRM, FlightScheduleManagement>();
+
+            CreateMap<FlightScheduleManagementUpdateRM,FlightScheduleManagementRM>();
+
+            CreateMap<FlightScheduleManagementUpdateRM, FlightScheduleManagement>();
 
             CreateMap<Aircraft, BaseSelectListModel>()
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.RegNo));

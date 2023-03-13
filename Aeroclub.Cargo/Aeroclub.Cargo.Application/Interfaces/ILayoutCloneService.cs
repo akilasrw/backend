@@ -1,10 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -12,5 +7,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
         Task<bool> CloneULDCargoLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? FlightScheduleSectors);
+        Task<bool> DeleteClonedCargoLayoutAsync(FlightSchedule flightSchedule);
     }
 }

@@ -14,6 +14,8 @@ using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Models;
+using static Grpc.Core.Metadata;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -23,12 +25,14 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IDateGeneratorService _dateGeneratorService;
         private readonly IFlightService _flightService;
         private readonly ISectorService _sectorService;
+        private readonly ILayoutCloneService _layoutCloneService;
 
         public FlightScheduleManagementService(
             IUnitOfWork unitOfWork,
             IFlightService flightService,
             ISectorService sectorService,
             IDateGeneratorService dateGeneratorService,
+            ILayoutCloneService layoutCloneService,
             IMapper mapper, IFlightScheduleService flightScheduleService) :
             base(unitOfWork, mapper)
         {
@@ -36,7 +40,9 @@ namespace Aeroclub.Cargo.Application.Services
             _flightService = flightService;
             _sectorService = sectorService;
             _dateGeneratorService = dateGeneratorService;
+            _layoutCloneService= layoutCloneService;
         }
+
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
         {
@@ -64,6 +70,34 @@ namespace Aeroclub.Cargo.Application.Services
             return res;
         }
 
+
+        public async Task<ServiceResponseCreateStatus> UpdateAsync(FlightScheduleManagementUpdateRM dto)
+        {
+            var existingScheduleDeleteResponse = await DeleteFlightSchedule(dto.FlightScheduleIds);
+
+            if (existingScheduleDeleteResponse.StatusCode == ServiceResponseStatus.Failed || existingScheduleDeleteResponse.StatusCode == ServiceResponseStatus.ValidationError)
+            {
+                return existingScheduleDeleteResponse;
+            }
+
+            dto.IsFlightScheduleGenerated = true;
+            var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
+
+            _unitOfWork.Repository<FlightScheduleManagement>().Update(flightScheduleManagementEntity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightScheduleManagement>().Detach(flightScheduleManagementEntity);
+
+            var flightScheduleManagementDto = _mapper.Map<FlightScheduleManagementRM>(dto);
+
+            var flightScheduleResponse = await CreateFlightSchedule(flightScheduleManagementDto, flightScheduleManagementEntity.Id);
+            if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed || flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError)
+            {
+                await DeleteAsync(flightScheduleManagementEntity.Id);
+            }
+            return flightScheduleResponse;
+        }
+
+       
         public async Task<FlightScheduleManagementVM> GetAsync(FlightScheduleManagementDetailQM query)
         {
             var spec = new FlightScheduleManagementSpecification(query);
@@ -87,6 +121,7 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<FlightScheduleManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
         }
+
 
         private async Task<ServiceResponseCreateStatus> CreateFlightSchedule(FlightScheduleManagementRM dto, Guid id)
         {
@@ -174,6 +209,38 @@ namespace Aeroclub.Cargo.Application.Services
 
             return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
         }
+
+        private async Task<ServiceResponseCreateStatus> DeleteFlightSchedule(List<Guid> flightScheduleIds)
+        {
+            if(flightScheduleIds.Count() <1) return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                foreach (var scheduleId in flightScheduleIds)
+                {
+                    var spec = new FlightScheduleSpecification(new FlightScheduleQM() { Id = scheduleId, IncludeFlightScheduleSectors = true });
+                    var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+                    if (flightSchedule == null || flightSchedule.FlightScheduleSectors == null || flightSchedule.FlightScheduleSectors.Count() < 1) {
+                        transaction.Rollback();
+                        return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.ValidationError };
+                    }
+
+                    var deleteClonedLayoutResponse = await _layoutCloneService.DeleteClonedCargoLayoutAsync(flightSchedule);
+                    if (!deleteClonedLayoutResponse) {
+                        transaction.Rollback();
+                        return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Failed }; 
+                    }
+
+                    var flightScheduleDeleteResponse = await _flightScheduleService.DeleteAsync(scheduleId);
+                    if (!flightScheduleDeleteResponse) {
+                        transaction.Rollback();
+                        return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Failed }; 
+                    }
+                }
+                transaction.Commit();
+            }
+            return new ServiceResponseCreateStatus() { StatusCode = ServiceResponseStatus.Success };
+        }
+
 
         public async Task GetUnAssignedAircraftAsync(Guid flightScheduleManagementId)
         {
