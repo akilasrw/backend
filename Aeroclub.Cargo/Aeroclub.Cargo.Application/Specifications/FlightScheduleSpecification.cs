@@ -101,19 +101,20 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(FlightScheduleManagemenLinktFilteredListQM query, bool isCount = false)
-            :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           base(x => (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
+            : base(x => (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
            (query.FlightDate == null || query.FlightDate == DateTime.MinValue || query.FlightDate == x.ScheduledDepartureDateTime.Date) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
-            //(query.IsHistory == null || x.IsHistory == query.IsHistory) &&
+            (query.IsHistory == null || (query.IsHistory == false ? x.ActualDepartureDateTime == DateTime.MinValue : x.ActualDepartureDateTime != DateTime.MinValue)) &&
              x.AircraftId != null)
         {
             if (!isCount)
             {
-                AddInclude(c => c.Include(v => v.FlightScheduleSectors).ThenInclude(b=>b.Flight.FlightSectors));
+                AddInclude(c => c.Include(v => v.FlightScheduleSectors).ThenInclude(b => b.Flight.FlightSectors));
                 AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.CargoBookingFlightScheduleSectors));
                 AddInclude(x => x.Include(y => y.AircraftSubType.AircraftType));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.ScheduledDepartureDateTime);
             }
         }
 

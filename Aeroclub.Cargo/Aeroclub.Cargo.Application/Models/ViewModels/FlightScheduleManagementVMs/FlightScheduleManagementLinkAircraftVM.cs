@@ -20,5 +20,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementV
         public string AircraftSubTypeName { get; set; }
         public double TotalWeight { get; set; }
         public bool IsHistory { get; set; }
+        public bool IsDispatched { get; set; }
     }
 }
