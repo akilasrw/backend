@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Core.Entities.Core;
+﻿using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Core.Entities.Core;
 
 namespace Aeroclub.Cargo.Core.Entities
 {
@@ -13,6 +14,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public string DestinationAirportName { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public RateType RateType { get; set; }
+        public CargoType CargoType { get; set; }
 
         public virtual CargoAgent CargoAgent { get; set; } = null!;
         public virtual Airport OriginAirport { get; set; } = null!;

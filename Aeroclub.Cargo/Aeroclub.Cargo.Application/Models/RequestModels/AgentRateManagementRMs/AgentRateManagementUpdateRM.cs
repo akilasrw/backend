@@ -1,12 +1,12 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRateRMs;
+using Aeroclub.Cargo.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
 {
     public class AgentRateManagementUpdateRM : BaseRM
     {
-        [Required(ErrorMessage = "Cargo agent required.")]
         public Guid CargoAgentId { get; set; }
 
         [Required(ErrorMessage = "Origin airport required.")]
@@ -19,6 +19,12 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
 
         [Required(ErrorMessage = "End Date required.")]
         public DateTime EndDate { get; set; }
+
+        [Required(ErrorMessage = "Rate type required.")]
+        public RateType RateType { get; set; }
+
+        [Required(ErrorMessage = "Cargo type required.")]
+        public CargoType CargoType { get; set; }
 
         [Required(ErrorMessage = "Rate(s) required.")]
         public IEnumerable<AgentRateRM> AgentRates { get; set; } = null!;
