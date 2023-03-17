@@ -68,7 +68,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CargoAgentId")
+                    b.Property<Guid?>("CargoAgentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("CargoType")
@@ -140,7 +140,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CargoAgentId")
+                    b.Property<Guid?>("CargoAgentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("CargoType")
@@ -1111,7 +1111,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "06874322-edc5-45fd-bd08-15e1e84ea682",
+                            ConcurrencyStamp = "723efd8b-abe9-4cf6-a6be-9ab01b6c15b5",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1127,7 +1127,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "780d974e-2b39-4f9e-a72f-837b439c8541",
+                            ConcurrencyStamp = "46af5e99-4593-4c3f-9513-51b7c2f0cb36",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -36920,9 +36920,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.CargoAgent", "CargoAgent")
                         .WithMany()
-                        .HasForeignKey("CargoAgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CargoAgentId");
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "DestinationAirport")
                         .WithMany()
