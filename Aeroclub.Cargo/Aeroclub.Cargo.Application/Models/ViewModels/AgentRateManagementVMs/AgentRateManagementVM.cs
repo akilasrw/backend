@@ -18,5 +18,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs
         public RateType RateType { get; set; }
         public CargoType CargoType { get; set; }
         public IReadOnlyList<AgentRateVM> AgentRates { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }
