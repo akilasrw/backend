@@ -28,5 +28,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
 
         [Required(ErrorMessage = "Rate(s) required.")]
         public IEnumerable<AgentRateRM> AgentRates { get; set; } = null!;
+        public bool IsActive { get; set; }
+
     }
 }

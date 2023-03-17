@@ -90,6 +90,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("UpdateActiveStatus")]
+        public async Task<IActionResult> UpdateActiveStatusAsync([FromBody] AgentRateStatusUpdateRM dto)
+        {
+            var response = await _agentRateManagementService.UpdateActiveStatusAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            if (response.StatusCode == ServiceResponseStatus.Failed)
+                return BadRequest("Rate update fails.");
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
