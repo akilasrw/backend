@@ -14,5 +14,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
         [Required(ErrorMessage = "Aircraft is required.")]
         public Guid AircraftId { get; set; }
         public Guid? AircraftScheduleId { get; set; }
+        public string? EstimatedDepartureDateTime { get; set; }
+        public string? EstimatedArrivalDateTime { get; set; }
     }
 }

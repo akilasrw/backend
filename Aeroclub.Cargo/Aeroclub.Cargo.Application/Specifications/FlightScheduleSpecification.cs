@@ -105,8 +105,7 @@ namespace Aeroclub.Cargo.Application.Specifications
            (query.FlightDate == null || query.FlightDate == DateTime.MinValue || query.FlightDate == x.ScheduledDepartureDateTime.Date) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
-            (query.IsHistory == null || (query.IsHistory == false ? x.ActualDepartureDateTime == DateTime.MinValue : x.ActualDepartureDateTime != DateTime.MinValue)) &&
-             x.AircraftId != null)
+            (query.IsHistory == null || (query.IsHistory == false ? x.ActualDepartureDateTime == DateTime.MinValue : x.ActualDepartureDateTime != DateTime.MinValue)))
         {
             if (!isCount)
             {
