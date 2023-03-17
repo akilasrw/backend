@@ -5,7 +5,7 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class AgentRateManagement : AuditableEntity
     {
-        public Guid CargoAgentId { get; set; }
+        public Guid? CargoAgentId { get; set; }
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
         public string OriginAirportCode { get; set; } = null!;
@@ -17,7 +17,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public RateType RateType { get; set; }
         public CargoType CargoType { get; set; }
 
-        public virtual CargoAgent CargoAgent { get; set; } = null!;
+        public virtual CargoAgent? CargoAgent { get; set; }
         public virtual Airport OriginAirport { get; set; } = null!;
         public virtual Airport DestinationAirport { get; set; } = null!;
         public virtual ICollection<AgentRate> AgentRates { get; set; } = null!;

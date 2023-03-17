@@ -5,7 +5,7 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class AgentRateManagementHistory : AuditableEntity 
     {
-        public Guid CargoAgentId { get; set; }
+        public Guid? CargoAgentId { get; set; }
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
         public string OriginAirportCode { get; set; } = null!;

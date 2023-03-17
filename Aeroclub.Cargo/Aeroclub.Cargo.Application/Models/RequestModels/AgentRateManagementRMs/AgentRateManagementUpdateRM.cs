@@ -7,7 +7,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs
 {
     public class AgentRateManagementUpdateRM : BaseRM
     {
-        public Guid CargoAgentId { get; set; }
+        public Guid? CargoAgentId { get; set; }
 
         [Required(ErrorMessage = "Origin airport required.")]
         public Guid OriginAirportId { get; set; }
