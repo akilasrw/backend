@@ -26,15 +26,18 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IFlightScheduleService _flightScheduleService;
         private readonly IAircraftService _aircraftService;
+        private readonly ICargoBookingSummaryService _cargoBookingSummaryService;
 
         public LinkAircraftToScheduleService(IUnitOfWork unitOfWork,
             IMapper mapper, 
             IFlightScheduleService flightScheduleService,
+            ICargoBookingSummaryService cargoBookingSummaryService,
             IAircraftService aircraftService) 
             : base(unitOfWork, mapper)
         {
             _flightScheduleService = flightScheduleService;
             _aircraftService = aircraftService;
+            _cargoBookingSummaryService = cargoBookingSummaryService;
         }
         public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)
         {
@@ -67,16 +70,21 @@ namespace Aeroclub.Cargo.Application.Services
             return status;
         }
 
-        public async Task<Pagination<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query)
+        public async Task<Pagination<FlightScheduleLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query)
         {
-            var spec = new FlightScheduleManagementSpecification(query);
-            var flightScheduleManagementList = await _unitOfWork.Repository<FlightScheduleManagement>().GetListWithSpecAsync(spec);
+            var spec = new FlightScheduleSpecification(query);
+            var flightScheduleList = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(spec);
 
-            var countSpec = new FlightScheduleManagementSpecification(query, true);
-            var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
+            var countSpec = new FlightScheduleSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<FlightSchedule>().CountAsync(countSpec);
 
-            var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleManagementLinkAircraftVM>>(flightScheduleManagementList);
-            return   new Pagination<FlightScheduleManagementLinkAircraftVM>(query.PageIndex, query.PageSize, totalCount, dtoList);;
+            var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleLinkAircraftVM>>(flightScheduleList);
+            foreach (var fs in dtoList)
+            {
+                var sum = await _cargoBookingSummaryService.GetAsync(new Models.Queries.CargoBookingSummaryQMs.CargoBookingSummaryDetailQM() { Id = fs.Id, IsIncludeFlightScheduleSectors = true });
+                fs.TotalWeight = sum.CargoPositionSummary.TotalBookedWeight;
+            }
+            return   new Pagination<FlightScheduleLinkAircraftVM>(query.PageIndex, query.PageSize, totalCount, dtoList);;
         }
 
         private async Task<bool> ValidAircraftAsync(ScheduleAircraftRM query)

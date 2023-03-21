@@ -1111,7 +1111,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "723efd8b-abe9-4cf6-a6be-9ab01b6c15b5",
+                            ConcurrencyStamp = "772fe11f-ce41-4494-a75a-87c5fd7d03c6",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1127,7 +1127,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "46af5e99-4593-4c3f-9513-51b7c2f0cb36",
+                            ConcurrencyStamp = "b9e0c37b-7c94-4147-848d-b97f667cec0a",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1474,6 +1474,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<Guid>("OriginAirportId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("VerifyStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -23626,6 +23629,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ActualArrivalDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("ActualDepartureDateTime")
                         .HasColumnType("datetime2");
 
@@ -23658,6 +23664,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(80)");
 
+                    b.Property<DateTime?>("EstimatedArrivalDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EstimatedDepartureDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid?>("FlightId")
                         .HasColumnType("uniqueidentifier");
 
@@ -23667,6 +23679,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid?>("FlightScheduleManagementId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("FlightScheduleOrderStatus")
+                        .HasColumnType("int");
+
                     b.Property<byte>("FlightScheduleStatus")
                         .HasColumnType("tinyint");
 
@@ -23674,6 +23689,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDispatched")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHistory")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
@@ -23771,6 +23792,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ActualArrivalDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("ActualDepartureDateTime")
                         .HasColumnType("datetime2");
 
@@ -23796,6 +23820,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<string>("DestinationAirportName")
                         .IsRequired()
                         .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTime?>("EstimatedArrivalDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EstimatedDepartureDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("FlightId")
                         .HasColumnType("uniqueidentifier");
