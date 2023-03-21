@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aeroclub.Cargo.Data.Migrations
 {
-    public partial class Update_Agent_Rate_Management_and_Rate_History_Tables : Migration
+    public partial class Update_Agent_Rate_Management_and_Rate_History_Tabless : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,14 +62,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "723efd8b-abe9-4cf6-a6be-9ab01b6c15b5");
+                value: "f351dc37-e8ad-4500-b2b4-503d61c665b4");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "46af5e99-4593-4c3f-9513-51b7c2f0cb36");
+                value: "57e1024f-eadc-496d-becd-0716d58c07d5");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AgentRateManagements_CargoAgents_CargoAgentId",
@@ -126,14 +126,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "3b591ad9-99c7-4001-a9a5-6ab2af33a964");
+                value: "772fe11f-ce41-4494-a75a-87c5fd7d03c6");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "cbc7eebd-d1af-415c-9561-2d0eb75f3500");
+                value: "9911bc80-d927-42ce-be1c-747440355be1");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AgentRateManagements_CargoAgents_CargoAgentId",

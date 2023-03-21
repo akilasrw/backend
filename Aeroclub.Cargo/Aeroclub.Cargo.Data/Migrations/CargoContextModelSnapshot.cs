@@ -1111,7 +1111,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "772fe11f-ce41-4494-a75a-87c5fd7d03c6",
+                            ConcurrencyStamp = "f351dc37-e8ad-4500-b2b4-503d61c665b4",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1127,7 +1127,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b9e0c37b-7c94-4147-848d-b97f667cec0a",
+                            ConcurrencyStamp = "57e1024f-eadc-496d-becd-0716d58c07d5",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
