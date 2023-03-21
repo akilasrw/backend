@@ -4,6 +4,8 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
+using Aeroclub.Cargo.Common.Enums;
+using Google.Type;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +53,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if(dto.AgentRateManagements == null) return BadRequest(ModelState);
+
+            foreach(var rate in dto.AgentRateManagements)
+            {
+                if (rate.RateType == RateType.ContractRate && rate.CargoAgentId == Guid.Empty) return BadRequest();
+            }
+
             var response = await _agentRateManagementService.CreateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
@@ -68,10 +77,26 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            if (dto.RateType == RateType.ContractRate && dto.CargoAgentId == Guid.Empty) return BadRequest();
+
             var response = await _agentRateManagementService.UpdateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
                 return BadRequest( response.Message);
+
+            if (response.StatusCode == ServiceResponseStatus.Failed)
+                return BadRequest("Rate update fails.");
+
+            return NoContent();
+        }
+
+        [HttpPut("UpdateActiveStatus")]
+        public async Task<IActionResult> UpdateActiveStatusAsync([FromBody] AgentRateStatusUpdateRM dto)
+        {
+            var response = await _agentRateManagementService.UpdateActiveStatusAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
 
             if (response.StatusCode == ServiceResponseStatus.Failed)
                 return BadRequest("Rate update fails.");

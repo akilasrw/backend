@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs
 {
@@ -14,6 +15,10 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs
         public string CargoAgentName { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public RateType RateType { get; set; }
+        public CargoType CargoType { get; set; }
         public IReadOnlyList<AgentRateVM> AgentRates { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }
