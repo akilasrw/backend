@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20230317185043_Update_Agent_Rate_Management_and_Rate_History_Tables")]
-    partial class Update_Agent_Rate_Management_and_Rate_History_Tables
+    [Migration("20230321145728_Update_Agent_Rate_Management_and_Rate_History_Tabless")]
+    partial class Update_Agent_Rate_Management_and_Rate_History_Tabless
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1113,7 +1113,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "723efd8b-abe9-4cf6-a6be-9ab01b6c15b5",
+                            ConcurrencyStamp = "f351dc37-e8ad-4500-b2b4-503d61c665b4",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1129,7 +1129,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "46af5e99-4593-4c3f-9513-51b7c2f0cb36",
+                            ConcurrencyStamp = "57e1024f-eadc-496d-becd-0716d58c07d5",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1476,6 +1476,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<Guid>("OriginAirportId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("VerifyStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -23628,6 +23631,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ActualArrivalDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("ActualDepartureDateTime")
                         .HasColumnType("datetime2");
 
@@ -23660,6 +23666,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(80)");
 
+                    b.Property<DateTime?>("EstimatedArrivalDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EstimatedDepartureDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid?>("FlightId")
                         .HasColumnType("uniqueidentifier");
 
@@ -23669,6 +23681,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid?>("FlightScheduleManagementId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("FlightScheduleOrderStatus")
+                        .HasColumnType("int");
+
                     b.Property<byte>("FlightScheduleStatus")
                         .HasColumnType("tinyint");
 
@@ -23676,6 +23691,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDispatched")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHistory")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
@@ -23773,6 +23794,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ActualArrivalDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("ActualDepartureDateTime")
                         .HasColumnType("datetime2");
 
@@ -23798,6 +23822,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<string>("DestinationAirportName")
                         .IsRequired()
                         .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTime?>("EstimatedArrivalDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EstimatedDepartureDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("FlightId")
                         .HasColumnType("uniqueidentifier");
