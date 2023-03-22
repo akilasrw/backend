@@ -16,5 +16,8 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
         public Guid? AircraftScheduleId { get; set; }
         public string? EstimatedDepartureDateTime { get; set; }
         public string? EstimatedArrivalDateTime { get; set; }
+        public string? ActualDepartureDateTime { get; set; }
+        public byte? StepCount { get; set; }
+        public bool? IsDispatched { get; set; }
     }
 }
