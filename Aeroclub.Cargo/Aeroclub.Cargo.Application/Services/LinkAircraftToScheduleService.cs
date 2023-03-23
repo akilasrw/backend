@@ -42,57 +42,65 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)
         {
             var status = ServiceResponseStatus.Success;
-            if (!await ValidAircraftAsync(query))
-                return ServiceResponseStatus.ValidationError;
-
+            bool edited = false;
             var spec = new FlightScheduleSpecification(new FlightScheduleLinkQM { FlightScheduleId = query.FlightScheduleId, IncludeFlightScheduleSectors = true, IncludeAircrafts=true });
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
             if (flightSchedule != null)
             {
+                
                 var fs = flightSchedule.ActualArrivalDateTime == null ? flightSchedule.ScheduledDepartureDateTime : flightSchedule.ActualArrivalDateTime.Value;
                 if (query.StepCount == 1)
                 {
+                    if (!await ValidAircraftAsync(query))
+                        return ServiceResponseStatus.ValidationError;
+
                     flightSchedule.AircraftId = query.AircraftId;
                     flightSchedule.AircraftRegNo = await _aircraftService.GetAircraftRegNo(query.AircraftId);
                     flightSchedule.AircraftScheduleId = query.AircraftScheduleId;
 
                     flightSchedule.EstimatedDepartureDateTime = fs.Date.Add(TimeSpan.Parse(query.EstimatedDepartureDateTime));
                     flightSchedule.EstimatedArrivalDateTime = fs.Date.Add(TimeSpan.Parse(query.EstimatedArrivalDateTime));
+                    edited = true;
 
                 }
                 else if (query.StepCount == 2)
                 {
                     flightSchedule.ActualDepartureDateTime = fs.Date.Add(TimeSpan.Parse(query.ActualDepartureDateTime));
                     flightSchedule.IsDispatched = query.IsDispatched.Value;
+                    edited = true;
                 }             
             }
 
-            _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
-            await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
-
-            var specSector = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = query.FlightScheduleId });
-            var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specSector);
-            int sectorCount=0;
-            foreach (var sector in flightScheduleSectors)
+            if (edited)
             {
-                sectorCount++;
-                sector.AircraftId = query.AircraftId;
-                if (sectorCount == 1)
-                {
-                    if (query.StepCount == 1)
-                        sector.EstimatedDepartureDateTime = flightSchedule.EstimatedDepartureDateTime;
-                    if (query.StepCount == 2)
-                        sector.ActualDepartureDateTime = flightSchedule.ActualDepartureDateTime;
-                }                    
-
-                if (flightScheduleSectors.Count == sectorCount && query.StepCount == 1)
-                    sector.EstimatedArrivalDateTime = flightSchedule.EstimatedArrivalDateTime;
-
-                _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
                 await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+                var specSector = new FlightScheduleSectorSpecification(new FlightScheduleSectorSearchQuery() { FlightScheduleId = query.FlightScheduleId });
+                var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(specSector);
+                int sectorCount = 0;
+                foreach (var sector in flightScheduleSectors)
+                {
+                    sectorCount++;
+                    sector.AircraftId = query.AircraftId;
+                    if (sectorCount == 1)
+                    {
+                        if (query.StepCount == 1)
+                            sector.EstimatedDepartureDateTime = flightSchedule.EstimatedDepartureDateTime;
+                        if (query.StepCount == 2)
+                            sector.ActualDepartureDateTime = flightSchedule.ActualDepartureDateTime;
+                    }
+
+                    if (flightScheduleSectors.Count == sectorCount && query.StepCount == 1)
+                        sector.EstimatedArrivalDateTime = flightSchedule.EstimatedArrivalDateTime;
+
+                    _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                }
             }
+            
             return status;
         }
 
