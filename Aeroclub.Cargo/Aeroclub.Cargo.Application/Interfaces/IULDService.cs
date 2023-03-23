@@ -2,17 +2,14 @@
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface IULDService
     {
-        Task<ServiceResponseCreateStatus> CreateAsync(ULDDto ULDDto);
+        Task<ServiceResponseCreateStatus> CreateULDAsync(ULDDto ULDDto);
+        Task<ServiceResponseCreateStatus> CreateAsync(ULDCreateRM ULDDto);
         Task<ULDDto> GetAsync(ULDQM query);
     }
 }

@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PalletManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PalletVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -91,7 +92,7 @@ namespace Aeroclub.Cargo.Application.Services
                     }
 
                     // Save ULD
-                    var uld = await _uLDService.CreateAsync(new ULDDto()
+                    var uld = await _uLDService.CreateULDAsync(new ULDDto()
                     {
                         ULDType = ULDType.None,
                         SerialNumber = dto.SerialNumber,

@@ -1,7 +1,8 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -18,10 +19,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] ULDDto uldDto)
+        public async Task<IActionResult> CreateAsync([FromBody] ULDCreateRM uldDto)
         {
-            await _uLDService.CreateAsync(uldDto);
-            return Ok();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _uLDService.CreateAsync(uldDto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return Ok(new { message = "ULD created successfully." });
+
+            return BadRequest("ULD creation fails.");
         }
     }
 }

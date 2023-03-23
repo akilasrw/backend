@@ -56,6 +56,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.LoadPlanVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -282,6 +283,8 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap <NotificationRM, Notification>();
             CreateMap <CargoBookingFlightScheduleSectorRM, CargoBookingFlightScheduleSector>();
             CreateMap <PackageULDContainerRM, PackageULDContainer>();
+            CreateMap <ULDCreateRM, ULD>();
+            CreateMap <ULDMetaDataCreateRM, ULDMetaData>();
 
         }
     }

@@ -1,9 +1,4 @@
 ﻿using Aeroclub.Cargo.Core.Entities.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Core.Entities
 {
@@ -13,6 +8,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public double Length { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
+        public double MaxWeight { get; set; }
+        public double MaxVolume { get; set; }
         public int? Sequence { get; set; }
         public virtual ICollection<ULD> ULDs { get; set; }
     }

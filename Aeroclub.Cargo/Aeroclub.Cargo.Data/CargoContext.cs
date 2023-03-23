@@ -60,6 +60,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new MasterScheduleConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftScheduleConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new ULDTrackingConfiguration());
             
             
             
@@ -119,6 +120,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<Notification> Notifications { get; set; } = null!;
         public DbSet<CargoBookingFlightScheduleSector> CargoBookingFlightScheduleSectors { get; set; } = null!;
         public DbSet<PackageULDContainer> PackageULDContainers { get; set; } = null!;
+        public DbSet<ULDTracking> ULDTrackings { get; set; } = null!;
 
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
      
