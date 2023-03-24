@@ -282,6 +282,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap <NotificationRM, Notification>();
             CreateMap <CargoBookingFlightScheduleSectorRM, CargoBookingFlightScheduleSector>();
             CreateMap <PackageULDContainerRM, PackageULDContainer>();
+            CreateMap <LIRFileUploadDto, LIRFileUpload>().ReverseMap();
 
         }
     }
