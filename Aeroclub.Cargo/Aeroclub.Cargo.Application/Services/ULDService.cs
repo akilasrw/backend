@@ -4,7 +4,9 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
@@ -112,6 +114,19 @@ namespace Aeroclub.Cargo.Application.Services
             var uld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(spec);
 
             return _mapper.Map<ULD, ULDDto>(uld);
+        }
+
+        public async Task<Pagination<ULDFilteredListVM>> GetFilteredListAsync(ULDListQM query)
+        {
+            var spec = new ULDSpecification(query);
+            var uldList = await _unitOfWork.Repository<ULD>().GetListWithSpecAsync(spec);
+
+            var countSpec = new ULDSpecification(query, true);
+            var totalCount = await _unitOfWork.Repository<ULD>().CountAsync(countSpec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<ULDFilteredListVM>>(uldList);
+
+            return new Pagination<ULDFilteredListVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
     }
 }

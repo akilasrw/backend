@@ -1,7 +1,11 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +20,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public ULDController(IULDService uLDService)
         {
             _uLDService = uLDService;
+        }
+
+        [HttpGet("GetFilteredList")]
+        public async Task<ActionResult<Pagination<ULDFilteredListVM>>> GetFilteredListAsync([FromQuery] ULDListQM query)
+        {
+            return Ok(await _uLDService.GetFilteredListAsync(query));
         }
 
         [HttpPost]
