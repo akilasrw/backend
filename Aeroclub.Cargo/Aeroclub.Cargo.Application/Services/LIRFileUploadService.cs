@@ -37,6 +37,16 @@ namespace Aeroclub.Cargo.Application.Services
             res.Id = entity.Id;
             res.StatusCode = ServiceResponseStatus.Success;
             return res;
+        }
+        
+        public async Task<ServiceResponseStatus> UpdateAsync(LIRFileUploadDto model)
+        {
+            var entity = _mapper.Map<LIRFileUpload>(model);
+            _unitOfWork.Repository<LIRFileUpload>().Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<LIRFileUpload>().Detach(entity);
+            return ServiceResponseStatus.Success;
+            
         } 
 
         public async Task<LIRFileUploadDto> GetAsync(LIRFileUploadQM query)

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20230324110121_Add_LIRFileUpload_Table")]
+    [Migration("20230324133233_Add_LIRFileUpload_Table")]
     partial class Add_LIRFileUpload_Table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1101,7 +1101,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "02f4fd29-afe5-42d1-93d5-447a7d605c98",
+                            ConcurrencyStamp = "fb31af51-f41d-421e-a607-adf79a721b57",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1117,7 +1117,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0a693f2a-e2ee-4831-be17-2398a0ece975",
+                            ConcurrencyStamp = "ade3c89b-7c22-4bee-8387-1d49ce754162",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -23974,6 +23974,10 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

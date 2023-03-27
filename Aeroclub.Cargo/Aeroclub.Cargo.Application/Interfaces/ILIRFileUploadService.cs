@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Core;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.LIRFileUploadQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SectorQMs;
@@ -16,5 +17,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<ServiceResponseCreateStatus> CreateAsync(LIRFileUploadDto model);
         Task<LIRFileUploadDto> GetAsync(LIRFileUploadQM query);
+        Task<ServiceResponseStatus> UpdateAsync(LIRFileUploadDto model);
     }
 }

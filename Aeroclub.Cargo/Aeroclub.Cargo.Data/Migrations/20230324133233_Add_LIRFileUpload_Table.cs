@@ -16,6 +16,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FlightScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    OriginalFileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileURLPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileFullURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Extesnsion = table.Column<string>(type: "nvarchar(5)", nullable: true),
@@ -42,14 +43,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "02f4fd29-afe5-42d1-93d5-447a7d605c98");
+                value: "fb31af51-f41d-421e-a607-adf79a721b57");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "0a693f2a-e2ee-4831-be17-2398a0ece975");
+                value: "ade3c89b-7c22-4bee-8387-1d49ce754162");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LIRFileUploads_FlightScheduleId",

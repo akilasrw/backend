@@ -1,11 +1,12 @@
 ﻿using Aeroclub.Cargo.Infrastructure.FileUploader.Interfaces;
+using Aeroclub.Cargo.Infrastructure.FileUploader.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Aeroclub.Cargo.Infrastructure.FileUploader.Services
 {
     public abstract class UploadService : IUploadService
     {
-        public abstract string Upload(IFormFile file);
+        public abstract UploadFile Upload(IFormFile file);
 
         // generate a unique name for the files we upload
         public static string GenerateblobFileName(string fileName)

@@ -9,6 +9,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.LIRFileUploadQMs
 {
     public class LIRFileUploadQM: BaseQM
     {
-        public Guid FlightId { get; set; }
+        public Guid FlightScheduleId { get; set; }
     }
 }

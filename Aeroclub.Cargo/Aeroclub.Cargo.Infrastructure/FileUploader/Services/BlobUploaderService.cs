@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Aeroclub.Cargo.Infrastructure.FileUploader.Models;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -13,11 +14,13 @@ namespace Aeroclub.Cargo.Infrastructure.FileUploader.Services
         {
             _configuration = configuration;
         }
-        public override string Upload(IFormFile file)
+        public override UploadFile Upload(IFormFile file)
         {
-            var filename = file.FileName;//GenerateblobFileName(file.FileName);
+            var filename = GenerateblobFileName(file.FileName);
             string containerName = _configuration["Azure:Blob:Container"];
-            return AsyncUploadFile(containerName, GetFileStream(file), filename, "application/pdf").Result;
+            var url=  AsyncUploadFile(containerName, GetFileStream(file), filename, "application/pdf").Result;
+
+            return new UploadFile(filename,file.FileName,url);
         }
 
         private async Task<string> AsyncUploadFile(string containerName, byte[] arr, string filename, string filetype)

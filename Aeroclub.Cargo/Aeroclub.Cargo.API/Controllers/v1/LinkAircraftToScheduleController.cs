@@ -35,6 +35,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return BadRequest(new { message = "Aircraft is not available. Please select another one." });
            
             return Ok(res);
+        } 
+        
+        [HttpPost("Upload"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadLIRFileRMAsync()
+        {
+            var formCollection = await Request.ReadFormAsync();
+            Guid fsId = Guid.Parse(formCollection["FlightScheduleId"].ToString());
+            var file = formCollection.Files.First();
+            var res = await _linkAircraftToScheduleService.UploadLIRAsync(new UploadLIRFileRM() { File = file, FlightScheduleId= fsId });
+            if (!res)
+                return BadRequest(new { message = "Upload LIR File is failed." });
+           
+            return Ok();
         }
 
 

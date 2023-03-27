@@ -12,7 +12,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class LIRFileUploadSpecification : BaseSpecification<LIRFileUpload>
     {
         public LIRFileUploadSpecification(LIRFileUploadQM query) :
-            base(x=> x.FlightScheduleId == query.FlightId )
+            base(x=> x.FlightScheduleId == query.FlightScheduleId )
         {
 
         }

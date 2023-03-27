@@ -11,6 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.Dtos
     {
         public Guid FlightScheduleId { get; set; }
         public string FileName { get; set; } = null!;
+        public string OriginalFileName { get; set; } = null!;
         public string FileURLPath { get; set; } = null!;
         public string? FileFullURL { get; set; } = null;
         public string? Extesnsion { get; set; } = null;
