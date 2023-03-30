@@ -88,6 +88,7 @@ namespace Aeroclub.Cargo.Application.Services
                     }
 
                     var mappedULD = _mapper.Map<ULD>(ULDDto);
+                    mappedULD.ULDMetaDataId = uldMetaDetaResponse.Id;
                     var uldResponse = await _unitOfWork.Repository<ULD>().CreateAsync(mappedULD);
                     await _unitOfWork.SaveChangesAsync();
 
