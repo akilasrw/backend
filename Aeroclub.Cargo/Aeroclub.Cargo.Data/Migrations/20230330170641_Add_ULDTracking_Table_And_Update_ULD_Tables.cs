@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aeroclub.Cargo.Data.Migrations
 {
-    public partial class Add_ULDTracking_Table_And_Update_ULD_Table : Migration
+    public partial class Add_ULDTracking_Table_And_Update_ULD_Tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,15 +21,13 @@ namespace Aeroclub.Cargo.Data.Migrations
                 name: "LendAirlineCode",
                 table: "ULDs",
                 type: "varchar(2)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "OwnerAirlineCode",
                 table: "ULDs",
                 type: "varchar(2)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<byte>(
                 name: "ULDLocateStatus",
@@ -91,14 +89,14 @@ namespace Aeroclub.Cargo.Data.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                 column: "ConcurrencyStamp",
-                value: "4f04f378-c162-4ed8-a8bd-c081ffaf0f86");
+                value: "58e394d6-f691-45ad-84f8-607d80225b22");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                 column: "ConcurrencyStamp",
-                value: "d926ef22-0992-445a-899b-9632f7541d6d");
+                value: "ef632cc4-3c51-4dec-974b-8fbaa7e74364");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ULDTrackings_ULDId",

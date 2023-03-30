@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20230323140924_Add_ULDTracking_Table_And_Update_ULD_Table")]
-    partial class Add_ULDTracking_Table_And_Update_ULD_Table
+    [Migration("20230330170641_Add_ULDTracking_Table_And_Update_ULD_Tables")]
+    partial class Add_ULDTracking_Table_And_Update_ULD_Tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1113,7 +1113,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4f04f378-c162-4ed8-a8bd-c081ffaf0f86",
+                            ConcurrencyStamp = "58e394d6-f691-45ad-84f8-607d80225b22",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1129,7 +1129,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d926ef22-0992-445a-899b-9632f7541d6d",
+                            ConcurrencyStamp = "ef632cc4-3c51-4dec-974b-8fbaa7e74364",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -36395,11 +36395,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LendAirlineCode")
-                        .IsRequired()
                         .HasColumnType("varchar(2)");
 
                     b.Property<string>("OwnerAirlineCode")
-                        .IsRequired()
                         .HasColumnType("varchar(2)");
 
                     b.Property<string>("SerialNumber")
