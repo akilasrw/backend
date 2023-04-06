@@ -6,6 +6,8 @@ using Aeroclub.Cargo.Infrastructure.Authorization.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Authorization.Services;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Interfaces;
 using Aeroclub.Cargo.Infrastructure.DateGenerator.Services;
+using Aeroclub.Cargo.Infrastructure.FileUploader.Interfaces;
+using Aeroclub.Cargo.Infrastructure.FileUploader.Services;
 using Aeroclub.Cargo.Infrastructure.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Services;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
@@ -70,7 +72,8 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<ICargoBookingFlightScheduleSectorService, CargoBookingFlightScheduleSectorService>();
-
+            services.AddScoped<IUploadFactory, UploadFactoryService>();
+            services.AddScoped<ILIRFileUploadService, LIRFileUploadService>();
 
             return services;
         }

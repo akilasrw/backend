@@ -271,4 +271,10 @@
         MarketPublishRate=4
     }
 
+    public enum UploadStorageType
+    {
+        None = 0,
+        Blob = 1
+    }
+
 }
