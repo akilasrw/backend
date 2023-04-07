@@ -85,7 +85,7 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
                 var booking = sectorBooking.CargoBooking;
-                if (booking.StandByStatus != StandByStatus.None || booking.BookingStatus == BookingStatus.Cancelled)
+                if (booking.StandByStatus != null || booking.BookingStatus == BookingStatus.Cancelled)
                     continue;
 
                 var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
