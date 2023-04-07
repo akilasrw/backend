@@ -15,6 +15,8 @@ namespace Aeroclub.Cargo.Data.Extensions.Configurations
             builder.Property(p => p.WeightType).HasColumnType("tinyint").IsRequired();
             builder.Property(p => p.CreatedUser).HasColumnType("nvarchar(100)").IsRequired();
             builder.Property(p => p.Status).HasColumnType("smallint").IsRequired();
+            builder.Property(p => p.RateType).HasColumnType("tinyint").IsRequired();
+            builder.Property(p => p.CargoType).HasColumnType("tinyint").IsRequired();
         }
     }
 }

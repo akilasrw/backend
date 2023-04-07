@@ -68,8 +68,11 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CargoAgentId")
+                    b.Property<Guid?>("CargoAgentId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("CargoType")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -114,6 +117,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(80)");
 
+                    b.Property<byte>("RateType")
+                        .HasColumnType("tinyint");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -134,8 +140,11 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CargoAgentId")
+                    b.Property<Guid?>("CargoAgentId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("CargoType")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -183,6 +192,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<double>("Rate")
                         .HasColumnType("float");
+
+                    b.Property<byte>("RateType")
+                        .HasColumnType("tinyint");
 
                     b.Property<short>("Status")
                         .HasColumnType("smallint");
@@ -36442,15 +36454,27 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("LendAirlineCode")
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<string>("OwnerAirlineCode")
+                        .HasColumnType("varchar(2)");
+
                     b.Property<string>("SerialNumber")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
+                    b.Property<byte>("ULDLocateStatus")
+                        .HasColumnType("tinyint");
+
                     b.Property<Guid>("ULDMetaDataId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ULDType")
-                        .HasColumnType("int");
+                    b.Property<byte>("ULDOwnershipType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("ULDType")
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -36589,6 +36613,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<double>("Length")
                         .HasColumnType("float");
 
+                    b.Property<double>("MaxVolume")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxWeight")
+                        .HasColumnType("float");
+
                     b.Property<int?>("Sequence")
                         .HasColumnType("int");
 
@@ -36601,6 +36631,51 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ULDMetaDatas");
+                });
+
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDTracking", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastLocatedAirportCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(3)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("LastUsedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUsedFlightNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<Guid>("ULDId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ULDId");
+
+                    b.ToTable("ULDTrackings");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Unit", b =>
@@ -37000,9 +37075,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.CargoAgent", "CargoAgent")
                         .WithMany()
-                        .HasForeignKey("CargoAgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CargoAgentId");
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "DestinationAirport")
                         .WithMany()
@@ -37654,6 +37727,17 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("ULDContainer");
                 });
 
+            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDTracking", b =>
+                {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.ULD", "uld")
+                        .WithMany("ULDTrackings")
+                        .HasForeignKey("ULDId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("uld");
+                });
+
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Warehouse", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "Airport")
@@ -37848,6 +37932,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.Navigation("ULDCargoPosition")
                         .IsRequired();
+
+                    b.Navigation("ULDTrackings");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULDContainer", b =>

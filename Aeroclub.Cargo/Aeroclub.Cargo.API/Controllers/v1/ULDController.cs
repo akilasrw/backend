@@ -1,7 +1,12 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -17,11 +22,26 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             _uLDService = uLDService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] ULDDto uldDto)
+        [HttpGet("GetFilteredList")]
+        public async Task<ActionResult<Pagination<ULDFilteredListVM>>> GetFilteredListAsync([FromQuery] ULDListQM query)
         {
-            await _uLDService.CreateAsync(uldDto);
-            return Ok();
+            return Ok(await _uLDService.GetFilteredListAsync(query));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody] ULDCreateRM uldDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _uLDService.CreateAsync(uldDto);
+
+            if (response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            if (response.StatusCode == ServiceResponseStatus.Success)
+                return Ok(new { message = "ULD created successfully." });
+
+            return BadRequest("ULD creation fails.");
         }
     }
 }

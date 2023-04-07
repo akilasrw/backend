@@ -68,8 +68,23 @@
     public enum ULDType
     {
         None = 0,
-        LD1 = 1,
-        LD2 = 2
+        Pallet = 1,
+        Container = 2
+    }
+
+    public enum ULDOwnershipType
+    {
+        None = 0,
+        OwnByAirline = 1,
+        Other = 2
+    }
+    public enum ULDLocateStatus
+    {
+        None = 0,
+        OnGround = 1,
+        OnBoard = 2,
+        Maintenance = 3,
+        Lend = 4,
     }
 
     public enum ULDContainerType
@@ -252,6 +267,20 @@
     {
         None = 0,
 
+    }
+
+    public enum CargoType
+    {
+        None = 0,
+        General = 1,
+    }
+
+    public enum RateType {
+        None = 0,
+        SpotRate =1,
+        PromotionalRate=2,
+        ContractRate=3,
+        MarketPublishRate=4
     }
 
     public enum UploadStorageType

@@ -10,6 +10,8 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
 using AutoMapper;
+using static Google.Rpc.Context.AttributeContext.Types;
+using static Grpc.Core.Metadata;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -308,6 +310,29 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<AgentRateManagementVM>>(agentRateList);
 
             return new Pagination<AgentRateManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
+
+        public async Task<ServiceResponseCreateStatus> UpdateActiveStatusAsync(AgentRateStatusUpdateRM dto)
+        {
+            var response = new ServiceResponseCreateStatus();
+
+            var rateManagement = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(new AgentRateManagementQM { Id = dto.Id, IncludeCargoAgent = false }));
+
+            if (rateManagement == null)
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                response.Message = "Record not found";
+                return response;
+            }
+
+            rateManagement.IsActive= dto.IsActive;
+
+            _unitOfWork.Repository<AgentRateManagement>().Update(rateManagement);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<AgentRateManagement>().Detach(rateManagement);
+
+            response.StatusCode = ServiceResponseStatus.Success;
+            return response;
         }
     }
 }

@@ -56,6 +56,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.LoadPlanVMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -284,6 +285,18 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap <NotificationRM, Notification>();
             CreateMap <CargoBookingFlightScheduleSectorRM, CargoBookingFlightScheduleSector>();
             CreateMap <PackageULDContainerRM, PackageULDContainer>();
+            CreateMap <ULDCreateRM, ULD>();
+            CreateMap <ULDMetaDataCreateRM, ULDMetaData>();
+            CreateMap<ULD, ULDFilteredListVM>()
+                .ForMember(d => d.Weight, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Weight : 0))
+                .ForMember(d => d.MaxWeight, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.MaxWeight : 0))
+                .ForMember(d => d.MaxVolume, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.MaxVolume : 0))
+                .ForMember(d => d.Length, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Length : 0))
+                .ForMember(d => d.Width, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Width : 0))
+                .ForMember(d => d.Height, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Height : 0))
+                .ForMember(d => d.LastUsedDate, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedDate : DateTime.MinValue))
+                .ForMember(d => d.LastUsedFlightNumber, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedFlightNumber : ""))
+                .ForMember(d => d.LastLocatedAirportCode, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastLocatedAirportCode : ""));
             CreateMap <LIRFileUploadDto, LIRFileUpload>().ReverseMap();
 
         }
