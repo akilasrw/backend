@@ -66,6 +66,9 @@ namespace Aeroclub.Cargo.Application.Services
                 var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
                 entity.MapDestinationAirport(destinationAirport);
             }
+            if (string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]))
+                entity.CutoffTimeMin = double.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]) * 60;
+
             using (var transaction = _unitOfWork.BeginTransaction())
             {
                 try
@@ -590,7 +593,7 @@ namespace Aeroclub.Cargo.Application.Services
                     if (sector != null)
                     {
                         sector.ActualArrivalDateTime = flightSchedule.ActualArrivalDateTime;
-                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);                        
+                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
                         await _unitOfWork.SaveChangesAsync();
                         _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
                     }
@@ -598,7 +601,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         await transaction.RollbackAsync();
                         return ServiceResponseStatus.Failed;
-                    }                   
+                    }
                     await transaction.CommitAsync();
                 }
                 catch (Exception ex)
@@ -608,6 +611,74 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            return ServiceResponseStatus.Success;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM)
+        {
+            // Get by id.
+            var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { Id = updateCutOffRM.Id, IsIncludeFlightScheduleSectors = true });
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+            // Update ATA in flight schedule.
+            if (flightSchedule == null)
+                return ServiceResponseStatus.ValidationError;
+
+            flightSchedule.CutoffTimeMin = updateCutOffRM.CutOffTimeMin;
+            _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+            return ServiceResponseStatus.Success;
+        }
+
+        private async Task<ServiceResponseStatus> UpdateAync(FlightSchedule flightSchedule, UpdateATARM? updateATARM = null,UpdateCutOffTimeRM ? updateCutOffTimeRM = null)
+        {
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+
+                    if (updateATARM != null)
+                    {
+                        var ata = flightSchedule.ActualArrivalDateTime == null ? flightSchedule.ScheduledDepartureDateTime : flightSchedule.ActualArrivalDateTime.Value;
+                        flightSchedule.ActualArrivalDateTime = ata.Date.Add(TimeSpan.Parse(updateATARM.ActualArrivalDateTime));
+
+                        // Update ATA last flight schedule sector.
+                        var sector = flightSchedule.FlightScheduleSectors.LastOrDefault();
+                        if (sector != null)
+                        {
+                            sector.ActualArrivalDateTime = flightSchedule.ActualArrivalDateTime;
+                            _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return ServiceResponseStatus.Failed;
+                        }
+                    }
+                        
+
+                    if (updateCutOffTimeRM != null)
+                    {
+                        flightSchedule.CutoffTimeMin = updateCutOffTimeRM.CutOffTimeMin;
+                    }
+                        
+
+                    _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+                    
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return ServiceResponseStatus.Failed;
+                }
+            }
             return ServiceResponseStatus.Success;
         }
 
@@ -638,5 +709,6 @@ namespace Aeroclub.Cargo.Application.Services
             return true;
         }
 
+        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
+using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
@@ -12,10 +13,13 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
         public string AircraftRegNo { get; set; } = null!;
+        public string AircraftSubTypeName { get; set; }
         public AircraftConfigType AircraftConfigurationType { get; set; }
         public AircraftSubTypes AircraftSubType { get; set; }
         public AircraftTypes AircraftType { get; set; }
         public CargoPositionSummaryVM CargoPositionSummary { get; set; }
         public IReadOnlyList<CargoPositionDetailVM> CargoPositions { get; set; }
+
+        public BookingSummaryDetailFiguresVM? BookingSummaryDetailFigures { get; set; } = null;
     }
 }

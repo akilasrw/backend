@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20230329153510_Add_Column_CutoffTimeMin_flightSchedule_Tables")]
+    partial class Add_Column_CutoffTimeMin_flightSchedule_Tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1099,7 +1101,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fa2db39f-04b0-430b-911e-cb22ce1f7a39",
+                            ConcurrencyStamp = "93e5973f-abc1-4680-80f6-e96f3af3c32c",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1115,7 +1117,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "af55790e-870d-49bf-a630-d7d8a3e3f20f",
+                            ConcurrencyStamp = "a669d0b7-45a2-45ac-8670-4d89d54ea44a",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -1462,9 +1464,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.Property<Guid>("OriginAirportId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("StandByStatus")
-                        .HasColumnType("int");
 
                     b.Property<int?>("VerifyStatus")
                         .HasColumnType("int");

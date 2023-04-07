@@ -22,6 +22,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using System.IO.Hashing;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -394,6 +395,55 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return BookingServiceResponseStatus.Success;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm)
+        {
+            return await _cargoBookingService.UpdateStandByStatusAsync(rm);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list)
+        {
+            return await _cargoBookingService.UpdateDeleteListAsync(list);
+        }
+
+        public BookingStatus BookingNextStatus(BookingStatus bookingStatus)
+        {
+            switch(bookingStatus)
+            {
+                case BookingStatus.None: return BookingStatus.Booked;
+                case BookingStatus.Booked: return BookingStatus.Accepted;
+                //case BookingStatus.Accepted: return BookingStatus.Dispatched;
+            }
+            return BookingStatus.None;
+        }
+        public VerifyStatus BookingVerifyNextStatus(BookingStatus bookingStatus, bool isCancel = false, bool isRecieved = false, bool isDispatch = false)
+        {
+            if (bookingStatus == BookingStatus.Booked)
+            {
+                if (isCancel) return VerifyStatus.Deleted;
+                if (isRecieved) return VerifyStatus.Dispatched;
+                return VerifyStatus.CargoNotDispatched;
+
+            }
+            else if (bookingStatus == BookingStatus.Accepted)
+            {
+                if (isDispatch) return VerifyStatus.Dispatched;
+                if (isCancel) return VerifyStatus.Deleted;
+                return VerifyStatus.OffLoad;
+            }
+            return VerifyStatus.None;
+        }
+
+        public PackageItemStatus PackageNextStatus(PackageItemStatus packageItemStatus)
+        {
+            switch(packageItemStatus)
+            {
+                case PackageItemStatus.None: return PackageItemStatus.Booked;
+                case PackageItemStatus.Booked: return PackageItemStatus.Accepted;
+                case PackageItemStatus.Accepted: return PackageItemStatus.Dispatched;
+            }
+            return PackageItemStatus.None;
         }
     }
 }

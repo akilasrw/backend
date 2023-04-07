@@ -96,12 +96,13 @@
     public enum BookingStatus
     {
         None = 0,
-        Pending = 10,
-        Accepted = 20,
-        Loaded = 30,
+        Booked = 10, // Booked
+        Accepted = 20,// Recieved
+        //Loaded = 30,
         Invoiced = 40,
-        Dispatched = 50,
-        Exported = 60
+        //Dispatched = 50,
+        //Exported = 60,
+        Cancelled = 70
     }
 
     public enum PackagePriorityType
@@ -113,8 +114,9 @@
     public enum PackageItemStatus
     {
         None = 0,
-        Pending = 1,
-        Accepted = 2,
+        Booked = 1,
+        Accepted = 2,// Dispatched
+        Dispatched = 4,
     }
 
     public enum AWBStatus
@@ -128,6 +130,16 @@
     {
         None = 0,
         ActualLoad = 1,
+        OffLoad = 2,
+        Dispatched = 3,
+        Deleted = 4,
+        CargoNotDispatched = 5
+    }
+
+    public enum StandByStatus
+    {
+        None = 0,
+        MovedTo = 1,
         OffLoad = 2
     }
 

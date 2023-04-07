@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (!isCount)
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
-                AddInclude(x => x.Include(y => y.AircraftSubType));
+                AddInclude(x => x.Include(y => y.AircraftSubType).ThenInclude(z => z.AircraftType));
                 AddOrderByDescending(x => x.Created);
             }
         }
@@ -64,6 +64,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IsIncludeFlightScheduleSectors)
             {
                 AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f=>f.Flight).ThenInclude(p=> p.FlightSectors));
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.CargoBookingFlightScheduleSectors));
             }
         }
 

@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -19,6 +20,10 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm);
         Task<IReadOnlyList<CargoBookingListVM>> GetBookingListAsync(FlightScheduleSectorBookingListQM query);
         Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query);
+        BookingStatus BookingNextStatus(BookingStatus bookingStatus);
+        PackageItemStatus PackageNextStatus(PackageItemStatus packageItemStatus);
+        Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list);
+        Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm);
 
     }
 }

@@ -74,6 +74,7 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
         }
+
         public async Task<IReadOnlyList<CargoBookingListVM>> GetListAsync(FlightScheduleSectorBookingListQM query)
         {
             var spec = new CargoBookingFlightScheduleSectorSpecification(query);
@@ -84,6 +85,9 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
                 var booking = sectorBooking.CargoBooking;
+                if (booking.StandByStatus != StandByStatus.None || booking.BookingStatus == BookingStatus.Cancelled)
+                    continue;
+
                 var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
                 CargoBookingListVM vm = new CargoBookingListVM();
                 vm.Id = booking.Id;
@@ -99,6 +103,21 @@ namespace Aeroclub.Cargo.Application.Services
                  _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
                  _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
                 ));
+
+                if (booking.PackageItems != null)
+                {
+                    var recBookings = booking.PackageItems.Where(c => c.PackageItemStatus == PackageItemStatus.Accepted);
+
+                    vm.NumberOfRecBoxes = recBookings == null ? 0 : recBookings.Count();
+                    vm.TotalRecWeight = recBookings == null ? 0 : recBookings.Sum(x => x.Weight);
+                    vm.TotalRecVolume = recBookings == null ? 0 : recBookings.Sum(x =>
+                    (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                    ));
+                }
+                
+
                 list.Add(vm);
             }
             list = list.DistinctBy(x => x.Id).ToList();
@@ -180,6 +199,39 @@ namespace Aeroclub.Cargo.Application.Services
                 res.StatusCode = ServiceResponseStatus.Failed;
             }
             return res;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list)
+        {
+            foreach (var cargo in list)
+            {
+                var booking = await _unitOfWork.Repository<CargoBooking>().GetByIdAsync(cargo.Id);
+                if (booking != null)
+                {
+                    booking.BookingStatus = cargo.BookingStatus;
+                    _unitOfWork.Repository<CargoBooking>().Update(booking);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<CargoBooking>().Detach(booking);
+
+                }
+            }
+            return ServiceResponseStatus.Success;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm)
+        {
+            foreach (CargoBookingStatusUpdateRM cargo in rm.CargoBookingStatusUpdateList)
+            {
+                var booking = await _unitOfWork.Repository<CargoBooking>().GetByIdAsync(cargo.Id);
+                if (booking != null)
+                {
+                    booking.StandByStatus = rm.StandByStatus;
+                    _unitOfWork.Repository<CargoBooking>().Update(booking);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<CargoBooking>().Detach(booking);
+                }
+            }
+            return ServiceResponseStatus.Success;
         }
 
         private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)

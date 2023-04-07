@@ -95,11 +95,13 @@ namespace Aeroclub.Cargo.Application.Helpers
                     .Add((TimeSpan)s.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault(r => r.Sequence == 1).ArrivalDateTime)));
             CreateMap<FlightScheduleVM, FlightScheduleUpdateRM>();
             CreateMap<FlightSchedule, CargoBookingSummaryVM>()
-                .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.ConfigType : AircraftConfigType.None));
+                .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.ConfigType : AircraftConfigType.None))
+                .ForMember(d => d.AircraftSubTypeName, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Name : ""));
             CreateMap<FlightSchedule, CargoBookingSummaryDetailVM>()
                .ForMember(d => d.AircraftSubType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.Type : AircraftSubTypes.None))
                .ForMember(d => d.AircraftType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Type : AircraftTypes.None))
-               .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.ConfigType : AircraftConfigType.None));
+               .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.ConfigType : AircraftConfigType.None))
+               .ForMember(d => d.AircraftSubTypeName, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Name : ""));
             CreateMap<WarehouseCreateRM, Warehouse>();
             CreateMap<WarehouseUpdateRM, Warehouse>();
             CreateMap<Warehouse, WarehouseVM>();

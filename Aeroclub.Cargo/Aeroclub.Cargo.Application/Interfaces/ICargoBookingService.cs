@@ -16,6 +16,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM rm);
         Task<IReadOnlyList<CargoBookingListVM>> GetListAsync(FlightScheduleSectorBookingListQM query);
         Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query);
+        Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list);
+        Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm);
 
     }
 }

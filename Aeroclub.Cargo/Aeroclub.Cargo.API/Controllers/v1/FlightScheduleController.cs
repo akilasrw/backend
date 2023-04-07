@@ -84,5 +84,24 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return NoContent();
         }
+
+        [HttpPut("UpdateCuttOffTime/{id}")]
+        public async Task<IActionResult> UpdateCutOffTimeAsync(Guid id, UpdateCutOffTimeRM model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+
+            var res = await _flightScheduleService.UpdateCutOffTimeAsync(model);
+
+            if (res == Application.Enums.ServiceResponseStatus.ValidationError)
+                return BadRequest("Cut Off Time is not valid.");
+
+            if (res == Application.Enums.ServiceResponseStatus.Failed)
+                return BadRequest("Saved failed.");
+
+            return NoContent();
+        }
     }
 }

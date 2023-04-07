@@ -91,5 +91,25 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("UpdateStandByStatus")]
+        public async Task<IActionResult> UpdateStandByStatusAsync([FromBody] CargoBookingStatusUpdateListRM rm)
+        {
+            var res = await _bookingManagerService.UpdateStandByStatusAsync(rm);
+
+            if (res == Application.Enums.ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
+        [HttpPut("UpdateDeleteCargo")]
+        public async Task<IActionResult> UpdateDeleteCargoAsync([FromBody] IEnumerable<CargoBookingUpdateRM> list)
+        {
+            var res = await _bookingManagerService.UpdateDeleteListAsync(list);
+
+            if (res == Application.Enums.ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
     }
 }
