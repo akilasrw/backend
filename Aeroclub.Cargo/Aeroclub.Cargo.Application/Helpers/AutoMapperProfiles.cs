@@ -299,6 +299,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.LastLocatedAirportCode, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastLocatedAirportCode : ""));
             CreateMap <LIRFileUploadDto, LIRFileUpload>().ReverseMap();
 
+            CreateMap <CargoBookingListVM, CargoBookingStandByCargoVM>();
+
         }
     }
 }

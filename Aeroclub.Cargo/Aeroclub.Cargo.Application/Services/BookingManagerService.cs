@@ -325,6 +325,11 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _cargoBookingService.GetAsync(query);
         }
+        
+        public async Task<CargoBookingDetailVM> GetDetailAsync(CargoBookingQM query)
+        {
+            return await _cargoBookingService.GetDetailAsync(query);
+        }
 
         public async Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query)
         {
@@ -444,6 +449,11 @@ namespace Aeroclub.Cargo.Application.Services
                 case PackageItemStatus.Accepted: return PackageItemStatus.Dispatched;
             }
             return PackageItemStatus.None;
+        }
+
+        public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query)
+        {
+            return await _cargoBookingService.GetStandByCargoListAsync(query);
         }
     }
 }

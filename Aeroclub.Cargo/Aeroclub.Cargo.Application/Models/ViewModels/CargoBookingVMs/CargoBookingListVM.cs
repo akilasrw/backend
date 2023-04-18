@@ -18,4 +18,10 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
         public double TotalRecVolume { get; set; }
 
     }
+
+    public class CargoBookingStandByCargoVM : CargoBookingListVM 
+    {
+        public string Origin { get; set; }
+        public string Destination { get; set; }
+    }
 }

@@ -57,6 +57,19 @@ namespace Aeroclub.Cargo.Application.Services
             return mappedEntity;
 
         }
+        
+        public async Task<CargoBookingDetailVM> GetDetailAsync(CargoBookingQM query)
+        {
+            var spec = new CargoBookingSpecification(query);
+
+            var entity = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
+            var mappedEntity = _mapper.Map<CargoBookingDetailVM>(entity);
+
+            mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
+
+            return mappedEntity;
+
+        }
 
         public async Task<Pagination<CargoBookingVM>> GetFilteredListAsync(CargoBookingFilteredListQM query)
         {
@@ -85,44 +98,81 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
                 var booking = sectorBooking.CargoBooking;
-                if (booking.StandByStatus != null || booking.BookingStatus == BookingStatus.Cancelled)
-                    continue;
-
-                var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
-                CargoBookingListVM vm = new CargoBookingListVM();
-                vm.Id = booking.Id;
-                vm.BookingNumber = booking.BookingNumber;
-                vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
-                vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
-                vm.BookingDate = booking.BookingDate;
-                vm.BookingStatus = booking.BookingStatus;
-                vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
-                vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-                vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
-                (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-                 _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                 _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
-                ));
-
-                if (booking.PackageItems != null)
-                {
-                    var recBookings = booking.PackageItems.Where(c => c.PackageItemStatus == PackageItemStatus.Accepted);
-
-                    vm.NumberOfRecBoxes = recBookings == null ? 0 : recBookings.Count();
-                    vm.TotalRecWeight = recBookings == null ? 0 : recBookings.Sum(x => x.Weight);
-                    vm.TotalRecVolume = recBookings == null ? 0 : recBookings.Sum(x =>
-                    (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                     _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
-                    ));
-                }
+                StandByStatus standByStatus = booking.StandByStatus == null ? StandByStatus.None : (StandByStatus)booking.StandByStatus;
+                if (standByStatus != StandByStatus.None || 
+                    booking.BookingStatus == BookingStatus.Cancelled) // ignore when status is cancel or null or not none
+                    continue;                
                 
-
-                list.Add(vm);
+                list.Add(await MappedListAsync(booking));
             }
             list = list.DistinctBy(x => x.Id).ToList();
             
             return list;
+        }
+
+        public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query)
+        {
+            var spec = new CargoBookingFlightScheduleSectorSpecification(query);
+            var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
+
+            List<CargoBookingStandByCargoVM> list = new List<CargoBookingStandByCargoVM>();
+
+            foreach (var sectorBooking in bookingFlightScheduleSectorList)
+            {
+                var booking = sectorBooking.CargoBooking;
+                StandByStatus standByStatus = booking.StandByStatus == null ? StandByStatus.None : (StandByStatus)booking.StandByStatus;
+                if (booking.StandByStatus == query.StandByStatus)
+                {
+                    var mappedBooking = await MappedListAsync(booking);
+                    if (mappedBooking != null)
+                    {
+                        var standByCargo = _mapper.Map<CargoBookingStandByCargoVM>(mappedBooking);
+                        standByCargo.Origin = sectorBooking.FlightScheduleSector.OriginAirportCode;
+                        standByCargo.Destination = sectorBooking.FlightScheduleSector.DestinationAirportCode;
+
+                        list.Add(standByCargo);
+                    }                      
+                }
+                    
+            }
+            list = list.DistinctBy(x => x.Id).ToList();
+
+            return list;
+        }
+
+
+
+        async Task<CargoBookingListVM> MappedListAsync(CargoBooking booking)
+        {
+            var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+            CargoBookingListVM vm = new CargoBookingListVM();
+            vm.Id = booking.Id;
+            vm.BookingNumber = booking.BookingNumber;
+            vm.AWBNumber = booking.AWBInformation == null ? "-" : booking.AWBInformation.AwbTrackingNumber.ToString();
+            vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
+            vm.BookingDate = booking.BookingDate;
+            vm.BookingStatus = booking.BookingStatus;
+            vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
+            vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
+            vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
+            (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+             _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+             _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+            ));
+
+            if (booking.PackageItems != null)
+            {
+                var recBookings = booking.PackageItems.Where(c => c.PackageItemStatus == PackageItemStatus.Accepted);
+
+                vm.NumberOfRecBoxes = recBookings == null ? 0 : recBookings.Count();
+                vm.TotalRecWeight = recBookings == null ? 0 : recBookings.Sum(x => x.Weight);
+                vm.TotalRecVolume = recBookings == null ? 0 : recBookings.Sum(x =>
+                (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
+                 _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
+                 _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                ));
+            }
+            return vm;
         }
 
         public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)

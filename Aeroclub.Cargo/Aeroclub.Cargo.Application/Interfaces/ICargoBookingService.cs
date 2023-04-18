@@ -11,6 +11,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<Pagination<CargoBookingVM>> GetFilteredListAsync(CargoBookingFilteredListQM query);
         Task<CargoBookingDetailVM> GetAsync(CargoBookingDetailQM query);
+        Task<CargoBookingDetailVM> GetDetailAsync(CargoBookingQM query);
         Task<ServiceResponseCreateStatus> CreateAsync(CargoBookingRM dto);
         Task<ServiceResponseStatus> UpdateAWBStatus(Guid bookingId);
         Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM rm);
@@ -18,6 +19,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query);
         Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list);
         Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm);
+        Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query);
 
     }
 }

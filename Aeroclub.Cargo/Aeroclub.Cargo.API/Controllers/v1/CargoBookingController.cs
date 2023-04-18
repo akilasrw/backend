@@ -33,6 +33,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _bookingManagerService.GetBookingListAsync(query));
         }
+
+        [HttpGet("GetStandByCargoList")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetStandByCargoListAsync([FromQuery] FlightScheduleSectorBookingListQM query)
+        {
+            return Ok(await _bookingManagerService.GetStandByCargoListAsync(query));
+        }
         
         [HttpGet("GetFreighterBookingList")]
         public async Task<ActionResult<Pagination<CargoBookingVM>>> GetFreighterBookingListAsync([FromQuery] FlightScheduleSectorBookingListQM query)
@@ -47,6 +53,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             if (query.Id == Guid.Empty) return BadRequest();
               
             var result = await _bookingManagerService.GetBookingAsync(query);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        
+        [HttpGet("GetDetail")]
+        public async Task<ActionResult<CargoBookingDetailVM>> GetDetailAsync([FromQuery] CargoBookingQM query)
+        {
+            if (query.Id == Guid.Empty) return BadRequest();
+              
+            var result = await _bookingManagerService.GetDetailAsync(query);
 
             if (result == null)
                 return NotFound();
