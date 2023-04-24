@@ -28,6 +28,17 @@ namespace Aeroclub.Cargo.Application.Specifications
                     AddInclude(x => x.Include(y => y.AircraftSubType));
             }
 
+        } 
+        
+        public FlightScheduleSpecification(FlightScheduleStandbyQM query)
+        : base(x=> 
+            (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date) &&
+            (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber))
+        )
+        {
+                if (query.IncludeFlightScheduleSectors)
+                    AddInclude(x => x.Include(y => y.FlightScheduleSectors));           
+
         }
 
         public FlightScheduleSpecification(FlightScheduleQM query)

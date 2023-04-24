@@ -19,4 +19,11 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs
         public StandByStatus? StandByStatus { get; set; }
         public IEnumerable<CargoBookingStatusUpdateRM> CargoBookingStatusUpdateList { get; set; }
     }
+
+    public class CargoBookingStandbyUpdateRM
+    {
+        public DateTime FlightDate { get; set; }
+        public string FlightNumber { get; set; }
+        public Guid BookingId { get; set; }
+    }
 }

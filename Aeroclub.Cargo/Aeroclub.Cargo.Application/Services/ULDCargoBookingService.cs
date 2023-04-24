@@ -58,7 +58,7 @@ namespace Aeroclub.Cargo.Application.Services
             return mappedEntity;
         }
 
-        public async Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM rm)
+        public async Task<ServiceResponseCreateStatus> UpdateStatusAsync(CargoBookingUpdateRM rm)
         {
             var res = new ServiceResponseCreateStatus();
 

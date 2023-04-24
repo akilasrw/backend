@@ -50,11 +50,23 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] CargoBookingUpdateRM rm)
+        public async Task<IActionResult> UpdateStatusAsync([FromBody] CargoBookingUpdateRM rm)
         {
-            var res = await _uldCargoBookingManagerService.UpdateAsync(rm);
+            var res = await _uldCargoBookingManagerService.UpdateStatusAsync(rm);
 
             if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
+            if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+        
+        [HttpPut("StandByUpdate")]
+        public async Task<IActionResult> StandByUpdateAsync([FromBody] CargoBookingStandbyUpdateRM rm)
+        {
+            var res = await _uldCargoBookingManagerService.StandByUpdateAsync(rm);
+
+            if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
+            if (res == Application.Enums.BookingServiceResponseStatus.ValidationError) return BadRequest("No flight schedule for this.");
             if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
 
             return NoContent();
