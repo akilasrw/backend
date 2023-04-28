@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
@@ -188,6 +189,25 @@ namespace Aeroclub.Cargo.Application.Services
                 valid = true;
 
             return valid;
+        }
+
+        public async Task<bool> IsBookingsVerifiedAsync(ScheduleAircraftRM rm)
+        {
+            var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { IsIncludeFlightScheduleSectors = true, Id = rm.FlightScheduleId });
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+
+            foreach (var flightScheduleSectors in flightSchedule.FlightScheduleSectors)
+            {
+                foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
+                {
+                    if (booking.CargoBooking.VerifyStatus !=  VerifyStatus.ActualLoad && booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad)
+                    {
+                        return false;
+                    }
+                        
+                }
+            }
+            return true; 
         }
     }
 }

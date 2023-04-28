@@ -12,6 +12,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs
     public class CargoBookingStatusUpdateRM: BaseRM 
     {
         public StandByStatus? StandByStatus { get; set; }
+        public VerifyStatus? VerifyStatus { get; set; }
     }
 
     public class CargoBookingStatusUpdateListRM

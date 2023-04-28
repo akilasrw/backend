@@ -93,12 +93,12 @@ namespace Aeroclub.Cargo.Application.Services
 
             var dtoList = _mapper.Map<IReadOnlyList<CargoBookingSummaryVM>>(flightScheduleList);
 
-            //foreach (var d in dtoList)
-            //{
-            //    var sum = await GetAsync(new CargoBookingSummaryDetailQM() { Id = d.Id, IsIncludeFlightScheduleSectors = true});
-            //    d.TotalBookedVolume = sum.CargoPositionSummary.TotalBookedVolume;
-            //    d.TotalBookedWeight = sum.CargoPositionSummary.TotalBookedWeight;
-            //}          
+            foreach (var d in dtoList)
+            {
+                var sum = await GetAsync(new CargoBookingSummaryDetailQM() { Id = d.Id, IsIncludeFlightScheduleSectors = true });
+                d.TotalBookedVolume = sum.BookingSummaryDetailFigures.TotalBookedVolume;
+                d.TotalBookedWeight = sum.BookingSummaryDetailFigures.TotalBookedWeight;
+            }
 
             return new Pagination<CargoBookingSummaryVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }

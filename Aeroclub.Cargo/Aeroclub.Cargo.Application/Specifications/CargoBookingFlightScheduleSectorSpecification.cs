@@ -28,5 +28,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.AWBInformation));
         }
 
+        public CargoBookingFlightScheduleSectorSpecification(FlightScheduleSectorVerifyBookingListQM query)
+            : base(x => query.FlightScheduleId == Guid.Empty || (x.FlightScheduleSector != null && x.FlightScheduleSector.FlightScheduleId == query.FlightScheduleId))
+        {
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.PackageItems).ThenInclude(a => a.PackageULDContainers).ThenInclude(b => b.ULDContainer).ThenInclude(c => c.ULDContainerCargoPositions));
+            AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(x=>x.FlightSchedule));
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.AWBInformation));
+        }
+
     }
 }

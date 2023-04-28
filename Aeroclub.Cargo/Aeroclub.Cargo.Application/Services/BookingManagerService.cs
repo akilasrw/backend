@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
@@ -455,5 +456,11 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _cargoBookingService.GetStandByCargoListAsync(query);
         }
+        
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetVerifyBookingListAsync(FlightScheduleSectorVerifyBookingListQM query)
+        {
+            return await _cargoBookingService.GetVerifyBookingListAsync(query);
+        }
+
     }
 }

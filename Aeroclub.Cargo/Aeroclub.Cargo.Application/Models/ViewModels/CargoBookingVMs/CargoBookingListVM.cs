@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
         public string BookingAgent { get; set; }
         public DateTime BookingDate { get; set; }
         public BookingStatus BookingStatus { get; set; }
+        public VerifyStatus? VerifyStatus { get; set; }
         public int NumberOfBoxes { get; set; }
         public double TotalWeight { get; set; }
         public double TotalVolume { get; set; }

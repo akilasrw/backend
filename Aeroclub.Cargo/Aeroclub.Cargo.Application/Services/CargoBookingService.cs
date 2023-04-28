@@ -2,9 +2,11 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -136,11 +138,26 @@ namespace Aeroclub.Cargo.Application.Services
                     
             }
             list = list.DistinctBy(x => x.Id).ToList();
-
             return list;
         }
 
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetVerifyBookingListAsync(FlightScheduleSectorVerifyBookingListQM query)
+        {
+            var spec = new CargoBookingFlightScheduleSectorSpecification(query);
+            var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
 
+            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
+
+            foreach (var sectorBooking in bookingFlightScheduleSectorList)
+            {
+                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Accepted)
+                    list.Add(await MappedListAsync(sectorBooking.CargoBooking));
+            }
+                
+            
+            list = list.DistinctBy(x => x.Id).ToList();
+            return list;
+        }
 
         async Task<CargoBookingListVM> MappedListAsync(CargoBooking booking)
         {
@@ -152,6 +169,7 @@ namespace Aeroclub.Cargo.Application.Services
             vm.BookingAgent = agent != null ? agent.AgentName : string.Empty;
             vm.BookingDate = booking.BookingDate;
             vm.BookingStatus = booking.BookingStatus;
+            vm.VerifyStatus = booking.VerifyStatus;
             vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
             vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
             vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
@@ -275,7 +293,15 @@ namespace Aeroclub.Cargo.Application.Services
                 var booking = await _unitOfWork.Repository<CargoBooking>().GetByIdAsync(cargo.Id);
                 if (booking != null)
                 {
-                    booking.StandByStatus = rm.StandByStatus;
+                    if (rm.StandByStatus != null)
+                        booking.StandByStatus = rm.StandByStatus;
+
+                    if(cargo.VerifyStatus!= null && cargo.VerifyStatus != VerifyStatus.None)
+                    {
+                        booking.VerifyStatus = cargo.VerifyStatus;
+                        if (cargo.VerifyStatus == VerifyStatus.OffLoad)
+                            booking.StandByStatus = StandByStatus.OffLoad;
+                    }                        
                     _unitOfWork.Repository<CargoBooking>().Update(booking);
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<CargoBooking>().Detach(booking);

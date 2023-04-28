@@ -35,7 +35,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return BadRequest(new { message = "Aircraft is not available. Please select another one." });
            
             return Ok(res);
-        } 
+        }
+
+        [HttpPost("IsVerifiedBooking")]
+        public async Task<IActionResult> IsVerifiedBookingAsync([FromBody] ScheduleAircraftRM rm)
+        {
+            return Ok(await _linkAircraftToScheduleService.IsBookingsVerifiedAsync(rm));
+        }
         
         [HttpPost("Upload"), DisableRequestSizeLimit]
         public async Task<IActionResult> UploadLIRFileRMAsync()
