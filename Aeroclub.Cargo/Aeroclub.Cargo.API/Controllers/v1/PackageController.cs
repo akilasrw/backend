@@ -51,8 +51,14 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("UpdateStatus")]
+        public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm) // update Status
+        {
+            var res = await _packageItemService.UpdateStatusAsync(rm);
 
+            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
 
-
+            return NoContent();
+        }
     }
 }

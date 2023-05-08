@@ -68,6 +68,17 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM rm)
         {
+            var package = _mapper.Map<PackageItemUpdateRM, PackageItem>(rm);
+            _unitOfWork.Repository<PackageItem>().Update(package);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<PackageItem>().Detach(package);
+
+            return ServiceResponseStatus.Success;
+
+        }
+        
+        public async Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm)
+        {
             var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
             if (package != null)
             {
@@ -123,7 +134,8 @@ namespace Aeroclub.Cargo.Application.Services
 
         async Task UpdateBookingStatusAsync(Guid BookingId)
         {
-            var bookings = await _cargoBookingService.GetDetailAsync(new Models.Queries.CargoBookingQMs.CargoBookingQM { Id = BookingId, IsIncludePackageDetail = true });
+            var spec = new CargoBookingSpecification(new Models.Queries.CargoBookingQMs.CargoBookingQM { Id = BookingId, IsIncludePackageDetail = true });
+            var bookings = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
             var acceptedCount = bookings.PackageItems.Count(x => x.PackageItemStatus == PackageItemStatus.Accepted);
             if (acceptedCount > 0 && acceptedCount == bookings.PackageItems.Count)
             {

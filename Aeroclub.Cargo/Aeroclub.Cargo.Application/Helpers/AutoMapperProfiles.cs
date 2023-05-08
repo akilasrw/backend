@@ -300,6 +300,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap <LIRFileUploadDto, LIRFileUpload>().ReverseMap();
 
             CreateMap <CargoBookingListVM, CargoBookingStandByCargoVM>();
+            CreateMap <CargoBookingListVM, CargoBookingMobileVM>();
 
         }
     }

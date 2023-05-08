@@ -191,7 +191,7 @@ namespace Aeroclub.Cargo.Application.Services
             return valid;
         }
 
-        public async Task<bool> IsBookingsVerifiedAsync(ScheduleAircraftRM rm)
+        public async Task<bool> IsBookingsVerifiedAsync(VerifyScheduleAicraftRM rm)
         {
             var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { IsIncludeFlightScheduleSectors = true, Id = rm.FlightScheduleId });
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
@@ -200,7 +200,8 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
                 {
-                    if (booking.CargoBooking.VerifyStatus !=  VerifyStatus.ActualLoad && booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad)
+                    if (booking.CargoBooking.BookingStatus == BookingStatus.Accepted && 
+                        (booking.CargoBooking.VerifyStatus !=  VerifyStatus.ActualLoad && booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad))
                     {
                         return false;
                     }

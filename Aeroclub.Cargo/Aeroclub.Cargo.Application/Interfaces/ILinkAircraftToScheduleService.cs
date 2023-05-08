@@ -17,7 +17,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Pagination<FlightScheduleLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query);
 
         Task<bool> UploadLIRAsync(UploadLIRFileRM query);
-        Task<bool> IsBookingsVerifiedAsync(ScheduleAircraftRM rm);
+        Task<bool> IsBookingsVerifiedAsync(VerifyScheduleAicraftRM rm);
 
     }
 }

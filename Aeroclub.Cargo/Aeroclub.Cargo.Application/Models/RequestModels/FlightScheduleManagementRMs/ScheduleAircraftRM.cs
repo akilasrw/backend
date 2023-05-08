@@ -20,4 +20,10 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
         public byte? StepCount { get; set; }
         public bool? IsDispatched { get; set; }
     }
+
+    public class VerifyScheduleAicraftRM
+    {
+        public Guid FlightScheduleId { get; set; }
+    }
+
 }

@@ -462,5 +462,9 @@ namespace Aeroclub.Cargo.Application.Services
             return await _cargoBookingService.GetVerifyBookingListAsync(query);
         }
 
+        public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)
+        {
+            return await _cargoBookingService.GetMobileBookingAsync(query);
+        }
     }
 }

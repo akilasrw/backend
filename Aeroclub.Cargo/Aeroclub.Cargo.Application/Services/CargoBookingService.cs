@@ -8,6 +8,7 @@ using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
@@ -112,6 +113,25 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
+        public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)
+        {
+            var spec = new CargoBookingFlightScheduleSectorSpecification(query);
+            var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
+
+            List<CargoBookingMobileVM> list = new List<CargoBookingMobileVM>();
+
+            foreach (var sectorBooking in bookingFlightScheduleSectorList)
+            {
+                var booking = sectorBooking.CargoBooking;
+                var mappedBooking = await MappedListAsync(booking);
+                var mobBooking = _mapper.Map<CargoBookingMobileVM>(mappedBooking);
+                mobBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageItemVM>>(booking.PackageItems); 
+                list.Add(mobBooking);
+            }
+            list = list.DistinctBy(x => x.Id).ToList();
+            return list.FirstOrDefault();
+        }
+
         public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query)
         {
             var spec = new CargoBookingFlightScheduleSectorSpecification(query);
@@ -131,8 +151,14 @@ namespace Aeroclub.Cargo.Application.Services
                         var standByCargo = _mapper.Map<CargoBookingStandByCargoVM>(mappedBooking);
                         standByCargo.Origin = sectorBooking.FlightScheduleSector.OriginAirportCode;
                         standByCargo.Destination = sectorBooking.FlightScheduleSector.DestinationAirportCode;
-
-                        list.Add(standByCargo);
+                        if (query.AgentId == null)
+                            list.Add(standByCargo);
+                        else
+                        {
+                            var agent = await _cargoAgentService.GetAsync(new Models.Queries.CargoAgentQMs.CargoAgentQM() { AppUserId = booking.CreatedBy });
+                            if(agent.Id == query.AgentId) 
+                                list.Add(standByCargo);
+                        }
                     }                      
                 }
                     
@@ -150,7 +176,9 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
-                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Accepted)
+                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Accepted 
+                    // && sectorBooking.CargoBooking.StandByStatus != StandByStatus.OffLoad
+                    )
                     list.Add(await MappedListAsync(sectorBooking.CargoBooking));
             }
                 
@@ -299,8 +327,8 @@ namespace Aeroclub.Cargo.Application.Services
                     if(cargo.VerifyStatus!= null && cargo.VerifyStatus != VerifyStatus.None)
                     {
                         booking.VerifyStatus = cargo.VerifyStatus;
-                        if (cargo.VerifyStatus == VerifyStatus.OffLoad)
-                            booking.StandByStatus = StandByStatus.OffLoad;
+                        if (cargo.StandByStatus == StandByStatus.OffLoad)
+                            booking.VerifyStatus = VerifyStatus.OffLoad;
                     }                        
                     _unitOfWork.Repository<CargoBooking>().Update(booking);
                     await _unitOfWork.SaveChangesAsync();

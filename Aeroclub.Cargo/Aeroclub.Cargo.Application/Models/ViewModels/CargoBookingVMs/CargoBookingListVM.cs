@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
@@ -24,5 +25,10 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
     {
         public string Origin { get; set; }
         public string Destination { get; set; }
+    }
+    
+    public class CargoBookingMobileVM : CargoBookingListVM 
+    {
+        public IReadOnlyList<PackageItemVM> PackageItems { get; set; }
     }
 }

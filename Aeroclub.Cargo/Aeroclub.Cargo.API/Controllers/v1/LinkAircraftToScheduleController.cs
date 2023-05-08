@@ -38,7 +38,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost("IsVerifiedBooking")]
-        public async Task<IActionResult> IsVerifiedBookingAsync([FromBody] ScheduleAircraftRM rm)
+        public async Task<IActionResult> IsVerifiedBookingAsync([FromBody] VerifyScheduleAicraftRM rm)
         {
             return Ok(await _linkAircraftToScheduleService.IsBookingsVerifiedAsync(rm));
         }

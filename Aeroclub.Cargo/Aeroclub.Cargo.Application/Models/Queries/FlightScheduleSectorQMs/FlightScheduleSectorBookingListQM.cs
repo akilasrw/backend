@@ -11,6 +11,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
     public class FlightScheduleSectorBookingListQM
     {
         public string? FlightNumber { get; set; } = null;
+        public string? BookingNumber { get; set; } = null;
+        public Guid? AgentId { get; set; } = null;
         public DateTime FlightDate { get; set; } = DateTime.MinValue;
         public StandByStatus StandByStatus { get; set; } = StandByStatus.None;
     }
@@ -19,4 +21,9 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
     {
         public Guid FlightScheduleId { get; set; }
     }
+    public class FlightScheduleSectorMobileQM
+    {
+        public long? AWBTrackingNumber { get; set; }
+    }
+
 }
