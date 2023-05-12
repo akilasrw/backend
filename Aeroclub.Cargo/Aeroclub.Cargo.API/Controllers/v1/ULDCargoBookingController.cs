@@ -1,8 +1,11 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
@@ -76,6 +79,18 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<IActionResult> AssignCargoToULDAsync(ULDContainerCargoPositionRM UldContainerCargoPosition)
         {
             return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPosition));
+        }
+        
+        [HttpPost("AddPalleteToFlight")]
+        public async Task<IActionResult> AddPalleteToFlightAsync(FlightScheduleSectorPalletCreateRM flightScheduleSectorPallet)
+        {
+            return Ok(await _uldCargoBookingManagerService.AddPalleteToFlightAsync(flightScheduleSectorPallet));
+        } 
+        
+        [HttpPost("SaveBookingAssigment")]
+        public async Task<IActionResult> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment)
+        {
+            return Ok(await _uldCargoBookingManagerService.SaveBookingAssigmentAsync(bookingAssignment));
         }
 
         [HttpGet("GetULDBookingList")]

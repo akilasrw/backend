@@ -78,9 +78,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
             return res;
         }
-
-      
-
+              
         private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)
         {
             var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();

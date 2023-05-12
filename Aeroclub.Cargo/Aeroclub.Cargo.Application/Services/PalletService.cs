@@ -63,60 +63,61 @@ namespace Aeroclub.Cargo.Application.Services
                 try
                 {
                     //Pallet volume conversion
-                    dto.Length =await _baseUnitConverter.VolumeCalculatorAsync(dto.Length, dto.VolumeUnitId);
-                    dto.Height =await _baseUnitConverter.VolumeCalculatorAsync(dto.Height, dto.VolumeUnitId);
-                    dto.Width =await _baseUnitConverter.VolumeCalculatorAsync(dto.Width, dto.VolumeUnitId);
+                    //dto.Length =await _baseUnitConverter.VolumeCalculatorAsync(dto.Length, dto.VolumeUnitId);
+                    //dto.Height =await _baseUnitConverter.VolumeCalculatorAsync(dto.Height, dto.VolumeUnitId);
+                    //dto.Width =await _baseUnitConverter.VolumeCalculatorAsync(dto.Width, dto.VolumeUnitId);
 
-                    //Pallet weight conversion
-                    var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
-                    if (dto.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != dto.WeightUnitId.ToString())
-                    {
-                        dto.Weight = dto.Weight.GramToKilogramConversion();
-                    }
+                    ////Pallet weight conversion
+                    //var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
+                    //if (dto.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != dto.WeightUnitId.ToString())
+                    //{
+                    //    dto.Weight = dto.Weight.GramToKilogramConversion();
+                    //}
 
-                    // Save ULD meta data
-                    var uldMetaDeta = await _uLDMetaDataService.CreateAsync(new ULDMetaDataDto()
-                    {
-                        Height = dto.Height,
-                        Length = dto.Length,
-                        Width = dto.Width,
-                        Weight = dto.Weight,
-                        Sequence = dto.Sequence
-                    });
+                    //// Save ULD meta data
+                    //var uldMetaDeta = await _uLDMetaDataService.CreateAsync(new ULDMetaDataDto()
+                    //{
+                    //    Height = dto.Height,
+                    //    Length = dto.Length,
+                    //    Width = dto.Width,
+                    //    Weight = dto.Weight,
+                    //    Sequence = dto.Sequence
+                    //});
 
-                    if (uldMetaDeta == null)
+                    //if (uldMetaDeta == null)
+                    //{
+                    //    transaction.Rollback();
+                    //    response.StatusCode = ServiceResponseStatus.Failed;
+                    //    return response;
+                    //}
+
+                    //// Save ULD
+                    //var uld = await _uLDService.CreateULDAsync(new ULDDto()
+                    //{
+                    //    ULDType = ULDType.None,
+                    //    SerialNumber = dto.SerialNumber,
+                    //    ULDMetaDataId = uldMetaDeta.Id,
+                    //});
+
+
+                    //if (uld == null)
+                    //{
+                    //    transaction.Rollback();
+                    //    response.StatusCode = ServiceResponseStatus.Failed;
+                    //    return response;
+                    //}
+                    //else
+                    //{
+                    var position = await _uLDCargoPositionService.CreateAsync(
+                        new ULDCargoPositionDto() { CargoPositionId = dto.PositionId, ULDId = dto.UldId });
+
+                    if (position == null)
                     {
                         transaction.Rollback();
                         response.StatusCode = ServiceResponseStatus.Failed;
                         return response;
                     }
-
-                    // Save ULD
-                    var uld = await _uLDService.CreateULDAsync(new ULDDto()
-                    {
-                        ULDType = ULDType.None,
-                        SerialNumber = dto.SerialNumber,
-                        ULDMetaDataId = uldMetaDeta.Id,
-                    });
-
-
-                    if (uld == null)
-                    {
-                        transaction.Rollback();
-                        response.StatusCode = ServiceResponseStatus.Failed;
-                        return response;
-                    }
-                    else
-                    {
-                        var position = await _uLDCargoPositionService.CreateAsync(new ULDCargoPositionDto() { CargoPositionId = dto.PositionId, ULDId = uld.Id });
-
-                        if (position == null)
-                        {
-                            transaction.Rollback();
-                            response.StatusCode = ServiceResponseStatus.Failed;
-                            return response;
-                        }
-                    }                    
+                    // }                    
 
                     //var positionContainers = await _ULDContainerCargoPositionService.GetListAsync(new ULDCOntainerCargoPositionQM()
                     //{

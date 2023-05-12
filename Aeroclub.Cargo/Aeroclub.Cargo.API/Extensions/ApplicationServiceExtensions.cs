@@ -74,6 +74,7 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<ICargoBookingFlightScheduleSectorService, CargoBookingFlightScheduleSectorService>();
             services.AddScoped<IUploadFactory, UploadFactoryService>();
             services.AddScoped<ILIRFileUploadService, LIRFileUploadService>();
+            services.AddScoped<IFlightScheduleSectorPalletService, FlightScheduleSectorPalletService>();
 
             return services;
         }

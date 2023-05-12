@@ -123,6 +123,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<PackageULDContainer> PackageULDContainers { get; set; } = null!;
         public DbSet<LIRFileUpload> LIRFileUploads { get; set; } = null!;
         public DbSet<ULDTracking> ULDTrackings { get; set; } = null!;
+        public DbSet<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; } = null!;
 
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
      

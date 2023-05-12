@@ -75,7 +75,7 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
+        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm) // for P2C - passanger
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {

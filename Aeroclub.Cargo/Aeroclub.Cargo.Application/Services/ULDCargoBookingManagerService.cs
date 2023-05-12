@@ -6,13 +6,16 @@ using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
@@ -36,6 +39,7 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IULDCargoBookingService _uldCargoBookingService;
         private readonly ICargoBookingFlightScheduleSectorService _cargoBookingFlightScheduleSectorService;
+        private readonly IFlightScheduleSectorPalletService _flightScheduleSectorPalletService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
         private readonly IConfiguration _configuration;
@@ -58,10 +62,12 @@ namespace Aeroclub.Cargo.Application.Services
             IConfiguration configuration,
             ICargoAgentService cargoAgentService,
             ICargoBookingFlightScheduleSectorService cargoBookingFlightScheduleSectorService,
+            IFlightScheduleSectorPalletService flightScheduleSectorPalletService,
         IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
             _cargoBookingFlightScheduleSectorService = cargoBookingFlightScheduleSectorService;
+            _flightScheduleSectorPalletService = flightScheduleSectorPalletService;
             _uldCargoBookingService = uldCargoBookingService;
             _flightScheduleSectorService = flightScheduleSectorService;
             _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
@@ -73,7 +79,7 @@ namespace Aeroclub.Cargo.Application.Services
             _cargoAgentService = cargoAgentService;
         }
 
-        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
+        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm) // for onFloor 
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
@@ -487,5 +493,26 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
+        public async Task<ServiceResponseCreateStatus> AddPalleteToFlightAsync(FlightScheduleSectorPalletCreateRM rm)
+        {
+            return await _flightScheduleSectorPalletService.CreateAsync(rm);
+        }
+
+        public async Task<ServiceResponseStatus> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment)
+        {
+            var spec = new PackageULDContainerSpecification(
+                new PackageULDContainerListQM() 
+                { 
+                    PackageItemId = bookingAssignment.PackageId 
+                });
+            var packageULDContainers = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(spec);
+
+            return await _uldContainerService.UpdateULDIdAsync(
+                new ULDContainerUpdateRM() 
+                { 
+                    ULDId = bookingAssignment.uldId, 
+                    Id = packageULDContainers.FirstOrDefault().ULDContainerId 
+                });
+        }
     }
 }
