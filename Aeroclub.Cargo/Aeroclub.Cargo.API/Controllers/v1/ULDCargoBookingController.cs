@@ -82,7 +82,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
         
         [HttpPost("AddPalleteToFlight")]
-        public async Task<IActionResult> AddPalleteToFlightAsync(FlightScheduleSectorPalletCreateRM flightScheduleSectorPallet)
+        public async Task<IActionResult> AddPalleteToFlightAsync([FromBody]FlightScheduleSectorPalletCreateRM flightScheduleSectorPallet)
         {
             return Ok(await _uldCargoBookingManagerService.AddPalleteToFlightAsync(flightScheduleSectorPallet));
         } 

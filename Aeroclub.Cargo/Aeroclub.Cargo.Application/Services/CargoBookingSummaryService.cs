@@ -161,7 +161,7 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
 
-        private async Task<List<CargoPositionDetailVM>> GetAircraftPositionList(Guid flightScheduleSectorId)
+        public async Task<List<CargoPositionDetailVM>> GetAircraftPositionList(Guid flightScheduleSectorId)
         {
             List<CargoPositionDetailVM> list = new List<CargoPositionDetailVM>();
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM

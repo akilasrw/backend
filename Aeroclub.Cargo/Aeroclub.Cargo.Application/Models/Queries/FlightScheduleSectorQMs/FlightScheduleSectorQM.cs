@@ -7,5 +7,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
         public bool IncludeULDContaines { get; set; }
         public bool IncludeAircraftSubType { get; set; }
         public bool IncludeLoadPlan { get; set; }
+        public bool IncludeFlightScheduleSectorPallets { get; set; } = false;
     }
 }

@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
@@ -31,8 +32,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             if(query.IncludeAircraftSubType)
                 AddInclude(y=> y.Include(x=> x.AircraftSubType));
 
+            if (query.IncludeFlightScheduleSectorPallets)
+                AddInclude(y => y.Include(c => c.FlightScheduleSectorPallets));
+
             if(query.IncludeLoadPlan)
-                AddInclude(y=> y.Include(x=> x.LoadPlan));
+                AddInclude(y=> y.Include(x=> x.LoadPlan).ThenInclude(t=>t.AircraftLayout.AircraftDecks).ThenInclude(z=>z.AircraftCabins).ThenInclude(c=>c.ZoneAreas).ThenInclude(p=>p.CargoPositions));
         }
 
         public FlightScheduleSectorSpecification(FlightScheduleSectorSearchQuery query)

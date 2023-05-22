@@ -34,6 +34,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public virtual Aircraft Aircraft { get; set; }
         public virtual AircraftSubType AircraftSubType { get; set; }
         public virtual ICollection<CargoBookingFlightScheduleSector> CargoBookingFlightScheduleSectors { get; set; }
+        public virtual ICollection<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; }
 
     }
 }

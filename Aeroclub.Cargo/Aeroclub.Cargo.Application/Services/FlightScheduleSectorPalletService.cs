@@ -2,7 +2,9 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
+using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -17,11 +19,12 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class FlightScheduleSectorPalletService : BaseService, IFlightScheduleSectorPalletService
     {
+        private readonly ICargoBookingSummaryService _cargoBookingSummaryService;
 
-        public FlightScheduleSectorPalletService(IMapper mapper, IUnitOfWork unitOfWork) :
+        public FlightScheduleSectorPalletService(ICargoBookingSummaryService cargoBookingSummaryService, IMapper mapper, IUnitOfWork unitOfWork) :
             base(unitOfWork, mapper)
         {
-           
+            _cargoBookingSummaryService = cargoBookingSummaryService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleSectorPalletCreateRM rm)
@@ -29,7 +32,7 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleSectorPallet = _mapper.Map<FlightScheduleSectorPallet>(rm);
 
             if (await ValidCountAsync(rm) == false) 
-                return new ServiceResponseCreateStatus() { Message = "Pallete assignment is exeeded", StatusCode = ServiceResponseStatus.ValidationError };
+                return new ServiceResponseCreateStatus() { Message = "Pallete assignment qty is exeeded", StatusCode = ServiceResponseStatus.ValidationError };
 
             var entity = await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(flightScheduleSectorPallet);
             await _unitOfWork.SaveChangesAsync();
@@ -44,6 +47,17 @@ namespace Aeroclub.Cargo.Application.Services
 
             //---- get max uld qty---
             // get zone id from loadplan id
+            var spec = new FlightScheduleSectorSpecification(
+                new FlightScheduleSectorQM() { Id = rm.FlightScheduleSectorId, IncludeLoadPlan = true, IncludeULDContaines = true, IncludeFlightScheduleSectorPallets = true });
+            var fs = await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
+            if (fs != null)
+            {
+                //int posCount = fs.LoadPlan.AircraftLayout.AircraftDecks.FirstOrDefault().AircraftCabins.FirstOrDefault().ZoneAreas.FirstOrDefault().CargoPositions.Count();
+                var list = await _cargoBookingSummaryService.GetAircraftPositionList(rm.FlightScheduleSectorId);
+                int posCount = list.Count();
+                if (fs.FlightScheduleSectorPallets.Count() >= posCount)
+                    valid = false;
+            }
             // get cargo position from CargoPositions entity => y
             // get added pallet from FlightScheduleSectorPallet => x.
 

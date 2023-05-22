@@ -73,6 +73,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                         flightSchedule.EstimatedDepartureDateTime = fs.Date.Add(TimeSpan.Parse(query.EstimatedDepartureDateTime));
                         flightSchedule.EstimatedArrivalDateTime = fs.Date.Add(TimeSpan.Parse(query.EstimatedArrivalDateTime));
+                        flightSchedule.IsHistory = flightSchedule.ActualArrivalDateTime == null ? false : true;
                         edited = true;
 
                     }
@@ -198,17 +199,21 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSectors in flightSchedule.FlightScheduleSectors)
             {
-                foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
+                if (flightScheduleSectors.CargoBookingFlightScheduleSectors == null || flightScheduleSectors.CargoBookingFlightScheduleSectors.Count() == 0)
+                    return false;
+                else
                 {
-                    if (booking.CargoBooking.BookingStatus == BookingStatus.Accepted && 
-                        (booking.CargoBooking.VerifyStatus !=  VerifyStatus.ActualLoad && booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad))
+                    foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
                     {
-                        return false;
+                        if (booking.CargoBooking.BookingStatus == BookingStatus.Accepted &&
+                            (booking.CargoBooking.VerifyStatus != VerifyStatus.ActualLoad && booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad))
+                        {
+                            return false;
+                        }
                     }
-                        
                 }
             }
-            return true; 
+            return true;
         }
     }
 }
