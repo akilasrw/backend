@@ -43,5 +43,18 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return BadRequest("ULD creation fails.");
         }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] ULDUpdateRM model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _uLDService.UpdateAsync(model);
+            if (response == ServiceResponseStatus.Failed)
+            {
+                return BadRequest("ULD update is failed.");
+            }
+            return NoContent();
+        }
     }
 }

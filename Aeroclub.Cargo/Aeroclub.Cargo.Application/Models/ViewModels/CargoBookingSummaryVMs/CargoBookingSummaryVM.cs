@@ -16,6 +16,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
         public double TotalBookedWeight { get; set; }
         public double TotalBookedVolume { get; set; }
         public AircraftConfigType AircraftConfigurationType { get; set; }
-        public string AircraftSubTypeName { get; set; }        
+        public string AircraftSubTypeName { get; set; }
+        public double? CutoffTimeMin { get; set; }
+
     }
 }

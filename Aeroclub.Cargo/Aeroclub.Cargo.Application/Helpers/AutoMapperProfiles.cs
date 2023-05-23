@@ -288,7 +288,9 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap <CargoBookingFlightScheduleSectorRM, CargoBookingFlightScheduleSector>();
             CreateMap <PackageULDContainerRM, PackageULDContainer>();
             CreateMap <ULDCreateRM, ULD>();
+            CreateMap <ULDUpdateRM, ULD>();
             CreateMap <ULDMetaDataCreateRM, ULDMetaData>();
+            CreateMap <ULDMetaDataUpdateRM, ULDMetaData>();
             CreateMap<ULD, ULDFilteredListVM>()
                 .ForMember(d => d.Weight, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Weight : 0))
                 .ForMember(d => d.MaxWeight, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.MaxWeight : 0))

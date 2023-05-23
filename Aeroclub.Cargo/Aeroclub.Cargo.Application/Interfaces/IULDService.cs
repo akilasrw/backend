@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<ServiceResponseCreateStatus> CreateULDAsync(ULDDto ULDDto);
         Task<ServiceResponseCreateStatus> CreateAsync(ULDCreateRM ULDDto);
+        Task<ServiceResponseStatus> UpdateAsync(ULDUpdateRM ULDDto);
         Task<Pagination<ULDFilteredListVM>> GetFilteredListAsync(ULDListQM query);
         Task<ULDDto> GetAsync(ULDQM query);
     }

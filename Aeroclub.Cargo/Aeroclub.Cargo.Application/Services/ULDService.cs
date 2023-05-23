@@ -108,6 +108,41 @@ namespace Aeroclub.Cargo.Application.Services
             response.StatusCode = ServiceResponseStatus.Success;
             return response;
         }
+        public async Task<ServiceResponseStatus> UpdateAsync(ULDUpdateRM ULDDto)
+        {
+
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    var uldMetadataDto = ULDDto.ULDMetaData;
+
+                    //weight conversion
+                    var kilogramWeightUnitId = _configuration["BaseUnit:BaseWeightUnitId"];
+                    if (uldMetadataDto.WeightUnitId != Guid.Empty && kilogramWeightUnitId.ToLower() != uldMetadataDto.WeightUnitId.ToString())
+                    {
+                        uldMetadataDto.Weight = uldMetadataDto.Weight.GramToKilogramConversion();
+                        uldMetadataDto.MaxWeight = uldMetadataDto.MaxWeight.GramToKilogramConversion();
+                    }
+
+                    var mapedMetaDeta = _mapper.Map<ULDMetaData>(uldMetadataDto);
+
+                    _unitOfWork.Repository<ULDMetaData>().Update(mapedMetaDeta);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var mappedULD = _mapper.Map<ULD>(ULDDto);
+                    _unitOfWork.Repository<ULD>().Update(mappedULD);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex) {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+            return ServiceResponseStatus.Success;             
+        }
 
         public async Task<ULDDto> GetAsync(ULDQM query)
         {
