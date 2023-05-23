@@ -69,7 +69,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     positionSummary.TotalBookedVolume = totalAvailableVolume;
                     positionSummary.TotalVolume = totalVolume;
-                    positionSummary.VolumePercentage = Math.Round((decimal)positionSummary.TotalBookedVolume / (decimal)positionSummary.TotalVolume, 3);
+                    positionSummary.VolumePercentage = positionSummary.TotalVolume == 0 ? 0: Math.Round((decimal)positionSummary.TotalBookedVolume / (decimal)positionSummary.TotalVolume, 3);
 
                     mappedEntity.CargoPositionSummary = positionSummary;
 
