@@ -55,6 +55,14 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var response = new ServiceResponseCreateStatus();
 
+            if (await ValidAsync(ULDDto) == false)
+            {
+                response.StatusCode = ServiceResponseStatus.ValidationError;
+                response.Message = "ULD Number already exists in the system";
+                return response;
+            }
+
+
             using (var transaction = _unitOfWork.BeginTransaction())
             {
                 try
@@ -100,7 +108,8 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                     transaction.Commit();
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     transaction.Rollback();
                     throw ex;
                 }
@@ -108,9 +117,9 @@ namespace Aeroclub.Cargo.Application.Services
             response.StatusCode = ServiceResponseStatus.Success;
             return response;
         }
+
         public async Task<ServiceResponseStatus> UpdateAsync(ULDUpdateRM ULDDto)
         {
-
             using (var transaction = _unitOfWork.BeginTransaction())
             {
                 try
@@ -163,6 +172,15 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<ULDFilteredListVM>>(uldList);
 
             return new Pagination<ULDFilteredListVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
+        }
+
+        async Task<bool> ValidAsync(ULDCreateRM ULDDto)
+        {
+            var spec = new ULDSpecification(ULDDto.SerialNumber);
+            var uld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(spec);
+            if (uld == null) return true;
+
+            return false;
         }
     }
 }

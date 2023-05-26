@@ -27,5 +27,11 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddOrderByDescending(x => x.Created);
             }
         }
+        
+        public ULDSpecification(string ULDNumber)
+            :base(x => (string.IsNullOrEmpty(ULDNumber) || x.SerialNumber.Contains(ULDNumber) ) && !x.IsDeleted)
+        {
+
+        }
     }
 }

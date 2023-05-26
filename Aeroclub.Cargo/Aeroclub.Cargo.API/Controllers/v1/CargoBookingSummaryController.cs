@@ -41,7 +41,5 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _cargoBookingSummaryService.GetFilteredListAsync(query));
         }
-
-
     }
 }
