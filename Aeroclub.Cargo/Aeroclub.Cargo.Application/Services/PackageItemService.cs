@@ -18,9 +18,12 @@ namespace Aeroclub.Cargo.Application.Services
 {
     public class PackageItemService : BaseService, IPackageItemService
     {
-        public PackageItemService(IUnitOfWork unitOfWork, IMapper mapper) 
+        private readonly ICargoBookingService _cargoBookingService;
+
+        public PackageItemService(IUnitOfWork unitOfWork, IMapper mapper, ICargoBookingService cargoBookingService) 
             : base(unitOfWork, mapper)
         {
+            _cargoBookingService = cargoBookingService;
         }
 
         public async Task<PackageItemCreateResponseM> CreateAsync(PackageItemCreateRM packageItem)
@@ -65,6 +68,17 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM rm)
         {
+            var package = _mapper.Map<PackageItemUpdateRM, PackageItem>(rm);
+            _unitOfWork.Repository<PackageItem>().Update(package);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<PackageItem>().Detach(package);
+
+            return ServiceResponseStatus.Success;
+
+        }
+        
+        public async Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm)
+        {
             var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
             if (package != null)
             {
@@ -72,6 +86,9 @@ namespace Aeroclub.Cargo.Application.Services
                 _unitOfWork.Repository<PackageItem>().Update(package);
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<PackageItem>().Detach(package);
+
+                await UpdateBookingStatusAsync(package.CargoBookingId); // update cargo booking status when all package items are received.
+
                 return ServiceResponseStatus.Success;
             }
             else
@@ -113,6 +130,22 @@ namespace Aeroclub.Cargo.Application.Services
                 res.StatusCode = ServiceResponseStatus.Failed;
             }
             return res;
+        }
+
+        async Task UpdateBookingStatusAsync(Guid BookingId)
+        {
+            var spec = new CargoBookingSpecification(new Models.Queries.CargoBookingQMs.CargoBookingQM { Id = BookingId, IsIncludePackageDetail = true });
+            var bookings = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
+            var acceptedCount = bookings.PackageItems.Count(x => x.PackageItemStatus == PackageItemStatus.Accepted);
+            if (acceptedCount > 0 && acceptedCount == bookings.PackageItems.Count)
+            {
+                await _cargoBookingService.UpdateAsync(
+                    new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM 
+                    { 
+                        Id = BookingId,
+                        BookingStatus = BookingStatus.Accepted 
+                    });
+            }
         }
 
     }

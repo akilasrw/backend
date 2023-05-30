@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,24 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(y => y.Include(z => z.ULDCargoPosition).ThenInclude(c => c.CargoPosition));
             AddInclude(y => y.Include(z => z.ULDMetaData));
+        }
+
+        public ULDSpecification(ULDListQM query, bool isCount = false)
+            :base(x => (string.IsNullOrEmpty(query.ULDNumber) || x.SerialNumber.Contains(query.ULDNumber) ) && !x.IsDeleted)
+        {
+            if (!isCount)
+            {
+                AddInclude(x => x.Include(y => y.ULDMetaData));
+                AddInclude(x => x.Include(y => y.ULDTrackings));
+                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddOrderByDescending(x => x.Created);
+            }
+        }
+        
+        public ULDSpecification(string ULDNumber)
+            :base(x => (string.IsNullOrEmpty(ULDNumber) || x.SerialNumber.Contains(ULDNumber) ) && !x.IsDeleted)
+        {
+
         }
     }
 }

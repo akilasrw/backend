@@ -58,7 +58,7 @@ namespace Aeroclub.Cargo.Application.Services
             return mappedEntity;
         }
 
-        public async Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM rm)
+        public async Task<ServiceResponseCreateStatus> UpdateStatusAsync(CargoBookingUpdateRM rm)
         {
             var res = new ServiceResponseCreateStatus();
 
@@ -78,9 +78,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
             return res;
         }
-
-      
-
+              
         private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)
         {
             var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();

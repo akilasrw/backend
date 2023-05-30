@@ -2,17 +2,14 @@
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.LoadPlanQMs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Aeroclub.Cargo.Application.Models.ViewModels.LoadPlanVMs;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface ILoadPlanService
     {
         Task<ServiceResponseCreateStatus> CreateAsync(LoadPlanDto loadPlanDto);
-        Task<LoadPlanDto> GetAsync(LoadPlanQM query);
+        Task<LoadPlanVM> GetAsync(LoadPlanQM query);
+        Task<ServiceResponseStatus> DeleteAsync(Guid Id);
     }
 }

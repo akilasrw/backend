@@ -25,4 +25,10 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
         public Guid? CargoPositionId { get; set; }
 
     }
+
+    public class PackageMobileVMs : PackageItemVM
+    {
+        public string Dimension { get; set; }
+    }
+
 }

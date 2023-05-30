@@ -45,7 +45,11 @@ namespace Aeroclub.Cargo.Application.Specifications
           : base(x => (x.Id == query.Id) && (!x.IsDeleted))
         {
             if (query.IsIncludeFlightDetail)
-                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector).ThenInclude(w => w.AircraftSubType));
+            {
+                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w => w.AircraftSubType));
+                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w => w.FlightSchedule));
+
+            }                
 
             if (query.IsIncludeAWBDetail)
                 AddInclude(x => x.Include(y => y.AWBInformation));

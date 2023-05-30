@@ -53,5 +53,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return BadRequest(response.Message == null?"Flight schedule creation fails.":response.Message);
         }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAsync([FromBody] FlightScheduleManagementUpdateRM dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var response = await _flightScheduleManagementService.UpdateAsync(dto);
+
+            if (response.StatusCode == ServiceResponseStatus.Failed || response.StatusCode == ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message == null ? "Flight schedule update fails." : response.Message);
+
+            return NoContent();
+        }
+
     }
 }

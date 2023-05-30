@@ -1,16 +1,11 @@
-﻿using Aeroclub.Cargo.Application.Models.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs
 {
-    public class FlightScheduleLinkVM: BaseVM
+    public class FlightScheduleLinkVM : FlightScheduleLinkAircraftVM
     {
-        public Guid? AircraftId { get; set; }
-        public Guid FlightScheduleManagementId { get; set; }
-        public DateTime ScheduledDepartureDateTime { get; set; }
+        public int AcutalLoadBookingCount { get; set; }
+        public int OffLoadBookingCount { get; set; }
+        public bool IsDispatched { get; set; }
     }
 }

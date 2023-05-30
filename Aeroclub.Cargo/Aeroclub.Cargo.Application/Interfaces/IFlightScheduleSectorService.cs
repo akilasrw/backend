@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Core;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
@@ -19,5 +20,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<List<FlightScheduleSectorCargoPosition>> GetFreighterAircraftAvailableSpace(Guid flightScheduleSectorId);
         Task<double> GetAircraftAvailableVolume(Guid flightScheduleSectorId);
         Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId);
+        Task<ServiceResponseStatus> DeleteAsync(Guid Id);
     }
 }

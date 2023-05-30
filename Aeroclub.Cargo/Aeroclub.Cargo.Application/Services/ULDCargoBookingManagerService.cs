@@ -4,14 +4,18 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
@@ -24,6 +28,7 @@ using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Google.Type;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -34,6 +39,7 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IULDCargoBookingService _uldCargoBookingService;
         private readonly ICargoBookingFlightScheduleSectorService _cargoBookingFlightScheduleSectorService;
+        private readonly IFlightScheduleSectorPalletService _flightScheduleSectorPalletService;
         private readonly IFlightScheduleSectorService _flightScheduleSectorService;
         private readonly IULDContainerCargoPositionService _uLDContainerCargoPositionService;
         private readonly IConfiguration _configuration;
@@ -41,7 +47,6 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IPackageItemService _packageItemService;
         private readonly IAWBService _AWBService;
         private readonly IBaseUnitConverter _baseUnitConverter;
-        private readonly IAssignCargoToULDService _assignCargoToULDService;
         private readonly ICargoAgentService _cargoAgentService;
 
         public ULDCargoBookingManagerService(IUnitOfWork unitOfWork,
@@ -57,10 +62,12 @@ namespace Aeroclub.Cargo.Application.Services
             IConfiguration configuration,
             ICargoAgentService cargoAgentService,
             ICargoBookingFlightScheduleSectorService cargoBookingFlightScheduleSectorService,
+            IFlightScheduleSectorPalletService flightScheduleSectorPalletService,
         IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
             _cargoBookingFlightScheduleSectorService = cargoBookingFlightScheduleSectorService;
+            _flightScheduleSectorPalletService = flightScheduleSectorPalletService;
             _uldCargoBookingService = uldCargoBookingService;
             _flightScheduleSectorService = flightScheduleSectorService;
             _uLDContainerCargoPositionService = uLDContainerCargoPositionService;
@@ -69,11 +76,10 @@ namespace Aeroclub.Cargo.Application.Services
             _packageItemService = packageItemService;
             _AWBService = AWBService;
             _baseUnitConverter = baseUnitConverter;
-            _assignCargoToULDService = assignCargoToULDService;
             _cargoAgentService = cargoAgentService;
         }
 
-        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
+        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm) // for onFloor 
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
@@ -189,12 +195,81 @@ namespace Aeroclub.Cargo.Application.Services
                             transaction.Rollback();
                             return BookingServiceResponseStatus.Failed;
                         }
-
                     }
 
                 }
                 transaction.Commit();
             }
+
+            return BookingServiceResponseStatus.Success;
+        }
+
+        public async Task<BookingServiceResponseStatus> StandByUpdateAsync(CargoBookingStandbyUpdateRM rm)
+        {
+            System.DateTime flightDate = rm.FlightDate;
+            string flightNumber = rm.FlightNumber;
+            Guid currentBookingId = rm.BookingId;
+
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                // TODO: check flight availabity                     
+
+                var spec = new CargoBookingFlightScheduleSectorSpecification(currentBookingId);
+                var currentCargoBookingFlightScheduleSector = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetEntityWithSpecAsync(spec);
+
+                var specFs = new FlightScheduleSpecification(
+                    new FlightScheduleStandbyQM() { FlightDate= flightDate, FlightNumber= flightNumber ,IncludeFlightScheduleSectors = true });
+                var newFS = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specFs);
+
+                if (newFS == null)
+                {
+                    return BookingServiceResponseStatus.ValidationError;
+                }
+
+                // update CargoBooking
+                var cargoBooking = currentCargoBookingFlightScheduleSector.CargoBooking;                
+                cargoBooking.BookingStatus = BookingStatus.Booked;
+                cargoBooking.StandByStatus = StandByStatus.None;
+                _unitOfWork.Repository<CargoBooking>().Update(cargoBooking);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<CargoBooking>().Detach(cargoBooking);
+
+                foreach (var newSector in newFS.FlightScheduleSectors)
+                {                
+                    // check space availabity 
+                    var availList = await _flightScheduleSectorService.GetFreighterAircraftAvailableSpace(newSector.Id);
+                    if (availList.Count == 0)
+                    {
+                        transaction.Rollback();
+                        return BookingServiceResponseStatus.NoSpace;
+                    }
+
+                    // update CargoBookingFlightScheduleSector
+                    currentCargoBookingFlightScheduleSector.FlightScheduleSectorId = newSector.Id;
+                    _unitOfWork.Repository<CargoBookingFlightScheduleSector>().Update(currentCargoBookingFlightScheduleSector);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<CargoBookingFlightScheduleSector>().Detach(currentCargoBookingFlightScheduleSector);
+                    
+                    
+                    foreach (var item in cargoBooking.PackageItems)
+                    {
+                        foreach (var cont in item.PackageULDContainers)
+                        {
+                            // update ULDContainer - LoadPlanId 
+                            var container = cont.ULDContainer;
+                            if(newSector.LoadPlanId!= null)
+                            {
+                                container.LoadPlanId = newSector.LoadPlanId.Value;
+                                _unitOfWork.Repository<ULDContainer>().Update(container);
+                                await _unitOfWork.SaveChangesAsync();
+                                _unitOfWork.Repository<ULDContainer>().Detach(container);
+                            }                            
+                        }
+                    }
+                }                            
+                transaction.Commit();
+            }
+             
 
             return BookingServiceResponseStatus.Success;
         }
@@ -295,7 +370,6 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
-
         async Task UpdateCurrentWeightAsyncs(Guid positionId, double weight)
         {
             var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(new CargoPositionSpecification(new CargoPositionQM() { Id = positionId }));
@@ -332,13 +406,13 @@ namespace Aeroclub.Cargo.Application.Services
             return await _uldCargoBookingService.GetAsync(query);
         }
 
-        public async Task<BookingServiceResponseStatus> UpdateAsync(CargoBookingUpdateRM rm)
+        public async Task<BookingServiceResponseStatus> UpdateStatusAsync(CargoBookingUpdateRM rm)
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
 
                 // Update Cargo Booking Details
-                var response = await _uldCargoBookingService.UpdateAsync(rm);
+                var response = await _uldCargoBookingService.UpdateStatusAsync(rm);
                 if (response.StatusCode == ServiceResponseStatus.Failed)
                 {
                     transaction.Rollback();
@@ -419,5 +493,26 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
+        public async Task<ServiceResponseCreateStatus> AddPalleteToFlightAsync(FlightScheduleSectorPalletCreateRM rm)
+        {
+            return await _flightScheduleSectorPalletService.CreateAsync(rm);
+        }
+
+        public async Task<ServiceResponseStatus> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment)
+        {
+            var spec = new PackageULDContainerSpecification(
+                new PackageULDContainerListQM() 
+                { 
+                    PackageItemId = bookingAssignment.PackageId 
+                });
+            var packageULDContainers = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(spec);
+
+            return await _uldContainerService.UpdateULDIdAsync(
+                new ULDContainerUpdateRM() 
+                { 
+                    ULDId = bookingAssignment.uldId, 
+                    Id = packageULDContainers.FirstOrDefault().ULDContainerId 
+                });
+        }
     }
 }

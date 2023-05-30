@@ -1,8 +1,11 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
@@ -50,11 +53,23 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] CargoBookingUpdateRM rm)
+        public async Task<IActionResult> UpdateStatusAsync([FromBody] CargoBookingUpdateRM rm)
         {
-            var res = await _uldCargoBookingManagerService.UpdateAsync(rm);
+            var res = await _uldCargoBookingManagerService.UpdateStatusAsync(rm);
 
             if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
+            if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+        
+        [HttpPut("StandByUpdate")]
+        public async Task<IActionResult> StandByUpdateAsync([FromBody] CargoBookingStandbyUpdateRM rm)
+        {
+            var res = await _uldCargoBookingManagerService.StandByUpdateAsync(rm);
+
+            if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
+            if (res == Application.Enums.BookingServiceResponseStatus.ValidationError) return BadRequest("No flight schedule for this.");
             if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
 
             return NoContent();
@@ -64,6 +79,18 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<IActionResult> AssignCargoToULDAsync(ULDContainerCargoPositionRM UldContainerCargoPosition)
         {
             return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPosition));
+        }
+        
+        [HttpPost("AddPalleteToFlight")]
+        public async Task<IActionResult> AddPalleteToFlightAsync([FromBody]FlightScheduleSectorPalletCreateRM flightScheduleSectorPallet)
+        {
+            return Ok(await _uldCargoBookingManagerService.AddPalleteToFlightAsync(flightScheduleSectorPallet));
+        } 
+        
+        [HttpPost("SaveBookingAssigment")]
+        public async Task<IActionResult> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment)
+        {
+            return Ok(await _uldCargoBookingManagerService.SaveBookingAssigmentAsync(bookingAssignment));
         }
 
         [HttpGet("GetULDBookingList")]

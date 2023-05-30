@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
@@ -9,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -19,15 +21,18 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IULDContainerCargoPositionService _ULDContainerCargoPositionService;
         private readonly IULDService _uLDService;
+        private readonly IBookingManagerService _bookingManagerService;
 
         public CargoBookingSummaryService(IUnitOfWork unitOfWork,
             IULDContainerCargoPositionService ULDContainerCargoPositionService,
             IULDService uLDService,
+            IBookingManagerService bookingManagerService,
             IMapper mapper)
             :base(unitOfWork,mapper)
         {
             _ULDContainerCargoPositionService = ULDContainerCargoPositionService;
             _uLDService = uLDService;
+            _bookingManagerService = bookingManagerService;
         }
 
         public async Task<CargoBookingSummaryDetailVM> GetAsync(CargoBookingSummaryDetailQM query)
@@ -64,14 +69,16 @@ namespace Aeroclub.Cargo.Application.Services
 
                     positionSummary.TotalBookedVolume = totalAvailableVolume;
                     positionSummary.TotalVolume = totalVolume;
-                    positionSummary.VolumePercentage = Math.Round((decimal)positionSummary.TotalBookedVolume / (decimal)positionSummary.TotalVolume, 3);
+                    positionSummary.VolumePercentage = positionSummary.TotalVolume == 0 ? 0: Math.Round((decimal)positionSummary.TotalBookedVolume / (decimal)positionSummary.TotalVolume, 3);
 
                     mappedEntity.CargoPositionSummary = positionSummary;
 
                     mappedEntity.CargoPositions = await GetAircraftPositionList(entity.FlightScheduleSectors.First().Id);
+                    
+                    mappedEntity.BookingSummaryDetailFigures = await GetBookingCountWeightAndVolume(entity);
 
                 }
-            }
+            }            
 
             return mappedEntity;
         }
@@ -85,6 +92,13 @@ namespace Aeroclub.Cargo.Application.Services
             var totalCount = await _unitOfWork.Repository<FlightSchedule>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<CargoBookingSummaryVM>>(flightScheduleList);
+
+            foreach (var d in dtoList)
+            {
+                var sum = await GetAsync(new CargoBookingSummaryDetailQM() { Id = d.Id, IsIncludeFlightScheduleSectors = true });
+                d.TotalBookedVolume = sum.BookingSummaryDetailFigures.TotalBookedVolume;
+                d.TotalBookedWeight = sum.BookingSummaryDetailFigures.TotalBookedWeight;
+            }
 
             return new Pagination<CargoBookingSummaryVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
@@ -147,7 +161,7 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
 
-        private async Task<List<CargoPositionDetailVM>> GetAircraftPositionList(Guid flightScheduleSectorId)
+        public async Task<List<CargoPositionDetailVM>> GetAircraftPositionList(Guid flightScheduleSectorId)
         {
             List<CargoPositionDetailVM> list = new List<CargoPositionDetailVM>();
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
@@ -190,5 +204,28 @@ namespace Aeroclub.Cargo.Application.Services
             return list.OrderBy(x => x.Position).ToList();
         }
 
+        private async Task<BookingSummaryDetailFiguresVM> GetBookingCountWeightAndVolume(FlightSchedule flightSchedule)
+        {
+            BookingSummaryDetailFiguresVM summaryFigures = new BookingSummaryDetailFiguresVM();            
+
+            foreach (var f in flightSchedule.FlightScheduleSectors)
+            {
+                foreach (var s in f.CargoBookingFlightScheduleSectors)
+                {
+                    summaryFigures.BookingCount++;
+                    var spec = new CargoBookingSpecification(new CargoBookingQM() { IsIncludePackageDetail = true, Id = s.CargoBookingId});
+                    var booking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
+                    summaryFigures.BookingRecievedCount += booking.BookingStatus == BookingStatus.Accepted ? 1 : 0;
+
+                    summaryFigures.TotalBookedWeight += booking.PackageItems.Sum(x => x.Weight);
+                    summaryFigures.TotalRecievedBookedWeight += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Accepted).Sum(x => x.Weight);
+
+                    summaryFigures.TotalBookedVolume += booking.PackageItems.Sum(x => (x.Width * x.Height * x.Length));
+                    summaryFigures.TotalRecievedBookedVolume += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Accepted).Sum(x => (x.Width * x.Height * x.Length));
+                }
+            }
+
+            return summaryFigures;
+        }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
+    [Authorize]  
     public class CargoBookingController : BaseApiController
     {
         private readonly IBookingManagerService _bookingManagerService;
@@ -34,6 +34,24 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _bookingManagerService.GetBookingListAsync(query));
         }
         
+        [HttpGet("GetMobileBooking")]
+        public async Task<ActionResult<CargoBookingMobileVM>> GetMobileBookingAsync([FromQuery] FlightScheduleSectorMobileQM query)
+        {
+            return Ok(await _bookingManagerService.GetMobileBookingAsync(query));
+        }
+
+        [HttpGet("GetStandByCargoList")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetStandByCargoListAsync([FromQuery] FlightScheduleSectorBookingListQM query)
+        {
+            return Ok(await _bookingManagerService.GetStandByCargoListAsync(query));
+        }
+        
+        [HttpGet("GetVerifyBookingList")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetVerifyBookingListAsync([FromQuery] FlightScheduleSectorVerifyBookingListQM query)
+        {
+            return Ok(await _bookingManagerService.GetVerifyBookingListAsync(query));
+        }
+        
         [HttpGet("GetFreighterBookingList")]
         public async Task<ActionResult<Pagination<CargoBookingVM>>> GetFreighterBookingListAsync([FromQuery] FlightScheduleSectorBookingListQM query)
         {
@@ -45,8 +63,21 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<CargoBookingDetailVM>> GetAsync([FromQuery] CargoBookingDetailQM query)
         {
             if (query.Id == Guid.Empty) return BadRequest();
-
+              
             var result = await _bookingManagerService.GetBookingAsync(query);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        
+        [HttpGet("GetDetail")]
+        public async Task<ActionResult<CargoBookingDetailVM>> GetDetailAsync([FromQuery] CargoBookingQM query)
+        {
+            if (query.Id == Guid.Empty) return BadRequest();
+              
+            var result = await _bookingManagerService.GetDetailAsync(query);
 
             if (result == null)
                 return NotFound();
@@ -87,6 +118,26 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
             if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
+        [HttpPut("UpdateStandByStatus")]
+        public async Task<IActionResult> UpdateStandByStatusAsync([FromBody] CargoBookingStatusUpdateListRM rm)
+        {
+            var res = await _bookingManagerService.UpdateStandByStatusAsync(rm);
+
+            if (res == Application.Enums.ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
+        [HttpPut("UpdateDeleteCargo")]
+        public async Task<IActionResult> UpdateDeleteCargoAsync([FromBody] IEnumerable<CargoBookingUpdateRM> list)
+        {
+            var res = await _bookingManagerService.UpdateDeleteListAsync(list);
+
+            if (res == Application.Enums.ServiceResponseStatus.Failed) return BadRequest("Update failed.");
 
             return NoContent();
         }
