@@ -125,7 +125,14 @@ namespace Aeroclub.Cargo.Application.Services
                 var booking = sectorBooking.CargoBooking;
                 var mappedBooking = await MappedListAsync(booking);
                 var mobBooking = _mapper.Map<CargoBookingMobileVM>(mappedBooking);
-                mobBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageItemVM>>(booking.PackageItems); 
+                mobBooking.Origin = sectorBooking.FlightScheduleSector.OriginAirportCode;
+                mobBooking.Destination = sectorBooking.FlightScheduleSector.DestinationAirportCode;
+                mobBooking.FlightNumber = sectorBooking.FlightScheduleSector.FlightNumber;
+                mobBooking.CutoffTimeMin = sectorBooking.FlightScheduleSector.FlightSchedule.CutoffTimeMin;
+                mobBooking.ScheduledDepartureDateTime = sectorBooking.FlightScheduleSector.ScheduledDepartureDateTime;
+                if (sectorBooking.FlightScheduleSector.AircraftSubType != null && sectorBooking.FlightScheduleSector.AircraftSubType.AircraftType != null)
+                    mobBooking.AircraftSubTypeName = sectorBooking.FlightScheduleSector.AircraftSubType.AircraftType.Name;
+                mobBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
                 list.Add(mobBooking);
             }
             list = list.DistinctBy(x => x.Id).ToList();

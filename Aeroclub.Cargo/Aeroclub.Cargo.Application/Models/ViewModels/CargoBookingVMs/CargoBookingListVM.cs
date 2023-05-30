@@ -27,8 +27,12 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
         public string Destination { get; set; }
     }
     
-    public class CargoBookingMobileVM : CargoBookingListVM 
+    public class CargoBookingMobileVM : CargoBookingStandByCargoVM
     {
-        public IReadOnlyList<PackageItemVM> PackageItems { get; set; }
+        public string? FlightNumber { get; set; }
+        public DateTime ScheduledDepartureDateTime { get; set; }
+        public string? AircraftSubTypeName { get; set; }
+        public double? CutoffTimeMin { get; set; }
+        public IReadOnlyList<PackageMobileVMs> PackageItems { get; set; }
     }
 }

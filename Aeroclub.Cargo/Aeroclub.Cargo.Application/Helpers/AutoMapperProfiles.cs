@@ -177,6 +177,9 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.AwbTrackingNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.AWBInformation.AwbTrackingNumber : 0))
                 .ForMember(d => d.CargoPositionType, o => o.MapFrom(s => s.PackageULDContainers.Count()>0? s.PackageULDContainers.FirstOrDefault(x=>x.PackageItemId==s.Id)!.ULDContainer.ULDContainerCargoPositions.First().CargoPosition.CargoPositionType : 0));
 
+            CreateMap<PackageItem, PackageMobileVMs>().
+                ForMember(d => d.Dimension, o => o.MapFrom(s => string.Format("{0} x {1} x {2} {3}", s.Length, s.Width, s.Height, s.VolumeUnit.Name)));
+
             CreateMap<SeatConfiguration, SeatConfigurationDto>().ReverseMap();
 
             CreateMap<OverheadCompartmentDto, OverheadCompartment>();

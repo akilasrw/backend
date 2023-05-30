@@ -38,10 +38,13 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
         
         public CargoBookingFlightScheduleSectorSpecification(FlightScheduleSectorMobileQM query)
-            : base(x => query.AWBTrackingNumber == null || (x.CargoBooking != null && x.CargoBooking.AWBInformation != null && x.CargoBooking.AWBInformation.AwbTrackingNumber == query.AWBTrackingNumber) && (!x.FlightScheduleSector.IsDeleted))
+            : base(x => query.AWBTrackingNumber == null || (x.CargoBooking != null && x.CargoBooking.AWBInformation != null && x.CargoBooking.AWBInformation.AwbTrackingNumber == query.AWBTrackingNumber) && 
+            (!x.FlightScheduleSector.IsDeleted))
         {
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.PackageItems).ThenInclude(a => a.PackageULDContainers).ThenInclude(b => b.ULDContainer).ThenInclude(c => c.ULDContainerCargoPositions));
-            AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(x=>x.FlightSchedule));
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.PackageItems).ThenInclude(a => a.VolumeUnit));
+            AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(x => x.FlightSchedule));
+            AddInclude(x => x.Include(y => y.FlightScheduleSector).ThenInclude(v => v.AircraftSubType).ThenInclude(g=> g.AircraftType));
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.AWBInformation));
         }
 
