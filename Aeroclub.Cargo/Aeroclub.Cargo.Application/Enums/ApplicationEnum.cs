@@ -21,6 +21,7 @@ namespace Aeroclub.Cargo.Application.Enums
         ValidationError = 1,
         Failed = 2,
         NoSpace = 3,
+        NoAwb = 4
 
     }
 

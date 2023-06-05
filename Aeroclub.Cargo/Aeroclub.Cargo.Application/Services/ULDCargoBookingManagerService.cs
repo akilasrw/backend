@@ -115,6 +115,12 @@ namespace Aeroclub.Cargo.Application.Services
                     rm.AWBDetail.CargoBookingId = cargoBooking.Id;
                     var awbResponse = await _AWBService.CreateAsync(rm.AWBDetail);
 
+                    if (awbResponse.StatusCode == ServiceResponseStatus.ValidationError)
+                    {
+                        transaction.Rollback();
+                        return BookingServiceResponseStatus.NoAwb;
+                    }
+
                     if (awbResponse.StatusCode == ServiceResponseStatus.Failed)
                     {
                         transaction.Rollback();

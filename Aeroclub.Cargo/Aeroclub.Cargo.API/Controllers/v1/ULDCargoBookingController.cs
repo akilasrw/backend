@@ -34,6 +34,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             if (res == Application.Enums.BookingServiceResponseStatus.NoSpace) return BadRequest("No available space for this.");
             if (res == Application.Enums.BookingServiceResponseStatus.Failed) return BadRequest("Save failed.");
+            if (res == Application.Enums.BookingServiceResponseStatus.NoAwb) return BadRequest("No available AWB in the Stack.");
+
 
             return CreatedAtAction(nameof(GetAsync), rm);
         }
