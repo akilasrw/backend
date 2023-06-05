@@ -135,8 +135,8 @@ namespace Aeroclub.Cargo.Application.Services
                 mobBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
                 list.Add(mobBooking);
             }
-            list = list.DistinctBy(x => x.Id).ToList();
-            return list.FirstOrDefault();
+            
+            return list.Count > 0? list.DistinctBy(x => x.Id).ToList().FirstOrDefault(): new CargoBookingMobileVM();
         }
 
         public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query)
