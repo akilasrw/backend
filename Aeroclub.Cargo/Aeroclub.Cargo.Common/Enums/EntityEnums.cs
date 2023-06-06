@@ -273,6 +273,7 @@
     {
         None = 0,
         General = 1,
+        DGR=2
     }
 
     public enum RateType {
