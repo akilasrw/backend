@@ -529,9 +529,9 @@ namespace Aeroclub.Cargo.Application.Services
                             }
 
                             var numberOfHoursTimeSpan = TimeSpan.FromMinutes(query.FlightScheduleReportType == FlightScheduleReportType.Idle ? idleTimeMin : allocatedTime);
-                            double numberOfHours = numberOfHoursTimeSpan.Hours + numberOfHoursTimeSpan.Minutes / 100.0; ;
+                            double numberOfHours = (numberOfHoursTimeSpan.Days * 24) + numberOfHoursTimeSpan.Hours + (numberOfHoursTimeSpan.Minutes / 60.0);
 
-                            var totalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? (TimeSpan.FromMinutes(totalFlightTime).Hours + (TimeSpan.FromMinutes(totalFlightTime).Minutes / 100.0)) : 0);
+                            var totalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? ((TimeSpan.FromMinutes(totalFlightTime).Days * 24) + TimeSpan.FromMinutes(totalFlightTime).Hours + (TimeSpan.FromMinutes(totalFlightTime).Minutes / 60.0)) : 0);
 
                             aircraftIdleReports.Add(new AircraftIdleReportVM()
                             {
