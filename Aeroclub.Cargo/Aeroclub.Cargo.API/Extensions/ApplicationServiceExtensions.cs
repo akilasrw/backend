@@ -74,11 +74,12 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<ICargoBookingFlightScheduleSectorService, CargoBookingFlightScheduleSectorService>();
+            services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IUploadFactory, UploadFactoryService>();
             services.AddScoped<ILIRFileUploadService, LIRFileUploadService>();
             services.AddScoped<IFlightScheduleSectorPalletService, FlightScheduleSectorPalletService>();
-            services.AddScoped<IConversationService, ConversationService>();
-            services.AddScoped<IChatService, ChatService>();
+>>>>>>>>> Temporary merge branch 2
 
             return services;
         }

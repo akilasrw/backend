@@ -65,9 +65,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         } 
         
         [HttpGet("GetUserConversation")]
-        public async Task<ActionResult<IReadOnlyList<TwillioUserConversation>>> GetUserConversationAsync([FromQuery] string identity, string pathConversationSid)
+        public async Task<ActionResult<IReadOnlyList<TwillioUserConversation>>> GetUserConversationAsync([FromQuery] string identity)
         {
-            return Ok(await _chatService.GetUserConversationAsync(identity, pathConversationSid));
+            return Ok(await _chatService.GetUserConversationAsync(identity));
         } 
         
         [HttpGet("GetConversations")]

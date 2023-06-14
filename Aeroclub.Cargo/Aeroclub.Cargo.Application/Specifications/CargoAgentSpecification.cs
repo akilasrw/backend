@@ -45,7 +45,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public CargoAgentSpecification()
             : base(x => x.Status == CargoAgentStatus.Active)
         {
-
+            AddInclude(d => d.Include(s => s.AppUser));
         }
 
     }
