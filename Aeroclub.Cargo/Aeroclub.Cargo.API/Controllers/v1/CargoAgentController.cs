@@ -74,6 +74,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(result);
         }
 
+        [HttpGet("GetList")]
+        public async Task<ActionResult<CargoAgentVM>> GetListAsync()
+        {
+            return Ok(await cargoAgentService.GetListAsync());
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> DeleteAsync(Guid id)
