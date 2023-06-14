@@ -10,6 +10,8 @@ using Aeroclub.Cargo.Infrastructure.FileUploader.Interfaces;
 using Aeroclub.Cargo.Infrastructure.FileUploader.Services;
 using Aeroclub.Cargo.Infrastructure.Interfaces;
 using Aeroclub.Cargo.Infrastructure.Services;
+using Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces;
+using Aeroclub.Cargo.Infrastructure.TwilioChat.Services;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Interfaces;
 using Aeroclub.Cargo.Infrastructure.UserResolver.Services;
 
@@ -75,6 +77,8 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IUploadFactory, UploadFactoryService>();
             services.AddScoped<ILIRFileUploadService, LIRFileUploadService>();
             services.AddScoped<IFlightScheduleSectorPalletService, FlightScheduleSectorPalletService>();
+            services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<IChatService, ChatService>();
 
             return services;
         }
