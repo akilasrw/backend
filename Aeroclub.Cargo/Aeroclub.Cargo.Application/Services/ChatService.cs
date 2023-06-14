@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ChatUserDto> CreateUserAsync(string email)
         {
-            var res = await _conversationService.CreateUserAsync(new TwillioUser() {  Identity = email });            
+            var res = await _conversationService.CreateServiceUserAsync(new TwillioUser() {  Identity = email });            
             return new ChatUserDto().MapChatUser(res.Sid, res.AccountSid, res.Identity, res.FriendlyName,res.Url);
         }
         
@@ -61,7 +61,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<ConversationDto> CreateConversationAsync(ConversationDto conversation)
         {
-           var res =  await _conversationService.CreateConversationAsync(new TwillioConversation() { FriendlyName= conversation.FriendlyName, UniqueName=  conversation.FriendlyName });
+           var res =  await _conversationService.CreateServiceConversationAsync(new TwillioConversation() { FriendlyName= conversation.FriendlyName, UniqueName=  conversation.FriendlyName });
             return new ConversationDto().MapConversation(res.Sid,res.FriendlyName, res.UniqueName);
         }
 
@@ -78,7 +78,7 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<IReadOnlyList<TwillioUser>> GetUsersAsync()
         {
             List<TwillioUser> list = new List<TwillioUser>();
-            var users = await _conversationService.ReadUserAsync(1000);
+            var users = await _conversationService.ReadUserServicesAsync(1000);
             foreach (var user in users) 
             {
                 list.Add(new TwillioUser { Identity = user.Identity, Sid = user.Sid, ChatServiceSid = user.ChatServiceSid }); 
@@ -107,10 +107,10 @@ namespace Aeroclub.Cargo.Application.Services
 
         } 
         
-        public async Task<IReadOnlyList<TwillioUserConversation>> GetUserConversationAsync(string identity, string pathConversationSid)
+        public async Task<IReadOnlyList<TwillioUserConversation>> GetUserConversationAsync(string identity)
         {
             List<TwillioUserConversation> list = new List<TwillioUserConversation>();
-            var users = await _conversationService.ReadUserConversationAsync(identity, pathConversationSid);
+            var users = await _conversationService.ReadUserConversationAsync(identity);
             foreach (var user in users) 
                 list.Add(new TwillioUserConversation { 
                     ConversationSid = user.ConversationSid, 

@@ -58,6 +58,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             return response;
         }
+
         public async Task<ServiceResponseStatus> UpdateAsync(CargoAgentUpdateRM user)
         {
             var agentQry = new CargoAgentQM();
@@ -100,6 +101,15 @@ namespace Aeroclub.Cargo.Application.Services
             var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(spec);
 
             return _mapper.Map<CargoAgent, CargoAgentVM>(cargoAgent);
+        }
+        
+        public async Task<IReadOnlyList<CargoAgentVM>> GetListAsync()
+        {
+
+            var spec = new CargoAgentSpecification();
+            var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetListWithSpecAsync(spec);
+
+            return _mapper.Map<IReadOnlyList<CargoAgent>, IReadOnlyList<CargoAgentVM>>(cargoAgent);
         }
 
         public async Task<bool> DeleteAsync(Guid Id)

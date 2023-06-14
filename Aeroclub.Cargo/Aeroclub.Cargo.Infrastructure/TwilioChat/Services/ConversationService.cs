@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using Twilio;
 using Twilio.Base;
 using Twilio.Rest.Conversations.V1;
-//using Twilio.Rest.Conversations.V1.Service.Conversation;
-using Twilio.Rest.Conversations.V1.Conversation;
+using Twilio.Rest.Conversations.V1.Service.Conversation;
+//using Twilio.Rest.Conversations.V1.Conversation;
 using Twilio.Rest.Conversations.V1.Service.User;
 
 namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
@@ -15,6 +15,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
     public class ConversationService : IConversationService
     {
         private readonly IConfiguration _configuration;
+        private string pathChatServiceSid ="";
         public ConversationService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -27,6 +28,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             string accountSid = _configuration["TWILIO:ACCOUNT_SID"];
             string authToken = _configuration["TWILIO:AUTH_TOKEN"];
             TwilioClient.Init(accountSid, authToken);
+            pathChatServiceSid = _configuration["TWILIO:pathChatServiceSid"];
         }
 
         #region Conversation
@@ -45,10 +47,18 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
                 );
         }
 
-        public async Task<Twilio.Rest.Conversations.V1.Service.ConversationResource> CreateServiceConversationAsync( string pathChatServiceSid, string? friendlyName = null)
+        public async Task<Twilio.Rest.Conversations.V1.Service.ConversationResource> CreateServiceConversationAsync(TwillioConversation conversation)
         {
+            var cons = await ReadServiceConversationsAsync();
+            if (cons.Any(x => x.UniqueName == conversation.UniqueName))
+            {
+                conversation.UniqueName = string.Format("{0}_{1}{2}{3}", conversation.UniqueName, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+                conversation.FriendlyName = conversation.UniqueName;
+            }
+
             return await Twilio.Rest.Conversations.V1.Service.ConversationResource.CreateAsync(
-            friendlyName: friendlyName,
+            friendlyName: conversation.FriendlyName,
+            uniqueName: string.Format("{0}_{1}{2}{3}", conversation.UniqueName, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second),
             pathChatServiceSid: pathChatServiceSid // "ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
            );
         }
@@ -56,6 +66,11 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<ResourceSet<ConversationResource>> ReadConversationsAsync()
         {
             return await ConversationResource.ReadAsync();
+        }
+        
+        public async Task<ResourceSet<Twilio.Rest.Conversations.V1.Service.ConversationResource>> ReadServiceConversationsAsync()
+        {
+            return await Twilio.Rest.Conversations.V1.Service.ConversationResource.ReadAsync(pathChatServiceSid);
         }
 
         public async Task<ResourceSet<ParticipantConversationResource>> ReadParticipantConversationAsync(TwillioParticipant participant, int limit = 20)
@@ -70,7 +85,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             return await ConversationResource.FetchAsync(pathId); // pathSid: "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         }
 
-        public async Task<UserConversationResource> FetchUserConversationAsync(string userId, string pathConversationSid, string pathChatServiceSid)
+        public async Task<UserConversationResource> FetchUserConversationAsync(string userId, string pathConversationSid)
         {
 
             var userConversation = await UserConversationResource.FetchAsync(
@@ -82,7 +97,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             return userConversation;
         }
 
-        public async Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string identity, string pathChatServiceSid, int? limit = null)
+        public async Task<ResourceSet<UserConversationResource>> ReadUserConversationAsync(string identity, int? limit = null)
         {
 
             var userConversations = await UserConversationResource.ReadAsync(
@@ -98,7 +113,8 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         {
             var participant = await ParticipantResource.FetchAsync(
                 pathConversationSid: pathConversationSid, // "CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                pathSid: pathSid //"MBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                pathSid: pathSid, //"MBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                pathChatServiceSid: pathChatServiceSid // ISXXX
             );
 
             return participant;
@@ -108,6 +124,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         {
             var participants = await ParticipantResource.ReadAsync(
                 pathConversationSid: pathConversationSid,
+                pathChatServiceSid: pathChatServiceSid, // ISXXX
                 limit: limit
             );
 
@@ -128,6 +145,11 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<UserResource> CreateUserAsync(TwillioUser user)
         {
             return await UserResource.CreateAsync(identity: user.Identity, friendlyName: user.FriendlyName);
+        }
+        
+        public async Task<Twilio.Rest.Conversations.V1.Service.UserResource> CreateServiceUserAsync(TwillioUser user)
+        {
+            return await Twilio.Rest.Conversations.V1.Service.UserResource.CreateAsync(pathChatServiceSid:pathChatServiceSid,identity: user.Identity, friendlyName: user.FriendlyName);
         }
 
         public async Task<UserResource> UpdateUserAsync(string friendlyName, string roleSid, string pathSid)
@@ -150,14 +172,27 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         {
             return await UserResource.ReadAsync(limit: limit);
         }
+        public async Task<ResourceSet<Twilio.Rest.Conversations.V1.Service.UserResource>> ReadUserServicesAsync(int limit = 20)
+        {
+            return await Twilio.Rest.Conversations.V1.Service.UserResource.ReadAsync(pathChatServiceSid,limit: limit);
+        }
 
         #endregion User
 
         #region Participant
-        public async Task<ParticipantResource> CreateParticipantAsync(TwillioParticipant participant)
+        //public async Task<ParticipantResource> CreateParticipantAsync(TwillioParticipant participant)
+        //{
+        //    return await ParticipantResource.CreateAsync(
+        //        pathConversationSid: participant.PathConversationSid,
+        //        identity: participant.Identity
+        //        );
+        //}
+
+        public async Task<Twilio.Rest.Conversations.V1.Service.Conversation.ParticipantResource> CreateParticipantAsync(TwillioParticipant participant)
         {
-            return await ParticipantResource.CreateAsync(
+            return await Twilio.Rest.Conversations.V1.Service.Conversation.ParticipantResource.CreateAsync(
                 pathConversationSid: participant.PathConversationSid,
+                pathChatServiceSid: pathChatServiceSid,
                 identity: participant.Identity
                 );
 
@@ -168,6 +203,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<MessageResource> CreateMessageAsync(TwillioMessage message)
         {
             return await MessageResource.CreateAsync(
+                pathChatServiceSid: pathChatServiceSid,
                 author: message.Auther, // identity
                 body: message.Body,
                 pathConversationSid: message.PathConversationSid,
@@ -177,7 +213,8 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
 
         public async Task<MessageResource> UpdateMessageAsync(TwillioMessage message)
         {
-            return await MessageResource.UpdateAsync(                
+            return await MessageResource.UpdateAsync(
+                pathChatServiceSid: pathChatServiceSid,
                 author: message.Auther, // identity
                 body: message.Body,
                 pathConversationSid: message.PathConversationSid,
@@ -189,6 +226,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<bool> DeleteMessageAsync(TwillioMessage message)
         {
             return await MessageResource.DeleteAsync(
+                pathChatServiceSid: pathChatServiceSid,
                 pathConversationSid: message.PathConversationSid,
                 pathSid: message.pathSid
             );
@@ -197,6 +235,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<ResourceSet<MessageResource>> ReadConversationMessagesAsync(string pathConversationSid, int? limit = null)
         {
             var messages = await MessageResource.ReadAsync(
+                pathChatServiceSid: pathChatServiceSid,
                 order: MessageResource.OrderTypeEnum.Desc,
                 pathConversationSid: pathConversationSid,
                 limit: limit);
@@ -206,6 +245,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<MessageResource> FetchMessagesAsync(string pathConversationSid, string pathSid)
         {
             var message = await MessageResource.FetchAsync(
+                pathChatServiceSid: pathChatServiceSid,
                 pathConversationSid: pathConversationSid, //"CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 pathSid: pathSid // "IMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             );
@@ -217,6 +257,7 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
             var messages = await MessageResource.ReadAsync(
                 order: MessageResource.OrderTypeEnum.Desc,
                 pathConversationSid: pathConversationSid,
+                pathChatServiceSid: pathChatServiceSid,
                 limit: limit
             );
             return messages;
@@ -235,6 +276,11 @@ namespace Aeroclub.Cargo.Infrastructure.TwilioChat.Services
         public async Task<bool> DeleteServiceAsync(string sId)
         {
             return await ServiceResource.DeleteAsync(pathSid: sId); // ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        }
+
+        public async Task<ServiceResource> FetchServiceAsync(string pathSid)
+        {
+            return  ServiceResource.Fetch(pathSid: pathSid);
         }
 
        
