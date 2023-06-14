@@ -79,8 +79,6 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IUploadFactory, UploadFactoryService>();
             services.AddScoped<ILIRFileUploadService, LIRFileUploadService>();
             services.AddScoped<IFlightScheduleSectorPalletService, FlightScheduleSectorPalletService>();
->>>>>>>>> Temporary merge branch 2
-
             return services;
         }
     }
