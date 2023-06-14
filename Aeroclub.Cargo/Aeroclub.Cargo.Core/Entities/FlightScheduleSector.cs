@@ -10,6 +10,9 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid FlightScheduleId { get; set; }
         public int SequenceNo { get; set; }
         public DateTime ScheduledDepartureDateTime { get; set; }
+        public DateTime? EstimatedDepartureDateTime { get; set; }
+        public DateTime? EstimatedArrivalDateTime { get; set; }
+        public DateTime? ActualArrivalDateTime { get; set; }
         public DateTime ActualDepartureDateTime { get; set; }
         public FlightScheduleStatus FlightScheduleStatus { get; set; } = FlightScheduleStatus.None;
         public Guid OriginAirportId { get; set; }
@@ -22,6 +25,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid? LoadPlanId { get; set; } = null;
         public Guid? AircraftId { get; set; } = null;
         public Guid AircraftSubTypeId { get; set; }
+        public double? CutoffTimeMin { get; set; }
 
         public virtual Flight Flight { get; set; }
         public virtual Sector Sector { get; set; }
@@ -30,6 +34,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public virtual Aircraft Aircraft { get; set; }
         public virtual AircraftSubType AircraftSubType { get; set; }
         public virtual ICollection<CargoBookingFlightScheduleSector> CargoBookingFlightScheduleSectors { get; set; }
+        public virtual ICollection<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; }
 
     }
 }

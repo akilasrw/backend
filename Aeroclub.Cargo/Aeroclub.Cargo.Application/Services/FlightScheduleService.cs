@@ -15,6 +15,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using static Grpc.Core.Metadata;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -65,6 +66,9 @@ namespace Aeroclub.Cargo.Application.Services
                 var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(model.DestinationAirportId);
                 entity.MapDestinationAirport(destinationAirport);
             }
+            if (string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]))
+                entity.CutoffTimeMin = double.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]) * 60;
+
             using (var transaction = _unitOfWork.BeginTransaction())
             {
                 try
@@ -525,9 +529,9 @@ namespace Aeroclub.Cargo.Application.Services
                             }
 
                             var numberOfHoursTimeSpan = TimeSpan.FromMinutes(query.FlightScheduleReportType == FlightScheduleReportType.Idle ? idleTimeMin : allocatedTime);
-                            double numberOfHours = numberOfHoursTimeSpan.Hours + numberOfHoursTimeSpan.Minutes / 100.0; ;
+                            double numberOfHours = (numberOfHoursTimeSpan.Days * 24) + numberOfHoursTimeSpan.Hours + (numberOfHoursTimeSpan.Minutes / 60.0);
 
-                            var totalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? (TimeSpan.FromMinutes(totalFlightTime).Hours + (TimeSpan.FromMinutes(totalFlightTime).Minutes / 100.0)) : 0);
+                            var totalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? ((TimeSpan.FromMinutes(totalFlightTime).Days * 24) + TimeSpan.FromMinutes(totalFlightTime).Hours + (TimeSpan.FromMinutes(totalFlightTime).Minutes / 60.0)) : 0);
 
                             aircraftIdleReports.Add(new AircraftIdleReportVM()
                             {
@@ -555,6 +559,129 @@ namespace Aeroclub.Cargo.Application.Services
             return aircraftIdleReports.OrderBy(z => z.Day).ToList();
         }
 
+        public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
+        {
+            foreach (var fSector in flight.FlightSectors)
+            {
+                fSector.DepartureDateTime = await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
+                fSector.ArrivalDateTime = await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
+            }
+            return flight;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateATAAsync(UpdateATARM updateATARM)
+        {
+            // Get by id.
+            var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { Id = updateATARM.Id, IsIncludeFlightScheduleSectors = true });
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+            // Update ATA in flight schedule.
+            if (flightSchedule == null)
+                return ServiceResponseStatus.ValidationError;
+
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    var ata = flightSchedule.ActualArrivalDateTime == null ? flightSchedule.ScheduledDepartureDateTime : flightSchedule.ActualArrivalDateTime.Value;
+                    flightSchedule.ActualArrivalDateTime = ata.Date.Add(TimeSpan.Parse(updateATARM.ActualArrivalDateTime));
+                    _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+                    // Update ATA last flight schedule sector.
+                    var sector = flightSchedule.FlightScheduleSectors.LastOrDefault();
+                    if (sector != null)
+                    {
+                        sector.ActualArrivalDateTime = flightSchedule.ActualArrivalDateTime;
+                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return ServiceResponseStatus.Failed;
+                    }
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return ServiceResponseStatus.Failed;
+                }
+            }
+
+            return ServiceResponseStatus.Success;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM)
+        {
+            // Get by id.
+            var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { Id = updateCutOffRM.Id, IsIncludeFlightScheduleSectors = true });
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+            // Update ATA in flight schedule.
+            if (flightSchedule == null)
+                return ServiceResponseStatus.ValidationError;
+
+            flightSchedule.CutoffTimeMin = updateCutOffRM.CutOffTimeMin;
+            _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+            return ServiceResponseStatus.Success;
+        }
+
+        private async Task<ServiceResponseStatus> UpdateAync(FlightSchedule flightSchedule, UpdateATARM? updateATARM = null,UpdateCutOffTimeRM ? updateCutOffTimeRM = null)
+        {
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                try
+                {
+
+                    if (updateATARM != null)
+                    {
+                        var ata = flightSchedule.ActualArrivalDateTime == null ? flightSchedule.ScheduledDepartureDateTime : flightSchedule.ActualArrivalDateTime.Value;
+                        flightSchedule.ActualArrivalDateTime = ata.Date.Add(TimeSpan.Parse(updateATARM.ActualArrivalDateTime));
+
+                        // Update ATA last flight schedule sector.
+                        var sector = flightSchedule.FlightScheduleSectors.LastOrDefault();
+                        if (sector != null)
+                        {
+                            sector.ActualArrivalDateTime = flightSchedule.ActualArrivalDateTime;
+                            _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return ServiceResponseStatus.Failed;
+                        }
+                    }
+                        
+
+                    if (updateCutOffTimeRM != null)
+                    {
+                        flightSchedule.CutoffTimeMin = updateCutOffTimeRM.CutOffTimeMin;
+                    }
+                        
+
+                    _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+                    
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return ServiceResponseStatus.Failed;
+                }
+            }
+            return ServiceResponseStatus.Success;
+        }
+
         private async Task<TimeSpan> GetMappedTimeAsync(TimeSpan? time, Guid sectorId, bool isOrigin = true, bool isSavedData = true)
         {
             TimeSpan offsetTime = new TimeSpan();
@@ -573,14 +700,15 @@ namespace Aeroclub.Cargo.Application.Services
             return offsetTime;
         }
 
-        public async Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true)
+        public async Task<bool> DeleteAsync(Guid Id)
         {
-            foreach (var fSector in flight.FlightSectors)
-            {
-                fSector.DepartureDateTime = await GetMappedTimeAsync(fSector.DepartureDateTime, fSector.SectorId, true, isSavedData);
-                fSector.ArrivalDateTime = await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
-            }
-            return flight;
+            var entity = await _unitOfWork.Repository<FlightSchedule>().GetByIdAsync(Id);
+            _unitOfWork.Repository<FlightSchedule>().Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightSchedule>().Detach(entity);
+            return true;
         }
+
+        
     }
 }

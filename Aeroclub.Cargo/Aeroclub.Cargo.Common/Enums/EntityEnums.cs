@@ -50,6 +50,13 @@
         OnTime = 1,
         Delayed = 2
     }
+    public enum FlightScheduleOrderStatus
+    {
+        None = 0,
+        InProgress = 1,
+        Dispatched = 2,
+        Cancelled = 3,
+    }
 
     public enum LoadPlanStatus
     {
@@ -61,8 +68,23 @@
     public enum ULDType
     {
         None = 0,
-        LD1 = 1,
-        LD2 = 2
+        Pallet = 1,
+        Container = 2
+    }
+
+    public enum ULDOwnershipType
+    {
+        None = 0,
+        OwnByAirline = 1,
+        Other = 2
+    }
+    public enum ULDLocateStatus
+    {
+        None = 0,
+        OnGround = 1,
+        OnBoard = 2,
+        Maintenance = 3,
+        Lend = 4,
     }
 
     public enum ULDContainerType
@@ -72,7 +94,7 @@
         Box = 2
     }
 
-    public enum AircraftDeckType
+    public enum AircraftDeckType  
     {
         None = 0,
         MainDeck = 1,
@@ -89,12 +111,13 @@
     public enum BookingStatus
     {
         None = 0,
-        Pending = 10,
-        Accepted = 20,
-        Loading = 30,
+        Booked = 10, // Booked
+        Accepted = 20,// Recieved
+        //Loaded = 30,
         Invoiced = 40,
-        Dispatched = 50,
-        Exported = 60
+        //Dispatched = 50,
+        //Exported = 60,
+        Cancelled = 70
     }
 
     public enum PackagePriorityType
@@ -106,8 +129,9 @@
     public enum PackageItemStatus
     {
         None = 0,
-        Pending = 1,
-        Accepted = 2,
+        Booked = 1,
+        Accepted = 2,// Dispatched
+        Dispatched = 4,
     }
 
     public enum AWBStatus
@@ -115,6 +139,23 @@
         None = 0,
         Pending = 1,
         AddedAWB = 2
+    } 
+    
+    public enum VerifyStatus
+    {
+        None = 0,
+        ActualLoad = 1,
+        OffLoad = 2,
+        Dispatched = 3,
+        Deleted = 4,
+        CargoNotDispatched = 5
+    }
+
+    public enum StandByStatus
+    {
+        None = 0,
+        MovedTo = 1,
+        OffLoad = 2
     }
 
     public enum PackageItemCategory
@@ -226,6 +267,27 @@
     {
         None = 0,
 
+    }
+
+    public enum CargoType
+    {
+        None = 0,
+        General = 1,
+        DGR=2
+    }
+
+    public enum RateType {
+        None = 0,
+        SpotRate =1,
+        PromotionalRate=2,
+        ContractRate=3,
+        MarketPublishRate=4
+    }
+
+    public enum UploadStorageType
+    {
+        None = 0,
+        Blob = 1
     }
 
 }

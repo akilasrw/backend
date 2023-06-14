@@ -9,7 +9,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<ServiceResponseCreateStatus> CreateAsync(CargoBookingRM dto);
         Task<CargoBookingDetailVM> GetAsync(CargoBookingDetailQM query);
-        Task<ServiceResponseCreateStatus> UpdateAsync(CargoBookingUpdateRM dto);
+        Task<ServiceResponseCreateStatus> UpdateStatusAsync(CargoBookingUpdateRM dto);
 
     }
 }

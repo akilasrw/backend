@@ -17,6 +17,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM packageItem);
         Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query);
         Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm);
+        Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm);
 
     }
 }

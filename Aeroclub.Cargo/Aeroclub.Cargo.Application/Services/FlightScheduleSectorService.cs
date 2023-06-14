@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Interfaces;
+﻿using Aeroclub.Cargo.Application.Enums;
+using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
@@ -310,5 +311,15 @@ namespace Aeroclub.Cargo.Application.Services
 
         //    return date + offsetTime;
         //}
+
+        public async Task<ServiceResponseStatus> DeleteAsync(Guid Id)
+        {
+            var flightsector = await _unitOfWork.Repository<FlightScheduleSector>().GetByIdAsync(Id);
+            _unitOfWork.Repository<FlightScheduleSector>().Delete(flightsector);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightScheduleSector>().Detach(flightsector);
+
+            return ServiceResponseStatus.Success;
+        }
     }
 }

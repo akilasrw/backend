@@ -14,6 +14,10 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface ILinkAircraftToScheduleService
     {
         Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query);
-        Task<Pagination<FlightScheduleManagementLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query);
+        Task<Pagination<FlightScheduleLinkAircraftVM>> GetLinkAircraftFilteredListAsync(FlightScheduleManagemenLinktFilteredListQM query);
+
+        Task<bool> UploadLIRAsync(UploadLIRFileRM query);
+        Task<bool> IsBookingsVerifiedAsync(VerifyScheduleAicraftRM rm);
+
     }
 }

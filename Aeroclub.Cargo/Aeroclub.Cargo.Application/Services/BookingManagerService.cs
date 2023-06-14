@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
@@ -22,6 +23,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using System.IO.Hashing;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -73,7 +75,7 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm)
+        public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm) // for P2C - passanger
         {
             using (var transaction = _unitOfWork.BeginTransaction())
             {
@@ -324,6 +326,11 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _cargoBookingService.GetAsync(query);
         }
+        
+        public async Task<CargoBookingDetailVM> GetDetailAsync(CargoBookingQM query)
+        {
+            return await _cargoBookingService.GetDetailAsync(query);
+        }
 
         public async Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query)
         {
@@ -394,6 +401,70 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return BookingServiceResponseStatus.Success;
+        }
+
+        public async Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm)
+        {
+            return await _cargoBookingService.UpdateStandByStatusAsync(rm);
+        }
+
+        public async Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list)
+        {
+            return await _cargoBookingService.UpdateDeleteListAsync(list);
+        }
+
+        public BookingStatus BookingNextStatus(BookingStatus bookingStatus)
+        {
+            switch(bookingStatus)
+            {
+                case BookingStatus.None: return BookingStatus.Booked;
+                case BookingStatus.Booked: return BookingStatus.Accepted;
+                //case BookingStatus.Accepted: return BookingStatus.Dispatched;
+            }
+            return BookingStatus.None;
+        }
+        public VerifyStatus BookingVerifyNextStatus(BookingStatus bookingStatus, bool isCancel = false, bool isRecieved = false, bool isDispatch = false)
+        {
+            if (bookingStatus == BookingStatus.Booked)
+            {
+                if (isCancel) return VerifyStatus.Deleted;
+                if (isRecieved) return VerifyStatus.Dispatched;
+                return VerifyStatus.CargoNotDispatched;
+
+            }
+            else if (bookingStatus == BookingStatus.Accepted)
+            {
+                if (isDispatch) return VerifyStatus.Dispatched;
+                if (isCancel) return VerifyStatus.Deleted;
+                return VerifyStatus.OffLoad;
+            }
+            return VerifyStatus.None;
+        }
+
+        public PackageItemStatus PackageNextStatus(PackageItemStatus packageItemStatus)
+        {
+            switch(packageItemStatus)
+            {
+                case PackageItemStatus.None: return PackageItemStatus.Booked;
+                case PackageItemStatus.Booked: return PackageItemStatus.Accepted;
+                case PackageItemStatus.Accepted: return PackageItemStatus.Dispatched;
+            }
+            return PackageItemStatus.None;
+        }
+
+        public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query)
+        {
+            return await _cargoBookingService.GetStandByCargoListAsync(query);
+        }
+        
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetVerifyBookingListAsync(FlightScheduleSectorVerifyBookingListQM query)
+        {
+            return await _cargoBookingService.GetVerifyBookingListAsync(query);
+        }
+
+        public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)
+        {
+            return await _cargoBookingService.GetMobileBookingAsync(query);
         }
     }
 }

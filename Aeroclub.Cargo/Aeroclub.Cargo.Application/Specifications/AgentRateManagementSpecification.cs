@@ -23,7 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AgentRateManagementSpecification(AgentRateManagementRateListQM query, bool isCount = false)
-        : base(x => x.CargoAgent.AppUserId == query.UserId &&
+        : base(x => (x.CargoAgent != null &&  x.CargoAgent.AppUserId == query.UserId )&&
         (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
         (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
         !x.IsDeleted)
@@ -41,7 +41,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         
 
         public AgentRateManagementSpecification(AgentRateManagementValidationQM query)
-            :base(x =>  x.CargoAgentId == query.CargoAgentId && x.OriginAirportId == query.OriginAirportId &&
+            :base(x => (query.CargoAgentId == Guid.Empty || x.CargoAgentId == query.CargoAgentId) && x.OriginAirportId == query.OriginAirportId &&
             x.DestinationAirportId == query.DestinationAirportId && 
             ((query.ValidStartDate.Date >= x.StartDate.Date && query.ValidStartDate.Date <= x.EndDate.Date) ||
             (query.ValidEndDate.Date >= x.StartDate.Date && query.ValidEndDate.Date <= x.EndDate.Date)) &&
@@ -52,7 +52,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
         
         public AgentRateManagementSpecification(AgentRateManagementUpdateQM query)
-            :base(x =>  x.CargoAgentId == query.CargoAgentId && x.OriginAirportId == query.OriginAirportId &&
+            :base(x => (query.CargoAgentId == Guid.Empty || x.CargoAgentId == query.CargoAgentId) && x.OriginAirportId == query.OriginAirportId &&
             x.DestinationAirportId == query.DestinationAirportId && 
             query.ValidStartDate.Date == x.StartDate.Date && query.ValidEndDate.Date <= x.EndDate.Date &&
             !x.IsDeleted)

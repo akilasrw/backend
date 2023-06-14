@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,12 @@ builder.Services.AddIdentityCore<AppUser>(options =>
     .AddRoleValidator<RoleValidator<AppRole>>()
     .AddEntityFrameworkStores<CargoContext>().AddDefaultTokenProviders();
 
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
 
 var app = builder.Build();
 

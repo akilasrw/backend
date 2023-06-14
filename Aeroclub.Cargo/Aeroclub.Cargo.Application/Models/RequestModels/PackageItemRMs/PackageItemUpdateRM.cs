@@ -22,7 +22,13 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs
         public PackageItemStatus PackageItemStatus { get; set; }
         public string? Description { get; set; }
         public Guid? ULDContainerId { get; set; }
-        public PackageItemCategory PackageItemType { get; set; }
 
     }
+    public class PackageItemUpdateStatusRM : BaseRM
+    {  
+        public Guid? CargoBookingId { get; set; }
+        public PackageItemStatus PackageItemStatus { get; set; }
+
+    }
+
 }

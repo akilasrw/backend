@@ -14,5 +14,16 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
         [Required(ErrorMessage = "Aircraft is required.")]
         public Guid AircraftId { get; set; }
         public Guid? AircraftScheduleId { get; set; }
+        public string? EstimatedDepartureDateTime { get; set; }
+        public string? EstimatedArrivalDateTime { get; set; }
+        public string? ActualDepartureDateTime { get; set; }
+        public byte? StepCount { get; set; }
+        public bool? IsDispatched { get; set; }
     }
+
+    public class VerifyScheduleAicraftRM
+    {
+        public Guid FlightScheduleId { get; set; }
+    }
+
 }
