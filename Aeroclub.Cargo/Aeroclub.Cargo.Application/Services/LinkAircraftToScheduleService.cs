@@ -206,7 +206,14 @@ namespace Aeroclub.Cargo.Application.Services
                     foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
                     {
                         if (booking.CargoBooking.BookingStatus == BookingStatus.Accepted &&
-                            (booking.CargoBooking.VerifyStatus != VerifyStatus.ActualLoad && booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad))
+                            (booking.CargoBooking.VerifyStatus != VerifyStatus.ActualLoad && 
+                            booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad))
+                        {
+                            return false;
+                        }
+
+                        if ((booking.CargoBooking.BookingStatus == BookingStatus.Booked && booking.CargoBooking.VerifyStatus == VerifyStatus.None) || 
+                            (booking.CargoBooking.BookingStatus == BookingStatus.None && booking.CargoBooking.VerifyStatus == VerifyStatus.None))
                         {
                             return false;
                         }
