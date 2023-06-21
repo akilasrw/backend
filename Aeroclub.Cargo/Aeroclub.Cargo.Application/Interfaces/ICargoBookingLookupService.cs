@@ -5,6 +5,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
 {
     public interface ICargoBookingLookupService
     {
-        Task<CargoBookingLookupVM> GetAsync(CargoBookingLookupQM query);
+        Task<CargoBookingLookupVM?> GetAsync(CargoBookingLookupQM query);
     }
 }

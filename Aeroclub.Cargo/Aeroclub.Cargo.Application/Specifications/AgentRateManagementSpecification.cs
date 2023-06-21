@@ -41,8 +41,10 @@ namespace Aeroclub.Cargo.Application.Specifications
         
 
         public AgentRateManagementSpecification(AgentRateManagementValidationQM query)
-            :base(x => (query.CargoAgentId == Guid.Empty || x.CargoAgentId == query.CargoAgentId) && x.OriginAirportId == query.OriginAirportId &&
-            x.DestinationAirportId == query.DestinationAirportId && 
+            :base(x => (query.CargoAgentId == Guid.Empty || x.CargoAgentId == query.CargoAgentId) && 
+            x.OriginAirportId == query.OriginAirportId && x.DestinationAirportId == query.DestinationAirportId &&
+            (query.CargoType == Common.Enums.CargoType.None || x.CargoType == query.CargoType) &&
+            (query.RateType == Common.Enums.RateType.None || x.RateType == query.RateType) &&
             ((query.ValidStartDate.Date >= x.StartDate.Date && query.ValidStartDate.Date <= x.EndDate.Date) ||
             (query.ValidEndDate.Date >= x.StartDate.Date && query.ValidEndDate.Date <= x.EndDate.Date)) &&
             !x.IsDeleted)

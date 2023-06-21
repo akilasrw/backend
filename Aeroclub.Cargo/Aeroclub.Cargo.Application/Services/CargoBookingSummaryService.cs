@@ -206,8 +206,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<BookingSummaryDetailFiguresVM> GetBookingCountWeightAndVolume(FlightSchedule flightSchedule)
         {
-            BookingSummaryDetailFiguresVM summaryFigures = new BookingSummaryDetailFiguresVM();            
-
+            BookingSummaryDetailFiguresVM summaryFigures = new BookingSummaryDetailFiguresVM();
             foreach (var f in flightSchedule.FlightScheduleSectors)
             {
                 foreach (var s in f.CargoBookingFlightScheduleSectors)
@@ -222,6 +221,8 @@ namespace Aeroclub.Cargo.Application.Services
 
                     summaryFigures.TotalBookedVolume += booking.PackageItems.Sum(x => (x.Width * x.Height * x.Length));
                     summaryFigures.TotalRecievedBookedVolume += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Accepted).Sum(x => (x.Width * x.Height * x.Length));
+                    summaryFigures.OffLoadCount += booking.StandByStatus == StandByStatus.OffLoad || booking.VerifyStatus == VerifyStatus.OffLoad ? 1 : 0;
+                    summaryFigures.ActualLoadCount += booking.VerifyStatus == VerifyStatus.ActualLoad ? 1 : 0;
                 }
             }
 

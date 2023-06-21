@@ -14,5 +14,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
         public double TotalBookedVolume { get; set; }
         public double TotalRecievedBookedWeight { get; set; }
         public double TotalRecievedBookedVolume { get; set; }
+        public int OffLoadCount { get; set; }
+        public int ActualLoadCount { get; set; }
     }
 }

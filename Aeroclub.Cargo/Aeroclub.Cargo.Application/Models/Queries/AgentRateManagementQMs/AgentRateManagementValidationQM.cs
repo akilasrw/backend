@@ -1,4 +1,6 @@
 ﻿
+using Aeroclub.Cargo.Common.Enums;
+
 namespace Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs
 {
     public class AgentRateManagementValidationQM
@@ -9,6 +11,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs
         public DateTime ValidStartDate { get; set; }
         public DateTime ValidEndDate { get; set; }
         public bool IncludeAgentRates { get; set; }
+        public CargoType CargoType { get; set; }
+        public RateType RateType { get; set; }
 
     }
     

@@ -64,6 +64,8 @@ namespace Aeroclub.Cargo.Application.Services
                         OriginAirportId = item.OriginAirportId,
                         ValidStartDate = item.StartDate,
                         ValidEndDate = item.EndDate,
+                        CargoType = item.CargoType,
+                        RateType = item.RateType
 
                     });
                     var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);

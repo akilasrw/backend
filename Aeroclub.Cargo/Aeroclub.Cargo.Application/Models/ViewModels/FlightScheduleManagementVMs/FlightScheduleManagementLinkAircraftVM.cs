@@ -21,5 +21,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementV
         public double TotalWeight { get; set; }
         public bool IsHistory { get; set; }
         public bool IsDispatched { get; set; }
+        public int OffLoadCount { get; set; }
+        public int ActualLoadCount { get; set; }
     }
 }

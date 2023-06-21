@@ -170,8 +170,10 @@ namespace Aeroclub.Cargo.Application.Services
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleLinkAircraftVM>>(flightScheduleList);
             foreach (var fs in dtoList)
             {
-                var sum = await _cargoBookingSummaryService.GetAsync(new Models.Queries.CargoBookingSummaryQMs.CargoBookingSummaryDetailQM() { Id = fs.Id, IsIncludeFlightScheduleSectors = true });
+                var sum = await _cargoBookingSummaryService.GetAsync(new CargoBookingSummaryDetailQM() { Id = fs.Id, IsIncludeFlightScheduleSectors = true });
                 fs.TotalWeight = sum.CargoPositionSummary.TotalBookedWeight;
+                fs.OffLoadCount = sum.BookingSummaryDetailFigures.OffLoadCount;
+                fs.ActualLoadCount = sum.BookingSummaryDetailFigures.ActualLoadCount;
             }
             return   new Pagination<FlightScheduleLinkAircraftVM>(query.PageIndex, query.PageSize, totalCount, dtoList);;
         }
