@@ -17,5 +17,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         void RevokeToken(string token, string ipAddress);
         IEnumerable<AppUser> GetAll();
         AppUser GetById(Guid id);
+        Task<AppUser> ExistsAppUserEmailAsync(string email);
     }
 }

@@ -79,6 +79,10 @@ namespace Aeroclub.Cargo.API.Extensions
             services.AddScoped<IUploadFactory, UploadFactoryService>();
             services.AddScoped<ILIRFileUploadService, LIRFileUploadService>();
             services.AddScoped<IFlightScheduleSectorPalletService, FlightScheduleSectorPalletService>();
+            services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
+            services.AddScoped<IManageUserService, ManageUserService>();
+
             return services;
         }
     }

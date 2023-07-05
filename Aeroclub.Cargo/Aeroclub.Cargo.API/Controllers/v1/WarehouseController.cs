@@ -4,11 +4,14 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.WarehouseQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.WarehouseRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.WarehouseVMs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
+    [ApiVersion("1.0")]
+    [Authorize]
     public class WarehouseController : BaseApiController
     {
 

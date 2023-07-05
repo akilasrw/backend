@@ -158,6 +158,11 @@ namespace Aeroclub.Cargo.Application.Services
             return user;
         }
 
+        public async Task<AppUser> ExistsAppUserEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
         // helper methods
 
         private AppUser getUserByRefreshToken(string token)

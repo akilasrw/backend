@@ -14,6 +14,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<TwillioConversation>> GetConversationsAsync();
         Task<IReadOnlyList<TwillioUser>> GetUsersAsync();
         Task<IReadOnlyList<TwillioParticipantConversation>> GetParticipantConversationAsync(string username);
+        Task<IReadOnlyList<TwillioParticipant>> GetParticipantAsync(string pathConversationSid);
         Task<IReadOnlyList<MessageViewDto>> GetMessagesAsync(string pathConversationSid);
         Task<IReadOnlyList<TwillioUserConversation>> GetUserConversationAsync(string identity);
     }

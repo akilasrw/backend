@@ -59,6 +59,8 @@ using Aeroclub.Cargo.Application.Models.ViewModels.LoadPlanVMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.SystemUserRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.SystemUserVMs;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -309,6 +311,17 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap <CargoBookingListVM, CargoBookingStandByCargoVM>();
             CreateMap <CargoBookingListVM, CargoBookingMobileVM>();
             CreateMap <FlightScheduleSectorPalletCreateRM, FlightScheduleSectorPallet>();
+
+            CreateMap<SystemUserCreateRM, SystemUser>();
+            CreateMap<SystemUserCreateRM, AppUser>();
+
+            // CreateMap<SystemUserUpdateRM, SystemUser>();
+
+            CreateMap<SystemUser, SystemUserVM>()
+                .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country.Name))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email))
+                .ForMember(d => d.BaseAirportName, o => o.MapFrom(s => s.BaseAirport.Name))
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName));
 
         }
     }

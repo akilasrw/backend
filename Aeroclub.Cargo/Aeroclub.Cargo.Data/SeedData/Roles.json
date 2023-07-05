@@ -7,8 +7,44 @@
   },
   {
     "Id": "202AF001-200D-421A-B9C3-828E198F4629",
-    "Name": "ADMIN",
-    "NormalizedName": "ADMIN",
+    "Name": "Super Admin",
+    "NormalizedName": "SUPER ADMIN",
     "ConcurrencyStamp": "2"
+  },
+  {
+    "Id": "455BE845-FAF5-41EC-92DB-8D427C1B4976",
+    "Name": "Booking Admin",
+    "NormalizedName": "BOOKING ADMIN",
+    "ConcurrencyStamp": "3"
+  },
+  {
+    "Id": "980E048B-FF16-4496-86B9-1149FF640913",
+    "Name": "Booking User",
+    "NormalizedName": "BOOKING USER",
+    "ConcurrencyStamp": "4"
+  },
+  {
+    "Id": "BD798930-C07A-4066-9C58-192DA5E7AF5D",
+    "Name": "Backoffice Admin",
+    "NormalizedName": "BACKOFFICE ADMIN",
+    "ConcurrencyStamp": "5"
+  },
+  {
+    "Id": "354FD81A-620D-4567-94F8-BC2CF0CD3BA1",
+    "Name": "Backoffice User",
+    "NormalizedName": "BACKOFFICE USER",
+    "ConcurrencyStamp": "6"
+  },
+  {
+    "Id": "3A855567-5DD4-49C3-9A81-E1F30AEB73EE",
+    "Name": "Warehouse Admin",
+    "NormalizedName": "WAREHOUSE ADMIN",
+    "ConcurrencyStamp": "7"
+  },
+  {
+    "Id": "DE37198B-4749-4BFB-BC04-49BF9435BBF1",
+    "Name": "Warehouse User",
+    "NormalizedName": "WAREHOUSE USER",
+    "ConcurrencyStamp": "8"
   }
 ]

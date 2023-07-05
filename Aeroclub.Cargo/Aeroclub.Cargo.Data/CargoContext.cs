@@ -62,7 +62,7 @@ namespace Aeroclub.Cargo.Data
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             modelBuilder.ApplyConfiguration(new LIRFileUploadConfiguration());
             modelBuilder.ApplyConfiguration(new ULDTrackingConfiguration());
-            
+            modelBuilder.ApplyConfiguration(new SystemUserConfiguration());            
             
             
             var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -124,6 +124,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<LIRFileUpload> LIRFileUploads { get; set; } = null!;
         public DbSet<ULDTracking> ULDTrackings { get; set; } = null!;
         public DbSet<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; } = null!;
+        public DbSet<SystemUser> SystemUsers { get; set; } = null!;
 
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
      

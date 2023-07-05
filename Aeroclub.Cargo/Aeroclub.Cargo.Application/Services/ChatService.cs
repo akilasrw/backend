@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Infrastructure.TwilioChat.Models;
 using AutoMapper;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
+using Twilio.Base;
 using Twilio.TwiML.Messaging;
 
 namespace Aeroclub.Cargo.Application.Services
@@ -105,8 +106,25 @@ namespace Aeroclub.Cargo.Application.Services
             }
             return list;
 
-        } 
-        
+        }
+
+        public async Task<IReadOnlyList<TwillioParticipant>> GetParticipantAsync(string pathConversationSid)
+        {
+            List<TwillioParticipant> list = new List<TwillioParticipant>();
+            var participantConversations = await _conversationService.ReadConversationParticipantAsync(pathConversationSid);
+            foreach (var participantConversation in participantConversations)
+            {
+                list.Add(new TwillioParticipant
+                {
+                    PathConversationSid = participantConversation.ConversationSid,
+                    Sid = participantConversation.Sid,
+                    Identity = participantConversation.Identity,
+                });
+            }
+            return list;
+        }
+
+
         public async Task<IReadOnlyList<TwillioUserConversation>> GetUserConversationAsync(string identity)
         {
             List<TwillioUserConversation> list = new List<TwillioUserConversation>();

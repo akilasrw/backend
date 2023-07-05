@@ -8,5 +8,6 @@ namespace Aeroclub.Cargo.Core.Entities
         public string Code { get; set; } = null!;
 
         public virtual ICollection<CargoAgent> Agents { get; set; }
+        public virtual ICollection<SystemUser> SystemUsers { get; set; }
     }
 }

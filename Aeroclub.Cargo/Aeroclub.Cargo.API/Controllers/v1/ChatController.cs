@@ -1,10 +1,13 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Dtos.Chatting;
 using Aeroclub.Cargo.Infrastructure.TwilioChat.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
+    [ApiVersion("1.0")]
+    [Authorize]
     public class ChatController : BaseApiController
     {
         private readonly IChatService _chatService;
@@ -62,6 +65,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyList<TwillioParticipantConversation>>> GetParticipantConversationAsync([FromQuery] string userName)
         {
             return Ok(await _chatService.GetParticipantConversationAsync(userName));
+        } 
+        
+        [HttpGet("GetParticipant")]
+        public async Task<ActionResult<IReadOnlyList<TwillioParticipant>>> GetParticipantAsync([FromQuery] string pathConversationSid)
+        {
+            return Ok(await _chatService.GetParticipantAsync(pathConversationSid));
         } 
         
         [HttpGet("GetUserConversation")]
