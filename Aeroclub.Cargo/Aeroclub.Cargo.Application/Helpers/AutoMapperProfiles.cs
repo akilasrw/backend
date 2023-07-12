@@ -321,7 +321,10 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.CountryName, o => o.MapFrom(s => s.Country.Name))
                 .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email))
                 .ForMember(d => d.BaseAirportName, o => o.MapFrom(s => s.BaseAirport.Name))
-                .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName));
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName))
+                .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.AppUser.PhoneNumber))
+                .ForMember(d=> d.FirstName, o => o.MapFrom(s=>s.AppUser.FirstName))
+                .ForMember(d=> d.LastName, o => o.MapFrom(s=>s.AppUser.LastName));
 
         }
     }

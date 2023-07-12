@@ -30,11 +30,11 @@ namespace Aeroclub.Cargo.Infrastructure.Services
             var to = new EmailAddress(request.ToMail, request.ToName);
             var subject = request.Subject;
             var plainTextContent = request.Body;
-            var htmlContent = request.Body;
+            var htmlContent = request.HtmlBody;
 
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
 
-            return await client.SendEmailAsync(msg);
+            return await client.SendEmailAsync(msg).ConfigureAwait(false);
         }
     }
 }

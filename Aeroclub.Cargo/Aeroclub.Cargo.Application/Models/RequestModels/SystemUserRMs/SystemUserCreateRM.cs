@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.SystemUserRMs
 {
-    public class SystemUserCreateRM: BaseRM
+    public class SystemUserCreateRM
     {
         [Required(ErrorMessage = "First name required")]
         public string FirstName { get; set; } = null!;

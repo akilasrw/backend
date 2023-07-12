@@ -36,7 +36,7 @@ namespace Aeroclub.Cargo.Application.Specifications
                 if (query.IsCountryInclude)
                     AddInclude(x => x.Include(x => x.Country));
 
-              
+                AddInclude(x => x.Include(x => x.BaseAirport));
 
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);

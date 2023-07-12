@@ -10,8 +10,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.SystemUserQMs
 {
     public class SystemUserListQM : BasePaginationQM
     {
-        public UserStatus Status { get; set; }
-        public string Name { get; set; }
+        public UserStatus Status { get; set; } = UserStatus.None;
+        public string? Name { get; set; }
         public bool IsCountryInclude { get; set; }
     }
 }
