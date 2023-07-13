@@ -18,5 +18,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         IEnumerable<AppUser> GetAll();
         AppUser GetById(Guid id);
         Task<AppUser> ExistsAppUserEmailAsync(string email);
+        bool UpdatePassword(UserPasswordRequest model);
     }
 }

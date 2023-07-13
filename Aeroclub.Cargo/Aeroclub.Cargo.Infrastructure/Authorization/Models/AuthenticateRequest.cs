@@ -20,4 +20,11 @@ namespace Aeroclub.Cargo.Infrastructure.Authorization.Models
     {
         public string RefreshToken { get; set; }
     }
+
+    public class UserPasswordRequest
+    {
+        [Required]
+        public string Password { get; set; }
+        public Guid AppUserId { get; set; }
+    }
 }

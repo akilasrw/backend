@@ -79,6 +79,15 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(response.Response);
         }
 
+        [AllowAnonymous]
+        [HttpPost("updatePassword")]
+        public IActionResult UpdatePassword([FromBody] UserPasswordRequest req)
+        {
+            var result = _userService.UpdatePassword(req);
+            if(!result) return BadRequest("Password update is failed.");
+            return NoContent();
+        }
+
         [HttpPost("revoke-token")]
         public IActionResult RevokeToken(RevokeTokenRequest model)
         {

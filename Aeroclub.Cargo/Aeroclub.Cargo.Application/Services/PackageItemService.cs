@@ -74,7 +74,6 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<PackageItem>().Detach(package);
 
             return ServiceResponseStatus.Success;
-
         }
         
         public async Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm)
@@ -88,14 +87,12 @@ namespace Aeroclub.Cargo.Application.Services
                 _unitOfWork.Repository<PackageItem>().Detach(package);
 
                 await UpdateBookingStatusAsync(package.CargoBookingId); // update cargo booking status when all package items are received.
-
                 return ServiceResponseStatus.Success;
             }
             else
             {
                 return ServiceResponseStatus.Failed;
             }
-
         }
     
         public async Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query)
@@ -109,7 +106,6 @@ namespace Aeroclub.Cargo.Application.Services
             var totalCount = await _unitOfWork.Repository<PackageItem>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<PackageListItemVM>>(packageList);
-
 
             return new Pagination<PackageListItemVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }

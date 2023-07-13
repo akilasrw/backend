@@ -166,7 +166,6 @@ namespace Aeroclub.Cargo.Application.Services
                         return BookingServiceResponseStatus.Failed;
                     }
 
-
                     foreach (var flightSectorId in rm.FlightScheduleSectorIds)
                     {
                         var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightSectorId, IncludeLoadPlan = true });
@@ -202,7 +201,6 @@ namespace Aeroclub.Cargo.Application.Services
                             return BookingServiceResponseStatus.Failed;
                         }
                     }
-
                 }
                 transaction.Commit();
             }

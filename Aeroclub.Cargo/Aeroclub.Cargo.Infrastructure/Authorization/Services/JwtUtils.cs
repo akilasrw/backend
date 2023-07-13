@@ -30,7 +30,7 @@ namespace Aeroclub.Cargo.Infrastructure.Authorization.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("Userid", user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddMinutes(1), // 15
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
