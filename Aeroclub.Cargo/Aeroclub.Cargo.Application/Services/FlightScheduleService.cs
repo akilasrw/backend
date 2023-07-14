@@ -623,7 +623,9 @@ namespace Aeroclub.Cargo.Application.Services
             if (flightSchedule == null)
                 return ServiceResponseStatus.ValidationError;
 
-            flightSchedule.CutoffTimeMin = updateCutOffRM.CutOffTimeMin;
+            TimeSpan ts = flightSchedule.ScheduledDepartureDateTime - updateCutOffRM.CutOffTime;
+            flightSchedule.CutoffTimeMin = Math.Round(ts.TotalMinutes, 0);
+
             _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
@@ -637,7 +639,6 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 try
                 {
-
                     if (updateATARM != null)
                     {
                         var ata = flightSchedule.ActualArrivalDateTime == null ? flightSchedule.ScheduledDepartureDateTime : flightSchedule.ActualArrivalDateTime.Value;
@@ -657,19 +658,17 @@ namespace Aeroclub.Cargo.Application.Services
                             await transaction.RollbackAsync();
                             return ServiceResponseStatus.Failed;
                         }
-                    }
-                        
+                    }                        
 
                     if (updateCutOffTimeRM != null)
                     {
-                        flightSchedule.CutoffTimeMin = updateCutOffTimeRM.CutOffTimeMin;
-                    }
-                        
+                        TimeSpan ts = flightSchedule.ScheduledDepartureDateTime - updateCutOffTimeRM.CutOffTime;
+                        flightSchedule.CutoffTimeMin = Math.Round(ts.TotalMinutes, 2);
+                    }                        
 
                     _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
-
                     
                     await transaction.CommitAsync();
                 }
@@ -708,7 +707,6 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<FlightSchedule>().Detach(entity);
             return true;
         }
-
-        
+                
     }
 }

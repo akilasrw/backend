@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs
         public AircraftConfigType AircraftConfigurationType { get; set; }
         public string AircraftSubTypeName { get; set; }
         public double? CutoffTimeMin { get; set; }
+        public DateTime CutoffTime { get; set; }
 
     }
 }
