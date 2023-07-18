@@ -205,6 +205,7 @@ namespace Aeroclub.Cargo.Application.Services
             vm.BookingDate = booking.BookingDate;
             vm.BookingStatus = booking.BookingStatus;
             vm.VerifyStatus = booking.VerifyStatus;
+            vm.CargoHandlingInstruction = booking.CargoHandlingInstruction;
             vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
             vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
             vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>

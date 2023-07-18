@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs
         public Guid? DestinationAirportId { get; set; }
         public List<PackageItemCreateRM> PackageItems { get; set; }
         public AWBCreateRM? AWBDetail { get; set; }
+        public string? CargoHandlingInstruction { get; set; }
 
     }
 }

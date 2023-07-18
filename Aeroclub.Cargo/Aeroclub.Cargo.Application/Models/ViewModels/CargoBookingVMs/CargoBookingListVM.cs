@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
         public int NumberOfRecBoxes { get; set; }
         public double TotalRecWeight { get; set; }
         public double TotalRecVolume { get; set; }
+        public string? CargoHandlingInstruction { get; set; }
 
     }
 

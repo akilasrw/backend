@@ -93,13 +93,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return BadRequest();
             }
 
+            if (model.CutOffTime == DateTime.MinValue) return BadRequest("CutOffTime is not valid.");
+
             var res = await _flightScheduleService.UpdateCutOffTimeAsync(model);
+            
+            if (res == Application.Enums.FlightScheduleResponseStatus.ValidationError)
+                return BadRequest("Cut Off Time is not valid.");            
+            
+            if (res == Application.Enums.FlightScheduleResponseStatus.MaxTimeError)
+                return BadRequest("Cutoff time should be lesser than schedule time.");
 
-            if (res == Application.Enums.ServiceResponseStatus.ValidationError)
-                return BadRequest("Cut Off Time is not valid.");
-
-            if (res == Application.Enums.ServiceResponseStatus.Failed)
+            if (res == Application.Enums.FlightScheduleResponseStatus.Failed)
                 return BadRequest("Saved failed.");
+            
+
 
             return NoContent();
         }

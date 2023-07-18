@@ -20,6 +20,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Pagination<FlightScheduleSearchVM>> GetFilteredListAsync(FlightScheduleFilteredListQM query);
         Task<bool> DeleteAsync(Guid Id);
         Task<ServiceResponseStatus> UpdateATAAsync(UpdateATARM updateATARM);
-        Task<ServiceResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM);
+        Task<FlightScheduleResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM);
     }
 }

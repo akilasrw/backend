@@ -24,6 +24,14 @@ namespace Aeroclub.Cargo.Application.Enums
         NoAwb = 4
 
     }
+    public enum FlightScheduleResponseStatus
+    {
+        Success = 0,
+        ValidationError = 1,
+        Failed = 2,
+        MaxTimeError = 3
+
+    }
 
     public enum AircaftAssignedStatus
     {

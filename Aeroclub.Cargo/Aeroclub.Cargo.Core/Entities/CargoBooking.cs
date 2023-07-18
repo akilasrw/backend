@@ -14,6 +14,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public VerifyStatus? VerifyStatus { get; set; } = Common.Enums.VerifyStatus.None;
         public StandByStatus? StandByStatus { get; set; } = Common.Enums.StandByStatus.None;
+        public string? CargoHandlingInstruction { get; set; }
 
         public virtual AWBInformation AWBInformation { get; set; }
         public virtual Airport OriginAirport { get; set; }

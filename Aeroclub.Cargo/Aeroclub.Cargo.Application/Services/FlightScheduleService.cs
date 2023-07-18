@@ -614,14 +614,17 @@ namespace Aeroclub.Cargo.Application.Services
             return ServiceResponseStatus.Success;
         }
 
-        public async Task<ServiceResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM)
+        public async Task<FlightScheduleResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM)
         {
             // Get by id.
             var spec = new FlightScheduleSpecification(new CargoBookingSummaryDetailQM() { Id = updateCutOffRM.Id, IsIncludeFlightScheduleSectors = true });
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
-            // Update ATA in flight schedule.
+            // Update CutOff Time in flight schedule.
             if (flightSchedule == null)
-                return ServiceResponseStatus.ValidationError;
+                return FlightScheduleResponseStatus.ValidationError;
+
+            if (flightSchedule.ScheduledDepartureDateTime <= updateCutOffRM.CutOffTime)
+                return FlightScheduleResponseStatus.MaxTimeError;
 
             TimeSpan ts = flightSchedule.ScheduledDepartureDateTime - updateCutOffRM.CutOffTime;
             flightSchedule.CutoffTimeMin = Math.Round(ts.TotalMinutes, 0);
@@ -630,7 +633,7 @@ namespace Aeroclub.Cargo.Application.Services
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
 
-            return ServiceResponseStatus.Success;
+            return FlightScheduleResponseStatus.Success;
         }
 
         private async Task<ServiceResponseStatus> UpdateAync(FlightSchedule flightSchedule, UpdateATARM? updateATARM = null,UpdateCutOffTimeRM ? updateCutOffTimeRM = null)
