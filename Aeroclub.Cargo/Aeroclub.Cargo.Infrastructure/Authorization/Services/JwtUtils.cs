@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Infrastructure.Authorization.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,20 +17,36 @@ namespace Aeroclub.Cargo.Infrastructure.Authorization.Services
     public class JwtUtils : IJwtUtils
     {
         private readonly IConfiguration _configuration;
+        private readonly UserManager<AppUser> _userManager;
 
-        public JwtUtils(IConfiguration configuration)
+        public JwtUtils(IConfiguration configuration, UserManager<AppUser> userManager)
         {
             _configuration = configuration;
+            _userManager = userManager;
         }
 
         public string GenerateJwtToken(AppUser user)
         {
+            var roles = _userManager.GetRolesAsync(user).Result;
+            var claims = new List<Claim>
+            {
+                { new Claim("Userid", user.Id.ToString()) }
+            };
+
+            if (roles.Count > 0)
+            {
+                foreach (var r in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, r));
+                }
+            }
+
             // generate token that is valid for 15 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Token:Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("Userid", user.Id.ToString()) }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Aeroclub.Cargo.Application.Specifications;
 using BC = BCrypt.Net.BCrypt;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Application.Extensions;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -47,6 +49,10 @@ namespace Aeroclub.Cargo.Application.Services
 
                 createdUser =await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
                 await _unitOfWork.SaveChangesAsync();
+
+                var roleName = UserRole.BookingUser;
+                await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
+
                 response.Id = createdUser.Id;
                 response.StatusCode = ServiceResponseStatus.Success;
             }

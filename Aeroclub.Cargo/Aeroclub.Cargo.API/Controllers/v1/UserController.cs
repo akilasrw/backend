@@ -1,8 +1,12 @@
 ﻿using System;
 using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Common;
+using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Infrastructure.Authorization.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -11,9 +15,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
     public class UserController : BaseApiController
     {
         private IUserService _userService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, UserManager<AppUser> userManager)
         {
+            _userManager = userManager;
             _userService = userService;
         }
 
@@ -21,6 +27,10 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost("authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
+            bool isValid;
+            var msg = CheckValidPermission(model.Username, AccessPortalLevel.Backoffice, out isValid);
+            if(!isValid)  return Unauthorized(msg);
+
             var response = _userService.Authenticate(model, ipAddress());
             
             if (response.Status == Application.Enums.ServiceResponseStatus.ValidationError)
@@ -34,6 +44,28 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost("cargo-agent-authenticate")]
         public IActionResult CargoAgentAuthenticate(AuthenticateRequest model)
         {
+            bool isValid;
+            var msg = CheckValidPermission(model.Username, AccessPortalLevel.Booking, out isValid);
+            if (!isValid) return Unauthorized(msg);
+
+            var response = _userService.CargoAgentAuthenticate(model, ipAddress());
+
+            if (response.Status == Application.Enums.ServiceResponseStatus.ValidationError)
+                return BadRequest(response.Message);
+
+            setTokenCookie(response.Response.RefreshToken);
+            return Ok(response.Response);
+        }
+        
+        
+        [AllowAnonymous]
+        [HttpPost("warehouse-authenticate")]
+        public IActionResult WarehouseAuthenticate(AuthenticateRequest model)
+        {
+            bool isValid;
+            var msg = CheckValidPermission(model.Username, AccessPortalLevel.WareHouse, out isValid);
+            if (!isValid) return Unauthorized(msg);
+
             var response = _userService.CargoAgentAuthenticate(model, ipAddress());
 
             if (response.Status == Application.Enums.ServiceResponseStatus.ValidationError)
@@ -43,6 +75,54 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(response.Response);
         }
 
+        private string CheckValidPermission(string username, AccessPortalLevel accessPortalLevel , out bool isValid) 
+        {
+            var user = _userManager.FindByNameAsync(username).Result;
+            if (user == null)
+            {
+                isValid = false;
+                return CommonMessages.InvalidUsername;
+            }
+
+            var userRole = _userManager.GetRolesAsync(user).Result;
+            if (userRole.Count == 0)
+            {
+                isValid = false;
+                return CommonMessages.PermissionDenied;
+            }
+
+            if (!IsValidSystemUser(accessPortalLevel, userRole))
+            {
+                isValid = false;
+                return CommonMessages.NoAccessPortal;
+            }
+
+            isValid = true;
+            return "";
+        }
+
+        private bool IsValidSystemUser(AccessPortalLevel accessPortalLevel, IList<string> userRole)
+        {
+            if (userRole.Count > 0)
+            {
+                if (userRole.FirstOrDefault(x => x.Contains("Super Admin")) != null) return true;
+
+                switch (accessPortalLevel)
+                {
+                    case AccessPortalLevel.Booking:
+                        if (userRole.FirstOrDefault(x => x.Contains("Booking")) != null) return true;
+                        break;
+                    case AccessPortalLevel.WareHouse:
+                        if (userRole.FirstOrDefault(x => x.Contains("WareHouse")) != null) return true;
+                        break;
+                    case AccessPortalLevel.Backoffice:
+                        if (userRole.FirstOrDefault(x => x.Contains("Backoffice")) != null) return true;
+                        break;
+                }
+            }
+
+            return false;
+        }
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
