@@ -249,6 +249,8 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<FlightScheduleManagementUpdateRM,FlightScheduleManagementRM>();
 
             CreateMap<FlightScheduleManagementUpdateRM, FlightScheduleManagement>();
+            CreateMap<FlightScheduleSector, FlightScheduleSectorUldPositionVM>()
+                .ForMember(d => d.AircraftSubTypeName, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Name : ""));
 
             CreateMap<Aircraft, BaseSelectListModel>()
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.RegNo));

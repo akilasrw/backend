@@ -295,6 +295,32 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IEnumerable<Seat>, IEnumerable<SeatDto>>(seats);
         }
 
+        public async Task<IEnumerable<FlightScheduleSectorUldPositionVM>> GetFlightScheduleSectorWithULDPositionCountAsync(FlightScheduleSectorULDPositionCountQM query)
+        {
+            List<FlightScheduleSectorUldPositionVM> list = new List<FlightScheduleSectorUldPositionVM>();
+
+            var spec = new FlightScheduleSectorSpecification(query);
+            var flightScheduleSectors = await _unitOfWork.Repository<FlightScheduleSector>().GetListWithSpecAsync(spec);
+
+            foreach (var flightScheduleSector in flightScheduleSectors)
+            {
+                var fs = _mapper.Map<FlightScheduleSectorUldPositionVM>(flightScheduleSector);
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
+
+                var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+                fs.ULDPositionCount = cargoPositions.Count;
+                fs.ULDCount = flightScheduleSector.LoadPlan == null || flightScheduleSector.LoadPlan.ULDContaines == null ? 0 : flightScheduleSector.LoadPlan.ULDContaines.Where(x => x.ULD != null).Count();
+                fs.CutoffTime = flightScheduleSector.CutoffTimeMin == null ? flightScheduleSector.ScheduledDepartureDateTime
+                    : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-flightScheduleSector.CutoffTimeMin.Value);
+                list.Add(fs);
+            }
+
+            return list;
+        }
+
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
         {
             var spec = new AircraftLayoutMappingSpecification(new AircraftLayoutMappingQM() { AircraftSubTypeId = subTypeId });

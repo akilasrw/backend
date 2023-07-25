@@ -18,6 +18,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
@@ -517,6 +518,11 @@ namespace Aeroclub.Cargo.Application.Services
                     ULDId = bookingAssignment.uldId, 
                     Id = packageULDContainers.FirstOrDefault().ULDContainerId 
                 });
+        }
+
+        public async Task<IEnumerable<FlightScheduleSectorUldPositionVM>> GetFlightScheduleSectorWithULDPositionCountAsync(FlightScheduleSectorULDPositionCountQM query)
+        {
+            return await _flightScheduleSectorService.GetFlightScheduleSectorWithULDPositionCountAsync(query);
         }
     }
 }

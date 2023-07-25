@@ -21,5 +21,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<double> GetAircraftAvailableVolume(Guid flightScheduleSectorId);
         Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId);
         Task<ServiceResponseStatus> DeleteAsync(Guid Id);
+        Task<IEnumerable<FlightScheduleSectorUldPositionVM>> GetFlightScheduleSectorWithULDPositionCountAsync(FlightScheduleSectorULDPositionCountQM query);
     }
 }

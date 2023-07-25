@@ -37,6 +37,22 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return Ok(result);
         }
+        
+        [HttpGet("GetFlightScheduleWithULDCount")]
+        public async Task<ActionResult<FlightScheduleSectorVM>> GetFlightScheduleWithULDCountAsync([FromQuery] FlightScheduleSectorULDPositionCountQM query)
+        {
+            if (query.ScheduledDepartureStartDateTime == DateTime.MinValue || query.ScheduledDepartureEndDateTime == DateTime.MinValue)
+            {
+                return BadRequest("Dates are not valid.");
+            }
+
+            var result = await _flightScheduleSectorService.GetFlightScheduleSectorWithULDPositionCountAsync(query);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleSectorCreateRM dto)// TODO: Need to be removed. this part should be happening with creation of flightScheduleController
