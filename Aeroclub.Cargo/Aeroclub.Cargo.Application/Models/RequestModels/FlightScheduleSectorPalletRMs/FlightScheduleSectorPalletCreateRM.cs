@@ -12,4 +12,15 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPa
         public Guid FlightScheduleSectorId { get; set; }
         public Guid ULDId { get; set; }
     }
+    public class FlightScheduleSectorPalletCreateRemoveRM : FlightScheduleSectorPalletCreateRM
+    {
+        public bool IsAdded { get; set; }
+    }
+    
+    public class FlightScheduleSectorPalletCreateListRM
+    {
+        public IEnumerable<FlightScheduleSectorPalletCreateRemoveRM> FlightScheduleSectorPalletRMs { get; set; }
+    }
+
+    
 }

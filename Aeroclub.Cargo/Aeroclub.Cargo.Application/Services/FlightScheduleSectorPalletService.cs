@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorPalletQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +41,101 @@ namespace Aeroclub.Cargo.Application.Services
             var response = new ServiceResponseCreateStatus() { Id = entity.Id, StatusCode = ServiceResponseStatus.Success };
 
             return response;
+        }
+        
+        public async Task<bool> DeleteAsync(FlightScheduleSectorPallet entity)
+        {
+            _unitOfWork.Repository<FlightScheduleSectorPallet>().Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(entity);
+            return true;
+        }
+
+        public async Task<ServiceResponseStatus> CreateRemovePalletListAsync(FlightScheduleSectorPalletCreateListRM request)
+        {
+            using (var transaction = _unitOfWork.BeginTransaction())
+            {
+                var deleted = true;
+                if (request.FlightScheduleSectorPalletRMs.Any(x => x.IsAdded == false)) // Deleting process
+                {
+                    var needtoDeleted = request.FlightScheduleSectorPalletRMs.Where(x => x.IsAdded == false).ToList();
+                    deleted = await DeleteListAsync(needtoDeleted);
+                }
+
+                if (deleted)
+                    foreach (var rm in request.FlightScheduleSectorPalletRMs.Where(x => x.IsAdded).ToList()) // Adding process
+                    {
+                        var res = await CreateAsync(rm);
+                        if (res.StatusCode == ServiceResponseStatus.Success)
+                        {
+
+                            transaction.Rollback();
+                            return res.StatusCode;
+                        }
+                    }
+                transaction.Commit();
+            }
+            return ServiceResponseStatus.Success;
+        }
+
+        public async Task GetPalleteListAsync(Guid flightScheduleId, Guid flightScheduleSectorId)
+        {
+            List<ULD> uldList = new List<ULD>();
+            // Get already Assigned Ulds
+            var pallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>()
+                .GetListWithSpecAsync(new FlightScheduleSectorPalletSpecification(new FlightScheduleSectorPalletQuery() { FlightScheduleSectorId = flightScheduleSectorId, IncludeUld = true, IncludeFlightSchedule = true}));
+
+            foreach (var pallet in pallets.ToList())
+                uldList.Add(pallet.ULD);
+            
+
+            // Get All Ulds
+            var allUlds = await _unitOfWork.Repository<ULD>().GetListAsync();
+
+            var otherlist = allUlds
+                .Except(uldList)
+                .ToList();
+
+
+
+            //foreach (var uld in ulds)
+            //{
+            //    pallets.Where(x => x.ULDId == uld.Id);
+            //}
+
+            //var assingedUlds = ulds.Join(
+            //    pallets,
+            //    uld=> uld.Id,
+            //    pallet => pallet.ULDId,
+            //    (uld, pallet) => new
+            //    {
+            //        uld.SerialNumber, 
+            //        pallet.ULDId,
+            //    })
+            //    .ToList();
+
+
+
+            // Filtered avaialble Ulds
+            // -- Not used in same flight date
+
+
+        }
+
+        async Task<bool> DeleteListAsync(IEnumerable<FlightScheduleSectorPalletCreateRemoveRM> requests)
+        {
+            foreach (var req in requests)
+            {
+                var flightScheduleSectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(
+                    new FlightScheduleSectorPalletSpecification(
+                        new FlightScheduleSectorPalletQuery() { 
+                        FlightScheduleSectorId = req.FlightScheduleSectorId, 
+                        ULDId = req.ULDId 
+                    }));
+                if(flightScheduleSectorPallet!= null)
+                    await DeleteAsync(flightScheduleSectorPallet);
+            }
+            return true;
         }
 
         async Task<bool> ValidCountAsync(FlightScheduleSectorPalletCreateRM rm)

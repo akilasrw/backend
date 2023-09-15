@@ -524,5 +524,10 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _flightScheduleSectorService.GetFlightScheduleSectorWithULDPositionCountAsync(query);
         }
+
+        public async Task<ServiceResponseStatus> CreateRemovePalleteListAsync(FlightScheduleSectorPalletCreateListRM request)
+        {
+            return await _flightScheduleSectorPalletService.CreateRemovePalletListAsync(request);
+        }
     }
 }

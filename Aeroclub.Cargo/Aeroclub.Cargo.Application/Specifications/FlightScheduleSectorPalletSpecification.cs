@@ -1,0 +1,27 @@
+﻿using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorPalletQMs;
+using Aeroclub.Cargo.Application.Models.Queries.LoadPlanQMs;
+using Aeroclub.Cargo.Core.Entities;
+using Aeroclub.Cargo.Core.Services;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Aeroclub.Cargo.Application.Specifications
+{
+    public class FlightScheduleSectorPalletSpecification : BaseSpecification<FlightScheduleSectorPallet>
+    {
+        public FlightScheduleSectorPalletSpecification(FlightScheduleSectorPalletQuery query)
+            : base(p => (query.FlightScheduleSectorId == Guid.Empty || p.FlightScheduleSectorId == query.FlightScheduleSectorId) &&
+            (query.ULDId == Guid.Empty || p.ULDId == query.ULDId))
+        {
+            if (query.IncludeUld)
+                AddInclude(x => x.Include(y => y.ULD));
+
+            if (query.IncludeFlightSchedule)
+                AddInclude(x => x.Include(y => y.FlightScheduleSector));
+        }
+    }
+}

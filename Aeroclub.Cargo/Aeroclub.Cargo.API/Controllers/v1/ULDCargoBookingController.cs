@@ -83,10 +83,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _uldCargoBookingManagerService.AssginCargoToULDAsync(UldContainerCargoPosition));
         }
         
-        [HttpPost("AddPalleteToFlight")]
+        [HttpPost("AddPalleteToFlight")] // not use: need to be removed
         public async Task<IActionResult> AddPalleteToFlightAsync([FromBody]FlightScheduleSectorPalletCreateRM flightScheduleSectorPallet)
         {
             return Ok(await _uldCargoBookingManagerService.AddPalleteToFlightAsync(flightScheduleSectorPallet));
+        } 
+        
+        [HttpPost("CreateRemovePalleteList")]
+        public async Task<IActionResult> CreateRemovePalleteListAsync([FromBody] FlightScheduleSectorPalletCreateListRM flightScheduleSectorPallet)
+        {
+            return Ok(await _uldCargoBookingManagerService.CreateRemovePalleteListAsync(flightScheduleSectorPallet));
         } 
         
         [HttpPost("SaveBookingAssigment")]
