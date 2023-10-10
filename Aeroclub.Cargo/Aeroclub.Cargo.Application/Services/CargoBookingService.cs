@@ -104,9 +104,12 @@ namespace Aeroclub.Cargo.Application.Services
                 StandByStatus standByStatus = booking.StandByStatus == null ? StandByStatus.None : (StandByStatus)booking.StandByStatus;
                 if (standByStatus != StandByStatus.None || 
                     booking.BookingStatus == BookingStatus.Cancelled) // ignore when status is cancel or null or not none
-                    continue;                
-                
-                list.Add(await MappedListAsync(booking));
+                    continue;
+                var mappedBooking = await MappedListAsync(booking);
+                if (query.IncludePackageItems) {
+                    mappedBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
+                }
+                list.Add(mappedBooking);
             }
             list = list.DistinctBy(x => x.Id).ToList();
             
