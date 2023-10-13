@@ -304,6 +304,10 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in flightScheduleSectors)
             {
+                if (flightScheduleSector?.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized)
+                {
+                    continue;
+                }
                 var fs = _mapper.Map<FlightScheduleSectorUldPositionVM>(flightScheduleSector);
                 var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                 {
@@ -316,6 +320,7 @@ namespace Aeroclub.Cargo.Application.Services
                 fs.CutoffTime = flightScheduleSector.CutoffTimeMin == null ? flightScheduleSector.ScheduledDepartureDateTime
                     : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-flightScheduleSector.CutoffTimeMin.Value);
                 list.Add(fs);
+
             }
 
             return list;
