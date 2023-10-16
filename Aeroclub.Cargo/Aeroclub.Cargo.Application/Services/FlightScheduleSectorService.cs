@@ -304,7 +304,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in flightScheduleSectors)
             {
-                if (flightScheduleSector?.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized)
+                if (query.ExcludeFinalizedSchedules && flightScheduleSector?.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized)
                 {
                     continue;
                 }
