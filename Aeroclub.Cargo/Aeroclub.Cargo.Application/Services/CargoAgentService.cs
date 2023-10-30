@@ -12,6 +12,10 @@ using BC = BCrypt.Net.BCrypt;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Application.Extensions;
+using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.LIRFileUploadQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
+using Aeroclub.Cargo.Infrastructure.FileUploader.Interfaces;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -19,51 +23,76 @@ namespace Aeroclub.Cargo.Application.Services
     {
        
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUploadFactory _uploadFactory;
 
 
-        public CargoAgentService(UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IMapper mapper):
+        public CargoAgentService(UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IMapper mapper, IUploadFactory uploadFactory):
             base(unitOfWork,mapper)
         {
             _userManager = userManager;
+            _uploadFactory = uploadFactory;
         }
 
 
-        public async Task<CargoAgentCreateStatusRM> CreateAsync(CargoAgentCreateRM model)
+        public async Task<CargoAgentCreateStatusRM?> CreateAsync(CargoAgentCreateRM model)
         {
             CargoAgent createdUser;
 
-            var response = new CargoAgentCreateStatusRM();
-
-            var appUser = _mapper.Map<AppUser>(model);
-
-            // hash password
-            appUser.PasswordHash = BC.HashPassword(model.Password);
-
-            var createdAppUser = await _userManager.CreateAsync(appUser);
-
-            if (createdAppUser.Succeeded)
+            if (model.AgreementFile != null)
             {
-                var user = _mapper.Map<CargoAgent>(model);
+                var service = _uploadFactory.CreateUploadServiceAsync(UploadStorageType.Blob);
+                var uploadedFile = service.Upload(model.AgreementFile);
 
-                user.AppUserId = appUser.Id;
+                var response = new CargoAgentCreateStatusRM();
 
-                createdUser =await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
-                await _unitOfWork.SaveChangesAsync();
+                var appUser = _mapper.Map<AppUser>(model);
 
-                var roleName = UserRole.BookingUser;
-                await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
+                // hash password
+                appUser.PasswordHash = BC.HashPassword(model.Password);
 
-                response.Id = createdUser.Id;
-                response.StatusCode = ServiceResponseStatus.Success;
+                appUser.Agreement = uploadedFile.AbsoluteURL;
+
+                var createdAppUser = await _userManager.CreateAsync(appUser);
+
+                if (createdAppUser.Succeeded)
+                {
+                    var user = _mapper.Map<CargoAgent>(model);
+
+                    user.AppUserId = appUser.Id;
+
+                    createdUser = await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var roleName = UserRole.BookingUser;
+                    await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
+
+                    response.Id = createdUser.Id;
+                    response.StatusCode = ServiceResponseStatus.Success;
+                }
+                else
+                {
+                    response.StatusCode = ServiceResponseStatus.Failed;
+                    response.ErrorMessage = createdAppUser.Errors.First().Description;
+                }
+
+                return response;
             }
             else
             {
-                response.StatusCode = ServiceResponseStatus.Failed;
-                response.ErrorMessage = createdAppUser.Errors.First().Description;
+                return null;
             }
 
-            return response;
+            
+
+
+
+
+            
+
+            
         }
+
+        
 
         public async Task<ServiceResponseStatus> UpdateAsync(CargoAgentUpdateRM user)
         {

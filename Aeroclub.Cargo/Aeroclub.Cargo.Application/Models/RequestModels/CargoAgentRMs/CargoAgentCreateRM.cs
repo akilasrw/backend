@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
@@ -25,6 +26,9 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
 
         [Required(ErrorMessage = "Country required")]
         public Guid CountryId { get; set; }
+
+        [Required(ErrorMessage = "Agreement Required")]
+        public IFormFile AgreementFile { get; set; }
 
         [Required(ErrorMessage = "Base airport required")]
         public Guid BaseAirportId { get; set; }
