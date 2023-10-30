@@ -313,7 +313,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
                 });
-
+                fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
                 var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
                 fs.ULDPositionCount = cargoPositions.Count;
                 fs.ULDCount = flightScheduleSector.LoadPlan == null || flightScheduleSector.LoadPlan.ULDContaines == null ? 0 : flightScheduleSector.LoadPlan.ULDContaines.Where(x => x.ULD != null).Count();
