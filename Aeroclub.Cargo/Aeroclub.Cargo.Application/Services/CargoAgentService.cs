@@ -50,24 +50,36 @@ namespace Aeroclub.Cargo.Application.Services
                 // hash password
                 appUser.PasswordHash = BC.HashPassword(model.Password);
 
-                appUser.Agreement = uploadedFile.AbsoluteURL;
+                appUser.Agreement = uploadedFile.FileName;
 
                 var createdAppUser = await _userManager.CreateAsync(appUser);
 
                 if (createdAppUser.Succeeded)
                 {
-                    var user = _mapper.Map<CargoAgent>(model);
+                  
+                    try
+                    {
+                        var user = _mapper.Map<CargoAgent>(model);
 
-                    user.AppUserId = appUser.Id;
+                        user.AppUserId = appUser.Id;
 
-                    createdUser = await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
-                    await _unitOfWork.SaveChangesAsync();
+                        createdUser = await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
+                        await _unitOfWork.SaveChangesAsync();
 
-                    var roleName = UserRole.BookingUser;
-                    await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
+                        var roleName = UserRole.BookingUser;
+                        await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
 
-                    response.Id = createdUser.Id;
-                    response.StatusCode = ServiceResponseStatus.Success;
+                        response.Id = createdUser.Id;
+                        response.StatusCode = ServiceResponseStatus.Success;
+
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    
+
+                  
                 }
                 else
                 {

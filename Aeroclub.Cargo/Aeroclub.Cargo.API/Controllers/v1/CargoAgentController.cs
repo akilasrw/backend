@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpPost()]
-        public async Task<IActionResult> CreateAsync([FromBody]CargoAgentCreateRM dto)
+        public async Task<IActionResult> CreateAsync([FromForm]CargoAgentCreateRM dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

@@ -22,10 +22,7 @@ namespace Aeroclub.Cargo.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<LayoutSpecs>()
-       .HasOne(layout => layout.AircraftSubType)
-       .WithMany(subType => subType.LayoutSpecs)
-       .HasForeignKey(layout => layout.AircraftSubTypeId);
+           
 
             modelBuilder.ApplyConfiguration(new AirportConfiguration());
             modelBuilder.ApplyConfiguration(new FlightSectorConfiguration());
@@ -130,8 +127,6 @@ namespace Aeroclub.Cargo.Data
         public DbSet<ULDTracking> ULDTrackings { get; set; } = null!;
         public DbSet<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; } = null!;
         public DbSet<SystemUser> SystemUsers { get; set; } = null!;
-
-        public DbSet<LayoutSpecs> LayoutSpecs { get; set; }
 
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
 
