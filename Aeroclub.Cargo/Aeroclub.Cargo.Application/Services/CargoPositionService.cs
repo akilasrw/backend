@@ -41,6 +41,8 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
+
+
         public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
         {
             List<Tuple<CargoPosition, Guid?>> matchingCargoPositions = new List<Tuple<CargoPosition, Guid?>>();
@@ -311,6 +313,37 @@ namespace Aeroclub.Cargo.Application.Services
                 return  new ValidateResponse() { IsValid = true };
             }
 
+        }
+
+        public async Task<List<CargoPositionVM>> GetSummeryCargoPositionAsync(Guid aircraftLayoutId)
+        {
+            List<CargoPositionVM> list = new List<CargoPositionVM>();
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
+
+            var cargoPositionList =  await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            foreach (var cargoPosition in cargoPositionList)
+            {
+                var cargoVM = new CargoPositionVM
+                {
+                    Id = cargoPosition.Id,
+                    Name = cargoPosition.Name,
+                    Height = cargoPosition.Height,
+                    MaxWeight = cargoPosition.MaxWeight,
+                    MaxVolume = cargoPosition.MaxVolume,
+                    CurrentWeight = cargoPosition.CurrentWeight,
+                    Length = cargoPosition.Length,
+                    Breadth = cargoPosition.Breadth,
+                    Priority = cargoPosition.Priority,
+                    FlightLeg = cargoPosition.FlightLeg,
+                    CurrentVolume = cargoPosition.CurrentVolume,
+                    ZoneAreaId = cargoPosition.ZoneAreaId,
+                };
+
+                list.Add(cargoVM);
+            }
+
+            return list;
         }
     }
 }
