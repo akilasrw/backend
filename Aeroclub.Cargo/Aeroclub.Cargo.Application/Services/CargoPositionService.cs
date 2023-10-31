@@ -20,6 +20,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using SendGrid.Helpers.Errors.Model;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -345,5 +346,35 @@ namespace Aeroclub.Cargo.Application.Services
 
             return list;
         }
+
+        public async Task UpdateCargoPositionPropertiesAsync(Guid cargoPositionId, double newHeight, double newMaxWeight, double newMaxVolume)
+        {
+           
+            var cargoPosition = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(cargoPositionId);
+
+            if (cargoPosition == null)
+            { 
+                throw new NotFoundException("CargoPosition not found");
+            }
+
+          
+            cargoPosition.Height = newHeight;
+            cargoPosition.MaxWeight = newMaxWeight;
+            cargoPosition.MaxVolume = newMaxVolume;
+
+
+            _unitOfWork.Repository<CargoPosition>().Update(cargoPosition);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }catch (Exception ex)
+            {
+                Console.Write(ex.ToString());
+            }
+        
+            
+        }
+
     }
 }

@@ -17,5 +17,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<SeatAvailabilityVM> GetAvailableThreeSeatAsync(FlightScheduleSectorQM qm);
         Task<List<CargoPositionVM>> GetSummeryCargoPositionAsync(Guid aircraftLayoutId);
 
+        Task UpdateCargoPositionPropertiesAsync(Guid cargoPositionId, double newHeight, double newMaxWeight, double newMaxVolume);
+
     }
 }

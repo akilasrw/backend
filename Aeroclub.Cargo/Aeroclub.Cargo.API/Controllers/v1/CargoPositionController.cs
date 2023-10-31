@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.DTOs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
@@ -50,6 +51,35 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return NotFound();
 
             return Ok(result);
+        }
+
+        [HttpPut("UpdateCargoPositionProperties")]
+        public async Task<ActionResult> UpdateCargoPositionPropertiesAsync([FromBody] UpdateCargoPositionPropertiesDTO updateDTO)
+        {
+            if (updateDTO == null || updateDTO.CargoPositionId == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _cargoPositionService.UpdateCargoPositionPropertiesAsync(
+                    updateDTO.CargoPositionId,
+                    updateDTO.NewHeight,
+                    updateDTO.NewMaxWeight,
+                    updateDTO.NewMaxVolume);
+
+                return Ok(new
+                {
+                    message = "Successfull updated the record"
+                }); 
+            }
+          
+            catch (Exception ex)
+            {
+               
+                return StatusCode(500, ex.Message); 
+            }
         }
 
 
