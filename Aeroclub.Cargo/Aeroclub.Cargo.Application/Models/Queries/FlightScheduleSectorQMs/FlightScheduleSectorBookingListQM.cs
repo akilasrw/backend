@@ -12,9 +12,13 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs
     {
         public string? FlightNumber { get; set; } = null;
         public string? BookingNumber { get; set; } = null;
+
+        public Guid? FlightScheduleSectorId { get; set; }
+
         public Guid? AgentId { get; set; } = null;
         public DateTime FlightDate { get; set; } = DateTime.MinValue;
         public StandByStatus StandByStatus { get; set; } = StandByStatus.None;
+        public bool IncludePackageItems { get; set; } = false;
     }
 
     public class FlightScheduleSectorVerifyBookingListQM: BaseQM

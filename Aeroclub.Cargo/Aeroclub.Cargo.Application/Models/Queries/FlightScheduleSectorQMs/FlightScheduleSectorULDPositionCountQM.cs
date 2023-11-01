@@ -4,5 +4,6 @@
     {
         public DateTime ScheduledDepartureStartDateTime { get; set; }
         public DateTime ScheduledDepartureEndDateTime { get; set; }
+        public bool ExcludeFinalizedSchedules { get; set; }
     }
 }
