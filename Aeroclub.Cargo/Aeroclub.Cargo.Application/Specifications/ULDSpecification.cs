@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,13 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddOrderByDescending(x => x.Created);
             }
         }
-        
+
+        public ULDSpecification(ULDLocateStatus? ULDLocateStatus)
+            : base(x => (ULDLocateStatus == null || x.ULDLocateStatus == ULDLocateStatus) && !x.IsDeleted)
+        {
+
+        }
+
         public ULDSpecification(string ULDNumber)
             :base(x => (string.IsNullOrEmpty(ULDNumber) || x.SerialNumber.Contains(ULDNumber) ) && !x.IsDeleted)
         {

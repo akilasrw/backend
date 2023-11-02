@@ -92,8 +92,10 @@ namespace Aeroclub.Cargo.Application.Services
                 allocatedUldList.Add(pallet.ULD);
             }
 
+            var spec = new ULDSpecification(palletFilter.ULDLocateStatus);
+
             // Get All Ulds
-            var allUlds = await _unitOfWork.Repository<ULD>().GetListAsync();
+            var allUlds = await _unitOfWork.Repository<ULD>().GetListWithSpecAsync(spec);
 
             // exclude allocated list
             var otherlist = allUlds
