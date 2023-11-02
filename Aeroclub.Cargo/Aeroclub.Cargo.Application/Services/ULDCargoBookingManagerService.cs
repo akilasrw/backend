@@ -23,6 +23,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.FlightSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerCargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDContainerVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -501,6 +502,12 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> AddPalleteToFlightAsync(FlightScheduleSectorPalletCreateRM rm)
         {
             return await _flightScheduleSectorPalletService.CreateAsync(rm);
+        }
+
+        public async Task<List<ULDVM>> GetPalleteFromFlights(FlightSheduleSectorPalletGetList filter)
+        {
+            var list =  await _flightScheduleSectorPalletService.GetPalleteListAsync(filter);
+            return list;
         }
 
         public async Task<ServiceResponseStatus> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment)

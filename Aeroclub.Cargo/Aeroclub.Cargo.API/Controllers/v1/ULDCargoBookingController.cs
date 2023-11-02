@@ -87,7 +87,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<IActionResult> AddPalleteToFlightAsync([FromBody]FlightScheduleSectorPalletCreateRM flightScheduleSectorPallet)
         {
             return Ok(await _uldCargoBookingManagerService.AddPalleteToFlightAsync(flightScheduleSectorPallet));
-        } 
+        }
+
+        [HttpGet("GetPalletsByFlightScheduleId")]
+        public async Task<IActionResult> GetPalletsByFlightScheduleId([FromQuery] FlightSheduleSectorPalletGetList scheduleId)
+        {
+            return Ok(await _uldCargoBookingManagerService.GetPalleteFromFlights(scheduleId));
+        }
         
         [HttpPost("CreateRemovePalleteList")]
         public async Task<IActionResult> CreateRemovePalleteListAsync([FromBody] FlightScheduleSectorPalletCreateListRM flightScheduleSectorPallet)

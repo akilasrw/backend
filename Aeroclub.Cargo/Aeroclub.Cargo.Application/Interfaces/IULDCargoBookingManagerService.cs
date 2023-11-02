@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionR
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -25,5 +26,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment);
         Task<IEnumerable<FlightScheduleSectorUldPositionVM>> GetFlightScheduleSectorWithULDPositionCountAsync(FlightScheduleSectorULDPositionCountQM query);
         Task<ServiceResponseStatus> CreateRemovePalleteListAsync(FlightScheduleSectorPalletCreateListRM request);
+        Task<List<ULDVM>> GetPalleteFromFlights(FlightSheduleSectorPalletGetList filter);
+
     }
 }
