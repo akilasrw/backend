@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorPalletQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -80,7 +81,7 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
        
-        public async Task<List<ULDVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter)
+        public async Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter)
         {
             List<ULD> allocatedUldList = new List<ULD>();
             // Get already Assigned Ulds
@@ -89,7 +90,12 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var pallet in pallets.ToList())
             {
-                allocatedUldList.Add(pallet.ULD);
+                if (palletFilter.ULDLocateStatus == null || pallet.ULD.ULDLocateStatus == palletFilter.ULDLocateStatus) {
+                    if (!allocatedUldList.Any(excluded => excluded.Id == pallet.ULD.Id))
+                    {
+                        allocatedUldList.Add(pallet.ULD);
+                    }
+                }
             }
 
             var spec = new ULDSpecification(palletFilter.ULDLocateStatus);
@@ -99,21 +105,21 @@ namespace Aeroclub.Cargo.Application.Services
 
             // exclude allocated list
             var otherlist = allUlds
-                .Except(allocatedUldList)
+                .Where(model => !allocatedUldList.Any(excluded => excluded.Id == model.Id))
                 .ToList();
 
-            List<ULDVM> uldVMList = new List<ULDVM>();
+            List<ULDFilteredListVM> uldVMList = new List<ULDFilteredListVM>();
 
             foreach (var item in otherlist) {
-                var vmItem = _mapper.Map<ULDVM>(item);
+                var vmItem = _mapper.Map<ULDFilteredListVM>(item);
                 uldVMList.Add(vmItem);
             }
 
             foreach (var item in allocatedUldList)
             {
-                var vmItem = _mapper.Map<ULDVM>(item);
+                //var dtoList = _mapper.Map<IReadOnlyList<ULDFilteredListVM>>(uldList);
+                var vmItem = _mapper.Map<ULDFilteredListVM>(item);
                 vmItem.IsAssigned = true;
-                vmItem.AllocatedFlightNumber = palletFilter.FlightScheduleId;
                 uldVMList.Add(vmItem);
             }
             return uldVMList;

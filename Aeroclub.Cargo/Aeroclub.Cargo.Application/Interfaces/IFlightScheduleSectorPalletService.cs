@@ -16,7 +16,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleSectorPalletCreateRM rm);
         Task<bool> DeleteAsync(FlightScheduleSectorPallet entity);
         Task<ServiceResponseStatus> CreateRemovePalletListAsync(FlightScheduleSectorPalletCreateListRM request);
-        Task<List<ULDVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter);
+        Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter);
 
     }
 }

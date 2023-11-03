@@ -22,5 +22,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
         public double MaxWeight { get; set; }
         public double MaxVolume { get; set; }
         public Guid ULDMetaDataId { get; set; }
+        public bool IsAssigned { get; set; } = false;
     }
 }

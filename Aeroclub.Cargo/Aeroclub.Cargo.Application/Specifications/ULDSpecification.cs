@@ -32,7 +32,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public ULDSpecification(ULDLocateStatus? ULDLocateStatus)
             : base(x => (ULDLocateStatus == null || x.ULDLocateStatus == ULDLocateStatus) && !x.IsDeleted)
         {
-
+            AddInclude(x => x.Include(y => y.ULDMetaData));
         }
 
         public ULDSpecification(string ULDNumber)

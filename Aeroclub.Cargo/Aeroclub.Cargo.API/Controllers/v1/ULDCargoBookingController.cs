@@ -90,9 +90,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetPalletsByFlightScheduleId")]
-        public async Task<IActionResult> GetPalletsByFlightScheduleId([FromQuery] FlightSheduleSectorPalletGetList scheduleId)
+        public async Task<IActionResult> GetPalletsByFlightScheduleId([FromQuery] FlightSheduleSectorPalletGetList filter)
         {
-            return Ok(await _uldCargoBookingManagerService.GetPalleteFromFlights(scheduleId));
+            return Ok(await _uldCargoBookingManagerService.GetPalleteFromFlights(filter));
         }
         
         [HttpPost("CreateRemovePalleteList")]
