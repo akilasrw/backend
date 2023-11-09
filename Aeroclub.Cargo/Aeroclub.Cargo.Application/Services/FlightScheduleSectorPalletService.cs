@@ -53,6 +53,12 @@ namespace Aeroclub.Cargo.Application.Services
             return true;
         }
 
+        public async Task<FlightScheduleSectorPallet?> GetAssignedULDSectorPallet(FlightScheduleSectorPalletCreateRM rM) {
+            var pallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>()
+                .GetEntityWithSpecAsync (new FlightScheduleSectorPalletSpecification(new FlightScheduleSectorPalletQuery() { FlightScheduleSectorId = rM.FlightScheduleSectorId, IncludeUld = true, IncludeFlightSchedule = true,ULDId = rM.ULDId }));
+            return pallets;
+        }
+
         public async Task<ServiceResponseStatus> CreateRemovePalletListAsync(FlightScheduleSectorPalletCreateListRM request)
         {
             using (var transaction = _unitOfWork.BeginTransaction())
@@ -71,8 +77,8 @@ namespace Aeroclub.Cargo.Application.Services
                         if (res.StatusCode == ServiceResponseStatus.Success)
                         {
 
-                            transaction.Rollback();
-                            return res.StatusCode;
+                            //transaction.Rollback();
+                            //return res.StatusCode;
                         }
                     }
                 transaction.Commit();

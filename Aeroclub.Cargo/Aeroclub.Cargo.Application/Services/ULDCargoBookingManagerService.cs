@@ -536,5 +536,23 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return await _flightScheduleSectorPalletService.CreateRemovePalletListAsync(request);
         }
+
+        public async Task<ServiceResponseStatus> DeleteAssignedPalletFromSchedule(FlightScheduleSectorPalletCreateRM query)
+        {
+            var entity = await _flightScheduleSectorPalletService.GetAssignedULDSectorPallet(query);
+
+            if (entity == null)
+            {
+                return ServiceResponseStatus.ValidationError;
+            }
+
+            var result = await _flightScheduleSectorPalletService.DeleteAsync(entity: entity);
+            if(!result)
+            {
+                return ServiceResponseStatus.ValidationError;
+            }
+            return ServiceResponseStatus.Success;
+
+        }
     }
 }

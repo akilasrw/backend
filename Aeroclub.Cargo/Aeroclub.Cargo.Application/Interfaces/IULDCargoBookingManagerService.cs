@@ -27,6 +27,6 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IEnumerable<FlightScheduleSectorUldPositionVM>> GetFlightScheduleSectorWithULDPositionCountAsync(FlightScheduleSectorULDPositionCountQM query);
         Task<ServiceResponseStatus> CreateRemovePalleteListAsync(FlightScheduleSectorPalletCreateListRM request);
         Task<List<ULDFilteredListVM>> GetPalleteFromFlights(FlightSheduleSectorPalletGetList filter);
-
+        Task<ServiceResponseStatus> DeleteAssignedPalletFromSchedule(FlightScheduleSectorPalletCreateRM query);
     }
 }

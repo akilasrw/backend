@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerCargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
@@ -9,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainerCargoPositionRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDCargoBookingVMs;
+using Aeroclub.Cargo.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -99,8 +101,22 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<IActionResult> CreateRemovePalleteListAsync([FromBody] FlightScheduleSectorPalletCreateListRM flightScheduleSectorPallet)
         {
             return Ok(await _uldCargoBookingManagerService.CreateRemovePalleteListAsync(flightScheduleSectorPallet));
-        } 
-        
+        }
+
+        [HttpPost("RemoveAssignedPallet")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteAssignedPalletAsync(FlightScheduleSectorPalletCreateRM query)
+        {
+            var res = await _uldCargoBookingManagerService.DeleteAssignedPalletFromSchedule(query);
+
+            if (res == ServiceResponseStatus.ValidationError)
+            {
+                return BadRequest("Can not be deleted. There is no pallet/ULD assigned for this scuedule.");
+            }
+            return NoContent();
+        }
+
         [HttpPost("SaveBookingAssigment")]
         public async Task<IActionResult> SaveBookingAssigmentAsync(BookingAssignmentRM bookingAssignment)
         {
