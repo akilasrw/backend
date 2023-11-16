@@ -69,6 +69,17 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("UpdateProfile")]
+        public async Task<IActionResult> ProfileUpdateAsync([FromBody] SystemUserStatusUpdateRM model)
+        {
+            if (!ModelState.IsValid) return BadRequest("Some fields are missing.");
+            if (model.Id == Guid.Empty) return BadRequest("Id required.");
+
+            await _manageUserService.StatusUpdateAsync(model);
+
+            return NoContent();
+        }
+
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<SystemUserVM>>> GetFilteredListAsync([FromQuery] SystemUserListQM query)
         {

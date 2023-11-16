@@ -3,6 +3,8 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
+using Aeroclub.Cargo.Core.Entities;
+using Google.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,13 +41,65 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpPut()]
-        public async Task<IActionResult> UpdateAsync([FromBody] CargoAgentUpdateRM model)
+        public async Task<IActionResult> UpdateAsync([FromForm] CargoAgentUpdateRM model)
         {
             if (!ModelState.IsValid) return BadRequest("Some fields are missing.");
 
             await cargoAgentService.UpdateAsync(model);
 
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("updateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromForm] AgentProfileUpdateRM model)
+        {
+
+            var context = HttpContext;
+
+            if (!ModelState.IsValid) return BadRequest("Some fields are missing.");
+
+            if(HttpContext.Items.TryGetValue("User", out var user))
+
+                if (user is AppUser userType)
+                {
+
+                    var userId = userType.Id;
+
+                    await cargoAgentService.UpdateProfile(model, userId);
+                }
+
+
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<AppUser> GetProfile()
+        {
+
+            
+
+            
+
+            if (HttpContext.Items.TryGetValue("User", out var user))
+
+                if (user is AppUser userType)
+                {
+
+                    var userId = userType.Id;
+
+                    
+                    return await cargoAgentService.GetProfile(userId);
+
+
+                }
+
+
+            return null;
+
+            
         }
 
         [Authorize]

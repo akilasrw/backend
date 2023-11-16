@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
+using Aeroclub.Cargo.Core.Entities;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -10,6 +11,10 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<CargoAgentCreateStatusRM> CreateAsync(CargoAgentCreateRM model);
         Task<ServiceResponseStatus> UpdateAsync(CargoAgentUpdateRM model);
+
+        Task<ServiceResponseStatus> UpdateProfile(AgentProfileUpdateRM model, Guid id);
+
+        Task<AppUser> GetProfile(Guid id);
         Task<CargoAgentVM> GetAsync(CargoAgentQM Id);
         Task<bool> DeleteAsync(Guid Id);
         Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync();
