@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.PackageContainerQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageContainerVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
@@ -21,5 +22,17 @@ namespace Aeroclub.Cargo.Application.Services
             var list = await _unitOfWork.Repository<PackageContainer>().GetListWithSpecAsync(spec);
             return _mapper.Map<IReadOnlyList<PackageContainerVM>>(list);
         }
+
+        public async Task<bool> CreatePackageULDContainerAsync(PackageULDContainerRM requestModel)
+        {
+            var packageULDContainer = _mapper.Map<PackageULDContainer>(requestModel);
+
+            await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(packageULDContainer);
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }
