@@ -108,6 +108,13 @@ namespace Aeroclub.Cargo.Application.Services
                 var mappedBooking = await MappedListAsync(booking);
                 if (query.IncludePackageItems) {
                     mappedBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
+                    foreach (var package in mappedBooking.PackageItems) {
+                        var packageUldcontainer =  await _unitOfWork.Repository<PackageULDContainer>().GetEntityWithSpecAsync(new PackageULDContainerSpecification(new PackageULDContainerListQM() {
+                            PackageItemId = package.Id,
+                        }));
+
+                        package.AssignedUldId = packageUldcontainer.ULDContainer.ULDId;
+                    }
                 }
                 list.Add(mappedBooking);
             }
