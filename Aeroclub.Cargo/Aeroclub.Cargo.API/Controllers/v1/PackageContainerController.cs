@@ -27,20 +27,5 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(res);
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreatePackageULDContainer([FromBody] PackageULDContainerRM requestModel)
-        {
-            try
-            {
-                await _packageContainerService.CreatePackageULDContainerAsync(requestModel);
-                return Ok(new { StatusCode = "Success", Message = "Package ULD Container created successfully." });
-            }
-            catch (Exception ex)
-            {
-                // Log the exception if needed
-                return StatusCode(500, new { StatusCode = "Error", Message = "An error occurred while processing the request." });
-            }
-        }
-
     }
 }

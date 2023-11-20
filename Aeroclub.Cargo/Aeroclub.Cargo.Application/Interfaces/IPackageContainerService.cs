@@ -12,6 +12,5 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IPackageContainerService
     {
         Task<IReadOnlyList<PackageContainerVM>> GetListAsync(PackageContainerListQM query);
-        Task<bool> CreatePackageULDContainerAsync(PackageULDContainerRM requestModel);
     }
 }

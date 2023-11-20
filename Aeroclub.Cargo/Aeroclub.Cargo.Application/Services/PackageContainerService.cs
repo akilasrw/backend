@@ -23,16 +23,6 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IReadOnlyList<PackageContainerVM>>(list);
         }
 
-        public async Task<bool> CreatePackageULDContainerAsync(PackageULDContainerRM requestModel)
-        {
-            var packageULDContainer = _mapper.Map<PackageULDContainer>(requestModel);
-
-            await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(packageULDContainer);
-            await _unitOfWork.SaveChangesAsync();
-
-            return true;
-        }
-
 
     }
 }
