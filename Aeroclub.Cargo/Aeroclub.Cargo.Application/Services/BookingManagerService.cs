@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Enums;
+﻿using System.Collections.Generic;
+using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
@@ -8,9 +9,9 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.OverheadCompartmentQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatConfigurationQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
-using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
@@ -23,7 +24,6 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using System.IO.Hashing;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -465,6 +465,11 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)
         {
             return await _cargoBookingService.GetMobileBookingAsync(query);
+        }
+
+        public Task<IReadOnlyList<CargoBookingListVM>> GetAssignedCargoList(AssignedCargoQM query)
+        {
+            return _cargoBookingService.GetOnlyAssignedListAsync(query);
         }
     }
 }
