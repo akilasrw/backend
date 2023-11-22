@@ -33,7 +33,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _bookingManagerService.GetBookingListAsync(query));
         }
-        
+
+        [HttpGet("GetAssignedCargoList")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetAssignedCargoList([FromQuery] AssignedCargoQM query)
+        {
+            return Ok(await _bookingManagerService.GetAssignedCargoList(query));
+        }
+
         [HttpGet("GetMobileBooking")]
         public async Task<ActionResult<CargoBookingMobileVM>> GetMobileBookingAsync([FromQuery] FlightScheduleSectorMobileQM query)
         {

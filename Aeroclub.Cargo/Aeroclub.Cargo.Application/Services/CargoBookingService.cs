@@ -108,6 +108,13 @@ namespace Aeroclub.Cargo.Application.Services
                 var mappedBooking = await MappedListAsync(booking);
                 if (query.IncludePackageItems) {
                     mappedBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
+                    foreach (var package in mappedBooking.PackageItems) {
+                        var packageUldcontainer =  await _unitOfWork.Repository<PackageULDContainer>().GetEntityWithSpecAsync(new PackageULDContainerSpecification(new PackageULDContainerListQM() {
+                            PackageItemId = package.Id,
+                        }));
+
+                        package.AssignedUldId = packageUldcontainer.ULDContainer.ULDId;
+                    }
                 }
                 list.Add(mappedBooking);
             }
@@ -364,5 +371,46 @@ namespace Aeroclub.Cargo.Application.Services
             return bookingDetail;
         }
 
+        public async Task<IReadOnlyList<CargoBookingListVM>> GetOnlyAssignedListAsync(AssignedCargoQM query)
+        {
+            var spec = new CargoBookingFlightScheduleSectorSpecification(new FlightScheduleSectorBookingListQM()
+            {
+                FlightScheduleSectorId = query.FlightScheduleSectorId
+            });
+            var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
+
+            List<CargoBookingListVM> list = new List<CargoBookingListVM>();
+
+            foreach (var sectorBooking in bookingFlightScheduleSectorList)
+            {
+                var booking = sectorBooking.CargoBooking;
+                StandByStatus standByStatus = booking.StandByStatus == null ? StandByStatus.None : (StandByStatus)booking.StandByStatus;
+                if (standByStatus != StandByStatus.None ||
+                    booking.BookingStatus == BookingStatus.Cancelled) // ignore when status is cancel or null or not none
+                    continue;
+
+                List<PackageItem> filteredPackages = new List<PackageItem>();
+
+                foreach (var package in booking.PackageItems)
+                {
+                    var packageUldcontainer = await _unitOfWork.Repository<PackageULDContainer>().GetEntityWithSpecAsync(new PackageULDContainerSpecification(new PackageULDContainerListQM()
+                    {
+                        PackageItemId = package.Id,
+                    }));
+                    if (packageUldcontainer.ULDContainer.ULDId == query.UldId)
+                    {
+                        filteredPackages.Add(package);
+                    }
+                }
+
+                booking.PackageItems = filteredPackages;
+
+                var mappedBooking = await MappedListAsync(booking);
+                mappedBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(filteredPackages);
+                list.Add(mappedBooking);
+            }
+            list = list.DistinctBy(x => x.Id).ToList();
+            return list;
+        }
     }
 }
