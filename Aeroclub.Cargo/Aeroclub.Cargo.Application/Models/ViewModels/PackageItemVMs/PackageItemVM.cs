@@ -29,6 +29,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
     public class PackageMobileVMs : PackageItemVM
     {
         public string Dimension { get; set; }
+        public Guid? AssignedUldId { get; set; }
     }
 
 }

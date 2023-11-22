@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleSectorPalletCreateRM rm);
         Task<bool> DeleteAsync(FlightScheduleSectorPallet entity);
         Task<ServiceResponseStatus> CreateRemovePalletListAsync(FlightScheduleSectorPalletCreateListRM request);
+        Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter);
+        Task<FlightScheduleSectorPallet?> GetAssignedULDSectorPallet(FlightScheduleSectorPalletCreateRM rM);
         
+
     }
 }
