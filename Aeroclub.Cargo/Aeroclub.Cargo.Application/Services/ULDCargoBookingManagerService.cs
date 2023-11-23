@@ -519,7 +519,7 @@ namespace Aeroclub.Cargo.Application.Services
                 });
             var packageULDContainers = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(spec);
 
-            return await _uldContainerService.UpdateULDIdAsync(
+            return await _uldContainerService.UpdateUldIdAsync(
                 new ULDContainerUpdateRM() 
                 { 
                     ULDId = bookingAssignment.uldId, 
@@ -527,6 +527,24 @@ namespace Aeroclub.Cargo.Application.Services
                 });
         }
 
+        
+        public async Task<ServiceResponseStatus> RemoveBookedAssigmentAsync(BookingAssignmentRM bookingAssignment)
+        {
+            var spec = new PackageULDContainerSpecification(
+                new PackageULDContainerListQM() 
+                { 
+                    PackageItemId = bookingAssignment.PackageId 
+                });
+            var packageULDContainers = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(spec);
+
+            return await _uldContainerService.RemoveUldIdAsync(
+                new ULDContainerUpdateRM() 
+                { 
+                    ULDId = bookingAssignment.uldId, 
+                    Id = packageULDContainers.FirstOrDefault().ULDContainerId 
+                });
+        }
+        
         public async Task<IEnumerable<FlightScheduleSectorUldPositionVM>> GetFlightScheduleSectorWithULDPositionCountAsync(FlightScheduleSectorULDPositionCountQM query)
         {
             return await _flightScheduleSectorService.GetFlightScheduleSectorWithULDPositionCountAsync(query);
