@@ -29,7 +29,7 @@ namespace Aeroclub.Cargo.Application.Services
             return res;
         }
 
-        public async Task<ServiceResponseStatus> UpdateULDIdAsync(ULDContainerUpdateRM dto)
+        public async Task<ServiceResponseStatus> UpdateUldIdAsync(ULDContainerUpdateRM dto)
         {
             var entity = await _unitOfWork.Repository<ULDContainer>().GetByIdAsync(dto.Id,false);
             entity.ULDId = dto.ULDId;
@@ -37,7 +37,16 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<ULDContainer>().Detach(entity);
             return ServiceResponseStatus.Success;
         }
-
+        
+        public async Task<ServiceResponseStatus> RemoveUldIdAsync(ULDContainerUpdateRM dto)
+        {
+            var entity = await _unitOfWork.Repository<ULDContainer>().GetByIdAsync(dto.Id,false);
+            entity.ULDId = null;
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<ULDContainer>().Detach(entity);
+            return ServiceResponseStatus.Success;
+        }
+        
         public async Task<ULDContainerDto> GetAsync(ULDContainerQM query)
         {
             var res = await _unitOfWork.Repository<ULDContainer>().GetByIdAsync(query.Id);

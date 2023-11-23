@@ -123,6 +123,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _uldCargoBookingManagerService.SaveBookingAssigmentAsync(bookingAssignment));
         }
 
+        [HttpPost("RemoveBookedAssigment")]
+        public async Task<IActionResult> RemoveBookedAssigmentAsync(BookingAssignmentRM bookingAssignment)
+        {
+            return Ok(await _uldCargoBookingManagerService.RemoveBookedAssigmentAsync(bookingAssignment));
+        }
+
         [HttpGet("GetULDBookingList")]
         public async Task<ActionResult<Pagination<ULDCargoBookingListVM>>> GetULDBookingListAsync([FromQuery] CargoPositionULDContainerListQM query)
         {
