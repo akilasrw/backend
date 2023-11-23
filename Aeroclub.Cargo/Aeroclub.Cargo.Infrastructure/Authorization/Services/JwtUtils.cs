@@ -79,7 +79,7 @@ namespace Aeroclub.Cargo.Infrastructure.Authorization.Services
                 // return user id from JWT token if validation successful
                 return userId == null ? null: Guid.Parse(userId);
             }
-            catch
+            catch(Exception ex)
             {
                 // return null if validation fails
                 return null;

@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -14,15 +15,15 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
         [Required(ErrorMessage = "Username required")]
         public string UserName { get; set; } = null!;
 
-        [Required(ErrorMessage = "Address required")]
-        public string Address { get; set; } = null!;
+        public string? Address { get; set; } = null!;
 
         [Required(ErrorMessage = "Telephone number required")]
         public string PrimaryTelephoneNumber { get; set; } = null!;
         public string? SecondaryTelephoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Email required")]
-        public string Email { get; set; } = null!;
+        public IFormFile? AgreementFile { get; set; }
+
+        public string? Email { get; set; } = null!;
         public string? CargoAccountNumber { get; set; }
 
         [Required(ErrorMessage = "Country Id required")]
@@ -36,13 +37,11 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs
         public string City { get; set; } = null!;
         public string? AgentIATACode { get; set; }
 
-        [Required(ErrorMessage = "Password required")]
-        public string Password { get; set; } = null!;
+        
+        public string? Password { get; set; } = null!;
 
-        [Required(ErrorMessage = "Confirm Password required")]
-        public string ConfirmPassword { get; set; } = null!;
+        public string? ConfirmPassword { get; set; } = null!;
 
-        [Required(ErrorMessage = "Status required")]
         public CargoAgentStatus Status { get; set; }
 
     }

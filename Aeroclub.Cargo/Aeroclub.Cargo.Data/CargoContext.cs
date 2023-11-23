@@ -21,7 +21,9 @@ namespace Aeroclub.Cargo.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
+           
+
             modelBuilder.ApplyConfiguration(new AirportConfiguration());
             modelBuilder.ApplyConfiguration(new FlightSectorConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftConfiguration());
@@ -127,7 +129,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<SystemUser> SystemUsers { get; set; } = null!;
 
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
-     
+
         //  public DbSet<AircraftCharteredSchedule> AircraftCharteredSchedules { get; set; } = null!;
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)

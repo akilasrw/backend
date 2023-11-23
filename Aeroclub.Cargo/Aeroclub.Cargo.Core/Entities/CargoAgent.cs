@@ -12,6 +12,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public string? CargoAccountNumber { get; set; }
         public string City { get; set; }=null !;
         public string? AgentIATACode { get; set; }
+
         public CargoAgentStatus Status { get; set; }
         public Guid AppUserId { get; set; }
         public Guid CountryId { get; set; }
