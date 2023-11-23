@@ -10,7 +10,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs
 
         public Guid? UserId { get; set; }
 
-        public DateTime? BookingDate { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
     }
 }
