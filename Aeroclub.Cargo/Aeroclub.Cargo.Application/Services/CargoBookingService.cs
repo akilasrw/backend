@@ -183,7 +183,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
-                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Accepted 
+                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Cargo_Received 
                     // && sectorBooking.CargoBooking.StandByStatus != StandByStatus.OffLoad
                     )
                     list.Add(await MappedListAsync(sectorBooking.CargoBooking));

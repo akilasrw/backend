@@ -27,6 +27,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly ILayoutCloneService _layoutCloneService;
         private readonly ISectorService _sectorService;
         private readonly IConfiguration _configuration;
+        private readonly ICargoBookingService _cargoBookingService;
 
         public FlightScheduleService(
             IUnitOfWork unitOfWork,
@@ -36,6 +37,7 @@ namespace Aeroclub.Cargo.Application.Services
             IAircraftService aircraftService,
             ILayoutCloneService layoutCloneService,
             IConfiguration configuration,
+            ICargoBookingService cargoBookingService,
             ISectorService sectorService) :
             base(unitOfWork, mapper)
         {
@@ -45,6 +47,7 @@ namespace Aeroclub.Cargo.Application.Services
             _sectorService = sectorService;
             _configuration = configuration;
             _flightScheduleSectorService = flightScheduleSectorService;
+            _cargoBookingService = cargoBookingService;
         }
 
         public async Task<FlightScheduleCreateStatusRM> CreateAsync(FlightScheduleCreateRM model)
@@ -610,6 +613,15 @@ namespace Aeroclub.Cargo.Application.Services
                     return ServiceResponseStatus.Failed;
                 }
             }
+
+
+
+            await _cargoBookingService.UpdateAsync(
+                    new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                    {
+                        
+                        BookingStatus = BookingStatus.AWB_Added
+            });
 
             return ServiceResponseStatus.Success;
         }
