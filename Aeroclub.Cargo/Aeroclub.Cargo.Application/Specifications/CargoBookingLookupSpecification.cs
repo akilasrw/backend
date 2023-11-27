@@ -12,7 +12,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             base(x=>((query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && 
             (string.IsNullOrEmpty(query.ReferenceNumber) ||
             x.BookingNumber == query.ReferenceNumber || 
-            x.PackageItems.Any(y => y.PackageRefNumber == query.ReferenceNumber))
+            x.PackageItems.Any(y => y.PackageRefNumber == query.ReferenceNumber)) || (query.AWBNumber != Guid.Empty && x.AWBInformation.Id == query.AWBNumber)
             ))
         {
 
@@ -24,7 +24,6 @@ namespace Aeroclub.Cargo.Application.Specifications
 
             if (query.IsIncludeAWBDetail)
                 AddInclude(x => x.Include(y => y.AWBInformation));
-
         }
 
     }

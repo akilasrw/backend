@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
     public class CargoBookingLookupController : BaseApiController
     {
         private readonly ICargoBookingLookupService cargoBookingLookupService;
@@ -21,7 +20,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpGet]
         public async Task<ActionResult<CargoBookingLookupVM>> GetAsync([FromQuery]CargoBookingLookupQM query)
         {
-            if (string.IsNullOrEmpty(query.ReferenceNumber))
+            if (string.IsNullOrEmpty(query.ReferenceNumber) && query.AWBNumber == Guid.Empty)
                 return BadRequest("Please enter booking number or package number.");
 
             var result = await cargoBookingLookupService.GetAsync(query);
