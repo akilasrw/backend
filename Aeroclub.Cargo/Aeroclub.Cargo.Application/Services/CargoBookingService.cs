@@ -388,9 +388,11 @@ namespace Aeroclub.Cargo.Application.Services
                 if (standByStatus != StandByStatus.None ||
                     booking.BookingStatus == BookingStatus.Cancelled) // ignore when status is cancel or null or not none
                     continue;
-
+                if (booking.PackageItems.Count == 0)
+                {
+                    continue;
+                }
                 List<PackageItem> filteredPackages = new List<PackageItem>();
-
                 foreach (var package in booking.PackageItems)
                 {
                     var packageUldcontainer = await _unitOfWork.Repository<PackageULDContainer>().GetEntityWithSpecAsync(new PackageULDContainerSpecification(new PackageULDContainerListQM()
@@ -407,7 +409,10 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var mappedBooking = await MappedListAsync(booking);
                 mappedBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(filteredPackages);
-                list.Add(mappedBooking);
+                if (mappedBooking.PackageItems.Count > 0)
+                {
+                    list.Add(mappedBooking); 
+                }
             }
             list = list.DistinctBy(x => x.Id).ToList();
             return list;
