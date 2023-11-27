@@ -85,7 +85,6 @@ namespace Aeroclub.Cargo.Application.Services
             var totalCount = await _unitOfWork.Repository<CargoBooking>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<CargoBookingVM>>(bookingList);
-
          
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
@@ -337,6 +336,11 @@ namespace Aeroclub.Cargo.Application.Services
                         booking.VerifyStatus = cargo.VerifyStatus;
                         if (cargo.StandByStatus == StandByStatus.OffLoad)
                             booking.VerifyStatus = VerifyStatus.OffLoad;
+                        await UpdateAsync(new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                        {
+                            Id = booking.Id,
+                            BookingStatus = BookingStatus.Off_Loaded
+                        });
                     }                        
                     _unitOfWork.Repository<CargoBooking>().Update(booking);
                     await _unitOfWork.SaveChangesAsync();

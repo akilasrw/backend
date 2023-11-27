@@ -20,7 +20,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpGet]
         public async Task<ActionResult<CargoBookingLookupVM>> GetAsync([FromQuery]CargoBookingLookupQM query)
         {
-            if (string.IsNullOrEmpty(query.ReferenceNumber) && query.AWBNumber == Guid.Empty)
+            if (string.IsNullOrEmpty(query.ReferenceNumber) && query.AWBNumber == null)
                 return BadRequest("Please enter booking number or package number.");
 
             var result = await cargoBookingLookupService.GetAsync(query);
