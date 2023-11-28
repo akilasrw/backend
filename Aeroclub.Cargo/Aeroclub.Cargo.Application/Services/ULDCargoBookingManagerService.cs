@@ -507,10 +507,6 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<List<ULDFilteredListVM>> GetPalleteFromFlights(FlightSheduleSectorPalletGetList filter)
         {
             var list =  await _flightScheduleSectorPalletService.GetPalleteListAsync(filter);
-            foreach (var item in list)
-            {
-                Console.WriteLine(item);
-            }
             return list;
         }
 
