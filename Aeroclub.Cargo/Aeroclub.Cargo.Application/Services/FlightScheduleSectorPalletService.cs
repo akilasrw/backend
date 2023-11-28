@@ -143,7 +143,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
                 var totWeight = b.Sum(x => x.TotalWeight);
                 var totVol = b.Sum(x => x.TotalVolume);
-                item.Width += totWeight;
+                item.Weight += totWeight;
                 item.Volume += totVol;
             }
             return uldVMList;
