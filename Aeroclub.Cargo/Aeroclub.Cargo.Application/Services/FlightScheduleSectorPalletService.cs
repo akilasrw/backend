@@ -124,6 +124,7 @@ namespace Aeroclub.Cargo.Application.Services
                 uldVMList.Add(vmItem);
             }
 
+
             foreach (var item in allocatedUldList)
             {
                 //var dtoList = _mapper.Map<IReadOnlyList<ULDFilteredListVM>>(uldList);
@@ -134,17 +135,21 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var item in uldVMList)
             {
-                var q = new AssignedCargoQM
+                if (item.IsAssigned)
                 {
-                    FlightScheduleSectorId = palletFilter.FlightScheduleId,
-                    UldId = item.Id
-                };
+                    var q = new AssignedCargoQM
+                    {
+                        FlightScheduleSectorId = palletFilter.FlightScheduleId,
+                        UldId = item.Id
+                    };
 
-                var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
-                var totWeight = b.Sum(x => x.TotalWeight);
-                var totVol = b.Sum(x => x.TotalVolume);
-                item.Weight += totWeight;
-                item.Volume += totVol;
+                    var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
+                    var totWeight = b.Sum(x => x.TotalWeight);
+                    var totVol = b.Sum(x => x.TotalVolume);
+                    item.Weight += totWeight;
+                    item.Volume += totVol;
+                }
+               
             }
             return uldVMList;
             //foreach (var uld in ulds)
