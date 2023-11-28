@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorPalletQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
@@ -24,12 +25,14 @@ namespace Aeroclub.Cargo.Application.Services
     public class FlightScheduleSectorPalletService : BaseService, IFlightScheduleSectorPalletService
     {
         private readonly ICargoBookingSummaryService _cargoBookingSummaryService;
+        private readonly ICargoBookingService _cargoBookingService;
 
-        public FlightScheduleSectorPalletService(ICargoBookingSummaryService cargoBookingSummaryService, IMapper mapper, IUnitOfWork unitOfWork) :
+        public FlightScheduleSectorPalletService(ICargoBookingSummaryService cargoBookingSummaryService,ICargoBookingService cargoBookingService, IMapper mapper, IUnitOfWork unitOfWork) :
             base(unitOfWork, mapper)
         {
             _cargoBookingSummaryService = cargoBookingSummaryService;
-        }
+            _cargoBookingService = cargoBookingService;
+    }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleSectorPalletCreateRM rm)
         {
@@ -127,6 +130,21 @@ namespace Aeroclub.Cargo.Application.Services
                 var vmItem = _mapper.Map<ULDFilteredListVM>(item);
                 vmItem.IsAssigned = true;
                 uldVMList.Add(vmItem);
+            }
+
+            foreach (var item in uldVMList)
+            {
+                var q = new AssignedCargoQM
+                {
+                    FlightScheduleSectorId = palletFilter.FlightScheduleId,
+                    UldId = item.Id
+                };
+
+                var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
+                var totWeight = b.Sum(x => x.TotalWeight);
+                var totVol = b.Sum(x => x.TotalVolume);
+                item.Width += totWeight;
+                item.Volume += totVol;
             }
             return uldVMList;
             //foreach (var uld in ulds)
