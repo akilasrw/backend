@@ -91,7 +91,7 @@ namespace Aeroclub.Cargo.Application.Services
 
        
         public async Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter)
-        {
+        { 
             List<ULD> allocatedUldList = new List<ULD>();
             // Get already Assigned Ulds
             var pallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>()
@@ -107,6 +107,13 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
 
+            if(palletFilter.ULDId != null)
+            {
+                allocatedUldList = allocatedUldList
+                    .Where(uld => uld.Id == palletFilter.ULDId)
+                    .ToList();
+            }
+
             var spec = new ULDSpecification(palletFilter.ULDLocateStatus);
 
             // Get All Ulds
@@ -116,6 +123,13 @@ namespace Aeroclub.Cargo.Application.Services
             var otherlist = allUlds
                 .Where(model => !allocatedUldList.Any(excluded => excluded.Id == model.Id))
                 .ToList();
+
+            if (palletFilter.ULDId != null)
+            {
+                otherlist = otherlist
+                    .Where(uld => uld.Id == palletFilter.ULDId)
+                    .ToList();
+            }
 
             List<ULDFilteredListVM> uldVMList = new List<ULDFilteredListVM>();
 
