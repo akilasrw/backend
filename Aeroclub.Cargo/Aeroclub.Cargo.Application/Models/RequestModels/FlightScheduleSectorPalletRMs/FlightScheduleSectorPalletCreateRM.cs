@@ -17,6 +17,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPa
     {
         public Guid FlightScheduleId { get; set; }
         public ULDLocateStatus? ULDLocateStatus { get; set; }
+        public Guid? ULDId { get; set; }
     }
     
     public class FlightScheduleSectorPalletCreateListRM
