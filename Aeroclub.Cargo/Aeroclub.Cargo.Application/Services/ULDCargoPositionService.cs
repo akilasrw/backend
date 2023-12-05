@@ -36,11 +36,21 @@ namespace Aeroclub.Cargo.Application.Services
             var model = _mapper.Map<ULDCargoPosition>(ULDCargoPositionDto);
 
             var result = await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
-            await _unitOfWork.SaveChangesAsync();
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
 
-            res.Id = result.Id;
-            res.StatusCode = ServiceResponseStatus.Success;
+                res.Id = result.Id;
+                res.StatusCode = ServiceResponseStatus.Success;
 
+            }
+            catch (Exception ex) { 
+            
+                res.StatusCode = ServiceResponseStatus.Failed;
+                res.Message = "The ULD has already been allocated.";
+            
+            }
+            
             return res;
         }
 
