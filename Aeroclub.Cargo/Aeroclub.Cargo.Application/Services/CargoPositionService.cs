@@ -316,7 +316,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<List<CargoPositionVM>> GetSummeryCargoPositionAsync(Guid aircraftLayoutId)
+        public async Task<List<CargoPositionVM>> GetSummeryCargoPositionAsync(Guid? aircraftLayoutId)
         {
             List<CargoPositionVM> list = new List<CargoPositionVM>();
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
@@ -346,6 +346,22 @@ namespace Aeroclub.Cargo.Application.Services
 
             return list;
         }
+
+        public async Task<List<CargoPositionVM>> GetPositionsForFlightScheduleSectorIdAsync(Guid? flightScheduleSectorId)
+        {
+            var layoutSpec = new AircraftLayoutMappingSpecification(new Models.Queries.AircrftLayoutMappingQM.AircraftLayoutMappingQM
+            {
+                FlightScheduleSectorId = flightScheduleSectorId,
+            });
+
+            var mappingList = await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(layoutSpec);
+
+
+            var positionList = await GetSummeryCargoPositionAsync(mappingList.AircraftLayoutId);
+
+            return positionList.ToList();
+        }
+
 
         public async Task UpdateCargoPositionPropertiesAsync(Guid cargoPositionId, double newHeight, double newMaxWeight, double newMaxVolume)
         {
