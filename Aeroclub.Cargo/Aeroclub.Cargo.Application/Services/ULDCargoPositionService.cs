@@ -35,6 +35,19 @@ namespace Aeroclub.Cargo.Application.Services
 
             var model = _mapper.Map<ULDCargoPosition>(ULDCargoPositionDto);
 
+            var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto{
+                ULDId = ULDCargoPositionDto.ULDId,
+            });
+
+
+
+            var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
+            if (existing != null)
+            {
+                 _unitOfWork.Repository<ULDCargoPosition>().Delete(existing);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
             var result = await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
             try
             {
@@ -47,7 +60,7 @@ namespace Aeroclub.Cargo.Application.Services
             catch (Exception ex) { 
             
                 res.StatusCode = ServiceResponseStatus.Failed;
-                res.Message = "The ULD has already been allocated.";
+                res.Message = "Internel Server Error";
             
             }
             
