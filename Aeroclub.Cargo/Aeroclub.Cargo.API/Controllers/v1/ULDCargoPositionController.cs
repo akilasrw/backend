@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<ServiceResponseCreateStatus>> Create([FromBody] ULDCargoPositionDto rm)
+        public async Task<ActionResult<ServiceResponseCreateStatus>> Create([FromBody] List<ULDCargoPositionDto> rm)
         {
 
             var res = await _uLDCargoPositionService.CreateAsync(rm);

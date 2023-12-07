@@ -13,7 +13,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class ULDCargoPositionSpecification : BaseSpecification<ULDCargoPosition>
     {
         public ULDCargoPositionSpecification(ULDCargoPositionDto query)
-            : base(x => x.ULDId == query.ULDId)
+            : base(x => x.ULDId == query.ULDId || x.CargoPositionId == query.CargoPositionId)
         {
 
         }

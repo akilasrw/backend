@@ -29,41 +29,45 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<ServiceResponseCreateStatus> CreateAsync(ULDCargoPositionDto ULDCargoPositionDto)
+        public async Task<ServiceResponseCreateStatus> CreateAsync(List<ULDCargoPositionDto> ULDCargoPositionDto)
         {
             var res = new ServiceResponseCreateStatus();
 
-            var model = _mapper.Map<ULDCargoPosition>(ULDCargoPositionDto);
-
-            var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto{
-                ULDId = ULDCargoPositionDto.ULDId,
-            });
-
-
-
-            var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
-            if (existing != null)
+            foreach(var x in  ULDCargoPositionDto)
             {
-                 _unitOfWork.Repository<ULDCargoPosition>().Delete(existing);
-                await _unitOfWork.SaveChangesAsync();
+                var model = _mapper.Map<ULDCargoPosition>(x);
+
+                var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto
+                {
+                    ULDId = x.ULDId,
+                    CargoPositionId = x.CargoPositionId
+                });
+
+
+
+                var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
+                if (existing != null)
+                {
+                    res.StatusCode = ServiceResponseStatus.Failed;
+                    res.Message = "Position or ULD is already assigned";
+                }
+
+                await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
+                try
+                {
+                    await _unitOfWork.SaveChangesAsync();
+
+                    res.StatusCode = ServiceResponseStatus.Success;
+
+                }
+                catch (Exception ex)
+                {
+
+                    res.StatusCode = ServiceResponseStatus.Failed;
+                    return res;
+                }
             }
 
-            var result = await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
-            try
-            {
-                await _unitOfWork.SaveChangesAsync();
-
-                res.Id = result.Id;
-                res.StatusCode = ServiceResponseStatus.Success;
-
-            }
-            catch (Exception ex) { 
-            
-                res.StatusCode = ServiceResponseStatus.Failed;
-                res.Message = "Internel Server Error";
-            
-            }
-            
             return res;
         }
 
