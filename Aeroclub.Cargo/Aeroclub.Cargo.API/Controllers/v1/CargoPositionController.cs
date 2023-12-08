@@ -53,6 +53,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(result);
         }
 
+        [HttpGet("GetSummaryCargoPositionsBySector")]
+        public async Task<ActionResult<List<CargoPositionVM>>> GetSummeryCargoPositionBySectorAsync([FromQuery] CargoPositionsBySectorRM query)
+        {
+            if (query.FlightScheduleSectorId == Guid.Empty) return BadRequest();
+
+            var result = await _cargoPositionService.GetPositionsForFlightScheduleSectorIdAsync(query.FlightScheduleSectorId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpPut("UpdateCargoPositionProperties")]
         public async Task<ActionResult> UpdateCargoPositionPropertiesAsync([FromBody] UpdateCargoPositionPropertiesDTO updateDTO)
         {
