@@ -29,6 +29,39 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
+        public async Task<CargoPositionClearResponse> ClearAsync(List<ULDCargoPositionDto> ULDCargoPositionDto)
+        {
+            var res = new CargoPositionClearResponse();
+
+            foreach(var x in ULDCargoPositionDto)
+            {
+                var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto
+                {
+                    ULDId = x.ULDId,
+                    CargoPositionId = x.CargoPositionId
+                });
+
+                var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
+
+                if(existing == null)
+                {
+                    res.StatusCode = ServiceResponseStatus.Failed;
+                    res.Message = "Invalid ULD";
+                }
+                else
+                {
+                    _unitOfWork.Repository<ULDCargoPosition>().Delete(existing);
+                    await _unitOfWork.SaveChangesAsync();
+                    res.StatusCode = ServiceResponseStatus.Success;
+                }
+
+                
+            }
+
+            return res;
+
+        }
+
         public async Task<ServiceResponseCreateStatus> CreateAsync(List<ULDCargoPositionDto> ULDCargoPositionDto)
         {
             var res = new ServiceResponseCreateStatus();
