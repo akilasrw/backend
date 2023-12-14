@@ -33,7 +33,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(res);
         }
 
-        [HttpDelete("clear")]
+        [HttpPost("clear")]
         public async Task<ActionResult<CargoPositionClearResponse>> Clear([FromBody] List<ULDCargoPositionDto> rm)
         {
             var res = await _uLDCargoPositionService.ClearAsync(rm);
