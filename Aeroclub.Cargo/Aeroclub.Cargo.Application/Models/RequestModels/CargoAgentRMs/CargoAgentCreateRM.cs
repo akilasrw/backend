@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.CargoAgentRMs

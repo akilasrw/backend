@@ -12,6 +12,11 @@ using BC = BCrypt.Net.BCrypt;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Application.Extensions;
+using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.LIRFileUploadQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
+using Aeroclub.Cargo.Infrastructure.FileUploader.Interfaces;
+using Google.Api;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -19,79 +24,197 @@ namespace Aeroclub.Cargo.Application.Services
     {
        
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUploadFactory _uploadFactory;
 
 
-        public CargoAgentService(UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IMapper mapper):
+        public CargoAgentService(UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IMapper mapper, IUploadFactory uploadFactory):
             base(unitOfWork,mapper)
         {
             _userManager = userManager;
+            _uploadFactory = uploadFactory;
         }
 
 
-        public async Task<CargoAgentCreateStatusRM> CreateAsync(CargoAgentCreateRM model)
+        public async Task<CargoAgentCreateStatusRM?> CreateAsync(CargoAgentCreateRM model)
         {
             CargoAgent createdUser;
 
-            var response = new CargoAgentCreateStatusRM();
 
-            var appUser = _mapper.Map<AppUser>(model);
-
-            // hash password
-            appUser.PasswordHash = BC.HashPassword(model.Password);
-
-            var createdAppUser = await _userManager.CreateAsync(appUser);
-
-            if (createdAppUser.Succeeded)
             {
-                var user = _mapper.Map<CargoAgent>(model);
+                
 
-                user.AppUserId = appUser.Id;
 
-                createdUser =await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
-                await _unitOfWork.SaveChangesAsync();
+                var response = new CargoAgentCreateStatusRM();
 
-                var roleName = UserRole.BookingUser;
-                await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
+                var appUser = _mapper.Map<AppUser>(model);
 
-                response.Id = createdUser.Id;
-                response.StatusCode = ServiceResponseStatus.Success;
+                // hash password
+                appUser.PasswordHash = BC.HashPassword(model.Password);
+
+
+
+                var createdAppUser = await _userManager.CreateAsync(appUser);
+
+                if (createdAppUser.Succeeded)
+                {
+
+                    try
+                    {
+                        var user = _mapper.Map<CargoAgent>(model);
+
+                        user.AppUserId = appUser.Id;
+
+                        createdUser = await _unitOfWork.Repository<CargoAgent>().CreateAsync(user);
+                        await _unitOfWork.SaveChangesAsync();
+
+                        var roleName = UserRole.BookingUser;
+                        await _userManager.AddToRoleAsync(appUser, roleName.GetDescription());
+
+                        response.Id = createdUser.Id;
+                        response.StatusCode = ServiceResponseStatus.Success;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+
+
+                }
+                else
+                {
+                    response.StatusCode = ServiceResponseStatus.Failed;
+                    response.ErrorMessage = createdAppUser.Errors.First().Description;
+                }
+
+                return response;
             }
-            else
-            {
-                response.StatusCode = ServiceResponseStatus.Failed;
-                response.ErrorMessage = createdAppUser.Errors.First().Description;
-            }
 
-            return response;
+            
+
+
+
+
+            
+
+            
         }
+
+        
 
         public async Task<ServiceResponseStatus> UpdateAsync(CargoAgentUpdateRM user)
         {
             var agentQry = new CargoAgentQM();
             agentQry.Id = user.Id;
 
+            var service = _uploadFactory.CreateUploadServiceAsync(UploadStorageType.Blob);
+
             var savedUser = await GetAsync(agentQry);
             user.AppUserId = (Guid)savedUser.AppUserId;
 
+
+
             if (savedUser.Email != user.Email || 
                 savedUser.PrimaryTelephoneNumber != user.PrimaryTelephoneNumber || 
-                savedUser.UserName != user.UserName)
+                savedUser.UserName != user.UserName || user.AgreementFile != null || user.AgentName != null)
             {
                 var appuser = await _userManager.FindByIdAsync(user.AppUserId.ToString());
                 appuser.Email = user.Email;
                 appuser.UserName = user.UserName;
                 appuser.PhoneNumber = user.PrimaryTelephoneNumber;
-                await _userManager.UpdateAsync(appuser);
+                appuser.FirstName = user.AgentName;
+                if (user.AgreementFile != null)
+                {
+                    var uploadedFile = service.Upload(user.AgreementFile);
+                    appuser.Agreement = uploadedFile.FileName;
+                }
+
+                try
+                {
+                    await _userManager.UpdateAsync(appuser);
+                }catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+                
 
             }
-     
-            var entity = _mapper.Map<CargoAgentUpdateRM, CargoAgent>(user);
-            _unitOfWork.Repository<CargoAgent>().Update(entity);
+
+
+
+            var  u = await _unitOfWork.Repository<CargoAgent>().GetByIdAsync(user.Id);
+
+            
+
+            if (user.AgentName != null)
+            {
+                u.AgentName = user.AgentName;
+            }
+
+            if(user.PrimaryTelephoneNumber != null)
+            {
+                u.PrimaryTelephoneNumber = user.PrimaryTelephoneNumber;
+            }
+
+            if(user.AgentIATACode != null)
+            {
+                u.AgentIATACode = user.AgentIATACode;
+            }
+
+            
+
+            if(user.City != null)
+            {
+                u.City = user.City;
+            }
+
+            //var entity = _mapper.Map<CargoAgentUpdateRM, CargoAgent>(u);
+
+
+            _unitOfWork.Repository<CargoAgent>().Update(u);
             await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<CargoAgent>().Detach(entity);
+            _unitOfWork.Repository<CargoAgent>().Detach(u);
             
             return ServiceResponseStatus.Success;
         }
+
+
+        public async Task<ServiceResponseStatus> UpdateProfile(AgentProfileUpdateRM user, Guid id)
+        {
+            var agentQry = new CargoAgentQM();
+            agentQry.Id = user.Id;
+
+            var appuser = await _userManager.FindByIdAsync(id.ToString());
+            appuser.Email = user.Email;
+            appuser.UserName = user.UserName;
+            appuser.PhoneNumber = user.PrimaryTelephoneNumber;
+            appuser.FirstName = user.AgentName;
+  
+
+            try
+             {
+                await _userManager.UpdateAsync(appuser);
+             }
+             catch (Exception ex)
+             {
+                return ServiceResponseStatus.Failed;
+             }
+
+          
+
+            return ServiceResponseStatus.Success;
+        }
+
+
+        public async Task<AppUser> GetProfile(Guid id)
+        {
+            var user =  await _userManager.FindByIdAsync(id.ToString());
+
+            return user;
+        }
+
 
         public async Task<bool> StatusUpdateAsync(CargoAgentStatusUpdateRM rm)
         {

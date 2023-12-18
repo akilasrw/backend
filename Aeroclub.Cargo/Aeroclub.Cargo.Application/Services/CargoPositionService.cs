@@ -20,6 +20,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using SendGrid.Helpers.Errors.Model;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -40,6 +41,8 @@ namespace Aeroclub.Cargo.Application.Services
             _seatConfigurationService = seatConfigurationService;
             _configuration = configuration;
         }
+
+
 
         public async Task<List<Tuple<CargoPosition, Guid?>>> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType)
         {
@@ -312,5 +315,82 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
         }
+
+        public async Task<List<CargoPositionVM>> GetSummeryCargoPositionAsync(Guid? aircraftLayoutId)
+        {
+            List<CargoPositionVM> list = new List<CargoPositionVM>();
+            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+            { AircraftLayoutId = aircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
+
+            var cargoPositionList =  await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            foreach (var cargoPosition in cargoPositionList)
+            {
+                var cargoVM = new CargoPositionVM
+                {
+                    Id = cargoPosition.Id,
+                    Name = cargoPosition.Name,
+                    Height = cargoPosition.Height,
+                    MaxWeight = cargoPosition.MaxWeight,
+                    MaxVolume = cargoPosition.MaxVolume,
+                    CurrentWeight = cargoPosition.CurrentWeight,
+                    Length = cargoPosition.Length,
+                    Breadth = cargoPosition.Breadth,
+                    Priority = cargoPosition.Priority,
+                    FlightLeg = cargoPosition.FlightLeg,
+                    CurrentVolume = cargoPosition.CurrentVolume,
+                    ZoneAreaId = cargoPosition.ZoneAreaId,
+                };
+
+                list.Add(cargoVM);
+            }
+
+            return list;
+        }
+
+        public async Task<List<CargoPositionVM>> GetPositionsForFlightScheduleSectorIdAsync(Guid? flightScheduleSectorId)
+        {
+            var layoutSpec = new AircraftLayoutMappingSpecification(new Models.Queries.AircrftLayoutMappingQM.AircraftLayoutMappingQM
+            {
+                FlightScheduleSectorId = flightScheduleSectorId,
+            });
+
+            var mappingList = await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(layoutSpec);
+
+
+            var positionList = await GetSummeryCargoPositionAsync(mappingList.AircraftLayoutId);
+
+            return positionList.ToList();
+        }
+
+
+        public async Task UpdateCargoPositionPropertiesAsync(Guid cargoPositionId, double newHeight, double newMaxWeight, double newMaxVolume)
+        {
+           
+            var cargoPosition = await _unitOfWork.Repository<CargoPosition>().GetByIdAsync(cargoPositionId);
+
+            if (cargoPosition == null)
+            { 
+                throw new NotFoundException("CargoPosition not found");
+            }
+
+          
+            cargoPosition.Height = newHeight;
+            cargoPosition.MaxWeight = newMaxWeight;
+            cargoPosition.MaxVolume = newMaxVolume;
+
+
+            _unitOfWork.Repository<CargoPosition>().Update(cargoPosition);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }catch (Exception ex)
+            {
+                Console.Write(ex.ToString());
+            }
+        
+            
+        }
+
     }
 }

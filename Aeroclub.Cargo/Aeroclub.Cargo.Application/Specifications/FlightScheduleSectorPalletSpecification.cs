@@ -18,7 +18,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             (query.ULDId == Guid.Empty || p.ULDId == query.ULDId))
         {
             if (query.IncludeUld)
-                AddInclude(x => x.Include(y => y.ULD));
+                AddInclude(x => x.Include(y => y.ULD).ThenInclude(i=> i.ULDMetaData));
 
             if (query.IncludeFlightSchedule)
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));

@@ -11,8 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
+<<<<<<< HEAD
     [ApiVersion("1.0")] 
     [Authorize]  
+=======
+    [ApiVersion("1.0")]
+    [Authorize]
+>>>>>>> dev
     public class CargoBookingController : BaseApiController
     {
         private readonly IBookingManagerService _bookingManagerService;
@@ -33,7 +38,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _bookingManagerService.GetBookingListAsync(query));
         }
-        
+
+        [HttpGet("GetAssignedCargoList")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetAssignedCargoList([FromQuery] AssignedCargoQM query)
+        {
+            return Ok(await _bookingManagerService.GetAssignedCargoList(query));
+        }
+
         [HttpGet("GetMobileBooking")]
         public async Task<ActionResult<CargoBookingMobileVM>> GetMobileBookingAsync([FromQuery] FlightScheduleSectorMobileQM query)
         {

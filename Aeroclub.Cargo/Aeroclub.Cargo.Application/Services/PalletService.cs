@@ -108,8 +108,9 @@ namespace Aeroclub.Cargo.Application.Services
                     //}
                     //else
                     //{
-                    var position = await _uLDCargoPositionService.CreateAsync(
-                        new ULDCargoPositionDto() { CargoPositionId = dto.PositionId, ULDId = dto.UldId });
+
+                    var cargoPosition = new ULDCargoPositionDto() { CargoPositionId = dto.PositionId, ULDId = dto.UldId };
+                    var position = await _uLDCargoPositionService.CreateAsync(new List<ULDCargoPositionDto>{ cargoPosition });
 
                     if (position == null)
                     {

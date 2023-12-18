@@ -1,7 +1,9 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.DTOs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoPositionRMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SeatConfigurationVM;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +38,61 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return NotFound();
 
             return Ok(result);
+        }
+
+        [HttpGet("GetSummaryCargoPositions")]
+        public async Task<ActionResult<List<CargoPositionVM>>> GetSummeryCargoPositionAsync([FromQuery] CargoPositionsPerFlightScheduleRM query)
+        {
+            if (query.AircraftLayoutId == Guid.Empty) return BadRequest();
+
+            var result = await _cargoPositionService.GetSummeryCargoPositionAsync(query.AircraftLayoutId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetSummaryCargoPositionsBySector")]
+        public async Task<ActionResult<List<CargoPositionVM>>> GetSummeryCargoPositionBySectorAsync([FromQuery] CargoPositionsBySectorRM query)
+        {
+            if (query.FlightScheduleSectorId == Guid.Empty) return BadRequest();
+
+            var result = await _cargoPositionService.GetPositionsForFlightScheduleSectorIdAsync(query.FlightScheduleSectorId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpPut("UpdateCargoPositionProperties")]
+        public async Task<ActionResult> UpdateCargoPositionPropertiesAsync([FromBody] UpdateCargoPositionPropertiesDTO updateDTO)
+        {
+            if (updateDTO == null || updateDTO.CargoPositionId == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _cargoPositionService.UpdateCargoPositionPropertiesAsync(
+                    updateDTO.CargoPositionId,
+                    updateDTO.NewHeight,
+                    updateDTO.NewMaxWeight,
+                    updateDTO.NewMaxVolume);
+
+                return Ok(new
+                {
+                    message = "Successfull updated the record"
+                }); 
+            }
+          
+            catch (Exception ex)
+            {
+               
+                return StatusCode(500, ex.Message); 
+            }
         }
 
 

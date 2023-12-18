@@ -1,9 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Aeroclub.Cargo.Common.Enums;
 
 namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs
 {
@@ -15,6 +11,13 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPa
     public class FlightScheduleSectorPalletCreateRemoveRM : FlightScheduleSectorPalletCreateRM
     {
         public bool IsAdded { get; set; }
+    }
+
+    public class FlightSheduleSectorPalletGetList : BaseRM
+    {
+        public Guid FlightScheduleId { get; set; }
+        public ULDLocateStatus? ULDLocateStatus { get; set; }
+        public Guid? ULDId { get; set; }
     }
     
     public class FlightScheduleSectorPalletCreateListRM

@@ -1,11 +1,18 @@
 ﻿using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Common.Enums;
-
+using Aeroclub.Cargo.Core.Entities;
+using Twilio.TwiML.Voice;
 
 namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
 {
     public class ULDFilteredListVM : BaseVM
     {
+
+        public ULDFilteredListVM() 
+        {
+            Volume = 0;
+        }
+
         public ULDType ULDType { get; set; }
         public string? SerialNumber { get; set; }
         public ULDOwnershipType ULDOwnershipType { get; set; }
@@ -22,5 +29,9 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
         public double MaxWeight { get; set; }
         public double MaxVolume { get; set; }
         public Guid ULDMetaDataId { get; set; }
+
+        public Guid? CargoPositionID { get; set; }
+        public double Volume { get; set; }
+        public bool IsAssigned { get; set; } = false;
     }
 }

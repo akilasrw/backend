@@ -79,7 +79,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var cargoAgent = _context.CargoAgents.SingleOrDefault(x => x.AppUserId == user.Id);
             if (cargoAgent == null)
-                return new ServiceResponse<AuthenticateResponse>(null, "User not found.", ServiceResponseStatus.ValidationError);
+                //return new ServiceResponse<AuthenticateResponse>(null, "User not found.", ServiceResponseStatus.ValidationError);
 
             if(cargoAgent.Status == CargoAgentStatus.Suspended)
                 return new ServiceResponse<AuthenticateResponse>(null, "Access denied.", ServiceResponseStatus.ValidationError);

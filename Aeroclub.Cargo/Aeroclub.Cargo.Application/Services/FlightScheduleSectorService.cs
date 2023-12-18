@@ -304,18 +304,23 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in flightScheduleSectors)
             {
+                if (query.ExcludeFinalizedSchedules && flightScheduleSector?.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized)
+                {
+                    continue;
+                }
                 var fs = _mapper.Map<FlightScheduleSectorUldPositionVM>(flightScheduleSector);
                 var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                 {
                     AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
                 });
-
+                fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
                 var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
                 fs.ULDPositionCount = cargoPositions.Count;
                 fs.ULDCount = flightScheduleSector.LoadPlan == null || flightScheduleSector.LoadPlan.ULDContaines == null ? 0 : flightScheduleSector.LoadPlan.ULDContaines.Where(x => x.ULD != null).Count();
                 fs.CutoffTime = flightScheduleSector.CutoffTimeMin == null ? flightScheduleSector.ScheduledDepartureDateTime
                     : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-flightScheduleSector.CutoffTimeMin.Value);
                 list.Add(fs);
+
             }
 
             return list;

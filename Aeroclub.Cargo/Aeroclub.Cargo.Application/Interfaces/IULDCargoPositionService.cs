@@ -13,7 +13,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<CargoPosition> GetMatchingCargoPositionAsync(PackageItemCreateRM packageItem, Guid aircraftLayoutId, CargoPositionType cargoPositionType);
         Task<ValidateResponse> ValidateCargoPositionAsync(ValidateCargoPositionRM rm);
-        Task<ServiceResponseCreateStatus> CreateAsync(ULDCargoPositionDto ULDCargoPositionDto);
+        Task<ServiceResponseCreateStatus> CreateAsync(List<ULDCargoPositionDto> ULDCargoPositionDto);
 
     }
 }

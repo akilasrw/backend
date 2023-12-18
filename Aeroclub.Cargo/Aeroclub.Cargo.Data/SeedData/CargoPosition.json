@@ -7959,7 +7959,12 @@
     "Name": "1",
     "CargoPositionType": "1",
     "MaxWeight": "1814",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "47E9C885-5B58-4D34-9B35-EDF1A1FFD24C",
@@ -7967,7 +7972,12 @@
     "Name": "2",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "CF2AC95F-2457-429D-87AA-13789CD6F6AB",
@@ -7975,7 +7985,12 @@
     "Name": "3",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "65AF4D12-3F61-4174-ADE1-E9C1FCC8147E",
@@ -7983,7 +7998,12 @@
     "Name": "4",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "575660CD-B062-47F2-903B-82B2DBC55523",
@@ -7991,7 +8011,12 @@
     "Name": "5",
     "CargoPositionType": "1",
     "MaxWeight": "3628",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "687CEA80-09D4-45B2-B26C-5DB97EE4190F",
@@ -7999,7 +8024,12 @@
     "Name": "6",
     "CargoPositionType": "1",
     "MaxWeight": "3628",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "9EFB973D-9D14-4790-920F-F6F6AC356CD2",
@@ -8007,7 +8037,12 @@
     "Name": "7",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "F6688957-381C-4693-A396-B40592B3D2F5",
@@ -8015,7 +8050,12 @@
     "Name": "8",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "6FB941A5-883F-48E3-A611-FEE21E03C8BC",
@@ -8023,7 +8063,12 @@
     "Name": "9",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "92085E85-70FF-4EB5-8032-3D0EB42D32BB",
@@ -8031,7 +8076,12 @@
     "Name": "10",
     "CargoPositionType": "1",
     "MaxWeight": "1814",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "A308EA90-7563-45AB-B66B-CB7A337FB13A",
@@ -8039,7 +8089,12 @@
     "Name": "1",
     "CargoPositionType": "1",
     "MaxWeight": "1814",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "DE85A837-C37C-40BE-BDA1-B1932651FE00",
@@ -8047,7 +8102,12 @@
     "Name": "2",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "C6BFE680-576B-4665-B8C4-983CD40AE75C",
@@ -8055,7 +8115,12 @@
     "Name": "3",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "16A9609A-DE6D-4D7F-803A-BAF9EF80DFCF",
@@ -8063,7 +8128,12 @@
     "Name": "4",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "C82A3478-B75A-4F29-B14A-04BF35E4A621",
@@ -8071,7 +8141,12 @@
     "Name": "5",
     "CargoPositionType": "1",
     "MaxWeight": "3628",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "8C539701-D185-44DC-AA3A-FEF9FAAF6ABE",
@@ -8079,7 +8154,12 @@
     "Name": "6",
     "CargoPositionType": "1",
     "MaxWeight": "3628",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "AEE338B3-5956-4093-9D3A-562ECA51F111",
@@ -8087,7 +8167,12 @@
     "Name": "7",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "84DFD57F-7047-4397-81FC-8B5D2E5BDD7B",
@@ -8095,7 +8180,12 @@
     "Name": "8",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "20E81604-02CD-4BB4-9004-1782A70248D8",
@@ -8103,7 +8193,12 @@
     "Name": "9",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "6A4A7DBF-1D72-45B8-8924-C9A6CE343E66",
@@ -8111,7 +8206,12 @@
     "Name": "10",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "C5CF9C03-1E5F-4A3E-B5E1-62F7370595A2",
@@ -8119,7 +8219,12 @@
     "Name": "11",
     "CargoPositionType": "1",
     "MaxWeight": "1814",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "B204A0C4-5615-4871-ACD1-BC570DFB96E1",
@@ -8127,7 +8232,12 @@
     "Name": "1",
     "CargoPositionType": "1",
     "MaxWeight": "1814",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "9BDAD1DE-3849-4D9B-830D-5EC84E74CA3B",
@@ -8135,7 +8245,12 @@
     "Name": "2",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "507388E5-7101-476A-AFBA-523033832484",
@@ -8143,7 +8258,12 @@
     "Name": "3",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "7A98DA3D-6DF3-461A-951D-8FB0CB5256AB",
@@ -8151,7 +8271,12 @@
     "Name": "4",
     "CargoPositionType": "1",
     "MaxWeight": "3628",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "963354D6-5D9A-4C58-9A00-68C43D491D9C",
@@ -8159,7 +8284,12 @@
     "Name": "5",
     "CargoPositionType": "1",
     "MaxWeight": "3628",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "99C84A72-A3EF-454A-AECC-ACF508C9D73C",
@@ -8167,7 +8297,12 @@
     "Name": "6",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "AB24CFCB-056D-4405-B8CB-50CA45682FA0",
@@ -8175,7 +8310,12 @@
     "Name": "7",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg": "1"
   },
   {
     "Id": "5271D1B5-B157-4984-B463-1967C0E899E4",
@@ -8183,6 +8323,11 @@
     "Name": "8",
     "CargoPositionType": "1",
     "MaxWeight": "2948",
-    "MaxVolume": "9000000"
+    "MaxVolume": "9000000",
+    "Height": "10",
+    "Length": "20",
+    "Breadth": "10",
+    "Priority": "1",
+    "FlightLeg":"1"
   }
 ]
