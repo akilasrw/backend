@@ -110,7 +110,8 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleQuery = new FlightScheduleListQM()
             {
                 OriginAirportId = query.OriginAirportId,
-                FlightDate = query.ScheduledDepartureDateTime,
+                FlightFromDate = query.ScheduledDepartureFromDate,
+                FlightToDate = query.ScheduledDepartureToDate,
                 IncludeAircraftSubType = true,
                 IncludeFlightScheduleSectors = true
             };

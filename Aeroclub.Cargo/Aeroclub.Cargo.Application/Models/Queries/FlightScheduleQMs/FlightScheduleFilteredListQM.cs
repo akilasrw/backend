@@ -6,7 +6,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs
     {
         public Guid OriginAirportId { get; set; }
         public Guid DestinationAirportId { get; set; }
-        public DateTime ScheduledDepartureDateTime { get; set; }
+        public DateTime ScheduledDepartureFromDate { get; set; }
+        public DateTime ScheduledDepartureToDate { get; set; }
 
     }
 }

@@ -10,8 +10,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         public CargoBookingSpecification(CargoBookingFilteredListQM query, bool isCount = false)
             :base(x=> (query.UserId != Guid.Empty  && query.UserId == x.CreatedBy) && (string.IsNullOrEmpty(query.BookingId) || query.BookingId == x.BookingNumber) && 
             (string.IsNullOrEmpty(query.Destination) || 
-            (query.Destination == x.DestinationAirport.Name || query.Destination == x.DestinationAirport.Code)) && 
-            (query.BookingDate == null|| query.BookingDate == DateTime.MinValue || query.BookingDate == x.BookingDate.Date))
+            (query.Destination == x.DestinationAirport.Name || query.Destination == x.DestinationAirport.Code)) &&
+            ((query.FromDate == null || query.FromDate == DateTime.MinValue) || x.BookingDate.Date >= query.FromDate.Value) &&
+            ((query.ToDate == null || query.ToDate == DateTime.MinValue) || x.BookingDate.Date <= query.ToDate.Value))
         {
 
             
@@ -19,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (!isCount)
             {
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddInclude(x => x.Include(y => y.AWBInformation));
                 AddInclude(x => x.Include(y => y.DestinationAirport));
                 AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
                 AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w=>w.AircraftSubType));

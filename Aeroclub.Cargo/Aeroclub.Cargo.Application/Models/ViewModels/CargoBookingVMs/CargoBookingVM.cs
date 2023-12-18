@@ -7,6 +7,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs
     public class CargoBookingVM : BaseVM
     {
         public string BookingNumber { get; set; } = null!;
+        public string AWBNumber { get; set; }
         public DateTime BookingDate { get; set; }
         public Guid DestinationAirportId { get; set; }
         public string DestinationAirportCode { get; set; }
