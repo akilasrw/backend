@@ -11,13 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
-<<<<<<< HEAD
-    [ApiVersion("1.0")] 
-    [Authorize]  
-=======
     [ApiVersion("1.0")]
     [Authorize]
->>>>>>> dev
     public class CargoBookingController : BaseApiController
     {
         private readonly IBookingManagerService _bookingManagerService;
