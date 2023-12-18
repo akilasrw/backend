@@ -214,7 +214,7 @@ namespace Aeroclub.Cargo.Application.Services
                     summaryFigures.BookingCount++;
                     var spec = new CargoBookingSpecification(new CargoBookingQM() { IsIncludePackageDetail = true, Id = s.CargoBookingId});
                     var booking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
-                    summaryFigures.BookingRecievedCount += booking.BookingStatus == BookingStatus.Accepted ? 1 : 0;
+                    summaryFigures.BookingRecievedCount += booking.BookingStatus == BookingStatus.Cargo_Received ? 1 : 0;
 
                     summaryFigures.TotalBookedWeight += booking.PackageItems.Sum(x => x.Weight);
                     summaryFigures.TotalRecievedBookedWeight += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Accepted).Sum(x => x.Weight);

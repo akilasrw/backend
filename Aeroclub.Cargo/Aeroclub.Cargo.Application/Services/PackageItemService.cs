@@ -139,7 +139,7 @@ namespace Aeroclub.Cargo.Application.Services
                     new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM 
                     { 
                         Id = BookingId,
-                        BookingStatus = BookingStatus.Accepted 
+                        BookingStatus = BookingStatus.Cargo_Received
                     });
             }
         }

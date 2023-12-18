@@ -27,6 +27,17 @@ namespace Aeroclub.Cargo.Application.Specifications
             }     
         }
 
+        public CargoBookingSpecification(IEnumerable<Guid> flightScheduleSectorIds)
+    : base(x => x.CargoBookingFlightScheduleSectors.Any(cbs => flightScheduleSectorIds.Contains(cbs.FlightScheduleSectorId)))
+        {
+            // Include statements for related entities
+            AddInclude(x => x.Include(y => y.DestinationAirport));
+            AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector));
+            AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w => w.AircraftSubType));
+            AddInclude(x => x.Include(y => y.PackageItems));
+            AddOrderByDescending(x => x.Created);
+        }
+
         public CargoBookingSpecification(CargoBookingDetailQM query)
             :base(x => (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && (x.Id == query.Id) && (!x.IsDeleted))
         {

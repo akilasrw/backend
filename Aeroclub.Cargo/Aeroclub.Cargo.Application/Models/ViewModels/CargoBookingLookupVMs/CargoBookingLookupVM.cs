@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs
         public DateTime BookingDate { get; set; }
         public BookingStatus BookingStatus { get; set; }
         public AWBStatus AWBStatus { get; set; }
+        public VerifyStatus VerifyStatus { get; set; }
         public string? FlightNumber { get; set; }
         public string OriginAirportCode { get; set; } = null!;
         public string DestinationAirportCode { get; set; } = null!;

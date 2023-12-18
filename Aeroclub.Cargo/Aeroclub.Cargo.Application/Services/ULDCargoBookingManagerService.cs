@@ -234,7 +234,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 // update CargoBooking
                 var cargoBooking = currentCargoBookingFlightScheduleSector.CargoBooking;                
-                cargoBooking.BookingStatus = BookingStatus.Booked;
+                cargoBooking.BookingStatus = BookingStatus.Booking_Made;
                 cargoBooking.StandByStatus = StandByStatus.None;
                 _unitOfWork.Repository<CargoBooking>().Update(cargoBooking);
                 await _unitOfWork.SaveChangesAsync();
