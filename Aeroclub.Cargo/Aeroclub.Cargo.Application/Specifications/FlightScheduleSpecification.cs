@@ -14,6 +14,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightScheduleSpecification(FlightScheduleListQM query, bool isCount = false)
         : base(x=> 
             (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date) &&
+            (query.FlightFromDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date >= query.FlightFromDate.Date) &&
+            (query.FlightToDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date <= query.FlightToDate.Date) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) && 
                 x.ActualArrivalDateTime == null // no history

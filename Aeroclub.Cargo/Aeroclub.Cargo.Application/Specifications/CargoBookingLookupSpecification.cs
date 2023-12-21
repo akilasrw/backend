@@ -8,23 +8,23 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class CargoBookingLookupSpecification : BaseSpecification<CargoBooking>
     {
 
-        public CargoBookingLookupSpecification(CargoBookingLookupQM query):
-            base(x=>((query.UserId != Guid.Empty && query.UserId == x.CreatedBy) && 
-            (string.IsNullOrEmpty(query.ReferenceNumber) ||
-            x.BookingNumber == query.ReferenceNumber || 
-            x.PackageItems.Any(y => y.PackageRefNumber == query.ReferenceNumber))
-            ))
+        public CargoBookingLookupSpecification(CargoBookingLookupQM query)
+    : base(x =>
+        (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) &&
+        (string.IsNullOrEmpty(query.ReferenceNumber) ||
+         x.BookingNumber == query.ReferenceNumber ||
+         x.PackageItems.Any(y => y.PackageRefNumber == query.ReferenceNumber)) ||
+        (query.AWBNumber != null && x.AWBInformation.AwbTrackingNumber == query.AWBNumber)
+    )
         {
-
             if (query.IsIncludeFlightDetail)
-                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
+                AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector));
 
             if (query.IsIncludePackageDetail)
                 AddInclude(x => x.Include(y => y.PackageItems));
 
             if (query.IsIncludeAWBDetail)
                 AddInclude(x => x.Include(y => y.AWBInformation));
-
         }
 
     }

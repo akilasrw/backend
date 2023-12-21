@@ -417,22 +417,22 @@ namespace Aeroclub.Cargo.Application.Services
         {
             switch(bookingStatus)
             {
-                case BookingStatus.None: return BookingStatus.Booked;
-                case BookingStatus.Booked: return BookingStatus.Accepted;
+                case BookingStatus.None: return BookingStatus.Booking_Made;
+                case BookingStatus.Booking_Made: return BookingStatus.Cargo_Received;
                 //case BookingStatus.Accepted: return BookingStatus.Dispatched;
             }
             return BookingStatus.None;
         }
         public VerifyStatus BookingVerifyNextStatus(BookingStatus bookingStatus, bool isCancel = false, bool isRecieved = false, bool isDispatch = false)
         {
-            if (bookingStatus == BookingStatus.Booked)
+            if (bookingStatus == BookingStatus.Booking_Made)
             {
                 if (isCancel) return VerifyStatus.Deleted;
                 if (isRecieved) return VerifyStatus.Dispatched;
                 return VerifyStatus.CargoNotDispatched;
 
             }
-            else if (bookingStatus == BookingStatus.Accepted)
+            else if (bookingStatus == BookingStatus.Cargo_Received)
             {
                 if (isDispatch) return VerifyStatus.Dispatched;
                 if (isCancel) return VerifyStatus.Deleted;
