@@ -92,6 +92,7 @@ namespace Aeroclub.Cargo.Application.Services
        
         public async Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter)
         { 
+            // TODO handle this correctly
             List<ULD> allocatedUldList = new List<ULD>();
             // Get already Assigned Ulds
             var pallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>()
@@ -100,43 +101,43 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var pallet in pallets.ToList())
             {
                 if (palletFilter.ULDLocateStatus == null || pallet.ULD.ULDLocateStatus == palletFilter.ULDLocateStatus) {
-                    if (!allocatedUldList.Any(excluded => excluded.Id == pallet.ULD.Id))
+                    if (allocatedUldList.All(excluded => excluded.Id != pallet.ULD.Id))
                     {
                         allocatedUldList.Add(pallet.ULD);
                     }
                 }
             }
 
-            if(palletFilter.ULDId != null)
-            {
-                allocatedUldList = allocatedUldList
-                    .Where(uld => uld.Id == palletFilter.ULDId)
-                    .ToList();
-            }
+            // if(palletFilter.ULDId != null)
+            // {
+            //     allocatedUldList = allocatedUldList
+            //         .Where(uld => uld.Id == palletFilter.ULDId)
+            //         .ToList();
+            // }
 
-            var spec = new ULDSpecification(palletFilter.ULDLocateStatus);
-
-            // Get All Ulds
-            var allUlds = await _unitOfWork.Repository<ULD>().GetListWithSpecAsync(spec);
+            // var spec = new ULDSpecification(palletFilter.ULDLocateStatus);
+            //
+            // // Get All Ulds
+            // var allUlds = await _unitOfWork.Repository<ULD>().GetListWithSpecAsync(spec);
 
             // exclude allocated list
-            var otherlist = allUlds
-                .Where(model => !allocatedUldList.Any(excluded => excluded.Id == model.Id))
-                .ToList();
+            // var otherlist = allUlds
+            //     .Where(model => !allocatedUldList.Any(excluded => excluded.Id == model.Id))
+            //     .ToList();
 
-            if (palletFilter.ULDId != null)
-            {
-                otherlist = otherlist
-                    .Where(uld => uld.Id == palletFilter.ULDId)
-                    .ToList();
-            }
+            // if (palletFilter.ULDId != null)
+            // {
+            //     otherlist = otherlist
+            //         .Where(uld => uld.Id == palletFilter.ULDId)
+            //         .ToList();
+            // }
 
             List<ULDFilteredListVM> uldVMList = new List<ULDFilteredListVM>();
 
-            foreach (var item in otherlist) {
-                var vmItem = _mapper.Map<ULDFilteredListVM>(item);
-                uldVMList.Add(vmItem);
-            }
+            // foreach (var item in otherlist) {
+            //     var vmItem = _mapper.Map<ULDFilteredListVM>(item);
+            //     uldVMList.Add(vmItem);
+            // }
 
 
             foreach (var item in allocatedUldList)
@@ -153,9 +154,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     ULDId = item.Id,
                 });
-
-
-
+                
                 var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(specs);
 
                 if (existing != null)
@@ -170,40 +169,15 @@ namespace Aeroclub.Cargo.Application.Services
                         UldId = item.Id
                     };
 
-                    
-
                     var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
                     var totWeight = b.Sum(x => x.TotalWeight);
                     var totVol = b.Sum(x => x.TotalVolume);
                     item.Weight += totWeight;
                     item.Volume += totVol;
-                    
-                    
                 }
                
             }
             return uldVMList;
-            //foreach (var uld in ulds)
-            //{
-            //    pallets.Where(x => x.ULDId == uld.Id);
-            //}
-
-            //var assingedUlds = ulds.Join(
-            //    pallets,
-            //    uld => uld.Id,
-            //    pallet => pallet.ULDId,
-            //    (uld, pallet) => new
-            //    {
-            //        uld.SerialNumber,
-            //        pallet.ULDId,
-            //    })
-            //    .ToList();
-
-
-
-            // Filtered avaialble Ulds
-            // -- Not used in same flight date
-
         }
 
         async Task<bool> DeleteListAsync(IEnumerable<FlightScheduleSectorPalletCreateRemoveRM> requests)

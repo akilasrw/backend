@@ -142,7 +142,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
         {
-            var spec = new AircraftLayoutMappingSpecification(new AircraftLayoutMappingQM() { AircraftSubTypeId = subTypeId });
+            var spec = new AircraftLayoutMappingSpecification(new AircraftLayoutSingleMappingQm() { AircraftSubTypeId = subTypeId });
             return await _unitOfWork.Repository<AircraftLayoutMapping>().GetEntityWithSpecAsync(spec);
         }
 

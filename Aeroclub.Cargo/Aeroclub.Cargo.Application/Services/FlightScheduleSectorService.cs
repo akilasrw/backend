@@ -5,7 +5,9 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.AircrftLayoutMappingQM;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorPalletQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoPositionVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
@@ -316,7 +318,7 @@ namespace Aeroclub.Cargo.Application.Services
                 fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
                 var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
                 fs.ULDPositionCount = cargoPositions.Count;
-                fs.ULDCount = flightScheduleSector.LoadPlan == null || flightScheduleSector.LoadPlan.ULDContaines == null ? 0 : flightScheduleSector.LoadPlan.ULDContaines.Where(x => x.ULD != null).Count();
+                fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets.Count(f => f.ULD.ULDLocateStatus == ULDLocateStatus.OnGround);
                 fs.CutoffTime = flightScheduleSector.CutoffTimeMin == null ? flightScheduleSector.ScheduledDepartureDateTime
                     : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-flightScheduleSector.CutoffTimeMin.Value);
                 list.Add(fs);

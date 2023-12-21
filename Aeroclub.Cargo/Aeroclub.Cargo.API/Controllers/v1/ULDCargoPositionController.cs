@@ -29,11 +29,15 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost("create")]
         public async Task<ActionResult<ServiceResponseCreateStatus>> Create([FromBody] List<ULDCargoPositionDto> rm)
         {
-
             var res = await _uLDCargoPositionService.CreateAsync(rm);
             return Ok(res);
+        }
 
-           
+        [HttpPost("clear")]
+        public async Task<ActionResult<CargoPositionClearResponse>> Clear([FromBody] List<ULDCargoPositionDto> rm)
+        {
+            var res = await _uLDCargoPositionService.ClearAsync(rm);
+            return Ok(res);
         }
 
     }
