@@ -13,6 +13,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDContainer;
@@ -31,6 +32,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Google.Type;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -50,6 +52,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IAWBService _AWBService;
         private readonly IBaseUnitConverter _baseUnitConverter;
         private readonly ICargoAgentService _cargoAgentService;
+        private readonly INotificationService _notificationService;
 
         public ULDCargoBookingManagerService(IUnitOfWork unitOfWork,
             IMapper mapper,
@@ -65,6 +68,7 @@ namespace Aeroclub.Cargo.Application.Services
             ICargoAgentService cargoAgentService,
             ICargoBookingFlightScheduleSectorService cargoBookingFlightScheduleSectorService,
             IFlightScheduleSectorPalletService flightScheduleSectorPalletService,
+            INotificationService notificationService,
         IBaseUnitConverter baseUnitConverter) :
             base(unitOfWork, mapper)
         {
@@ -79,6 +83,7 @@ namespace Aeroclub.Cargo.Application.Services
             _AWBService = AWBService;
             _baseUnitConverter = baseUnitConverter;
             _cargoAgentService = cargoAgentService;
+            _notificationService = notificationService;
         }
 
         public async Task<BookingServiceResponseStatus> CreateAsync(CargoBookingRM rm) // for onFloor 
@@ -91,6 +96,8 @@ namespace Aeroclub.Cargo.Application.Services
                 }
 
                 var packages = rm.PackageItems.ToList();
+                double totalWeight = 0;
+                var flightSectors = new List<FlightScheduleSectorVM>();
                 rm.PackageItems.Clear();
 
                 // Save Cargo Booking Details
@@ -157,6 +164,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         package.Weight = package.Weight.GramToKilogramConversion();
                     }
+                    totalWeight += package.Weight;
 
                     // Save Package Items
                     package.CargoBookingId = cargoBooking.Id;
@@ -170,12 +178,16 @@ namespace Aeroclub.Cargo.Application.Services
 
                     foreach (var flightSectorId in rm.FlightScheduleSectorIds)
                     {
-                        var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightSectorId, IncludeLoadPlan = true });
+                        var flightSector = await _flightScheduleSectorService.GetAsync(new FlightScheduleSectorQM() { Id = flightSectorId, IncludeLoadPlan = true, IncludeFlightScheduleSectorPallets= true, IncludeULDContaines= true });
 
                         if (flightSector == null || flightSector.LoadPlanId == null)
                         {
                             transaction.Rollback();
                             return BookingServiceResponseStatus.Failed;
+                        }
+                        if(flightSectors.Count < rm.FlightScheduleSectorIds.Count)
+                        {
+                            flightSectors.Add(flightSector);
                         }
 
                         // Save ULD Container Details
@@ -205,6 +217,17 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                 }
                 transaction.Commit();
+                if (cargoBooking.StatusCode == ServiceResponseStatus.Success)
+                {
+                    var lastFlightScheduleSector = flightSectors.Last();
+                    var firstFlightScheduleSector = flightSectors.First();
+                    NotificationRM notificationRM = new NotificationRM();
+                    notificationRM.Title = "Cargo booking made";
+                    
+                    notificationRM.Body = "Flight details; " + firstFlightScheduleSector.FlightNumber + " - " + firstFlightScheduleSector.OriginAirportCode + " - " + lastFlightScheduleSector.DestinationAirportCode + ",Flight Date time; "+ firstFlightScheduleSector.ScheduledDepartureDateTime.ToString("g") + ",Cargo weight ; "+totalWeight+" kg"+",Number of packages ; "+packages.Count+",Cargo cut off time ; "+ firstFlightScheduleSector.AcceptanceCutoffTime +",Please hand over your cargo to "+ firstFlightScheduleSector.OriginAirportCode + " cargo dropoff point on or before above mentioned time. ";
+                    notificationRM.NotificationType = Common.Enums.NotificationType.Booking_Made;
+                    await _notificationService.CreateAsync(notificationRM);
+                }
             }
 
             return BookingServiceResponseStatus.Success;
@@ -274,6 +297,11 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                 }                            
                 transaction.Commit();
+                NotificationRM notificationRM = new NotificationRM();
+                notificationRM.NotificationType = Common.Enums.NotificationType.Cargo_AssignedTo_New_Flight;
+                notificationRM.Title = "Cargo re-assignement for AWB : "+ cargoBooking.AWBInformation.AwbTrackingNumber;
+                notificationRM.Body = "Your offloaded cargo with AWB "+ cargoBooking.AWBInformation.AwbTrackingNumber + " has reassigned to the fligt "+rm.FlightNumber+" on "+ rm.FlightDate.ToString("g")+".";
+                await _notificationService.CreateAsync(notificationRM);
             }
              
 

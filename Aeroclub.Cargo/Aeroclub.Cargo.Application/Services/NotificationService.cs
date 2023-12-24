@@ -10,15 +10,17 @@ using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using static Grpc.Core.Metadata;
 
 namespace Aeroclub.Cargo.Application.Services
 {
     public class NotificationService : BaseService, INotificationService
     {
-        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, mapper)
         {
-
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<NotificationVM> GetAsync(NotificationQM query)
@@ -93,10 +95,13 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> CreateAsync(NotificationRM dto)
         {
             var response = new ServiceResponseCreateStatus();
-            if(dto.CargoAgentId != Guid.Empty)
+            if (_httpContextAccessor.HttpContext.Items.TryGetValue("User", out var user))
             {
-                var agent = await _unitOfWork.Repository<CargoAgent>().GetByIdAsync(dto.CargoAgentId);
-                dto.UserId = agent.AppUserId;
+                if (user is AppUser userType)
+                {
+                    dto.UserId = userType.Id;
+
+                }
             }
             var notification = _mapper.Map<Notification>(dto);
             await _unitOfWork.Repository<Notification>().CreateAsync(notification);
