@@ -9,6 +9,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.LIRFileUploadQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
@@ -34,6 +35,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly ILIRFileUploadService _lIRFileUploadService;
         private readonly IUploadFactory _uploadFactory;
         private readonly ICargoBookingSummaryService _cargoBookingSummaryService;
+        private readonly INotificationService _notificationService;
 
         public LinkAircraftToScheduleService(IUnitOfWork unitOfWork,
             IMapper mapper, 
@@ -41,6 +43,7 @@ namespace Aeroclub.Cargo.Application.Services
             ICargoBookingSummaryService cargoBookingSummaryService,
             IAircraftService aircraftService,
             ILIRFileUploadService lIRFileUploadService,
+            INotificationService notificationService,
             IUploadFactory uploadFactory) 
             : base(unitOfWork, mapper)
         {
@@ -49,6 +52,7 @@ namespace Aeroclub.Cargo.Application.Services
             _lIRFileUploadService = lIRFileUploadService;
             _uploadFactory = uploadFactory;
             _cargoBookingSummaryService = cargoBookingSummaryService;
+            _notificationService = notificationService;
         }
         public async Task<ServiceResponseStatus> CreateAsync(ScheduleAircraftRM query)
         {
@@ -81,6 +85,8 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         flightSchedule.ActualDepartureDateTime = fs.Date.Add(TimeSpan.Parse(query.ActualDepartureDateTime));
                         flightSchedule.IsDispatched = query.IsDispatched.Value;
+                        await CreateNotification(flightSchedule);
+
                         edited = true;
                     }
                 }
@@ -223,6 +229,18 @@ namespace Aeroclub.Cargo.Application.Services
                 }
             }
             return true;
+        }
+        async Task CreateNotification(FlightSchedule flightSchedule)
+        {
+            var flightDate = flightSchedule.ActualDepartureDateTime.ToString("g");
+            var flightNumber = flightSchedule.FlightNumber;
+            var airportCode = flightSchedule.OriginAirportCode;
+            var destinationAirportCode = flightSchedule.DestinationAirportCode;
+            NotificationRM notificationRM = new NotificationRM();
+            notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Dispatched;
+            notificationRM.Title = "Flight has departed from "+ airportCode +" with you cargo for AWB ";
+            notificationRM.Body = "Flight details; "+flightNumber+" - "+airportCode+" - "+destinationAirportCode+",Flight Date time ; "+flightDate+", ";
+            await _notificationService.CreateAsync(notificationRM);
         }
     }
 }
