@@ -316,6 +316,9 @@ namespace Aeroclub.Cargo.Application.Services
                     AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
                 });
                 fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
+                fs.AricraftType = flightScheduleSector.Aircraft != null
+                ? flightScheduleSector.Aircraft.AircraftType
+                : null;
                 var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
                 fs.ULDPositionCount = cargoPositions.Count;
                 fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets.Count(f => f.ULD.ULDLocateStatus == ULDLocateStatus.OnGround);
