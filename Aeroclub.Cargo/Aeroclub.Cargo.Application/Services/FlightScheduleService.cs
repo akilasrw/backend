@@ -720,12 +720,15 @@ namespace Aeroclub.Cargo.Application.Services
             var flightNumber = flightScheduleSector.FlightNumber;
             var airportCode = flightScheduleSector.OriginAirportCode;
             var destinationAirportCode = flightScheduleSector.DestinationAirportCode;
-            var awbNumber = flightScheduleSector.CargoBookingFlightScheduleSectors?.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList().Last().CargoBooking?.AWBInformation?.AwbTrackingNumber;
-            NotificationRM notificationRM = new NotificationRM();
-            notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Arrived;
-            notificationRM.Title = "Flight has arrived to "+airportCode+" with your cargo for AWB "+ awbNumber;
-            notificationRM.Body = "Flight details; " + flightNumber + " - " + airportCode + " - " + destinationAirportCode + ",Flight has arrived to "+airportCode+" on "+flightDate+". You can start your clearing process. ";
-            await _notificationService.CreateAsync(notificationRM);
+            foreach (var booking in flightScheduleSector.CargoBookingFlightScheduleSectors)
+            {
+                    var awbNumber = booking.CargoBooking.AWBInformation?.AwbTrackingNumber;
+                    NotificationRM notificationRM = new NotificationRM();
+                    notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Arrived;
+                    notificationRM.Title = "Flight has arrived to " + airportCode + " with your cargo for AWB " + awbNumber;
+                    notificationRM.Body = "Flight details; " + flightNumber + " - " + airportCode + " - " + destinationAirportCode + ",Flight has arrived to " + airportCode + " on " + flightDate + ". You can start your clearing process. ";
+                    await _notificationService.CreateAsync(notificationRM);
+            }
         }
 
     }

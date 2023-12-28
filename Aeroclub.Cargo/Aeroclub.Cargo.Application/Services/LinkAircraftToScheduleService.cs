@@ -236,11 +236,21 @@ namespace Aeroclub.Cargo.Application.Services
             var flightNumber = flightSchedule.FlightNumber;
             var airportCode = flightSchedule.OriginAirportCode;
             var destinationAirportCode = flightSchedule.DestinationAirportCode;
-            NotificationRM notificationRM = new NotificationRM();
-            notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Dispatched;
-            notificationRM.Title = "Flight has departed from "+ airportCode +" with you cargo for AWB ";
-            notificationRM.Body = "Flight details; "+flightNumber+" - "+airportCode+" - "+destinationAirportCode+",Flight Date time ; "+flightDate+", ";
-            await _notificationService.CreateAsync(notificationRM);
+            foreach (var flightScheduleSectors in flightSchedule.FlightScheduleSectors)
+            {
+                if (flightScheduleSectors.CargoBookingFlightScheduleSectors != null || flightScheduleSectors.CargoBookingFlightScheduleSectors.Count() != 0)
+                    
+                    foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
+                    {
+                        var awbNumber = booking.CargoBooking.AWBInformation?.AwbTrackingNumber;
+                        NotificationRM notificationRM = new NotificationRM();
+                        notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Dispatched;
+                        notificationRM.Title = "Flight has departed from " + airportCode + " with you cargo for AWB " + awbNumber;
+                        notificationRM.Body = "Flight details; " + flightNumber + " - " + airportCode + " - " + destinationAirportCode + ",Flight Date time ; " + flightDate + ", ";
+                        await _notificationService.CreateAsync(notificationRM);
+                    }
+                
+            }
         }
     }
 }
