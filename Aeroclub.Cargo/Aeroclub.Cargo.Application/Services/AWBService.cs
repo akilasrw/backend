@@ -3,7 +3,6 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.AWBNumberStackQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
-using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -17,12 +16,10 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly IAWBNumberStackService _awbNumberStackService;
         private readonly ICargoBookingService _cargoBookingService;
-        private readonly INotificationService _notificationService;
-        public AWBService(ICargoBookingService cargoBookingService, IAWBNumberStackService awbNumberStackService, INotificationService notificationService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public AWBService(ICargoBookingService cargoBookingService, IAWBNumberStackService awbNumberStackService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
             _awbNumberStackService = awbNumberStackService;
             _cargoBookingService = cargoBookingService;
-            _notificationService = notificationService;
         }
 
         public async Task<AWBCreateStatusRM> CreateAsync(AWBCreateRM model)
@@ -51,14 +48,6 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             var updatedAWBStatus = await _cargoBookingService.UpdateAWBStatus(model.CargoBookingId);
-            if(updatedAWBStatus == ServiceResponseStatus.Success)
-            {
-                NotificationRM notificationRM = new NotificationRM();
-                notificationRM.Title = "AWB created";
-                notificationRM.Body = "AWB created";
-                notificationRM.NotificationType = Common.Enums.NotificationType.AWB_Added;
-                await _notificationService.CreateAsync(notificationRM);
-            }
 
             if (updatedAWBStatus == ServiceResponseStatus.Failed)
             {

@@ -95,14 +95,18 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseCreateStatus> CreateAsync(NotificationRM dto)
         {
             var response = new ServiceResponseCreateStatus();
-            if (_httpContextAccessor.HttpContext.Items.TryGetValue("User", out var user))
+            if (dto.UserId.Equals(Guid.Empty))
             {
-                if (user is AppUser userType)
+                if (_httpContextAccessor.HttpContext.Items.TryGetValue("User", out var user))
                 {
-                    dto.UserId = userType.Id;
+                    if (user is AppUser userType)
+                    {
+                        dto.UserId = userType.Id;
 
+                    }
                 }
             }
+
             var notification = _mapper.Map<Notification>(dto);
             await _unitOfWork.Repository<Notification>().CreateAsync(notification);
             await _unitOfWork.SaveChangesAsync();

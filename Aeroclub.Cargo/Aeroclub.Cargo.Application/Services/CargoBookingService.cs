@@ -359,6 +359,7 @@ namespace Aeroclub.Cargo.Application.Services
                             NotificationRM notificationRM = new NotificationRM();
                             CargoBookingDetailVM cargoBookingDetail = GetCargoBookingSectorInfo(booking, new CargoBookingDetailVM());
                             notificationRM.Title = "Cargo offloaded for AWB : " + booking.AWBInformation.AwbTrackingNumber;
+                            notificationRM.UserId = booking.CreatedBy;
                             notificationRM.Body = "Your cargo originally planned to go on "+ cargoBookingDetail.FlightNumber+" on "+cargoBookingDetail.ScheduledDepartureDateTime+" has to offloaded and will be re allocated to another flight sooner. Sorry for the inconvenience.";
                             notificationRM.NotificationType = Common.Enums.NotificationType.Off_Loaded;
                             await _notificationService.CreateAsync(notificationRM);

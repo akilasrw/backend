@@ -145,8 +145,9 @@ namespace Aeroclub.Cargo.Application.Services
                         Id = BookingId,
                         BookingStatus = BookingStatus.Cargo_Received
                     });
-                await CreateNotification(bookings);
+                
             }
+            await CreateNotification(bookings);
         }
         async Task CreateNotification(CargoBooking cargoBooking)
         {
@@ -163,8 +164,9 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 totalWeight += package.Weight;
             }
-                NotificationRM notificationRM = new NotificationRM();
+            NotificationRM notificationRM = new NotificationRM();
             notificationRM.NotificationType = Common.Enums.NotificationType.Cargo_Received;
+            notificationRM.UserId = cargoBooking.CreatedBy;
             notificationRM.Title = "Cargo received for AWB : "+ cargoBooking.AWBInformation.AwbTrackingNumber;
             notificationRM.Body = "Flight details; " + flightNumber + " - " + originAirportCode + " - " + destinationAirportCode + ",Flight Date time; " + scheduledDepartureDateTime + ",Cargo weight ; " + totalWeight + " kg" + ",Number of packages ; " + cargoBooking.PackageItems.Count + ",Your cargo has arrived to our warehouse and we will forward your cargo to the destination."; 
             await _notificationService.CreateAsync(notificationRM);

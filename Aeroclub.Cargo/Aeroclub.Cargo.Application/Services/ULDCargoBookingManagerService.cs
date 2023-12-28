@@ -299,6 +299,7 @@ namespace Aeroclub.Cargo.Application.Services
                 transaction.Commit();
                 NotificationRM notificationRM = new NotificationRM();
                 notificationRM.NotificationType = Common.Enums.NotificationType.Cargo_AssignedTo_New_Flight;
+                notificationRM.UserId = cargoBooking.CreatedBy;
                 notificationRM.Title = "Cargo re-assignement for AWB : "+ cargoBooking.AWBInformation.AwbTrackingNumber;
                 notificationRM.Body = "Your offloaded cargo with AWB "+ cargoBooking.AWBInformation.AwbTrackingNumber + " has reassigned to the fligt "+rm.FlightNumber+" on "+ rm.FlightDate.ToString("g")+".";
                 await _notificationService.CreateAsync(notificationRM);

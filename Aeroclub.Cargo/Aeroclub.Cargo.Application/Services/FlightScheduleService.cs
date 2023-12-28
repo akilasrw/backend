@@ -747,6 +747,7 @@ namespace Aeroclub.Cargo.Application.Services
                     var awbNumber = booking.CargoBooking.AWBInformation?.AwbTrackingNumber;
                     NotificationRM notificationRM = new NotificationRM();
                     notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Arrived;
+                    notificationRM.UserId = booking.CargoBooking.CreatedBy;
                     notificationRM.Title = "Flight has arrived to " + airportCode + " with your cargo for AWB " + awbNumber;
                     notificationRM.Body = "Flight details; " + flightNumber + " - " + airportCode + " - " + destinationAirportCode + ",Flight has arrived to " + airportCode + " on " + flightDate + ". You can start your clearing process. ";
                     await _notificationService.CreateAsync(notificationRM);

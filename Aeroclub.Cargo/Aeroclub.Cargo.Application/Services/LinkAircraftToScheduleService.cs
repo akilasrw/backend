@@ -238,13 +238,14 @@ namespace Aeroclub.Cargo.Application.Services
             var destinationAirportCode = flightSchedule.DestinationAirportCode;
             foreach (var flightScheduleSectors in flightSchedule.FlightScheduleSectors)
             {
-                if (flightScheduleSectors.CargoBookingFlightScheduleSectors != null || flightScheduleSectors.CargoBookingFlightScheduleSectors.Count() != 0)
+                if (null != flightScheduleSectors.CargoBookingFlightScheduleSectors  && flightScheduleSectors.CargoBookingFlightScheduleSectors.Count() != 0)
                     
                     foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
                     {
-                        var awbNumber = booking.CargoBooking.AWBInformation?.AwbTrackingNumber;
+                        var awbNumber = booking?.CargoBooking?.AWBInformation?.AwbTrackingNumber;
                         NotificationRM notificationRM = new NotificationRM();
                         notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Dispatched;
+                        notificationRM.UserId = booking.CargoBooking.CreatedBy;
                         notificationRM.Title = "Flight has departed from " + airportCode + " with you cargo for AWB " + awbNumber;
                         notificationRM.Body = "Flight details; " + flightNumber + " - " + airportCode + " - " + destinationAirportCode + ",Flight Date time ; " + flightDate + ", ";
                         await _notificationService.CreateAsync(notificationRM);
