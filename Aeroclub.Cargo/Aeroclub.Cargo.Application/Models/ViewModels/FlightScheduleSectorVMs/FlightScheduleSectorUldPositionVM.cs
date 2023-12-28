@@ -13,7 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs
         public Guid? AircraftLayoutId { get; set; }
         public DateTime? CutoffTime { get; set; }
         public int ULDPositionCount { get; set; }
-        public AircraftTypes? AricraftType { get; set; }
+        public AircraftTypes? AircraftType { get; set; }
         public int ULDCount { get; set; }
 
     }
