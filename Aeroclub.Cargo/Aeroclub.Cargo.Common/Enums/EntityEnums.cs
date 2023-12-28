@@ -113,12 +113,12 @@ namespace Aeroclub.Cargo.Common.Enums
     public enum BookingStatus
     {
         None = 0,
-        Booked = 10, // Booked
-        Accepted = 20,// Recieved
-        //Loaded = 30,
-        Invoiced = 40,
-        //Dispatched = 50,
-        //Exported = 60,
+        Booking_Made = 10, 
+        AWB_Added = 20,
+        Cargo_Received = 30,
+        Off_Loaded = 40,
+        Flight_Dispatched = 50,
+        Flight_Arrived = 60,
         Cancelled = 70
     }
 

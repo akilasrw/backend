@@ -90,7 +90,7 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
        
-        public async Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter)
+         public async Task<List<ULDFilteredListVM>> GetPalleteListAsync(FlightSheduleSectorPalletGetList palletFilter)
         { 
             List<ULD> allocatedUldList = new List<ULD>();
             // Get already Assigned Ulds
@@ -149,6 +149,19 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var item in uldVMList)
             {
+                var specs = new ULDCargoPositionSpecification(new ULDCargoPositionDto
+                {
+                    ULDId = item.Id,
+                });
+
+
+
+                var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(specs);
+
+                if (existing != null)
+                {
+                    item.CargoPositionID = existing.CargoPositionId;
+                }
                 if (item.IsAssigned)
                 {
                     var q = new AssignedCargoQM
@@ -157,11 +170,15 @@ namespace Aeroclub.Cargo.Application.Services
                         UldId = item.Id
                     };
 
+                    
+
                     var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
                     var totWeight = b.Sum(x => x.TotalWeight);
                     var totVol = b.Sum(x => x.TotalVolume);
                     item.Weight += totWeight;
                     item.Volume += totVol;
+                    
+                    
                 }
                
             }

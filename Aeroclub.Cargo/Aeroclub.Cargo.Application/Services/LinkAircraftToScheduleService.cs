@@ -213,14 +213,14 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     foreach (var booking in flightScheduleSectors.CargoBookingFlightScheduleSectors)
                     {
-                        if (booking.CargoBooking.BookingStatus == BookingStatus.Accepted &&
+                        if (booking.CargoBooking.BookingStatus == BookingStatus.Cargo_Received &&
                             (booking.CargoBooking.VerifyStatus != VerifyStatus.ActualLoad && 
                             booking.CargoBooking.VerifyStatus != VerifyStatus.OffLoad))
                         {
                             return false;
                         }
 
-                        if ((booking.CargoBooking.BookingStatus == BookingStatus.Booked && booking.CargoBooking.VerifyStatus == VerifyStatus.None) || 
+                        if ((booking.CargoBooking.BookingStatus == BookingStatus.Booking_Made && booking.CargoBooking.VerifyStatus == VerifyStatus.None) || 
                             (booking.CargoBooking.BookingStatus == BookingStatus.None && booking.CargoBooking.VerifyStatus == VerifyStatus.None))
                         {
                             return false;

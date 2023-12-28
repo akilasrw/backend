@@ -29,17 +29,77 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<ServiceResponseCreateStatus> CreateAsync(ULDCargoPositionDto ULDCargoPositionDto)
+        public async Task<CargoPositionClearResponse> ClearAsync(List<ULDCargoPositionDto> ULDCargoPositionDto)
+        {
+            var res = new CargoPositionClearResponse();
+
+            foreach(var x in ULDCargoPositionDto)
+            {
+                var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto
+                {
+                    ULDId = x.ULDId,
+                    CargoPositionId = x.CargoPositionId
+                });
+
+                var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
+
+                if(existing == null)
+                {
+                    res.StatusCode = ServiceResponseStatus.Failed;
+                    res.Message = "Invalid ULD";
+                }
+                else
+                {
+                    _unitOfWork.Repository<ULDCargoPosition>().Delete(existing);
+                    await _unitOfWork.SaveChangesAsync();
+                    res.StatusCode = ServiceResponseStatus.Success;
+                }
+
+                
+            }
+
+            return res;
+
+        }
+
+        public async Task<ServiceResponseCreateStatus> CreateAsync(List<ULDCargoPositionDto> ULDCargoPositionDto)
         {
             var res = new ServiceResponseCreateStatus();
 
-            var model = _mapper.Map<ULDCargoPosition>(ULDCargoPositionDto);
+            foreach(var x in  ULDCargoPositionDto)
+            {
+                var model = _mapper.Map<ULDCargoPosition>(x);
 
-            var result = await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
-            await _unitOfWork.SaveChangesAsync();
+                var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto
+                {
+                    ULDId = x.ULDId,
+                    CargoPositionId = x.CargoPositionId
+                });
 
-            res.Id = result.Id;
-            res.StatusCode = ServiceResponseStatus.Success;
+
+
+                var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
+                if (existing != null)
+                {
+                    res.StatusCode = ServiceResponseStatus.Failed;
+                    res.Message = "Position or ULD is already assigned";
+                }
+
+                await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
+                try
+                {
+                    await _unitOfWork.SaveChangesAsync();
+
+                    res.StatusCode = ServiceResponseStatus.Success;
+
+                }
+                catch (Exception ex)
+                {
+
+                    res.StatusCode = ServiceResponseStatus.Failed;
+                    return res;
+                }
+            }
 
             return res;
         }

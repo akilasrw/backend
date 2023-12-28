@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.AirWayBillRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -78,7 +79,14 @@ namespace Aeroclub.Cargo.Application.Services
                     response.StatusCode = awbNumberUpdate;
                 }
             }
-           
+
+            await _cargoBookingService.UpdateAsync(
+                    new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                    {
+                        Id = model.CargoBookingId,
+                        BookingStatus = BookingStatus.AWB_Added
+            });
+
 
             return response;
         }

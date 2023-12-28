@@ -64,7 +64,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(y => y.Include(x => x.LoadPlan.ULDContaines).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z => z.CargoPosition));
             AddInclude(y => y.Include(x => x.LoadPlan).ThenInclude(t => t.AircraftLayout.AircraftDecks).ThenInclude(z => z.AircraftCabins).ThenInclude(c => c.ZoneAreas).ThenInclude(p => p.CargoPositions));
             AddInclude(y => y.Include(x => x.AircraftSubType));
-            AddInclude(y => y.Include(c => c.FlightScheduleSectorPallets));
+            AddInclude(y => y.Include(c => c.FlightScheduleSectorPallets).ThenInclude(i=> i.ULD));
         }
     }
 }

@@ -88,7 +88,6 @@ namespace Aeroclub.Cargo.Application.Services
             var totalCount = await _unitOfWork.Repository<CargoBooking>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<CargoBookingVM>>(bookingList);
-
          
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
@@ -196,7 +195,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
-                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Accepted 
+                if (sectorBooking.CargoBooking.BookingStatus == BookingStatus.Cargo_Received 
                     // && sectorBooking.CargoBooking.StandByStatus != StandByStatus.OffLoad
                     )
                     list.Add(await MappedListAsync(sectorBooking.CargoBooking));
@@ -352,6 +351,11 @@ namespace Aeroclub.Cargo.Application.Services
                         if (cargo.StandByStatus == StandByStatus.OffLoad)
                         {
                             booking.VerifyStatus = VerifyStatus.OffLoad;
+                        await UpdateAsync(new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                        {
+                            Id = booking.Id,
+                            BookingStatus = BookingStatus.Off_Loaded
+                        });
                             NotificationRM notificationRM = new NotificationRM();
                             CargoBookingDetailVM cargoBookingDetail = GetCargoBookingSectorInfo(booking, new CargoBookingDetailVM());
                             notificationRM.Title = "Cargo offloaded for AWB : " + booking.AWBInformation.AwbTrackingNumber;
