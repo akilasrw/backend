@@ -268,6 +268,14 @@ namespace Aeroclub.Cargo.Common.Enums
     public enum NotificationType
     {
         None = 0,
+        Booking_Made = 1,
+        AWB_Added = 2,
+        Cargo_Received = 3,
+        Off_Loaded = 4,
+        Flight_Dispatched = 5,
+        Flight_Arrived = 6,
+        Cargo_AssignedTo_New_Flight = 8,
+        Cancelled = 7
 
     }
 

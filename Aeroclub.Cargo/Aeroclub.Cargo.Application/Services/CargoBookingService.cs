@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -22,13 +23,15 @@ namespace Aeroclub.Cargo.Application.Services
     {
         private readonly ICargoAgentService _cargoAgentService;
         private readonly IBaseUnitConverter _baseUnitConverter;
+        private readonly INotificationService _notificationService;
 
         public CargoBookingService(
             IUnitOfWork unitOfWork,
-            IMapper mapper, ICargoAgentService cargoAgentService, IBaseUnitConverter baseUnitConverter) : base(unitOfWork, mapper)
+            IMapper mapper, ICargoAgentService cargoAgentService, IBaseUnitConverter baseUnitConverter, INotificationService notificationService) : base(unitOfWork, mapper)
         {
             _cargoAgentService = cargoAgentService;
             _baseUnitConverter = baseUnitConverter;
+            _notificationService = notificationService;
         }
 
         public async Task<ServiceResponseCreateStatus> CreateAsync(CargoBookingRM rm)
@@ -335,7 +338,8 @@ namespace Aeroclub.Cargo.Application.Services
         {
             foreach (CargoBookingStatusUpdateRM cargo in rm.CargoBookingStatusUpdateList)
             {
-                var booking = await _unitOfWork.Repository<CargoBooking>().GetByIdAsync(cargo.Id);
+                var spec = new CargoBookingSpecification(new Models.Queries.CargoBookingQMs.CargoBookingQM { Id = cargo.Id, IsIncludeAWBDetail = true, IsIncludeFlightDetail = true });
+                var booking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
                 if (booking != null)
                 {
                     if (rm.StandByStatus != null)
@@ -345,12 +349,21 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         booking.VerifyStatus = cargo.VerifyStatus;
                         if (cargo.StandByStatus == StandByStatus.OffLoad)
+                        {
                             booking.VerifyStatus = VerifyStatus.OffLoad;
                         await UpdateAsync(new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
                         {
                             Id = booking.Id,
                             BookingStatus = BookingStatus.Off_Loaded
                         });
+                            NotificationRM notificationRM = new NotificationRM();
+                            CargoBookingDetailVM cargoBookingDetail = GetCargoBookingSectorInfo(booking, new CargoBookingDetailVM());
+                            notificationRM.Title = "Cargo offloaded for AWB : " + booking.AWBInformation.AwbTrackingNumber;
+                            notificationRM.UserId = booking.CreatedBy;
+                            notificationRM.Body = "Your cargo originally planned to go on "+ cargoBookingDetail.FlightNumber+" on "+cargoBookingDetail.ScheduledDepartureDateTime+" has to offloaded and will be re allocated to another flight sooner. Sorry for the inconvenience.";
+                            notificationRM.NotificationType = Common.Enums.NotificationType.Off_Loaded;
+                            await _notificationService.CreateAsync(notificationRM);
+                        }
                     }                        
                     _unitOfWork.Repository<CargoBooking>().Update(booking);
                     await _unitOfWork.SaveChangesAsync();

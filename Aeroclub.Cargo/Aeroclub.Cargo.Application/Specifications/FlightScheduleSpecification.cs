@@ -78,7 +78,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IsIncludeFlightScheduleSectors)
             {
                 AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f=>f.Flight).ThenInclude(p=> p.FlightSectors));
-                AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.CargoBookingFlightScheduleSectors).ThenInclude(p=>p.CargoBooking));
+                AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.CargoBookingFlightScheduleSectors).ThenInclude(p=>p.CargoBooking).ThenInclude(b=>b.AWBInformation));
             }
         }
 
@@ -88,6 +88,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             if (query.IncludeFlightScheduleSectors)
                 AddInclude(c => c.Include(v => v.FlightScheduleSectors).ThenInclude(b => b.Flight.FlightSectors));
+                AddInclude(c => c.Include(y => y.FlightScheduleSectors).ThenInclude(z => z.CargoBookingFlightScheduleSectors).ThenInclude(p=>p.CargoBooking).ThenInclude(b=>b.AWBInformation));
 
             if (query.IncludeAircrafts)
             {

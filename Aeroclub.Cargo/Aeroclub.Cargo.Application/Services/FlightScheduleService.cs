@@ -9,6 +9,7 @@ using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
@@ -29,6 +30,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly ILayoutCloneService _layoutCloneService;
         private readonly ISectorService _sectorService;
         private readonly IConfiguration _configuration;
+        private readonly INotificationService _notificationService;
         private readonly ICargoBookingService _cargoBookingService;
 
         public FlightScheduleService(
@@ -39,6 +41,7 @@ namespace Aeroclub.Cargo.Application.Services
             IAircraftService aircraftService,
             ILayoutCloneService layoutCloneService,
             IConfiguration configuration,
+            INotificationService notificationService,
             ICargoBookingService cargoBookingService,
             ISectorService sectorService) :
             base(unitOfWork, mapper)
@@ -50,6 +53,7 @@ namespace Aeroclub.Cargo.Application.Services
             _configuration = configuration;
             _flightScheduleSectorService = flightScheduleSectorService;
             _cargoBookingService = cargoBookingService;
+            _notificationService = notificationService;
         }
 
         public async Task<FlightScheduleCreateStatusRM> CreateAsync(FlightScheduleCreateRM model)
@@ -603,6 +607,7 @@ namespace Aeroclub.Cargo.Application.Services
                         _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
                         await _unitOfWork.SaveChangesAsync();
                         _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
+                        await CreateNotification(sector);
                     }
                     else
                     {
@@ -731,6 +736,23 @@ namespace Aeroclub.Cargo.Application.Services
             _unitOfWork.Repository<FlightSchedule>().Detach(entity);
             return true;
         }
-                
+        async Task CreateNotification(FlightScheduleSector flightScheduleSector)
+        {
+            var flightDate = flightScheduleSector.ActualArrivalDateTime?.ToString("g");
+            var flightNumber = flightScheduleSector.FlightNumber;
+            var airportCode = flightScheduleSector.OriginAirportCode;
+            var destinationAirportCode = flightScheduleSector.DestinationAirportCode;
+            foreach (var booking in flightScheduleSector.CargoBookingFlightScheduleSectors)
+            {
+                    var awbNumber = booking.CargoBooking.AWBInformation?.AwbTrackingNumber;
+                    NotificationRM notificationRM = new NotificationRM();
+                    notificationRM.NotificationType = Common.Enums.NotificationType.Flight_Arrived;
+                    notificationRM.UserId = booking.CargoBooking.CreatedBy;
+                    notificationRM.Title = "Flight has arrived to " + airportCode + " with your cargo for AWB " + awbNumber;
+                    notificationRM.Body = "Flight details; " + flightNumber + " - " + airportCode + " - " + destinationAirportCode + ",Flight has arrived to " + airportCode + " on " + flightDate + ". You can start your clearing process. ";
+                    await _notificationService.CreateAsync(notificationRM);
+            }
+        }
+
     }
 }
