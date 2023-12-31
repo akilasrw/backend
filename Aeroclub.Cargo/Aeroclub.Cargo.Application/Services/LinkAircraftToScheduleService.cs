@@ -36,10 +36,12 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IUploadFactory _uploadFactory;
         private readonly ICargoBookingSummaryService _cargoBookingSummaryService;
         private readonly INotificationService _notificationService;
+        private readonly ICargoBookingService _cargoBookingService;
 
         public LinkAircraftToScheduleService(IUnitOfWork unitOfWork,
             IMapper mapper, 
             IFlightScheduleService flightScheduleService,
+            ICargoBookingService cargoBookingService,
             ICargoBookingSummaryService cargoBookingSummaryService,
             IAircraftService aircraftService,
             ILIRFileUploadService lIRFileUploadService,
@@ -50,6 +52,7 @@ namespace Aeroclub.Cargo.Application.Services
             _flightScheduleService = flightScheduleService;
             _aircraftService = aircraftService;
             _lIRFileUploadService = lIRFileUploadService;
+            _cargoBookingService = cargoBookingService;
             _uploadFactory = uploadFactory;
             _cargoBookingSummaryService = cargoBookingSummaryService;
             _notificationService = notificationService;
@@ -86,6 +89,18 @@ namespace Aeroclub.Cargo.Application.Services
                         flightSchedule.ActualDepartureDateTime = fs.Date.Add(TimeSpan.Parse(query.ActualDepartureDateTime));
                         flightSchedule.IsDispatched = query.IsDispatched.Value;
                         await CreateNotification(flightSchedule);
+                        foreach (var sector in flightSchedule.FlightScheduleSectors)
+                        {
+                            foreach (var booking in sector.CargoBookingFlightScheduleSectors)
+                            {
+                                await _cargoBookingService.UpdateAsync(
+                            new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                            {
+                                Id = booking.CargoBookingId,
+                                BookingStatus = BookingStatus.Flight_Dispatched
+                            });
+                            }
+                        }
 
                         edited = true;
                     }
@@ -115,7 +130,7 @@ namespace Aeroclub.Cargo.Application.Services
                         if (flightScheduleSectors.Count == sectorCount && query.StepCount == 1)
                             sector.EstimatedArrivalDateTime = flightSchedule.EstimatedArrivalDateTime;
 
-                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);
+                        _unitOfWork.Repository<FlightScheduleSector>().Update(sector);                  
                         await _unitOfWork.SaveChangesAsync();
                         _unitOfWork.Repository<FlightScheduleSector>().Detach(sector);
                     }
