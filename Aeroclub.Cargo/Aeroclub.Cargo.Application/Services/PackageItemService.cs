@@ -1,8 +1,10 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
@@ -136,7 +138,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var spec = new CargoBookingSpecification(new Models.Queries.CargoBookingQMs.CargoBookingQM { Id = BookingId, IsIncludePackageDetail = true, IsIncludeAWBDetail = true, IsIncludeFlightDetail = true });
             var bookings = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
-            var acceptedCount = bookings.PackageItems.Count(x => x.PackageItemStatus == PackageItemStatus.Accepted);
+            var acceptedCount = bookings.PackageItems.Count(x => x.PackageItemStatus == PackageItemStatus.Booking_Made);
             if (acceptedCount > 0 && acceptedCount == bookings.PackageItems.Count)
             {
                 await _cargoBookingService.UpdateAsync(
@@ -172,5 +174,54 @@ namespace Aeroclub.Cargo.Application.Services
             await _notificationService.CreateAsync(notificationRM);
         }
 
+        async public Task<ServiceResponseStatus> UpdatePackageStatusAsync(PackageItemStatusUpdateRM rm)
+        {
+            foreach (var x in rm.itemList)
+            {
+                var spec = new PackageItemSpecification(
+                    new PackageItemRefQM
+                    {
+                        PackageRefNumber = x.packageItemId.ToString()
+                    }
+
+                    );
+
+                var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+                if (package != null)
+                {
+                    package.PackageItemStatus = x.status;
+                    _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<PackageItem>().Detach(package);
+                }
+                else
+                {
+                    return ServiceResponseStatus.Failed;
+                }
+            }
+
+            var awbSpec = new AWBSpecification(new AWBTrackingQM
+            {
+                AwbTrackingNum = rm.AWBNumber
+            });
+
+            var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
+          
+                await _cargoBookingService.UpdateAsync(
+                       new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                       {
+                           Id = (Guid)awb.CargoBookingId,
+                           BookingStatus = rm.status
+                       });
+
+            return ServiceResponseStatus.Success;
+
+
+        
+      
+
+           
+           
+        }
     }
 }

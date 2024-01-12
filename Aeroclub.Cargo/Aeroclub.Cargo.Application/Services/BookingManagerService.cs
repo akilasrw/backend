@@ -445,11 +445,11 @@ namespace Aeroclub.Cargo.Application.Services
         {
             switch(packageItemStatus)
             {
-                case PackageItemStatus.None: return PackageItemStatus.Booked;
-                case PackageItemStatus.Booked: return PackageItemStatus.Accepted;
-                case PackageItemStatus.Accepted: return PackageItemStatus.Dispatched;
+                case PackageItemStatus.Booking_Made: return PackageItemStatus.Cargo_Received;
+                case PackageItemStatus.Cargo_Received: return PackageItemStatus.Dispatched;
+                case PackageItemStatus.Dispatched: return PackageItemStatus.Arrived;
             }
-            return PackageItemStatus.None;
+            return PackageItemStatus.Booking_Made;
         }
 
         public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query)

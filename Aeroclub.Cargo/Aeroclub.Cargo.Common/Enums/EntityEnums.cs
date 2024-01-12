@@ -130,10 +130,10 @@ namespace Aeroclub.Cargo.Common.Enums
 
     public enum PackageItemStatus
     {
-        None = 0,
-        Booked = 1,
-        Accepted = 2,// Dispatched
-        Dispatched = 4,
+        Booking_Made = 0,
+        Cargo_Received = 1,
+        Dispatched = 2,
+        Arrived = 4,
     }
 
     public enum AWBStatus

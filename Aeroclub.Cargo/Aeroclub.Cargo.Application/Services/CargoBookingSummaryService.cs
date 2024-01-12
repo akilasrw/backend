@@ -217,10 +217,10 @@ namespace Aeroclub.Cargo.Application.Services
                     summaryFigures.BookingRecievedCount += booking.BookingStatus == BookingStatus.Cargo_Received ? 1 : 0;
 
                     summaryFigures.TotalBookedWeight += booking.PackageItems.Sum(x => x.Weight);
-                    summaryFigures.TotalRecievedBookedWeight += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Accepted).Sum(x => x.Weight);
+                    summaryFigures.TotalRecievedBookedWeight += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Cargo_Received).Sum(x => x.Weight);
 
                     summaryFigures.TotalBookedVolume += booking.PackageItems.Sum(x => (x.Width * x.Height * x.Length));
-                    summaryFigures.TotalRecievedBookedVolume += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Accepted).Sum(x => (x.Width * x.Height * x.Length));
+                    summaryFigures.TotalRecievedBookedVolume += booking.PackageItems.Where(c=>c.PackageItemStatus== PackageItemStatus.Cargo_Received).Sum(x => (x.Width * x.Height * x.Length));
                     summaryFigures.OffLoadCount += booking.StandByStatus == StandByStatus.OffLoad || booking.VerifyStatus == VerifyStatus.OffLoad ? 1 : 0;
                     summaryFigures.ActualLoadCount += booking.VerifyStatus == VerifyStatus.ActualLoad ? 1 : 0;
                 }

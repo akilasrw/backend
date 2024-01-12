@@ -117,6 +117,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AgentRateManagementHistory> AgentRateManagementHistorys { get; set; } = null!;
         public DbSet<AgentRate> AgentRates { get; set; } = null!;
         public DbSet<MasterSchedule> MasterSchedules { get; set; } = null!;
+        public DbSet<ItemStatus> ItemStatus { get; set; } = null!;
         public DbSet<AircraftSchedule> AircraftSchedules { get; set; } = null!;
         public DbSet<AWBNumberStack> AWBNumberStacks { get; set; } = null!;
         public DbSet<ULDCargoPosition> ULDCargoPositions { get; set; } = null!;

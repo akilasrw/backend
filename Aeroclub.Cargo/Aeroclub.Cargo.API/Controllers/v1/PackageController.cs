@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
@@ -12,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
     public class PackageController : BaseApiController
     {
         private readonly IPackageItemService _packageItemService;
@@ -55,6 +55,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm) // update Status
         {
             var res = await _packageItemService.UpdateStatusAsync(rm);
+
+            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
+        [HttpPut("UpdateStatusByPackage")]
+        public async Task<IActionResult> UpdatePckageStatusAsync([FromBody] PackageItemStatusUpdateRM rm)
+        {
+            var res = await _packageItemService.UpdatePackageStatusAsync(rm);
 
             if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
 

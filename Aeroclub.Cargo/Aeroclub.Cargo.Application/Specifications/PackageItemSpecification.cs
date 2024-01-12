@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,8 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
             AddInclude(x => x.Include(y => y.PackageULDContainers).ThenInclude(z=>z.ULDContainer).ThenInclude(a => a.ULDContainerCargoPositions).ThenInclude(b=>b.CargoPosition));
         }
+
+  
 
         public PackageItemSpecification(PackageListQM query, bool isCount = false)
             :base()

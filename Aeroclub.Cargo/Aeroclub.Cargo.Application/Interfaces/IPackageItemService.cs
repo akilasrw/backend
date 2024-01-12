@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
@@ -18,6 +19,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query);
         Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm);
         Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm);
+
+        Task<ServiceResponseStatus> UpdatePackageStatusAsync(PackageItemStatusUpdateRM rm);
 
     }
 }

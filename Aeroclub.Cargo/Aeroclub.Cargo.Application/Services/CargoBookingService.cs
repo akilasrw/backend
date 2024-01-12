@@ -228,7 +228,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (booking.PackageItems != null)
             {
-                var recBookings = booking.PackageItems.Where(c => c.PackageItemStatus == PackageItemStatus.Accepted);
+                var recBookings = booking.PackageItems.Where(c => c.PackageItemStatus == PackageItemStatus.Cargo_Received);
 
                 vm.NumberOfRecBoxes = recBookings == null ? 0 : recBookings.Count();
                 vm.TotalRecWeight = recBookings == null ? 0 : recBookings.Sum(x => x.Weight);
