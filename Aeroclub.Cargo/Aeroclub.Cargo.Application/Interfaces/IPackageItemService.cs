@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
+using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
 
 namespace Aeroclub.Cargo.Application.Interfaces
 {
@@ -20,6 +21,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm);
         Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm);
 
+        Task<ServiceResponseStatus> CreateTruckBookingAWBAndPackages(ScanAppBookingCreateVM rm);
         Task<ServiceResponseStatus> UpdatePackageStatusAsync(PackageItemStatusUpdateRM rm);
 
     }

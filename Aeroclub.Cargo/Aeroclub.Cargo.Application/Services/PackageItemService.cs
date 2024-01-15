@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
+using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
@@ -215,13 +216,52 @@ namespace Aeroclub.Cargo.Application.Services
                        });
 
             return ServiceResponseStatus.Success;
-
-
-        
-      
-
            
            
+        }
+
+        async public Task<ServiceResponseStatus> CreateTruckBookingAWBAndPackages(ScanAppBookingCreateVM rm)
+        {
+            try
+            {
+                var bRes  = await _unitOfWork.Repository<CargoBooking>().CreateAsync(new CargoBooking
+                {
+                    AWBStatus = 0,
+                    BookingDate = DateTime.Now,
+                    BookingNumber = rm.AWBTrackingNumber.ToString(),
+                    BookingStatus = BookingStatus.None,
+                    DestinationAirportId = rm.Destination,
+                    OriginAirportId = rm.Origin,
+                });
+
+                var cRes = await _unitOfWork.Repository<AWBNumberStack>().CreateAsync(new AWBNumberStack
+                {
+                    AWBTrackingNumber = rm.AWBTrackingNumber,
+                    CargoAgentId = rm.CargoAgent,
+                });
+
+                var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
+                {
+                    AwbTrackingNumber = rm.AWBTrackingNumber,
+                    CargoBookingId = bRes.Id,
+                    RequestedFlightDate = DateTime.Now,
+                });
+
+                var tRes = await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo
+                {
+                    BookingID = bRes.Id,
+                    TruckID = rm.TruckNo
+                });
+
+                await _unitOfWork.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);  
+            }
+            
+            return ServiceResponseStatus.Success;
         }
     }
 }

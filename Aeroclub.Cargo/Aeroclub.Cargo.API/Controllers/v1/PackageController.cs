@@ -7,12 +7,14 @@ using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
+using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [Authorize]
     public class PackageController : BaseApiController
     {
         private readonly IPackageItemService _packageItemService;
@@ -67,6 +69,17 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var res = await _packageItemService.UpdatePackageStatusAsync(rm);
 
             if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
+        [HttpPost("CreateTruckBookingAWBAndPackages")]
+        public async Task<IActionResult> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
+        {
+
+            var res = await _packageItemService.CreateTruckBookingAWBAndPackages(rm);
+
+            if (res == ServiceResponseStatus.Failed) return BadRequest("Request failed.");
 
             return NoContent();
         }
