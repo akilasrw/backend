@@ -253,6 +253,20 @@ namespace Aeroclub.Cargo.Application.Services
                     TruckID = rm.TruckNo
                 });
 
+                foreach(var i in rm.Packages)
+                {
+                    await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
+                    {
+                        CargoBookingId= bRes.Id,
+                        PackageRefNumber = i,
+                        Description = "",
+                        PackageItemCategory = PackageItemCategory.None,
+                        PackagePriorityType = PackagePriorityType.None,
+                    });
+                }
+
+                
+
                 await _unitOfWork.SaveChangesAsync();
 
             }

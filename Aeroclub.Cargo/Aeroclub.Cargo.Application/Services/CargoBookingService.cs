@@ -221,9 +221,9 @@ namespace Aeroclub.Cargo.Application.Services
             vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
             vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
             vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
-            (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-             _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-             _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+            (_baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId).Result *
+             _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId).Result *
+             _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId).Result
             ));
 
             if (booking.PackageItems != null)
@@ -233,9 +233,9 @@ namespace Aeroclub.Cargo.Application.Services
                 vm.NumberOfRecBoxes = recBookings == null ? 0 : recBookings.Count();
                 vm.TotalRecWeight = recBookings == null ? 0 : recBookings.Sum(x => x.Weight);
                 vm.TotalRecVolume = recBookings == null ? 0 : recBookings.Sum(x =>
-                (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-                 _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                 _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                (_baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId).Result *
+                 _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId).Result *
+                 _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId).Result
                 ));
             }
             return vm;
