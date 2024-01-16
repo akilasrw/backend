@@ -25,6 +25,5 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> UpdatePackageStatusAsync(PackageItemStatusUpdateRM rm);
 
         Task<ServiceResponseStatus> UpdatePackageAndBookingStatusFromULD(PackageUpdateByULD rm);
-
     }
 }
