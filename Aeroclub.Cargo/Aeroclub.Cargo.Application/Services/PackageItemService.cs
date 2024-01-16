@@ -265,8 +265,6 @@ namespace Aeroclub.Cargo.Application.Services
                     });
                 }
 
-                
-
                 await _unitOfWork.SaveChangesAsync();
 
             }
@@ -275,6 +273,55 @@ namespace Aeroclub.Cargo.Application.Services
                 Console.WriteLine(ex.Message);  
             }
             
+            return ServiceResponseStatus.Success;
+        }
+
+        async public Task<ServiceResponseStatus> UpdatePackageAndBookingStatusFromULD(PackageUpdateByULD rm)
+        {
+            foreach(var i in rm.ulds)
+            {
+                var specs = new PackageULDContainerSpecification(new Application.Models.Queries.PackageULDContainerQMs.PackageByULDQM
+                {
+                    uldContainer = i
+                });
+
+                var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
+
+                foreach(var x in item)
+                {
+                    var package = x.PackageItem;
+                    package.PackageItemStatus = PackageItemStatus.Dispatched;
+                    _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<PackageItem>().Detach(package);
+
+
+
+                    var pSpecs = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = package.CargoBookingId });
+
+                    var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpecs);
+                    
+                    if(packageList.Any(x=> x.PackageItemStatus != PackageItemStatus.Dispatched))
+                    {
+                        await _cargoBookingService.UpdateAsync(
+                       new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                       {
+                           Id = package.CargoBookingId,
+                           BookingStatus = BookingStatus.Partialy_Dispatched
+                       });
+                    }
+                    else
+                    {
+                        await _cargoBookingService.UpdateAsync(
+                      new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                      {
+                          Id = package.CargoBookingId,
+                          BookingStatus = BookingStatus.Flight_Dispatched
+                      });
+                    }
+                }
+            }
+
             return ServiceResponseStatus.Success;
         }
     }

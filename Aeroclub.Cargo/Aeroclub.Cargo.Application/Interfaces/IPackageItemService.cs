@@ -24,5 +24,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> CreateTruckBookingAWBAndPackages(ScanAppBookingCreateVM rm);
         Task<ServiceResponseStatus> UpdatePackageStatusAsync(PackageItemStatusUpdateRM rm);
 
+        Task<ServiceResponseStatus> UpdatePackageAndBookingStatusFromULD(PackageUpdateByULD rm);
+
     }
 }

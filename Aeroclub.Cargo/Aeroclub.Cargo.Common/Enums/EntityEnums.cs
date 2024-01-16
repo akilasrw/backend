@@ -117,6 +117,7 @@ namespace Aeroclub.Cargo.Common.Enums
         AWB_Added = 20,
         Cargo_Received = 30,
         Off_Loaded = 40,
+        Partialy_Dispatched = 45,
         Flight_Dispatched = 50,
         Flight_Arrived = 60,
         Cancelled = 70

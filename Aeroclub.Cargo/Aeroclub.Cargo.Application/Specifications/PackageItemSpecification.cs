@@ -24,6 +24,12 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.PackageULDContainers).ThenInclude(z=>z.ULDContainer).ThenInclude(a => a.ULDContainerCargoPositions).ThenInclude(b=>b.CargoPosition));
         }
 
+        public PackageItemSpecification(PackageItemByBookingQM query)
+               : base(x => x.CargoBookingId == query.BookingID)
+        {
+            AddInclude(x => x.Include(y => y.CargoBooking));
+        }
+
         public PackageItemSpecification(PackageListQM query, bool isCount = false)
             :base()
         {
