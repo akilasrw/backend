@@ -11,7 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels
     public class PackageItemStatusUpdateRM
     {
         public List<PackageItemListRM> itemList { get; set; }
-        public long AWBNumber { get; set; }
-        public BookingStatus status { get; set; }
+        public long? AWBNumber { get; set; }
+        public BookingStatus? status { get; set; }
     }
 }

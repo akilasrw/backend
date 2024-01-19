@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240118174146_FlightScheduleSectorTableUpdateSectorField")]
+    partial class FlightScheduleSectorTableUpdateSectorField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1129,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "02478e03-0625-492b-89b9-dd481f013426",
+                            ConcurrencyStamp = "5d4e0f4e-30e4-44e2-a22c-98040c8faf02",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1147,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ae23bb86-9c9d-4ea1-9995-7193fb1b3899",
+                            ConcurrencyStamp = "8ba9854d-49a9-4ef6-b80b-25f3fe2e6fe7",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -39619,7 +39621,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<byte>("ULDLocateStatus")
                         .HasColumnType("tinyint");
 
-                    b.Property<Guid?>("ULDMetaDataId")
+                    b.Property<Guid>("ULDMetaDataId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("ULDOwnershipType")
@@ -40861,7 +40863,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.ULDMetaData", "ULDMetaData")
                         .WithMany("ULDs")
-                        .HasForeignKey("ULDMetaDataId");
+                        .HasForeignKey("ULDMetaDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ULDMetaData");
                 });

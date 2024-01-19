@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
@@ -89,6 +90,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             var res = await _packageItemService.UpdatePackageAndBookingStatusFromULD(rm);
 
+            return NoContent();
+        }
+
+        [HttpPost("CreateFlightScheduleULDandUpdateStatus")]
+        public async Task<IActionResult> CreateFlightScheduleULDandUpdateStatus([FromBody] ScanAppThirdStepRM rm)
+        {
+            var res = await _packageItemService.CreateFlightScheduleULDandUpdateStatus(rm);
             return NoContent();
         }
     }

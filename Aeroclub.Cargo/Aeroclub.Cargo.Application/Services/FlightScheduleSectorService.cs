@@ -217,7 +217,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return new CargoPositionSummaryVM();
 
             // Get Aircrat Layout Mapping
-            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(flightSector.AircraftSubTypeId);
+            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync((Guid)flightSector.AircraftSubTypeId);
             if (aircraftLayoutMappingDetail == null) return new CargoPositionSummaryVM();
             if (aircraftLayoutMappingDetail.AircraftLayoutId == null) return new CargoPositionSummaryVM();
                        
@@ -285,7 +285,7 @@ namespace Aeroclub.Cargo.Application.Services
             //    return new CargoPositionSummaryVM();
 
             // Get Aircrat Layout Mapping
-            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync(entity.AircraftSubTypeId);
+            var aircraftLayoutMappingDetail = await GetAircraftLayoutMappingAsync((Guid)entity.AircraftSubTypeId);
 
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             { AircraftLayoutId = (Guid)aircraftLayoutMappingDetail.AircraftLayoutId, IncludeSeat = true, IncludeOverhead = true });
