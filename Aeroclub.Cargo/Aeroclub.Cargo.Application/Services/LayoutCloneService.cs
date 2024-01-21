@@ -49,7 +49,7 @@ namespace Aeroclub.Cargo.Application.Services
                 if (flightSchedule.AircraftSubTypeId == Guid.Empty) return false;
 
                 // Get Aircraft Sub Type
-                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSchedule.AircraftSubTypeId);
+                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync((Guid)flightSchedule.AircraftSubTypeId);
                 if (aircraftSubTypeDetail == null) return false;
 
                 if (aircraftSubTypeDetail.ConfigType != AircraftConfigType.P2C) return false;
@@ -270,7 +270,7 @@ namespace Aeroclub.Cargo.Application.Services
                 if (flightSchedule.AircraftSubTypeId == Guid.Empty) return false;
 
                 // Get Aircraft Sub Type
-                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync(flightSchedule.AircraftSubTypeId);
+                var aircraftSubTypeDetail = await GetAircraftSubTypeAsync((Guid)flightSchedule.AircraftSubTypeId);
                 if (aircraftSubTypeDetail == null) return false;
 
                 if (aircraftSubTypeDetail.ConfigType != AircraftConfigType.Freighter) return false;
@@ -351,7 +351,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (flightSchedule.FlightScheduleSectors == null) return false;
 
-            var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubTypeId);
+            var aircraftConfigType = await _aircraftService.GetAircraftConfigType((Guid)flightSchedule.AircraftSubTypeId);
 
 
             foreach (var sector in flightSchedule.FlightScheduleSectors)

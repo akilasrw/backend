@@ -12,5 +12,12 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.ULDContainer));
         }
+
+        public PackageULDContainerSpecification(PackageByULDQM query)
+            : base(x => (x.ULDContainerId == query.uldContainer))
+        {
+            AddInclude(x => x.Include(y => y.PackageItem));
+        }
+
     }
 }

@@ -22,7 +22,23 @@ namespace Aeroclub.Cargo.Data
         {
             base.OnModelCreating(modelBuilder);
 
-           
+            modelBuilder.Entity<TruckInfo>()
+                 .HasOne(t => t.User)
+                 .WithMany()
+                 .HasForeignKey(t => t.CreatedBy)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TruckInfo>()
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.LastModifiedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TruckInfo>()
+                .HasOne(t => t.Booking)
+                .WithMany()
+                .HasForeignKey(t => t.BookingID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.ApplyConfiguration(new AirportConfiguration());
             modelBuilder.ApplyConfiguration(new FlightSectorConfiguration());
@@ -117,6 +133,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<AgentRateManagementHistory> AgentRateManagementHistorys { get; set; } = null!;
         public DbSet<AgentRate> AgentRates { get; set; } = null!;
         public DbSet<MasterSchedule> MasterSchedules { get; set; } = null!;
+        public DbSet<ItemStatus> ItemStatus { get; set; } = null!;
         public DbSet<AircraftSchedule> AircraftSchedules { get; set; } = null!;
         public DbSet<AWBNumberStack> AWBNumberStacks { get; set; } = null!;
         public DbSet<ULDCargoPosition> ULDCargoPositions { get; set; } = null!;
@@ -127,6 +144,9 @@ namespace Aeroclub.Cargo.Data
         public DbSet<ULDTracking> ULDTrackings { get; set; } = null!;
         public DbSet<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; } = null!;
         public DbSet<SystemUser> SystemUsers { get; set; } = null!;
+        public DbSet<TruckInfo> TruckInfos { get; set; }
+
+
 
         //  public DbSet<AircraftMaintainanceSchedule> AircraftMaintainanceSchedules { get; set; } = null!;
 

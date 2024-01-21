@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240115191529_update_auditable")]
+    partial class update_auditable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1129,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "02478e03-0625-492b-89b9-dd481f013426",
+                            ConcurrencyStamp = "c193c319-892e-493f-9c82-b53fdb91db67",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1147,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ae23bb86-9c9d-4ea1-9995-7193fb1b3899",
+                            ConcurrencyStamp = "ffd9ef05-e324-4783-9df8-f3f8d9af6b60",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -27384,7 +27386,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid?>("AircraftScheduleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AircraftSubTypeId")
+                    b.Property<Guid>("AircraftSubTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
@@ -27544,7 +27546,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid?>("AircraftId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AircraftSubTypeId")
+                    b.Property<Guid>("AircraftSubTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Created")
@@ -27614,7 +27616,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<DateTime>("ScheduledDepartureDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("SectorId")
+                    b.Property<Guid>("SectorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("SequenceNo")
@@ -30270,6 +30272,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<double>("Height")
@@ -30303,13 +30306,13 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(40)");
 
-                    b.Property<Guid?>("VolumeUnitId")
+                    b.Property<Guid>("VolumeUnitId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("WeightUnitId")
+                    b.Property<Guid>("WeightUnitId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Width")
@@ -39619,7 +39622,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<byte>("ULDLocateStatus")
                         .HasColumnType("tinyint");
 
-                    b.Property<Guid?>("ULDMetaDataId")
+                    b.Property<Guid>("ULDMetaDataId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("ULDOwnershipType")
@@ -40532,7 +40535,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.AircraftSubType", "AircraftSubType")
                         .WithMany("FlightSchedules")
-                        .HasForeignKey("AircraftSubTypeId");
+                        .HasForeignKey("AircraftSubTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "DestinationAirport")
                         .WithMany()
@@ -40590,7 +40595,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.AircraftSubType", "AircraftSubType")
                         .WithMany("FlightScheduleSectors")
-                        .HasForeignKey("AircraftSubTypeId");
+                        .HasForeignKey("AircraftSubTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Flight", "Flight")
                         .WithMany()
@@ -40610,7 +40617,9 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Sector", "Sector")
                         .WithMany()
-                        .HasForeignKey("SectorId");
+                        .HasForeignKey("SectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Aircraft");
 
@@ -40748,11 +40757,15 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Unit", "VolumeUnit")
                         .WithMany()
-                        .HasForeignKey("VolumeUnitId");
+                        .HasForeignKey("VolumeUnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Unit", "WeightUnit")
                         .WithMany()
-                        .HasForeignKey("WeightUnitId");
+                        .HasForeignKey("WeightUnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CargoBooking");
 
@@ -40861,7 +40874,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.ULDMetaData", "ULDMetaData")
                         .WithMany("ULDs")
-                        .HasForeignKey("ULDMetaDataId");
+                        .HasForeignKey("ULDMetaDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ULDMetaData");
                 });

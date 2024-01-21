@@ -181,7 +181,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         private async Task<bool> CloneLayoutAsync(FlightSchedule flightSchedule, IEnumerable<FlightScheduleSectorCreateRM>? flightScheduleSectors)
         {
-            var aircraftConfigType = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubTypeId);
+            var aircraftConfigType = await _aircraftService.GetAircraftConfigType((Guid)flightSchedule.AircraftSubTypeId);
 
             if (aircraftConfigType == AircraftConfigType.P2C)
                 return await _layoutCloneService.CloneLayoutAsync(flightSchedule, flightScheduleSectors);
@@ -264,7 +264,7 @@ namespace Aeroclub.Cargo.Application.Services
             var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
 
             // Get Aircrafts according to Config Type and Sub Type
-            var aircraftConfig = await _aircraftService.GetAircraftConfigType(flightSchedule.AircraftSubTypeId);
+            var aircraftConfig = await _aircraftService.GetAircraftConfigType((Guid)flightSchedule.AircraftSubTypeId);
 
             var aircraftlist = await _unitOfWork.Repository<Aircraft>().GetListAsync();
             var filteredAircraftlist = aircraftlist.Where(x => x.ConfigurationType == aircraftConfig); // filtered by types - ex: Freighter type

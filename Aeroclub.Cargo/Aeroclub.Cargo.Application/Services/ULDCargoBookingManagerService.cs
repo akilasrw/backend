@@ -517,9 +517,9 @@ namespace Aeroclub.Cargo.Application.Services
                         vm.NumberOfAssignedBoxes = packages.Count();
                         vm.TotalWeight = packages == null ? 0 : packages.Sum(x => x.Weight);
                         vm.TotalVolume = packages == null ? 0 : packages.Sum(x =>
-                        (_baseUnitConverter.VolumeCalculatorAsync(x.Height, x.VolumeUnitId).Result *
-                         _baseUnitConverter.VolumeCalculatorAsync(x.Width, x.VolumeUnitId).Result *
-                         _baseUnitConverter.VolumeCalculatorAsync(x.Length, x.VolumeUnitId).Result
+                        (_baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId).Result *
+                         _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId).Result *
+                         _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId).Result
                         ));
                         list.Add(vm);
                     }

@@ -11,5 +11,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
 
         }
+
+        public AWBSpecification(AWBTrackingQM query)
+            : base(x => (x.AwbTrackingNumber == query.AwbTrackingNum))  
+        { }
     }
 }

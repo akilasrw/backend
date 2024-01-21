@@ -6,7 +6,7 @@ namespace Aeroclub.Cargo.Core.Entities
     public class FlightScheduleSector : AuditableEntity
     {
         public Guid FlightId { get; set; }
-        public Guid SectorId { get; set; }
+        public Guid? SectorId { get; set; }
         public Guid FlightScheduleId { get; set; }
         public int SequenceNo { get; set; }
         public DateTime ScheduledDepartureDateTime { get; set; }
@@ -24,7 +24,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public string? FlightNumber { get; set; } = null;
         public Guid? LoadPlanId { get; set; } = null;
         public Guid? AircraftId { get; set; } = null;
-        public Guid AircraftSubTypeId { get; set; }
+        public Guid? AircraftSubTypeId { get; set; }
         public double? CutoffTimeMin { get; set; }
 
         public virtual Flight Flight { get; set; }

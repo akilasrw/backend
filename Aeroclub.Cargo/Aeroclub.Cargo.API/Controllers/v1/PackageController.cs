@@ -3,9 +3,12 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
+using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,6 +61,42 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
 
+            return NoContent();
+        }
+
+        [HttpPut("UpdateStatusByPackage")]
+        public async Task<IActionResult> UpdatePckageStatusAsync([FromBody] PackageItemStatusUpdateRM rm)
+        {
+            var res = await _packageItemService.UpdatePackageStatusAsync(rm);
+
+            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+
+            return NoContent();
+        }
+
+        [HttpPost("CreateTruckBookingAWBAndPackages")]
+        public async Task<IActionResult> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
+        {
+
+            var res = await _packageItemService.CreateTruckBookingAWBAndPackages(rm);
+
+            if (res == ServiceResponseStatus.Failed) return BadRequest("Request failed.");
+
+            return NoContent();
+        }
+
+        [HttpPost("UpdatePackageAndBookingStatusFromULD")]
+        public async Task<IActionResult> UpdatePackageAndBookingStatusFromULD([FromBody] PackageUpdateByULD rm) 
+        {
+            var res = await _packageItemService.UpdatePackageAndBookingStatusFromULD(rm);
+
+            return NoContent();
+        }
+
+        [HttpPost("CreateFlightScheduleULDandUpdateStatus")]
+        public async Task<IActionResult> CreateFlightScheduleULDandUpdateStatus([FromBody] ScanAppThirdStepRM rm)
+        {
+            var res = await _packageItemService.CreateFlightScheduleULDandUpdateStatus(rm);
             return NoContent();
         }
     }

@@ -22,7 +22,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public string DestinationAirportName { get; set; } = null!;
         public Guid? AircraftId { get; set; }
         public string? AircraftRegNo { get; set; } = null;
-        public Guid AircraftSubTypeId { get; set; }
+        public Guid? AircraftSubTypeId { get; set; }
         public Guid? FlightScheduleManagementId { get; set; }
         public Guid? AircraftScheduleId { get; set; }
         public bool IsHistory { get; set; } = false; // this will be true when updated 'ActualDepartureDateTime'

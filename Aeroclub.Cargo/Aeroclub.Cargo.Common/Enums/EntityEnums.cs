@@ -117,9 +117,13 @@ namespace Aeroclub.Cargo.Common.Enums
         AWB_Added = 20,
         Cargo_Received = 30,
         Off_Loaded = 40,
+        Partialy_Dispatched = 45,
         Flight_Dispatched = 50,
+        Partialy_Arrived = 55,
         Flight_Arrived = 60,
-        Cancelled = 70
+        Cancelled = 70,
+        Accepted_for_Flight = 80,
+        Partshipment_for_Flight = 75
     }
 
     public enum PackagePriorityType
@@ -130,10 +134,13 @@ namespace Aeroclub.Cargo.Common.Enums
 
     public enum PackageItemStatus
     {
-        None = 0,
-        Booked = 1,
-        Accepted = 2,// Dispatched
-        Dispatched = 4,
+        Booking_Made = 0,
+        Cargo_Received = 1,
+        Dispatched = 2,
+        Arrived = 4,
+        Returned = 5,
+        Offloaded = 6,
+        AcceptedForFLight = 7
     }
 
     public enum AWBStatus
