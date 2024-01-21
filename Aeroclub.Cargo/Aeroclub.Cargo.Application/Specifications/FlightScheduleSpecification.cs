@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDByFlightScheduleRM;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,12 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.Aircraft));
                 AddInclude(x => x.Include(y => y.AircraftSubType.AircraftType));
             }               
+        }
+
+        public FlightScheduleSpecification(ULDByFlightScheduleRM query)
+            : base(x =>(query.flightNumber == x.FlightNumber && query.scheduledDepartureDateTime == x.ScheduledDepartureDateTime))
+        {
+            AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.FlightScheduleSectorPallets).ThenInclude(a => a.ULD));
         }
 
         public FlightScheduleSpecification(Guid aircraftScheduleId)

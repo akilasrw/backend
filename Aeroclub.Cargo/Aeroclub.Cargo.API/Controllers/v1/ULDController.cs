@@ -4,8 +4,10 @@ using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDByFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,5 +58,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             return NoContent();
         }
+
+
+        [HttpGet("ULDByFlightAndDate")]
+        public async Task<IActionResult> GetULDByDateAndFlightSchedule([FromBody] ULDByFlightScheduleRM rm)
+        {
+            var ulds = await _uLDService.GetULDByFlightSchedule(rm);
+
+            return Ok(ulds) ;
+
+        }
+
     }
 }
