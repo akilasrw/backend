@@ -422,9 +422,13 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
 
-                _unitOfWork.Repository<PackageItem>().Update(package);
                 package.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
+                
+                _unitOfWork.Repository<PackageItem>().Update(package);
+                
+                
                 await _unitOfWork.SaveChangesAsync();
+
                 _unitOfWork.Repository<PackageItem>().Detach(package);
 
                 var pSpecs = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = package.CargoBookingId });
