@@ -11,10 +11,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         public CargoBookingLookupSpecification(CargoBookingLookupQM query)
     : base(x =>
         (query.UserId != Guid.Empty && query.UserId == x.CreatedBy) &&
-        (string.IsNullOrEmpty(query.ReferenceNumber) ||
-         x.BookingNumber == query.ReferenceNumber ||
-         x.PackageItems.Any(y => y.PackageRefNumber == query.ReferenceNumber)) ||
-        (query.AWBNumber != null && x.AWBInformation.AwbTrackingNumber == query.AWBNumber)
+        (x.BookingNumber == query.ReferenceNumber ||
+         x.PackageItems.Any(y => y.PackageRefNumber == query.ReferenceNumber)) || (x.AWBInformation != null && query.AWBNumber == x.AWBInformation.AwbTrackingNumber)
     )
         {
             if (query.IsIncludeFlightDetail)
