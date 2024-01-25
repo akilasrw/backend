@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
+using Aeroclub.Cargo.Application.Models.ViewModels.AWBStackVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
@@ -219,8 +220,6 @@ namespace Aeroclub.Cargo.Application.Services
                        });
             }
 
-            
-
             return ServiceResponseStatus.Success;
            
            
@@ -232,12 +231,14 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 var bRes  = await _unitOfWork.Repository<CargoBooking>().CreateAsync(new CargoBooking
                 {
-                    AWBStatus = 0,
+                    AWBStatus = AWBStatus.AddedAWB,
                     BookingDate = DateTime.Now,
                     BookingNumber = rm.AWBTrackingNumber.ToString(),
-                    BookingStatus = BookingStatus.None,
+                    BookingStatus = BookingStatus.Booking_Made,
                     DestinationAirportId = rm.Destination,
                     OriginAirportId = rm.Origin,
+                    CreatedBy = rm.CargoAgentAppUserId,
+                    Created = DateTime.Now
                 });
 
                 var cRes = await _unitOfWork.Repository<AWBNumberStack>().CreateAsync(new AWBNumberStack
