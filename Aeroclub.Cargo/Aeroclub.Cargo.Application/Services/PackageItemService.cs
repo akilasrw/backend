@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
@@ -10,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
+using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
@@ -370,18 +372,45 @@ namespace Aeroclub.Cargo.Application.Services
 
             var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(rm.FlightID);
 
-            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().CreateAsync(new FlightSchedule
+            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = rm.ScheduledDepartureDateTime, FlightNumber = flight.FlightNumber });
+
+            var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
+
+            Guid fId = Guid.NewGuid();
+
+            
+            if (existingSchedule != null)
             {
-                ScheduledDepartureDateTime = rm.ScheduledDepartureDateTime,
-                FlightId = rm.FlightID,
-                OriginAirportCode  = flight.OriginAirportCode,
-                DestinationAirportCode = flight.DestinationAirportCode,
-                DestinationAirportName = flight.DestinationAirportName,
-                OriginAirportName = flight.OriginAirportName,
-                DestinationAirportId = flight.DestinationAirportId,
-                OriginAirportId = flight.OriginAirportId,
-                FlightNumber = flight.FlightNumber,
-            });
+                // Use the existing schedule
+               var flightSchedule = existingSchedule;
+                fId = flightSchedule.Id;
+            }
+            else
+            {
+                // Create a new schedule if no existing schedule is found
+               var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().CreateAsync(new FlightSchedule
+                {
+                    ScheduledDepartureDateTime = rm.ScheduledDepartureDateTime,
+                    FlightId = rm.FlightID,
+                    OriginAirportCode = flight.OriginAirportCode,
+                    DestinationAirportCode = flight.DestinationAirportCode,
+                    DestinationAirportName = flight.DestinationAirportName,
+                    OriginAirportName = flight.OriginAirportName,
+                    DestinationAirportId = flight.DestinationAirportId,
+                    OriginAirportId = flight.OriginAirportId,
+                    FlightNumber = flight.FlightNumber
+                });
+
+                fId = flightSchedule.Id;
+            }
+
+           
+
+
+
+
+
+
 
 
             var flightSchduleSector = await _unitOfWork.Repository<FlightScheduleSector>().CreateAsync(new FlightScheduleSector
@@ -393,7 +422,7 @@ namespace Aeroclub.Cargo.Application.Services
                 OriginAirportName = flight.OriginAirportName,
                 DestinationAirportId = flight.DestinationAirportId,
                 OriginAirportId = flight.OriginAirportId,
-                FlightScheduleId = flightSchedule.Id,
+                FlightScheduleId = fId,
                 FlightNumber = flight.FlightNumber
             });
 
@@ -420,7 +449,15 @@ namespace Aeroclub.Cargo.Application.Services
 
                   );
 
+               
+
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+                await _unitOfWork.Repository<Shipment>().CreateAsync(new Shipment
+                {
+                    bookingID = package.CargoBookingId,
+                    flightScheduleID = fId,
+                    packageID = package.Id,
+                });
 
                 package.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
                 

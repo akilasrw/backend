@@ -307,6 +307,9 @@ namespace Aeroclub.Cargo.Application.Services
                 _unitOfWork.Repository<CargoBooking>().Update(booking);
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<CargoBooking>().Detach(booking);
+
+                await _unitOfWork.Repository<BookingAudit>().CreateAsync(new BookingAudit { bookingId = rm.Id, bookingStatus = rm.BookingStatus });
+                await _unitOfWork.SaveChangesAsync();
                 res.StatusCode = ServiceResponseStatus.Success;
                 res.Id = rm.Id;
             }
