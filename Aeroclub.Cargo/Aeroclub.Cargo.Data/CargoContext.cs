@@ -196,7 +196,9 @@ namespace Aeroclub.Cargo.Data
                         break;
                     case EntityState.Added:
                         ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow;
-                        ((AuditableEntity)entity.Entity).CreatedBy = userid;
+                        if (((AuditableEntity)entity.Entity).CreatedBy == Guid.Empty) {
+                            ((AuditableEntity)entity.Entity).CreatedBy = userid;
+                        }
                         break;
                     case EntityState.Detached:
                         break;
