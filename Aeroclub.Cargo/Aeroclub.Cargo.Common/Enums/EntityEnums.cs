@@ -124,7 +124,9 @@ namespace Aeroclub.Cargo.Common.Enums
         Flight_Arrived = 60,
         Cancelled = 70,
         Accepted_for_Flight = 80,
-        Partshipment_for_Flight = 75
+        Partshipment_for_Flight = 75,
+        TruckForDelivery = 85,
+        Deliverd = 90
     }
 
     public enum PackagePriorityType
@@ -142,7 +144,9 @@ namespace Aeroclub.Cargo.Common.Enums
         Arrived = 4,
         Returned = 5,
         Offloaded = 6,
-        AcceptedForFLight = 7
+        AcceptedForFLight = 7,
+        TruckForDelivery = 8,
+        Deliverd = 9,
     }
 
     public enum AWBStatus
