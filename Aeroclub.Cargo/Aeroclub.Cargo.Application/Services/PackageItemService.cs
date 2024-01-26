@@ -427,17 +427,37 @@ namespace Aeroclub.Cargo.Application.Services
                 FlightNumber = flight.FlightNumber
             });
 
+            Guid uldId = Guid.NewGuid();
 
-            var uld = await _unitOfWork.Repository<ULD>().CreateAsync(new ULD
+            var uldSpecs = new ULDSpecification(rm.ULDSerialNumber);
+
+            var existingUld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(uldSpecs);
+
+            if(existingUld != null)
             {
-                SerialNumber = rm.ULDSerialNumber,
-                ULDType = ULDType.None,
-            });
+                uldId = existingUld.Id;
+                existingUld.ULDLocateStatus = ULDLocateStatus.OnBoard;
+
+                _unitOfWork.Repository<ULD>().Update(existingUld);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<ULD>().Detach(existingUld);
+            }
+            else
+            {
+                var uld = await _unitOfWork.Repository<ULD>().CreateAsync(new ULD
+                {
+                    SerialNumber = rm.ULDSerialNumber,
+                    ULDLocateStatus = ULDLocateStatus.OnBoard,
+                    ULDType = ULDType.None,
+                });
+
+                uldId = uld.Id;
+            }
 
             var flightScheduleSectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
             {
                 FlightScheduleSectorId = flightSchduleSector.Id,
-                ULDId = uld.Id,
+                ULDId = uldId,
             });
 
             foreach(var x in rm.packageIDs)
