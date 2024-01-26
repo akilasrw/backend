@@ -22,6 +22,8 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
+using System.Security.Cryptography;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -368,6 +370,79 @@ namespace Aeroclub.Cargo.Application.Services
             return ServiceResponseStatus.Success;
         }
 
+
+        async public Task<ServiceResponseStatus> UpdateULDandPackageStatus(ScanAppSixthStepRM rm)
+        { 
+
+            var uldSpecs = new ULDSpecification(rm.uld);
+
+            var existingUld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(uldSpecs);
+
+            if(existingUld == null) {
+
+                return ServiceResponseStatus.Failed;
+            
+            }
+
+            existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
+
+            _unitOfWork.Repository<ULD>().Update(existingUld);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<ULD>().Detach(existingUld);
+
+            foreach (var x in rm.packageIDs)
+            {
+                var spec = new PackageItemSpecification(
+                  new PackageItemRefQM
+                  {
+                      PackageRefNumber = x
+                  }
+
+                  );
+
+
+
+                var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+
+                package.PackageItemStatus = PackageItemStatus.IndestinationWarehouse;
+
+                _unitOfWork.Repository<PackageItem>().Update(package);
+
+
+                await _unitOfWork.SaveChangesAsync();
+
+                _unitOfWork.Repository<PackageItem>().Detach(package);
+
+
+                    await _cargoBookingService.UpdateAsync(
+             new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+             {
+                 Id = package.CargoBookingId,
+                 BookingStatus = BookingStatus.IndestinationWarehouse
+             });
+
+
+               
+
+            }
+
+
+
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+
+            return ServiceResponseStatus.Success;
+
+        }
+
         async public Task<ServiceResponseStatus> CreateFlightScheduleULDandUpdateStatus(ScanAppThirdStepRM rm)
         {
 
@@ -404,14 +479,6 @@ namespace Aeroclub.Cargo.Application.Services
 
                 fId = flightSchedule.Id;
             }
-
-           
-
-
-
-
-
-
 
 
             var flightSchduleSector = await _unitOfWork.Repository<FlightScheduleSector>().CreateAsync(new FlightScheduleSector
