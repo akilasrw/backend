@@ -31,7 +31,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public PackageItemSpecification(PackageListQM query, bool isCount = false)
-            :base()
+            :base(x => query.awbNumber == null || query.awbNumber == x.CargoBooking.AWBInformation.AwbTrackingNumber)
         {
 
             if (!isCount)
