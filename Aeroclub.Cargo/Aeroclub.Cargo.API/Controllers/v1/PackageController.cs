@@ -20,9 +20,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
     public class PackageController : BaseApiController
     {
         private readonly IPackageItemService _packageItemService;
-        public PackageController(IPackageItemService packageItemService)
+        private readonly ILogger _logger;
+        public PackageController(IPackageItemService packageItemService, ILogger logger)
         {
             _packageItemService = packageItemService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -56,56 +58,137 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm) // update Status
+        public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm)
         {
-            var res = await _packageItemService.UpdateStatusAsync(rm);
+            try
+            {
+                var res = await _packageItemService.UpdateStatusAsync(rm);
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    return BadRequest("Update failed.");
+                }
 
-            return NoContent();
+                return Ok("Update successful.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the status.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPut("UpdateStatusByPackage")]
         public async Task<IActionResult> UpdatePckageStatusAsync([FromBody] PackageItemStatusUpdateRM rm)
         {
-            var res = await _packageItemService.UpdatePackageStatusAsync(rm);
+            try
+            {
+                var res = await _packageItemService.UpdatePackageStatusAsync(rm);
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    return BadRequest("Update failed.");
+                }
 
-            return NoContent();
+                return Ok("Update successful.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the package status.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost("CreateTruckBookingAWBAndPackages")]
         public async Task<IActionResult> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
         {
+            try
+            {
+                var res = await _packageItemService.CreateTruckBookingAWBAndPackages(rm);
 
-            var res = await _packageItemService.CreateTruckBookingAWBAndPackages(rm);
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    return BadRequest("Request failed.");
+                }
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Request failed.");
-
-            return NoContent();
+                return Ok("Request successful.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the truck booking and packages creation.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost("UpdatePackageAndBookingStatusFromULD")]
-        public async Task<IActionResult> UpdatePackageAndBookingStatusFromULD([FromBody] PackageUpdateByULD rm) 
+        public async Task<IActionResult> UpdatePackageAndBookingStatusFromULD([FromBody] PackageUpdateByULD rm)
         {
-            var res = await _packageItemService.UpdatePackageAndBookingStatusFromULD(rm);
+            try
+            {
+                var res = await _packageItemService.UpdatePackageAndBookingStatusFromULD(rm);
 
-            return NoContent();
+                if (res == ServiceResponseStatus.Success)
+                {
+                    return Ok("Update successful.");
+                }
+                else if (res == ServiceResponseStatus.Failed)
+                {
+                    return BadRequest("Update failed.");
+                }
+             
+                return StatusCode(500, "An unexpected error occurred while processing your request.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating package and booking status from ULD.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
+
 
         [HttpPost("CreateFlightScheduleULDandUpdateStatus")]
         public async Task<IActionResult> CreateFlightScheduleULDandUpdateStatus([FromBody] ScanAppThirdStepRM rm)
         {
-            var res = await _packageItemService.CreateFlightScheduleULDandUpdateStatus(rm);
-            return NoContent();
+            try
+            {
+                var res = await _packageItemService.CreateFlightScheduleULDandUpdateStatus(rm);
+
+                if (res == ServiceResponseStatus.Success)
+                {
+                    return Ok("Request successful.");
+                }
+
+                return StatusCode(500, "An unexpected error occurred while processing your request.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating flight schedule and updating status.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
+
 
         [HttpPost("UpdateULDAndPackageStatus")]
         public async Task<IActionResult> UpdateULDAndPackageStatus([FromBody] ScanAppSixthStepRM rm)
         {
-            await _packageItemService.UpdateULDandPackageStatus(rm);
-            return NoContent();
+            try
+            {
+                var res = await _packageItemService.UpdateULDandPackageStatus(rm);
+
+                if(res == ServiceResponseStatus.Success)
+                {
+                    return Ok("Request successful.");
+                }else
+                {
+                    return BadRequest("Request failed");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating ULD and package status.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
     }
 }
