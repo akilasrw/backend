@@ -18,6 +18,10 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public AWBNumberStackSpecification(long awbNum)
+           : base(x => x.AWBTrackingNumber == awbNum)
+        { }
+
         public AWBNumberStackSpecification(AvailableAWBNumberStackQM query)
             :base(x => x.CargoAgent.AppUser.Id == query.CargoAgentId && !x.IsUsed)
         {

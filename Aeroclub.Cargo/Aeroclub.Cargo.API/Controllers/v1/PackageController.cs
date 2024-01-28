@@ -20,11 +20,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
     public class PackageController : BaseApiController
     {
         private readonly IPackageItemService _packageItemService;
-        private readonly ILogger _logger;
-        public PackageController(IPackageItemService packageItemService, ILogger logger)
+        public PackageController(IPackageItemService packageItemService)
         {
             _packageItemService = packageItemService;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -73,7 +71,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating the status.");
+                //_logger.LogError(ex, "An error occurred while updating the status.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
@@ -94,7 +92,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating the package status.");
+                //_logger.LogError(ex, "An error occurred while updating the package status.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
@@ -115,7 +113,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while processing the truck booking and packages creation.");
+                //_logger.LogError(ex, "An error occurred while processing the truck booking and packages creation.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
@@ -140,7 +138,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating package and booking status from ULD.");
+                //_logger.LogError(ex, "An error occurred while updating package and booking status from ULD.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
@@ -162,7 +160,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while creating flight schedule and updating status.");
+                //_logger.LogError(ex, "An error occurred while creating flight schedule and updating status.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
@@ -186,7 +184,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating ULD and package status.");
+                //_logger.LogError(ex, "An error occurred while updating ULD and package status.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }

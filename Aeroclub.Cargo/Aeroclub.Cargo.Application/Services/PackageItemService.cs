@@ -245,11 +245,18 @@ namespace Aeroclub.Cargo.Application.Services
                     Created = DateTime.Now
                 });
 
-                var cRes = await _unitOfWork.Repository<AWBNumberStack>().CreateAsync(new AWBNumberStack
+                var awbSpec = new AWBNumberStackSpecification(rm.AWBTrackingNumber);
+
+                var existingAwb = await _unitOfWork.Repository<AWBNumberStack>().GetEntityWithSpecAsync(awbSpec);
+
+                if(existingAwb == null)
                 {
-                    AWBTrackingNumber = rm.AWBTrackingNumber,
-                    CargoAgentId = rm.CargoAgent,
-                });
+                    await _unitOfWork.Repository<AWBNumberStack>().CreateAsync(new AWBNumberStack
+                    {
+                        AWBTrackingNumber = rm.AWBTrackingNumber,
+                        CargoAgentId = rm.CargoAgent,
+                    });
+                }
 
                 var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
                 {
