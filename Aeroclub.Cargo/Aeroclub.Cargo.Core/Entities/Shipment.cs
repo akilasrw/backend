@@ -12,6 +12,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid bookingID { get; set; }
         public Guid packageID { get; set; }
         public Guid flightScheduleID { get; set; }
+        public int packageCount { get; set; }
 
         public CargoBooking CargoBooking { get; set; }
         public FlightSchedule FlightSchedule { get; set; }
