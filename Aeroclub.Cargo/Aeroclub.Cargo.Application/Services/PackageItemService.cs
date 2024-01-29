@@ -83,6 +83,7 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var package = _mapper.Map<PackageItemUpdateRM, PackageItem>(rm);
             _unitOfWork.Repository<PackageItem>().Update(package);
+            await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<PackageItem>().Detach(package);
 
@@ -96,6 +97,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 package.PackageItemStatus = rm.PackageItemStatus;
                 _unitOfWork.Repository<PackageItem>().Update(package);
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<PackageItem>().Detach(package);
 
@@ -198,6 +200,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     package.PackageItemStatus = x.status;
                     _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<PackageItem>().Detach(package);
                 }
@@ -318,6 +321,7 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                     
                     _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<PackageItem>().Detach(package);
 
@@ -414,7 +418,7 @@ namespace Aeroclub.Cargo.Application.Services
                 package.PackageItemStatus = PackageItemStatus.IndestinationWarehouse;
 
                 _unitOfWork.Repository<PackageItem>().Update(package);
-
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -577,8 +581,8 @@ namespace Aeroclub.Cargo.Application.Services
                 package.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
                 
                 _unitOfWork.Repository<PackageItem>().Update(package);
-                
-                
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+
                 await _unitOfWork.SaveChangesAsync();
 
                 _unitOfWork.Repository<PackageItem>().Detach(package);
