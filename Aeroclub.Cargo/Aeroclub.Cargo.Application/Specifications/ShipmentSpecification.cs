@@ -12,7 +12,10 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class ShipmentSpecification : BaseSpecification<Shipment>
     {
         public ShipmentSpecification(ShipmentQM query)
-            :base(x=> x.flightScheduleID == query.flightScheduleID && x.bookingID == query.bookingID) 
-        { }
+            :base(x=> (query.flightScheduleID == Guid.Empty || x.flightScheduleID == query.flightScheduleID) && x.bookingID == query.bookingID) 
+        { 
+            
+        
+        }
     }
 }

@@ -4,8 +4,10 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetShipmentsRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,6 +46,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<CargoBookingMobileVM>> GetMobileBookingAsync([FromQuery] FlightScheduleSectorMobileQM query)
         {
             return Ok(await _bookingManagerService.GetMobileBookingAsync(query));
+        }
+
+        [HttpGet("GetShipments")]
+        public async Task<ActionResult<Shipment>> GetShipmentsByAWB([FromBody] GetShipmentsRM rm) {
+
+            return Ok(await _bookingManagerService.GetShipmentByAWB(rm));
+        
         }
 
         [HttpGet("GetStandByCargoList")]

@@ -1,12 +1,15 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetShipmentsRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
@@ -123,6 +126,44 @@ namespace Aeroclub.Cargo.Application.Services
             list = list.DistinctBy(x => x.Id).ToList();
             
             return list;
+        }
+
+        public async Task<IReadOnlyList<Shipment>> GetShipmentsByAWB(GetShipmentsRM rm)
+        {
+            
+
+            Guid bookingID = Guid.Empty;
+
+            if(rm.AWBNumber != null)
+            {
+                var awbSpec = new AWBSpecification(new AWBTrackingQM
+                {
+                    AwbTrackingNum = (long)rm.AWBNumber
+                });
+                var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
+                bookingID = (Guid)awb.CargoBookingId;
+            }
+            else if(rm.packageID != null)
+            {
+                var spec = new PackageItemSpecification(
+                    new PackageItemRefQM
+                    {
+                        PackageRefNumber = rm.packageID
+                    }
+
+                    );
+
+                var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+
+                bookingID = (Guid)package.CargoBookingId;
+            }
+
+
+            var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM { bookingID = bookingID });
+
+            var shipments = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shipmentSpec);
+
+            return shipments;
         }
 
         public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)
