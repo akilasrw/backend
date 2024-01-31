@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetShipmentsRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.Notification;
+using Aeroclub.Cargo.Application.Models.ViewModels.BookingShipmentSummeryVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Specifications;
@@ -18,6 +19,7 @@ using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using SendGrid.Helpers.Errors.Model;
 
 
 namespace Aeroclub.Cargo.Application.Services
@@ -128,11 +130,13 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
-        public async Task<IReadOnlyList<Shipment>> GetShipmentsByAWB(GetShipmentsRM rm)
+        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentsByAWB(GetShipmentsRM rm)
         {
             
 
             Guid bookingID = Guid.Empty;
+
+            var shipBookings = new List<BookingShipmentSummeryVM>();
 
             if(rm.AWBNumber != null)
             {
@@ -141,6 +145,10 @@ namespace Aeroclub.Cargo.Application.Services
                     AwbTrackingNum = (long)rm.AWBNumber
                 });
                 var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
+                if(awb == null)
+                {
+                    throw new NotFoundException("AWB information not found.");
+                }
                 bookingID = (Guid)awb.CargoBookingId;
             }
             else if(rm.packageID != null)
@@ -154,6 +162,10 @@ namespace Aeroclub.Cargo.Application.Services
                     );
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+                if (package == null)
+                {
+                    throw new NotFoundException("Package not found.");
+                }
 
                 bookingID = (Guid)package.CargoBookingId;
             }
@@ -163,7 +175,33 @@ namespace Aeroclub.Cargo.Application.Services
 
             var shipments = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shipmentSpec);
 
-            return shipments;
+            foreach( var shipment in shipments)
+            {
+                var paSpec = new PackageAuditSpecification(PackageItemStatus.Arrived, shipment.packageID);
+                var paRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(paSpec);
+
+                var pdSpec = new PackageAuditSpecification(PackageItemStatus.Dispatched, shipment.packageID);
+                var pdRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pdSpec);
+
+                var shipBooking = new BookingShipmentSummeryVM
+                {
+                    awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
+                    bookedDate = shipment.CargoBooking.BookingDate,
+                    flightNumber = shipment.FlightSchedule.FlightNumber,
+                    packageCount = shipment.packageCount,
+                    from = shipment.FlightSchedule.OriginAirportName,
+                    to = shipment.FlightSchedule.DestinationAirportName,
+                    shipmentID = shipment.Id,
+                    shipmentStatus = shipment.PackageItem.PackageItemStatus,
+                    flightArr = paRes?.Created,
+                    flightDate = shipment.FlightSchedule.ScheduledDepartureDateTime,
+                    flightDep = pdRes?.Created,
+                };
+
+                shipBookings.Add(shipBooking);
+            }
+
+            return shipBookings;
         }
 
         public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)

@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetShipmentsRM;
+using Aeroclub.Cargo.Application.Models.ViewModels.BookingShipmentSummeryVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Core.Entities;
@@ -49,7 +50,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetShipments")]
-        public async Task<ActionResult<Shipment>> GetShipmentsByAWB([FromBody] GetShipmentsRM rm) {
+        public async Task<ActionResult<List<BookingShipmentSummeryVM>>> GetShipmentsByAWB([FromQuery] GetShipmentsRM rm) {
 
             return Ok(await _bookingManagerService.GetShipmentByAWB(rm));
         
