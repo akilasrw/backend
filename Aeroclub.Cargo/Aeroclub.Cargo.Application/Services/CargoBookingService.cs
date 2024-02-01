@@ -183,6 +183,15 @@ namespace Aeroclub.Cargo.Application.Services
                 var pdSpec = new PackageAuditSpecification(PackageItemStatus.Dispatched, shipment.packageID);
                 var pdRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pdSpec);
 
+                var pAFSpec = new PackageAuditSpecification(PackageItemStatus.AcceptedForFLight, shipment.packageID);
+                var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pAFSpec);
+
+                var pDSpec = new PackageAuditSpecification(PackageItemStatus.Deliverd, shipment.packageID);
+                var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
+
+                var pIDSpec = new PackageAuditSpecification(PackageItemStatus.IndestinationWarehouse, shipment.packageID);
+                var pIDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pIDSpec);
+
                 var shipBooking = new BookingShipmentSummeryVM
                 {
                     awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
@@ -196,6 +205,9 @@ namespace Aeroclub.Cargo.Application.Services
                     flightArr = paRes?.Created,
                     flightDate = shipment.FlightSchedule.ScheduledDepartureDateTime,
                     flightDep = pdRes?.Created,
+                    inDestinationWahouse = pIDRes?.Created,
+                    acceptedForFLight = pAFRes?.Created,
+                    deliverdToAgend  = pDRes?.Created,
                 };
 
                 shipBookings.Add(shipBooking);

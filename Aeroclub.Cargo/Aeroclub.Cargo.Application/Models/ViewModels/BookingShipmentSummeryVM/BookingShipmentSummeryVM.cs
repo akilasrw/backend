@@ -21,5 +21,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.BookingShipmentSummeryVM
         public DateTime flightDate { get; set; }
         public DateTime? flightDep {  get; set; }
         public DateTime? flightArr {  get; set; }
+        public DateTime? acceptedForFLight { get; set; }
+        public DateTime? inDestinationWahouse { get; set; }
+        public DateTime? deliverdToAgend { get; set; }
     }
 }
