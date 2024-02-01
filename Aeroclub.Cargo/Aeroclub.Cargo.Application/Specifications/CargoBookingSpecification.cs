@@ -57,6 +57,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public CargoBookingSpecification(CargoBookingQM query)
           : base(x => (x.Id == query.Id) && (!x.IsDeleted))
         {
+            AddInclude((x) => x.Include((x) => x.AWBInformation));
             if (query.IsIncludeFlightDetail)
             {
                 AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w => w.AircraftSubType));
