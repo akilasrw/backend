@@ -542,9 +542,25 @@ namespace Aeroclub.Cargo.Application.Services
                 ULDId = uldId,
             });
 
-            var uldContainer = await _unitOfWork.Repository<ULDContainer>().CreateAsync(new ULDContainer { ULDId = uldId });
+            var uldCId = Guid.NewGuid();
 
-            await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(new PackageULDContainer { PackageItemId = uldId, ULDContainerId = uldContainer.Id });
+            var existingContainerSpecs = new ULDContainerSpecification(uldId);
+
+            var existingContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(existingContainerSpecs);
+
+            if(existingContainer == null)
+            {
+                var uldContainer = await _unitOfWork.Repository<ULDContainer>().CreateAsync(new ULDContainer { ULDId = uldId });
+                uldCId = uldContainer.Id;
+            }
+            else
+            {
+                uldCId = existingContainer.Id;
+            }
+
+            
+
+            
             await _unitOfWork.SaveChangesAsync();
 
             foreach(var x in rm.packageIDs)
@@ -557,9 +573,11 @@ namespace Aeroclub.Cargo.Application.Services
 
                   );
 
-               
+                
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+                await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(new PackageULDContainer { PackageItemId =  package.Id, ULDContainerId = uldCId });
+                await _unitOfWork.SaveChangesAsync();
                 var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM
                 {
                     bookingID = package.CargoBookingId,
