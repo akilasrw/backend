@@ -301,9 +301,13 @@ namespace Aeroclub.Cargo.Application.Services
         {
             foreach(var i in rm.ulds)
             {
+
+                var uldContainerSpecs = new ULDContainerSpecification(i);
+                var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
+
                 var specs = new PackageULDContainerSpecification(new Application.Models.Queries.PackageULDContainerQMs.PackageByULDQM
                 {
-                    uldContainer = i
+                    uldContainer = uldContainer.Id
                 });
 
                 var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
@@ -538,6 +542,11 @@ namespace Aeroclub.Cargo.Application.Services
                 ULDId = uldId,
             });
 
+            var uldContainer = await _unitOfWork.Repository<ULDContainer>().CreateAsync(new ULDContainer { ULDId = uldId });
+
+            await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(new PackageULDContainer { PackageItemId = uldId, ULDContainerId = uldContainer.Id });
+            await _unitOfWork.SaveChangesAsync();
+
             foreach(var x in rm.packageIDs)
             {
                 var spec = new PackageItemSpecification(
@@ -579,6 +588,8 @@ namespace Aeroclub.Cargo.Application.Services
                 
 
                 package.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
+
+                
                 
                 _unitOfWork.Repository<PackageItem>().Update(package);
                 await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
