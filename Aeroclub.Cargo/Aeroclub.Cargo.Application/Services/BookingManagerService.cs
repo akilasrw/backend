@@ -448,8 +448,8 @@ namespace Aeroclub.Cargo.Application.Services
             switch(packageItemStatus)
             {
                 case PackageItemStatus.Booking_Made: return PackageItemStatus.Cargo_Received;
-                case PackageItemStatus.Cargo_Received: return PackageItemStatus.Dispatched;
-                case PackageItemStatus.Dispatched: return PackageItemStatus.Arrived;
+                case PackageItemStatus.Cargo_Received: return PackageItemStatus.FlightDispatched;
+                case PackageItemStatus.FlightDispatched: return PackageItemStatus.Arrived;
             }
             return PackageItemStatus.Booking_Made;
         }
@@ -469,9 +469,9 @@ namespace Aeroclub.Cargo.Application.Services
             return await _cargoBookingService.GetMobileBookingAsync(query);
         }
 
-        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query)
+        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query, Guid userId)
         {
-            return await _cargoBookingService.GetShipmentsByAWB(query);
+            return await _cargoBookingService.GetShipmentsByAWB(query, userId);
         }
 
         public Task<IReadOnlyList<CargoBookingListVM>> GetAssignedCargoList(AssignedCargoQM query)

@@ -139,14 +139,14 @@ namespace Aeroclub.Cargo.Common.Enums
     {
         Booking_Made = 0,
         Cargo_Received = 1,
-        Dispatched = 2,
-        IndestinationWarehouse = 3,
+        AcceptedForFLight = 2,
+        FlightDispatched = 3,
         Arrived = 4,
-        Returned = 5,
-        Offloaded = 6,
-        AcceptedForFLight = 7,
-        TruckForDelivery = 8,
-        Deliverd = 9,
+        IndestinationWarehouse = 5,
+        TruckForDelivery = 6,
+        Deliverd = 7,
+        Returned = 8,
+        Offloaded = 9,
     }
 
     public enum AWBStatus

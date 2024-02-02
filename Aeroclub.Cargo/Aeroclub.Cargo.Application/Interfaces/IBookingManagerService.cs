@@ -33,7 +33,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query);
         Task<IReadOnlyList<CargoBookingListVM>> GetVerifyBookingListAsync(FlightScheduleSectorVerifyBookingListQM query);
         Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query);
-        Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query);
+        Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query, Guid userId);
 
     }
 }

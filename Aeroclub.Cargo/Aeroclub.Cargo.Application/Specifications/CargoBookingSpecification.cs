@@ -55,7 +55,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public CargoBookingSpecification(CargoBookingQM query)
-          : base(x => (x.Id == query.Id) && (!x.IsDeleted))
+          : base(x => (query.userId == Guid.Empty || x.CreatedBy == query.userId) && (x.Id == query.Id) && (!x.IsDeleted))
         {
             AddInclude((x) => x.Include((x) => x.AWBInformation));
             if (query.IsIncludeFlightDetail)

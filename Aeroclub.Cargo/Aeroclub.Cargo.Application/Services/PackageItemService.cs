@@ -317,7 +317,7 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                     else
                     {
-                        package.PackageItemStatus = PackageItemStatus.Dispatched;
+                        package.PackageItemStatus = PackageItemStatus.FlightDispatched;
                     }
                     
                     _unitOfWork.Repository<PackageItem>().Update(package);
@@ -331,7 +331,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpecs);
                     
-                    if(packageList.Any(x=> x.PackageItemStatus != PackageItemStatus.Dispatched))
+                    if(packageList.Any(x=> x.PackageItemStatus != PackageItemStatus.FlightDispatched))
                     {
                         if (rm.IsArrived)
                         {
@@ -592,7 +592,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpecs);
 
-                if (packageList.Any(x => x.PackageItemStatus != PackageItemStatus.Dispatched))
+                if (packageList.Any(x => x.PackageItemStatus != PackageItemStatus.FlightDispatched))
                 {
                     
                     

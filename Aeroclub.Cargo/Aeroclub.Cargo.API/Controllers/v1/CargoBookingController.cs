@@ -52,7 +52,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpGet("GetShipments")]
         public async Task<ActionResult<List<BookingShipmentSummeryVM>>> GetShipmentsByAWB([FromQuery] GetShipmentsRM rm) {
 
-            return Ok(await _bookingManagerService.GetShipmentByAWB(rm));
+
+            if (HttpContext.Items.TryGetValue("User", out var user))
+
+                if (user is AppUser userType)
+                {
+
+                    var userId = userType.Id;
+                    return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId));
+                }
+
+            return null;
+
+                    
         
         }
 
