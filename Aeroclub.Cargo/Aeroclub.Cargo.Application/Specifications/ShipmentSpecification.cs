@@ -13,7 +13,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class ShipmentSpecification : BaseSpecification<Shipment>
     {
         public ShipmentSpecification(ShipmentQM query)
-            :base(x=> (query.userId == x.CargoBooking.CreatedBy) && (query.flightScheduleID == Guid.Empty || x.flightScheduleID == query.flightScheduleID) && x.bookingID == query.bookingID) 
+            :base(x=> (query.userId == Guid.Empty || query.userId == x.CargoBooking.CreatedBy) && (query.flightScheduleID == Guid.Empty || x.flightScheduleID == query.flightScheduleID) && x.bookingID == query.bookingID) 
         {
 
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.AWBInformation));

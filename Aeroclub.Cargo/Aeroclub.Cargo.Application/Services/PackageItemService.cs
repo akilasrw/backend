@@ -595,6 +595,7 @@ namespace Aeroclub.Cargo.Application.Services
                         packageID = package.Id,
                         packageCount = 1,
                     });
+                    await _unitOfWork.SaveChangesAsync();
                 }
                 else
                 {
