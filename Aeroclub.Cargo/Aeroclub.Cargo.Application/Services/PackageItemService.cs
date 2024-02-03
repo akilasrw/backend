@@ -125,6 +125,17 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<PackageListItemVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
 
+        public async Task<IReadOnlyList<PackageListItemVM>> GetFilteredAllListAsync(PackageListQM query)
+        {
+            var spec = new PackageItemSpecification(query, true);
+
+            var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(spec);
+
+            var dtoList = _mapper.Map<IReadOnlyList<PackageListItemVM>>(packageList);
+
+            return dtoList;
+        }
+
         public async Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm)
         {
             var res = new ServiceResponseCreateStatus();

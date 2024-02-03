@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<PackageItemVM> GetAsync(PackageItemQM query);
         Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM packageItem);
         Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query);
+        Task<IReadOnlyList<PackageListItemVM>> GetFilteredAllListAsync(PackageListQM query);
         Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm);
         Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm);
 
