@@ -206,7 +206,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var shipBooking = new BookingShipmentSummeryVM
                 {
                     awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
-                    bookedDate = (DateTime)booking?.BookingDate,
+                    bookedDate = (DateTime)booking?.Created,
                     shipmentStatus = packages[0].PackageItemStatus,
                     packageCount = packages.Count,
                     enrouteToWahouse = pRRes?.Created
@@ -239,7 +239,7 @@ namespace Aeroclub.Cargo.Application.Services
                     var shipBooking = new BookingShipmentSummeryVM
                     {
                         awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
-                        bookedDate = shipment.CargoBooking.BookingDate,
+                        bookedDate = shipment.CargoBooking.Created,
                         flightNumber = shipment.FlightSchedule.FlightNumber,
                         packageCount = shipment.packageCount,
                         from = shipment.FlightSchedule.OriginAirportName,
