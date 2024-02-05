@@ -125,9 +125,9 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<PackageListItemVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
 
-        public async Task<IReadOnlyList<PackageListItemVM>> GetFilteredAllListAsync(PackageListQM query)
+        public async Task<IReadOnlyList<PackageListItemVM>> GetFilteredAllListAsync(PackageAllListQM query)
         {
-            var spec = new PackageItemSpecification(query, true);
+            var spec = new PackageItemSpecification(query);
 
             var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(spec);
 

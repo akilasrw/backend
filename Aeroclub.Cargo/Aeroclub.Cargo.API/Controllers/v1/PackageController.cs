@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetFilteredAllList")]
-        public async Task<ActionResult<PackageListItemVM>> GetFilteredAllListAsync([FromQuery] PackageListQM query)
+        public async Task<ActionResult<PackageListItemVM>> GetFilteredAllListAsync([FromQuery] PackageAllListQM query)
         {
             return Ok(await _packageItemService.GetFilteredAllListAsync(query));
         }
