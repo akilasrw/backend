@@ -8,5 +8,7 @@ namespace Aeroclub.Cargo.Core.Entities
     {
        public Guid PackageID { get; set; }
        public PackageItemStatus PackageItemStatus { get; set; }
+
+       public PackageItem packageItem { get; set; }
     }
 }

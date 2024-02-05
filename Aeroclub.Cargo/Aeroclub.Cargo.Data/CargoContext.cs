@@ -55,7 +55,11 @@ namespace Aeroclub.Cargo.Data
             .HasOne(s => s.PackageItem)
             .WithMany()
             .HasForeignKey(s => s.packageID);
-        modelBuilder.Entity<BookingAudit>()
+        modelBuilder.Entity<ItemStatus>()
+            .HasOne(i => i.packageItem)
+            .WithMany()
+            .HasForeignKey(i => i.PackageID);
+            modelBuilder.Entity<BookingAudit>()
             .HasKey(ba => ba.Id);
 
         modelBuilder.Entity<BookingAudit>()

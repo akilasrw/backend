@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240205104553_UpdateItemStatusTable2")]
+    partial class UpdateItemStatusTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1129,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ded718d6-c318-4811-b6ce-3245da08a336",
+                            ConcurrencyStamp = "a302c356-80f2-4200-af0f-efe70c743bb4",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1147,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f7c88918-5f13-4b8b-b974-3b3d975fe6c5",
+                            ConcurrencyStamp = "2e33538c-1baa-4baa-9187-5ac19a30551d",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",

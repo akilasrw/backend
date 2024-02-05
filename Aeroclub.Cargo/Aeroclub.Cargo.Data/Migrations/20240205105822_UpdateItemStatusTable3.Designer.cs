@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240205105822_UpdateItemStatusTable3")]
+    partial class UpdateItemStatusTable3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1129,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ded718d6-c318-4811-b6ce-3245da08a336",
+                            ConcurrencyStamp = "987be87e-4c0c-4090-8e86-80a4a92e2fb7",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1147,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f7c88918-5f13-4b8b-b974-3b3d975fe6c5",
+                            ConcurrencyStamp = "11ef3630-80c3-472a-8077-5e50bb10b3e0",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -27793,12 +27795,17 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("PackageID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("PackageItemId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("PackageItemStatus")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PackageID");
+
+                    b.HasIndex("PackageItemId");
 
                     b.ToTable("ItemStatus");
                 });
@@ -40769,6 +40776,10 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.PackageItem", null)
+                        .WithMany("ItemStatuses")
+                        .HasForeignKey("PackageItemId");
+
                     b.Navigation("packageItem");
                 });
 
@@ -41242,6 +41253,8 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageItem", b =>
                 {
+                    b.Navigation("ItemStatuses");
+
                     b.Navigation("PackageULDContainers");
                 });
 

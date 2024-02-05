@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Common.Enums;
+﻿using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using System;
@@ -13,6 +14,10 @@ namespace Aeroclub.Cargo.Application.Specifications
     {
         public PackageAuditSpecification(PackageItemStatus status, Guid packageID)
          :base(x => x.PackageItemStatus == status && x.PackageID == packageID)
+        { }
+
+        public PackageAuditSpecification(ItemAuditQM query)
+         : base(x => x.PackageItemStatus == query.status && x.packageItem.CargoBookingId == query.bookingID)
         { }
     }
 }

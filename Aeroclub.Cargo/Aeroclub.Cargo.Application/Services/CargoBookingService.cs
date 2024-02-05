@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ShipmentQM;
@@ -94,6 +95,13 @@ namespace Aeroclub.Cargo.Application.Services
             var totalCount = await _unitOfWork.Repository<CargoBooking>().CountAsync(countSpec);
 
             var dtoList = _mapper.Map<IReadOnlyList<CargoBookingVM>>(bookingList);
+
+            foreach(var d in dtoList)
+            {
+                var sSpec = new PackageAuditSpecification(new ItemAuditQM{bookingID = d.Id, status = PackageItemStatus.AcceptedForFLight });
+                var sCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(sSpec);
+                d.shipmentCount = sCount.Count();
+            }
          
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
 
