@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
@@ -10,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
+using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +47,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<Pagination<PackageListItemVM>>> GetFilteredListAsync([FromQuery] PackageListQM query)
         {
             return Ok(await _packageItemService.GetFilteredListAsync(query));
+        }
+
+        [HttpGet("AuditByBooking")]
+        public async Task<ActionResult<ItemStatus>> GetPackageAuditByBooking([FromQuery] ItemAuditQM query)
+        {
+            return Ok(await _packageItemService.GetPackageItemAuditByBooking(query));
         }
 
         [HttpGet("GetFilteredAllList")]
