@@ -12,5 +12,11 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(y => y.Include(y => y.PackageULDContainers).ThenInclude(z=>z.PackageItem));
         }
+
+        public ULDContainerSpecification(Guid uldId)
+            :base(x => x.ULDId == uldId)
+        {
+
+        }
     }
 }

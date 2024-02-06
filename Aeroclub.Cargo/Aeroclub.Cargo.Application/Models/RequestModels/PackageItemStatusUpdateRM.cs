@@ -13,5 +13,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels
         public List<PackageItemListRM> itemList { get; set; }
         public long? AWBNumber { get; set; }
         public BookingStatus? status { get; set; }
+        public string? TruckNo { get; set; }
     }
 }

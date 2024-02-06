@@ -18,18 +18,18 @@ namespace Aeroclub.Cargo.Application.Services
         }
         public async Task<CargoBookingLookupVM?> GetAsync(CargoBookingLookupQM query)
         {
-            var spec = new CargoBookingLookupSpecification(query);
+                var spec = new CargoBookingLookupSpecification(query);
 
-            var entity = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
+                var entity = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(spec);
 
-            if (entity != null)
-            {
-                var mappedEntity = _mapper.Map<CargoBookingLookupVM>(entity);
+                if (entity != null)
+                {
+                    var mappedEntity = _mapper.Map<CargoBookingLookupVM>(entity);
 
-                mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
+                    mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
 
-                return mappedEntity;
-            }
+                    return mappedEntity;
+                }
             return null;
         }
 

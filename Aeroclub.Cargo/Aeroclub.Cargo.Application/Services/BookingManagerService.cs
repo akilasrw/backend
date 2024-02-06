@@ -12,8 +12,10 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetShipmentsRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
+using Aeroclub.Cargo.Application.Models.ViewModels.BookingShipmentSummeryVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
@@ -446,8 +448,8 @@ namespace Aeroclub.Cargo.Application.Services
             switch(packageItemStatus)
             {
                 case PackageItemStatus.Booking_Made: return PackageItemStatus.Cargo_Received;
-                case PackageItemStatus.Cargo_Received: return PackageItemStatus.Dispatched;
-                case PackageItemStatus.Dispatched: return PackageItemStatus.Arrived;
+                case PackageItemStatus.Cargo_Received: return PackageItemStatus.FlightDispatched;
+                case PackageItemStatus.FlightDispatched: return PackageItemStatus.Arrived;
             }
             return PackageItemStatus.Booking_Made;
         }
@@ -465,6 +467,11 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query)
         {
             return await _cargoBookingService.GetMobileBookingAsync(query);
+        }
+
+        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query, Guid userId)
+        {
+            return await _cargoBookingService.GetShipmentsByAWB(query, userId);
         }
 
         public Task<IReadOnlyList<CargoBookingListVM>> GetAssignedCargoList(AssignedCargoQM query)

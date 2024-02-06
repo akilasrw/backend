@@ -1,14 +1,17 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
+using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +26,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             _packageItemService = packageItemService;
         }
+
+       
 
         [HttpGet]
         public async Task<ActionResult<PackageItemMobileVM>> GetAsync([FromQuery] PackageItemRefQM query)
@@ -44,6 +49,18 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _packageItemService.GetFilteredListAsync(query));
         }
 
+        [HttpGet("AuditByBooking")]
+        public async Task<ActionResult<ItemStatus>> GetPackageAuditByBooking([FromQuery] ItemAuditQM query)
+        {
+            return Ok(await _packageItemService.GetPackageItemAuditByBooking(query));
+        }
+
+        [HttpGet("GetFilteredAllList")]
+        public async Task<ActionResult<PackageListItemVM>> GetFilteredAllListAsync([FromQuery] PackageAllListQM query)
+        {
+            return Ok(await _packageItemService.GetFilteredAllListAsync(query));
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] PackageItemUpdateRM rm)
         {
@@ -55,49 +72,174 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm) // update Status
+        public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm)
         {
-            var res = await _packageItemService.UpdateStatusAsync(rm);
+            try
+            {
+                var res = await _packageItemService.UpdateStatusAsync(rm);
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    return BadRequest("Update failed.");
+                }
 
-            return NoContent();
+                return Ok("Update successful.");
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while updating the status.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPut("UpdateStatusByPackage")]
-        public async Task<IActionResult> UpdatePckageStatusAsync([FromBody] PackageItemStatusUpdateRM rm)
+        public async Task<BaseResponse> UpdatePckageStatusAsync([FromBody] PackageItemStatusUpdateRM rm)
         {
-            var res = await _packageItemService.UpdatePackageStatusAsync(rm);
+            var response = new BaseResponse();
+            try
+            {
+                var res = await _packageItemService.UpdatePackageStatusAsync(rm);
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    response.status = 400;
+                    response.message = "Request Failed";
+                    return response;
+                }
 
-            return NoContent();
+                response.status = 200;
+                response.message = "Request success";
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.status = 400;
+                response.message = "An error occurred while processing your request.";
+                return response;
+            }
         }
 
         [HttpPost("CreateTruckBookingAWBAndPackages")]
-        public async Task<IActionResult> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
+        public async Task<BaseResponse> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
         {
+            var response = new BaseResponse();
+            try
+            {
+                var res = await _packageItemService.CreateTruckBookingAWBAndPackages(rm);
 
-            var res = await _packageItemService.CreateTruckBookingAWBAndPackages(rm);
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    response.status = 400;
+                    response.message = "Request Failed";
+                    return response;
+                }
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Request failed.");
+                response.status = 200;
+                response.message = "Request success";
 
-            return NoContent();
+                return response;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while processing the truck booking and packages creation.");
+                response.status = 400;
+                response.message = "An error occurred while processing your request.";
+                return response;
+            }
         }
 
         [HttpPost("UpdatePackageAndBookingStatusFromULD")]
-        public async Task<IActionResult> UpdatePackageAndBookingStatusFromULD([FromBody] PackageUpdateByULD rm) 
+        public async Task<BaseResponse> UpdatePackageAndBookingStatusFromULD([FromBody] PackageUpdateByULD rm)
         {
-            var res = await _packageItemService.UpdatePackageAndBookingStatusFromULD(rm);
+            var response = new BaseResponse();
+            try
+            {
+                var res = await _packageItemService.UpdatePackageAndBookingStatusFromULD(rm);
 
-            return NoContent();
+                if (res == ServiceResponseStatus.Success)
+                {
+                    response.status = 200;
+                    response.message = "Request success";
+
+                    return response;
+                }
+               
+
+                response.status = 400;
+                response.message = "Request Failed";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while updating package and booking status from ULD.");
+                response.status = 400;
+                response.message = "An error occurred while processing your request.";
+                return response;
+            }
         }
 
+
         [HttpPost("CreateFlightScheduleULDandUpdateStatus")]
-        public async Task<IActionResult> CreateFlightScheduleULDandUpdateStatus([FromBody] ScanAppThirdStepRM rm)
+        public async Task<BaseResponse> CreateFlightScheduleULDandUpdateStatus([FromBody] ScanAppThirdStepRM rm)
         {
-            var res = await _packageItemService.CreateFlightScheduleULDandUpdateStatus(rm);
-            return NoContent();
+            var response = new BaseResponse();
+            try
+            {
+                var res = await _packageItemService.CreateFlightScheduleULDandUpdateStatus(rm);
+
+                if (res == ServiceResponseStatus.Success)
+                {
+                    response.status = 200;
+                    response.message = "Request success";
+
+                    return response;
+                }
+
+                response.status = 400;
+                response.message = "Request Failed";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while creating flight schedule and updating status.");
+                response.status = 400;
+                response.message = "An error occurred while processing your request.";
+                return response;
+            }
+        }
+
+
+        [HttpPost("UpdateULDAndPackageStatus")]
+        public async Task<BaseResponse> UpdateULDAndPackageStatus([FromBody] ScanAppSixthStepRM rm)
+        {
+            var response = new BaseResponse();
+            try
+            {
+                var res = await _packageItemService.UpdateULDandPackageStatus(rm);
+
+                if(res == ServiceResponseStatus.Success)
+                {
+                    response.status = 200;
+                    response.message = "Request success";
+
+                    return response;
+                }
+                else
+                {
+                    response.status = 400;
+                    response.message = "Request Failed";
+                    return response;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while updating ULD and package status.");
+                response.status = 400;
+                response.message = "An error occurred while processing your request.";
+                return response;
+            }
         }
     }
 }

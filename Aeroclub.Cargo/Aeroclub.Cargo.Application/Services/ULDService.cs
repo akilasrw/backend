@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.ULDByFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
@@ -116,6 +117,33 @@ namespace Aeroclub.Cargo.Application.Services
             }
             response.StatusCode = ServiceResponseStatus.Success;
             return response;
+        }
+
+        public async Task<List<ULD>> GetULDByFlightSchedule(ULDByFlightScheduleRM rm)
+        {
+            var specs = new FlightScheduleSpecification(rm);
+            var schedule = await _unitOfWork.Repository<FlightSchedule>().GetListWithSpecAsync(specs);
+
+            List<ULD> ulds = new List<ULD>();
+
+            foreach (var flightSchedule in schedule)
+            {
+                if(flightSchedule.FlightScheduleSectors.Count > 0)
+                {
+                    foreach(var scheduleSector in flightSchedule.FlightScheduleSectors)
+                    {
+                        foreach(var sectorPallet in scheduleSector.FlightScheduleSectorPallets)
+                        {
+                            if (sectorPallet.ULD != null)
+                            {
+                                ulds.Add(sectorPallet.ULD);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ulds;
         }
 
         public async Task<ServiceResponseStatus> UpdateAsync(ULDUpdateRM ULDDto)

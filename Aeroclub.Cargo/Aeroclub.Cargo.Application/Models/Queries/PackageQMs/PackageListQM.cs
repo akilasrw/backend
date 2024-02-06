@@ -8,5 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.PackageQMs
     {
         public bool IncludeCargoBooking {get;set;}
 
+        public long? awbNumber { get;set;}
+
     }
 }

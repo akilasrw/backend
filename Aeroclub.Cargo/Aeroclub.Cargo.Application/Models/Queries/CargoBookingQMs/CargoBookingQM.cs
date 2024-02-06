@@ -7,5 +7,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs
         public bool IsIncludeFlightDetail { get; set; }
         public bool IsIncludePackageDetail { get; set; }
         public bool IsIncludeAWBDetail { get; set; }
+
+        public Guid userId { get; set; }
     }
 }

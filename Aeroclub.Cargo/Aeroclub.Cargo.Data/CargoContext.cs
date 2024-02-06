@@ -40,6 +40,37 @@ namespace Aeroclub.Cargo.Data
                 .HasForeignKey(t => t.BookingID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+          
+        modelBuilder.Entity<Shipment>()
+            .HasOne(s => s.CargoBooking)
+            .WithMany()
+            .HasForeignKey(s => s.bookingID);
+
+        modelBuilder.Entity<Shipment>()
+            .HasOne(s => s.FlightSchedule)
+            .WithMany()
+            .HasForeignKey(s => s.flightScheduleID);
+
+        modelBuilder.Entity<Shipment>()
+            .HasOne(s => s.PackageItem)
+            .WithMany()
+            .HasForeignKey(s => s.packageID);
+        modelBuilder.Entity<ItemStatus>()
+            .HasOne(i => i.packageItem)
+            .WithMany()
+            .HasForeignKey(i => i.PackageID);
+            modelBuilder.Entity<BookingAudit>()
+            .HasKey(ba => ba.Id);
+
+        modelBuilder.Entity<BookingAudit>()
+            .Property(ba => ba.bookingStatus)
+            .IsRequired();
+
+        modelBuilder.Entity<BookingAudit>()
+            .HasOne(ba => ba.cargoBooking)
+            .WithMany()
+            .HasForeignKey(ba => ba.bookingId);
+
             modelBuilder.ApplyConfiguration(new AirportConfiguration());
             modelBuilder.ApplyConfiguration(new FlightSectorConfiguration());
             modelBuilder.ApplyConfiguration(new AircraftConfiguration());
@@ -90,6 +121,8 @@ namespace Aeroclub.Cargo.Data
         }
 
         public DbSet<AppUser> AppUsers { get; set; } = null!;
+        public DbSet<Shipment> Shipments { get; set; } = null!;
+        public DbSet<BookingAudit> BookingAudits { get; set; }
         public DbSet<AppRole> AppRoles { get; set; } = null!;
         public DbSet<AppUserRole> AppUserRoles { get; set; } = null!;
         public DbSet<Aircraft> Aircrafts { get; set; } = null!;
@@ -167,7 +200,9 @@ namespace Aeroclub.Cargo.Data
                         break;
                     case EntityState.Added:
                         ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow;
-                        ((AuditableEntity)entity.Entity).CreatedBy = userid;
+                        if (((AuditableEntity)entity.Entity).CreatedBy == Guid.Empty) {
+                            ((AuditableEntity)entity.Entity).CreatedBy = userid;
+                        }
                         break;
                     case EntityState.Detached:
                         break;

@@ -6,7 +6,7 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class ULDContainer : AuditableEntity
     {
-        public Guid LoadPlanId { get; set; }
+        public Guid? LoadPlanId { get; set; }
         public ULDContainerType ULDContainerType { get; set; }
         public double TotalWeight { get; set; }
         public double Height { get; set; }
