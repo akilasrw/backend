@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    [Migration("20240205103822_UpdateItemStatusTable")]
-    partial class UpdateItemStatusTable
+    [Migration("20240207170605_NewDBUpdate")]
+    partial class NewDBUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1131,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a5bc72c1-51ca-4ec0-9454-31d53ac2ed87",
+                            ConcurrencyStamp = "d6bf250d-9df4-4e90-9c3f-f13e54deda6d",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1149,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "39e7504d-7341-4eba-917c-dec5e51f2fb9",
+                            ConcurrencyStamp = "aac6ed93-c72f-4f9e-aead-04d21be61870",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -27795,15 +27795,12 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<Guid>("PackageID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PackageItemId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("PackageItemStatus")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PackageItemId");
+                    b.HasIndex("PackageID");
 
                     b.ToTable("ItemStatus");
                 });
@@ -40768,9 +40765,13 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ItemStatus", b =>
                 {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.PackageItem", null)
-                        .WithMany("ItemStatus")
-                        .HasForeignKey("PackageItemId");
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.PackageItem", "packageItem")
+                        .WithMany()
+                        .HasForeignKey("PackageID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("packageItem");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.LIRFileUpload", b =>
@@ -41243,8 +41244,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.PackageItem", b =>
                 {
-                    b.Navigation("ItemStatus");
-
                     b.Navigation("PackageULDContainers");
                 });
 
