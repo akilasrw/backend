@@ -116,7 +116,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                         if (userRole.FirstOrDefault(x => x.Contains("WareHouse")) != null) return true;
                         break;
                     case AccessPortalLevel.Backoffice:
-                        if (userRole.FirstOrDefault(x => x.Contains("Backoffice")) != null) return true;
+                        //did this temporary to avoid user restrictions for mobile app login that currently contained warehouse role
+                        if (userRole.FirstOrDefault(x => x.Contains("Backoffice") || x.Contains("Warehouse")) != null) return true;
                         break;
                 }
             }
