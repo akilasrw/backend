@@ -10,6 +10,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -19,10 +20,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
     public class CargoBookingController : BaseApiController
     {
         private readonly IBookingManagerService _bookingManagerService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CargoBookingController(IBookingManagerService bookingManagerService)
+        public CargoBookingController(IBookingManagerService bookingManagerService, UserManager<AppUser> userManager)
         {
             _bookingManagerService = bookingManagerService;
+            _userManager = userManager;
         }
 
         [HttpGet("GetFilteredList")]
@@ -57,8 +60,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
                 if (user is AppUser userType)
                 {
-
+                    var roles = await _userManager.GetRolesAsync(userType);
                     var userId = userType.Id;
+                    if(roles.Any((x)=> x.Contains("Backoffice") || x.Contains("Super")))
+                    {
+                        return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId, true));
+                    }
                     return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId));
                 }
 
