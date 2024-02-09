@@ -58,11 +58,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 if (user is AppUser userType)
                 {
 
-                    var userId = userType.Id;
-                    return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId));
+                    var userId = userType.Id;;
+                    var result = await _bookingManagerService.GetShipmentByAWB(rm, userId);
+                    if (null != result)
+                        return Ok(result);
+                    
+                    return BadRequest("Invalid reference number.");
+                    
                 }
-
-            return null;
+            
+            return BadRequest("Invalid reference number.");
 
                     
         
