@@ -203,13 +203,17 @@ namespace Aeroclub.Cargo.Application.Services
                 var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, packages[0].Id);
                 var pRRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pRSpec);
 
+                var pDSpec = new PackageAuditSpecification(PackageItemStatus.Cargo_Received, packages[0].Id);
+                var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
+
                 var shipBooking = new BookingShipmentSummeryVM
                 {
                     awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                     bookedDate = (DateTime)booking?.Created,
                     shipmentStatus = packages[0].PackageItemStatus,
                     packageCount = packages.Count,
-                    enrouteToWahouse = pRRes?.Created
+                    enrouteToWahouse = pRRes?.Created,
+                    inOriginWahouse = pDRes?.Created,
                 };
 
                 shipBookings.Add(shipBooking);

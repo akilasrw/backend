@@ -288,7 +288,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 foreach(var i in rm.Packages)
                 {
-                    await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
+                    var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
                     {
                         CargoBookingId= bRes.Id,
                         PackageRefNumber = i,
@@ -296,6 +296,8 @@ namespace Aeroclub.Cargo.Application.Services
                         PackageItemCategory = PackageItemCategory.None,
                         PackagePriorityType = PackagePriorityType.None,
                     });
+
+                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                 }
 
                 await _unitOfWork.SaveChangesAsync();
