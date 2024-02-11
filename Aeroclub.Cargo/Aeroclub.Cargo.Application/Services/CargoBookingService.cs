@@ -139,7 +139,7 @@ namespace Aeroclub.Cargo.Application.Services
             return list;
         }
 
-        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentsByAWB(GetShipmentsRM rm, Guid userId)
+        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentsByAWB(GetShipmentsRM rm, Guid userId, bool isAdmin = false)
         {
             
 
@@ -180,14 +180,14 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
 
-            var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM { bookingID = bookingID, userId=userId });
+            var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM { bookingID = bookingID, userId=isAdmin?Guid.Empty:userId });
 
             var shipments = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shipmentSpec);
 
             if(shipments.Count == 0)
             {
 
-                var bSpec = new CargoBookingSpecification(new CargoBookingQM { Id = bookingID , userId = userId});
+                var bSpec = new CargoBookingSpecification(new CargoBookingQM { Id = bookingID , userId = isAdmin? Guid.Empty : userId});
 
                 var booking  = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(bSpec);
                 if (booking == null)
@@ -203,13 +203,17 @@ namespace Aeroclub.Cargo.Application.Services
                 var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, packages[0].Id);
                 var pRRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pRSpec);
 
+                var pDSpec = new PackageAuditSpecification(PackageItemStatus.Cargo_Received, packages[0].Id);
+                var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
+
                 var shipBooking = new BookingShipmentSummeryVM
                 {
                     awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                     bookedDate = (DateTime)booking?.Created,
                     shipmentStatus = packages[0].PackageItemStatus,
                     packageCount = packages.Count,
-                    enrouteToWahouse = pRRes?.Created
+                    enrouteToWahouse = pRRes?.Created,
+                    inOriginWahouse = pDRes?.Created,
                 };
 
                 shipBookings.Add(shipBooking);

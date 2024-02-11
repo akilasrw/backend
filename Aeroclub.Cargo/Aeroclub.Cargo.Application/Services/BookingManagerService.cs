@@ -469,9 +469,9 @@ namespace Aeroclub.Cargo.Application.Services
             return await _cargoBookingService.GetMobileBookingAsync(query);
         }
 
-        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query, Guid userId)
+        public async Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query, Guid userId, bool isAdmin = false)
         {
-            return await _cargoBookingService.GetShipmentsByAWB(query, userId);
+            return await _cargoBookingService.GetShipmentsByAWB(query, userId, isAdmin);
         }
 
         public Task<IReadOnlyList<CargoBookingListVM>> GetAssignedCargoList(AssignedCargoQM query)
