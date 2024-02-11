@@ -60,6 +60,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
                 if (user is AppUser userType)
                 {
+<<<<<<< HEAD
                     var roles = await _userManager.GetRolesAsync(userType);
                     var userId = userType.Id;
                     if(roles.Any((x)=> x.Contains("Backoffice") || x.Contains("Super")))
@@ -67,9 +68,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                         return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId, true));
                     }
                     return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId));
-                }
+=======
 
-            return null;
+                    var userId = userType.Id;;
+                    var result = await _bookingManagerService.GetShipmentByAWB(rm, userId);
+                    if (null != result)
+                        return Ok(result);
+                    
+                    return BadRequest("Invalid reference number.");
+                    
+>>>>>>> d89fc7f451b426de6f472e1108cbd2858b56ed4d
+                }
+            
+            return BadRequest("Invalid reference number.");
 
                     
         
