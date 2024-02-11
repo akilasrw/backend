@@ -60,30 +60,34 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
                 if (user is AppUser userType)
                 {
-<<<<<<< HEAD
                     var roles = await _userManager.GetRolesAsync(userType);
                     var userId = userType.Id;
-                    if(roles.Any((x)=> x.Contains("Backoffice") || x.Contains("Super")))
+                    if (roles.Any((x) => x.Contains("Backoffice") || x.Contains("Super")))
                     {
-                        return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId, true));
+                        var res = await _bookingManagerService.GetShipmentByAWB(rm, userId, true);
+                        if(res != null)
+                        {
+                            return Ok(res);
+                        }
+
+                        return BadRequest("Booking not found");
+                        
                     }
-                    return Ok(await _bookingManagerService.GetShipmentByAWB(rm, userId));
-=======
-
-                    var userId = userType.Id;;
                     var result = await _bookingManagerService.GetShipmentByAWB(rm, userId);
-                    if (null != result)
-                        return Ok(result);
-                    
-                    return BadRequest("Invalid reference number.");
-                    
->>>>>>> d89fc7f451b426de6f472e1108cbd2858b56ed4d
-                }
-            
-            return BadRequest("Invalid reference number.");
 
-                    
-        
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+
+                    return BadRequest("Booking not found");
+                }
+
+            return null;
+
+
+
+
         }
 
         [HttpGet("GetStandByCargoList")]
