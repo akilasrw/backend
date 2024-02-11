@@ -156,7 +156,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
                 if(awb == null)
                 {
-                    throw new NotFoundException("AWB information not found.");
+                    return null;
                 }
                 bookingID = (Guid)awb.CargoBookingId;
             }
@@ -173,7 +173,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
                 if (package == null)
                 {
-                    throw new NotFoundException("Package not found.");
+                    return null;
                 }
 
                 bookingID = (Guid)package.CargoBookingId;
@@ -192,7 +192,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var booking  = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(bSpec);
                 if (booking == null)
                 {
-                    throw new NotFoundException("Booking not found.");
+                    return null;
                 }
                 var pSpec = new PackageItemSpecification(new PackageItemByBookingQM
                 {
