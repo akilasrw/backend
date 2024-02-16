@@ -325,7 +325,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);  
+                return ServiceResponseStatus.Failed;
             }
             
             return ServiceResponseStatus.Success;
