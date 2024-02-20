@@ -128,10 +128,10 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<CargoBooking, CargoBookingVM>()
                 .ForMember(d => d.AWBNumber, o => o.MapFrom(s => s.AWBInformation.AwbTrackingNumber))
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.DestinationAirport.Code))
-                .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.FlightNumber:""))
+                //.ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.FlightNumber:""))
                 .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count()>0 ? s.CargoBookingFlightScheduleSectors.FirstOrDefault(x => x.FlightScheduleSector.SequenceNo == 1)!.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
                 .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.AircraftSubType.ConfigType: AircraftConfigType.None))
-                .ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
+                //.ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
                 .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems.Sum(x => x.Weight)));
 
             CreateMap<CargoBookingRM, CargoBooking>();

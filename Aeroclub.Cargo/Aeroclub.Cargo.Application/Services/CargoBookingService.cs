@@ -100,7 +100,17 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 var sSpec = new PackageAuditSpecification(new ItemAuditQM{bookingID = d.Id, status = PackageItemStatus.AcceptedForFLight });
                 var sCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(sSpec);
+                var pSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = d.Id, status = PackageItemStatus.Booking_Made });
+                var pCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pSpec);
+
+                var shSpec = new ShipmentSpecification(new ShipmentQM { bookingID = d.Id });
+                var shList = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shSpec);
+                if(shList.Count() > 0)
+                {
+                     d.FlightNumber = shList[0].FlightSchedule.FlightNumber;
+                }
                 d.shipmentCount = sCount.Count();
+                d.NumberOfBoxes = pCount.Count();
             }
          
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);

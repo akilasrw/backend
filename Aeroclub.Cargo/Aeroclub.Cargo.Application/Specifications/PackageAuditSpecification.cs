@@ -18,7 +18,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         { }
 
         public PackageAuditSpecification(ItemAuditQM query)
-         : base(x => (query.status == null || x.PackageItemStatus == query.status) && x.packageItem.CargoBookingId == query.bookingID)
+         : base(x => (query.status == null || x.PackageItemStatus == query.status) && (query.bookingID == null || x.packageItem.CargoBookingId == query.bookingID) &&(query.awbNumber == null || query.awbNumber == x.packageItem.CargoBooking.AWBInformation.AwbTrackingNumber))
         {
             AddInclude(x => x.Include(x => x.packageItem));
         }

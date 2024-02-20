@@ -716,7 +716,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<IReadOnlyList<ItemStatus>> GetPackageItemAuditByBooking(ItemAuditQM query)
         {
-            var spec = new PackageAuditSpecification(new ItemAuditQM { bookingID = query.bookingID});
+            var spec = new PackageAuditSpecification(new ItemAuditQM { bookingID = query.bookingID, awbNumber=query.awbNumber, status=query.status});
 
             var packageAudit = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(spec);
 

@@ -9,7 +9,8 @@ namespace Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM
 {
     public class ItemAuditQM
     {
-        public Guid bookingID { get; set; }
+        public Guid? bookingID { get; set; }
+        public long? awbNumber { get; set; }
         public PackageItemStatus? status { get; set; }
     }
 }
