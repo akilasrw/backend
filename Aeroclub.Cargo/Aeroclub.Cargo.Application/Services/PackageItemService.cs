@@ -508,7 +508,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             Guid fId = Guid.NewGuid();
 
-            
+            Guid fsId = Guid.NewGuid();
+
             if (existingSchedule != null)
             {
                 // Use the existing schedule
@@ -532,21 +533,38 @@ namespace Aeroclub.Cargo.Application.Services
                 });
 
                 fId = flightSchedule.Id;
+
+                var flightSchduleSector = await _unitOfWork.Repository<FlightScheduleSector>().CreateAsync(new FlightScheduleSector
+                {
+                    FlightId = rm.FlightID,
+                    OriginAirportCode = flight.OriginAirportCode,
+                    DestinationAirportCode = flight.DestinationAirportCode,
+                    ScheduledDepartureDateTime = rm.ScheduledDepartureDateTime,
+                    DestinationAirportName = flight.DestinationAirportName,
+                    OriginAirportName = flight.OriginAirportName,
+                    DestinationAirportId = flight.DestinationAirportId,
+                    OriginAirportId = flight.OriginAirportId,
+                    FlightScheduleId = fId,
+                    FlightNumber = flight.FlightNumber,
+                    SequenceNo = 1
+                });
+
+                var spec = new PackageItemSpecification(
+                  new PackageItemRefQM
+                  {
+                      PackageRefNumber = rm.packageIDs[0]
+                  }
+
+                  );
+
+                var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+
+                await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().CreateAsync(new CargoBookingFlightScheduleSector { CargoBookingId = package.CargoBookingId, FlightScheduleSectorId = flightSchduleSector.Id });
+
+                fsId = flightSchduleSector.Id;
+
+                await _unitOfWork.SaveChangesAsync();
             }
-
-
-            var flightSchduleSector = await _unitOfWork.Repository<FlightScheduleSector>().CreateAsync(new FlightScheduleSector
-            {
-                FlightId = rm.FlightID,
-                OriginAirportCode = flight.OriginAirportCode,
-                DestinationAirportCode = flight.DestinationAirportCode,
-                DestinationAirportName = flight.DestinationAirportName,
-                OriginAirportName = flight.OriginAirportName,
-                DestinationAirportId = flight.DestinationAirportId,
-                OriginAirportId = flight.OriginAirportId,
-                FlightScheduleId = fId,
-                FlightNumber = flight.FlightNumber
-            });
 
             Guid uldId = Guid.NewGuid();
 
@@ -577,9 +595,11 @@ namespace Aeroclub.Cargo.Application.Services
 
             var flightScheduleSectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
             {
-                FlightScheduleSectorId = flightSchduleSector.Id,
+                FlightScheduleSectorId = fsId,
                 ULDId = uldId,
-            });
+            }); 
+
+            
 
             var uldCId = Guid.NewGuid();
 
@@ -596,6 +616,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 uldCId = existingContainer.Id;
             }
+
 
             
 
