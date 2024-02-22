@@ -248,7 +248,26 @@ namespace Aeroclub.Cargo.Application.Services
         {
             try
             {
-                var bRes  = await _unitOfWork.Repository<CargoBooking>().CreateAsync(new CargoBooking
+
+                var awbSpec = new AWBNumberStackSpecification(rm.AWBTrackingNumber);
+
+                var existingAwb = await _unitOfWork.Repository<AWBNumberStack>().GetEntityWithSpecAsync(awbSpec);
+
+                Guid bId = Guid.Empty;
+
+                if(existingAwb != null)
+                {
+                    var bSpec = new AWBSpecification(new AWBTrackingQM
+                    {
+                        AwbTrackingNum = (long)rm.AWBTrackingNumber
+                    });
+                    var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(bSpec);
+                    
+                    bId = (Guid)awb.CargoBookingId;
+                }
+                else
+                {
+                     var bRes  = await _unitOfWork.Repository<CargoBooking>().CreateAsync(new CargoBooking
                 {
                     AWBStatus = AWBStatus.AddedAWB,
                     BookingDate = DateTime.Now,
@@ -260,29 +279,30 @@ namespace Aeroclub.Cargo.Application.Services
                     Created = DateTime.Now
                 });
 
-                var awbSpec = new AWBNumberStackSpecification(rm.AWBTrackingNumber);
-
-                var existingAwb = await _unitOfWork.Repository<AWBNumberStack>().GetEntityWithSpecAsync(awbSpec);
-
-                if(existingAwb == null)
-                {
                     await _unitOfWork.Repository<AWBNumberStack>().CreateAsync(new AWBNumberStack
                     {
                         AWBTrackingNumber = rm.AWBTrackingNumber,
                         CargoAgentId = rm.CargoAgent,
                     });
-                }
 
-                var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
-                {
-                    AwbTrackingNumber = rm.AWBTrackingNumber,
-                    CargoBookingId = bRes.Id,
-                    RequestedFlightDate = DateTime.Now,
-                });
+                    var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
+                    {
+                        AwbTrackingNumber = rm.AWBTrackingNumber,
+                        CargoBookingId = bRes.Id,
+                        RequestedFlightDate = DateTime.Now,
+                    });
+
+                    bId = bRes.Id;
+                }
+               
+
+              
+
+                
 
                 var tRes = await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo
                 {
-                    BookingID = bRes.Id,
+                    BookingID = bId,
                     TruckID = rm.TruckNo
                 });
 
@@ -290,7 +310,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
                     {
-                        CargoBookingId= bRes.Id,
+                        CargoBookingId= bId,
                         PackageRefNumber = i,
                         Description = "",
                         PackageItemCategory = PackageItemCategory.None,
@@ -305,7 +325,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);  
+                return ServiceResponseStatus.Failed;
             }
             
             return ServiceResponseStatus.Success;
@@ -345,7 +365,7 @@ namespace Aeroclub.Cargo.Application.Services
 
 
 
-                    var pSpecs = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = package.CargoBookingId });
+                   /* var pSpecs = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = package.CargoBookingId });
 
                     var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpecs);
                     
@@ -392,7 +412,7 @@ namespace Aeroclub.Cargo.Application.Services
                       });
                         }
                         
-                    }
+                    }*/
                 }
             }
 
@@ -433,22 +453,27 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
 
-                package.PackageItemStatus = PackageItemStatus.IndestinationWarehouse;
+                if(package != null)
+                {
+                    package.PackageItemStatus = PackageItemStatus.IndestinationWarehouse;
 
-                _unitOfWork.Repository<PackageItem>().Update(package);
-                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                    _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
 
-                await _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync();
 
-                _unitOfWork.Repository<PackageItem>().Detach(package);
+                    _unitOfWork.Repository<PackageItem>().Detach(package);
+                }
 
+               
 
+/*
                     await _cargoBookingService.UpdateAsync(
              new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
              {
                  Id = package.CargoBookingId,
                  BookingStatus = BookingStatus.IndestinationWarehouse
-             });
+             });*/
 
 
                
@@ -632,7 +657,7 @@ namespace Aeroclub.Cargo.Application.Services
                 _unitOfWork.Repository<PackageItem>().Detach(package);
                 
 
-                var pSpecs = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = package.CargoBookingId });
+                /*var pSpecs = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = package.CargoBookingId });
 
                 var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpecs);
 
@@ -661,7 +686,7 @@ namespace Aeroclub.Cargo.Application.Services
                   });
                     
 
-                }
+                }*/
 
             }
 
