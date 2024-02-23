@@ -500,17 +500,17 @@ namespace Aeroclub.Cargo.Application.Services
         async public Task<ServiceResponseStatus> CreateFlightScheduleULDandUpdateStatus(ScanAppThirdStepRM rm)
         {
 
-            var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(rm.FlightID);
-
-            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = rm.ScheduledDepartureDateTime, FlightNumber = flight.FlightNumber });
-
-            var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
-
             Guid fId = Guid.NewGuid();
 
             Guid fsId = Guid.NewGuid();
 
             Guid uldId = Guid.NewGuid();
+
+            var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(rm.FlightID);
+
+            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = rm.ScheduledDepartureDateTime, FlightNumber = flight.FlightNumber });
+
+            var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
 
             var uldSpecs = new ULDSpecification(rm.ULDSerialNumber);
 
@@ -533,8 +533,9 @@ namespace Aeroclub.Cargo.Application.Services
                     ULDLocateStatus = ULDLocateStatus.OnBoard,
                     ULDType = ULDType.None,
                 });
-
+                await _unitOfWork.SaveChangesAsync();
                 uldId = uld.Id;
+
             }
 
             if (existingSchedule != null)

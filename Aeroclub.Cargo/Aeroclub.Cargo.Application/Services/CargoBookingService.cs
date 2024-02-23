@@ -241,7 +241,7 @@ namespace Aeroclub.Cargo.Application.Services
                     var pAFSpec = new PackageAuditSpecification(PackageItemStatus.AcceptedForFLight, shipment.packageID);
                     var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pAFSpec);
 
-                    var pDSpec = new PackageAuditSpecification(PackageItemStatus.Cargo_Received, shipment.packageID);
+                    var pDSpec = new PackageAuditSpecification(PackageItemStatus.Deliverd, shipment.packageID);
                     var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
 
                     var pIDSpec = new PackageAuditSpecification(PackageItemStatus.IndestinationWarehouse, shipment.packageID);
