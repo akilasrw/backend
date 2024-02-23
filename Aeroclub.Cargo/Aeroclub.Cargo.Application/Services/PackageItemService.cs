@@ -508,7 +508,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(rm.FlightID);
 
-            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = rm.ScheduledDepartureDateTime, FlightNumber = flight.FlightNumber });
+            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = rm.ScheduledDepartureDateTime, FlightNumber = flight.FlightNumber, IncludeFlightScheduleSectors = true });
 
             var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
 
@@ -543,6 +543,7 @@ namespace Aeroclub.Cargo.Application.Services
                 // Use the existing schedule
                var flightSchedule = existingSchedule;
                 fId = flightSchedule.Id;
+                fsId = flightSchedule.FlightScheduleSectors.FirstOrDefault().Id;
             }
             else
             {
@@ -585,26 +586,27 @@ namespace Aeroclub.Cargo.Application.Services
 
                   );
 
-                await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
-                {
-                    FlightScheduleSectorId = fsId,
-                    ULDId = uldId,
-                });
+                fsId = flightSchduleSector.Id;
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
 
                 await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().CreateAsync(new CargoBookingFlightScheduleSector { CargoBookingId = package.CargoBookingId, FlightScheduleSectorId = flightSchduleSector.Id });
 
-                fsId = flightSchduleSector.Id;
-
                 await _unitOfWork.SaveChangesAsync();
             }
 
-           
 
-         
+            await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
+            {
+                FlightScheduleSectorId = fsId,
+                ULDId = uldId,
+            });
 
-            
+
+
+
+
+
 
             var uldCId = Guid.NewGuid();
 
