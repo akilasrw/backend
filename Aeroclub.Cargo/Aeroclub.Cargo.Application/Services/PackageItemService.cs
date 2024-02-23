@@ -510,6 +510,33 @@ namespace Aeroclub.Cargo.Application.Services
 
             Guid fsId = Guid.NewGuid();
 
+            Guid uldId = Guid.NewGuid();
+
+            var uldSpecs = new ULDSpecification(rm.ULDSerialNumber);
+
+            var existingUld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(uldSpecs);
+
+            if (existingUld != null)
+            {
+                uldId = existingUld.Id;
+                existingUld.ULDLocateStatus = ULDLocateStatus.OnBoard;
+
+                _unitOfWork.Repository<ULD>().Update(existingUld);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<ULD>().Detach(existingUld);
+            }
+            else
+            {
+                var uld = await _unitOfWork.Repository<ULD>().CreateAsync(new ULD
+                {
+                    SerialNumber = rm.ULDSerialNumber,
+                    ULDLocateStatus = ULDLocateStatus.OnBoard,
+                    ULDType = ULDType.None,
+                });
+
+                uldId = uld.Id;
+            }
+
             if (existingSchedule != null)
             {
                 // Use the existing schedule
@@ -557,6 +584,12 @@ namespace Aeroclub.Cargo.Application.Services
 
                   );
 
+                await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
+                {
+                    FlightScheduleSectorId = fsId,
+                    ULDId = uldId,
+                });
+
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
 
                 await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().CreateAsync(new CargoBookingFlightScheduleSector { CargoBookingId = package.CargoBookingId, FlightScheduleSectorId = flightSchduleSector.Id });
@@ -566,38 +599,9 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
             }
 
-            Guid uldId = Guid.NewGuid();
+           
 
-            var uldSpecs = new ULDSpecification(rm.ULDSerialNumber);
-
-            var existingUld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(uldSpecs);
-
-            if(existingUld != null)
-            {
-                uldId = existingUld.Id;
-                existingUld.ULDLocateStatus = ULDLocateStatus.OnBoard;
-
-                _unitOfWork.Repository<ULD>().Update(existingUld);
-                await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Repository<ULD>().Detach(existingUld);
-            }
-            else
-            {
-                var uld = await _unitOfWork.Repository<ULD>().CreateAsync(new ULD
-                {
-                    SerialNumber = rm.ULDSerialNumber,
-                    ULDLocateStatus = ULDLocateStatus.OnBoard,
-                    ULDType = ULDType.None,
-                });
-
-                uldId = uld.Id;
-            }
-
-            var flightScheduleSectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
-            {
-                FlightScheduleSectorId = fsId,
-                ULDId = uldId,
-            }); 
+         
 
             
 
