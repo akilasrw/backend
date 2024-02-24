@@ -16,7 +16,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
 
         public PackageItemSpecification(PackageItemRefQM query)
-               : base(x => query.PackageRefNumber == null || x.PackageRefNumber.ToLower() == query.PackageRefNumber.ToLower())
+               : base(x => (query.PackageRefNumber == null || x.PackageRefNumber.ToLower() == query.PackageRefNumber.ToLower()) && (query.AwbNumber == null || query.AwbNumber == x.CargoBooking.AWBInformation.AwbTrackingNumber))
         {
             AddInclude(x => x.Include(y => y.VolumeUnit));
             AddInclude(x => x.Include(y => y.WeightUnit));

@@ -10,5 +10,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM
     {
         public string[] packageIDs {  get; set; }
         public string uld {  get; set; }
+        public long AwbNumber { get; set; }
     }
 }
