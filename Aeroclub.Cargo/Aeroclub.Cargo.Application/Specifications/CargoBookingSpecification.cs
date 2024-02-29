@@ -15,7 +15,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             ((query.ToDate == null || query.ToDate == DateTime.MinValue) || x.BookingDate.Date <= query.ToDate.Value))
         {
 
-            
+            AddInclude(x => x.Include(y => y.PackageItems));
 
             if (!isCount)
             {
