@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class CargoBookingSpecification : BaseSpecification<CargoBooking>
     {
         public CargoBookingSpecification(CargoBookingFilteredListQM query, bool isCount = false)
-            :base(x=> (query.UserId != Guid.Empty  && query.UserId == x.CreatedBy) && (string.IsNullOrEmpty(query.BookingId) || query.BookingId == x.BookingNumber) && 
+            :base(x=> (query.UserId != Guid.Empty  && query.UserId == x.CreatedBy) && (string.IsNullOrEmpty(query.BookingId) || query.BookingId == x.AWBInformation.AwbTrackingNumber.ToString()) && 
             (string.IsNullOrEmpty(query.Destination) || 
             (query.Destination == x.DestinationAirport.Name || query.Destination == x.DestinationAirport.Code)) &&
             ((query.FromDate == null || query.FromDate == DateTime.MinValue) || x.BookingDate.Date >= query.FromDate.Value) &&
