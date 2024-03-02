@@ -109,6 +109,26 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                      d.FlightNumber = shList[0].FlightSchedule.FlightNumber;
                 }
+
+
+
+                var pkPpec = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = d.Id });
+                var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pkPpec);
+
+                PackageItemStatus status = PackageItemStatus.Booking_Made;
+
+                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)))
+                {
+                    if (packages.Any(x => x.PackageItemStatus == itemStatus))
+                    {
+                        status = itemStatus;
+                        break;
+                    }
+                };
+
+                d.BookingStatus = status;
+
+
                 d.shipmentCount = sCount.Count();
                 d.NumberOfBoxes = pCount.Count();
             }
