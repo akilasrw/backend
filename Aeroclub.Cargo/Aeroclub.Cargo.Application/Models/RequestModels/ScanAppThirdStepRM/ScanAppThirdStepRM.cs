@@ -9,6 +9,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM
     public class ScanAppThirdStepRM
     {
         public Guid FlightID { get; set; }
+        public long AwbNumber { get; set; }
         public DateTime ScheduledDepartureDateTime { get; set; }
         public string ULDSerialNumber { get; set; }
         public string[] packageIDs { get; set; }

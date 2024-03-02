@@ -15,7 +15,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             ((query.ToDate == null || query.ToDate == DateTime.MinValue) || x.BookingDate.Date <= query.ToDate.Value))
         {
 
-            
+            //AddInclude(x => x.Include(y => y.PackageItems));
 
             if (!isCount)
             {
@@ -24,7 +24,7 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.DestinationAirport));
                 AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
                 AddInclude(x => x.Include(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z => z.FlightScheduleSector).ThenInclude(w=>w.AircraftSubType));
-                AddInclude(x => x.Include(y => y.PackageItems));
+                //AddInclude(x => x.Include(y => y.PackageItems));
                 AddOrderByDescending(x => x.Created);
             }     
         }

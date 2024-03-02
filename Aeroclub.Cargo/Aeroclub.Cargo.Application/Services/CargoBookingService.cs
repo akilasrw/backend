@@ -100,7 +100,37 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 var sSpec = new PackageAuditSpecification(new ItemAuditQM{bookingID = d.Id, status = PackageItemStatus.AcceptedForFLight });
                 var sCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(sSpec);
+                var pSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = d.Id, status = PackageItemStatus.Booking_Made });
+                var pCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pSpec);
+
+                var shSpec = new ShipmentSpecification(new ShipmentQM { bookingID = d.Id });  
+                var shList = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shSpec);
+                if(shList.Count() > 0)
+                {
+                     d.FlightNumber = shList[0].FlightSchedule.FlightNumber;
+                }
+
+
+
+                var pkPpec = new PackageItemSpecification(new PackageItemByBookingQM { BookingID = d.Id });
+                var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pkPpec);
+
+                PackageItemStatus status = PackageItemStatus.Booking_Made;
+
+                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)))
+                {
+                    if (packages.Any(x => x.PackageItemStatus == itemStatus))
+                    {
+                        status = itemStatus;
+                        break;
+                    }
+                };
+
+                d.BookingStatus = status;
+
+
                 d.shipmentCount = sCount.Count();
+                d.NumberOfBoxes = pCount.Count();
             }
          
             return new Pagination<CargoBookingVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
@@ -231,7 +261,7 @@ namespace Aeroclub.Cargo.Application.Services
                     var pAFSpec = new PackageAuditSpecification(PackageItemStatus.AcceptedForFLight, shipment.packageID);
                     var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pAFSpec);
 
-                    var pDSpec = new PackageAuditSpecification(PackageItemStatus.Cargo_Received, shipment.packageID);
+                    var pDSpec = new PackageAuditSpecification(PackageItemStatus.Deliverd, shipment.packageID);
                     var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
 
                     var pIDSpec = new PackageAuditSpecification(PackageItemStatus.IndestinationWarehouse, shipment.packageID);
