@@ -217,10 +217,7 @@ namespace Aeroclub.Cargo.Application.Services
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<PackageItem>().Detach(package);
                 }
-                else
-                {
-                    return ServiceResponseStatus.Failed;
-                }
+                
             }
 
 
