@@ -5,6 +5,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs
     public class CargoBookingFilteredListQM : BasePaginationQM
     {
         public string? BookingId { get; set; }
+        public string? AwbNumber { get; set; }
 
         public string? Destination { get; set; }
 
