@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
@@ -14,6 +15,8 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public AWBSpecification(AWBTrackingQM query)
             : base(x => (x.AwbTrackingNumber == query.AwbTrackingNum))  
-        { }
+        {
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y=> y.PackageItems));
+        }
     }
 }

@@ -177,6 +177,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             var shipBookings = new List<BookingShipmentSummeryVM>();
 
+            var packageItem = new PackageItem();
+
             if(rm.AWBNumber != null)
             {
                 var awbSpec = new AWBSpecification(new AWBTrackingQM
@@ -189,6 +191,8 @@ namespace Aeroclub.Cargo.Application.Services
                     return null;
                 }
                 bookingID = (Guid)awb.CargoBookingId;
+
+                packageItem = awb.CargoBooking.PackageItems.ToList()[0];
             }
             else if(rm.packageID != null)
             {
@@ -207,6 +211,7 @@ namespace Aeroclub.Cargo.Application.Services
                 }
 
                 bookingID = (Guid)package.CargoBookingId;
+                packageItem = package;
             }
 
 
@@ -230,17 +235,17 @@ namespace Aeroclub.Cargo.Application.Services
                 });
                 var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
 
-                var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, packages[0].Id);
+                var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, packageItem.Id);
                 var pRRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pRSpec);
 
-                var pDSpec = new PackageAuditSpecification(PackageItemStatus.Cargo_Received, packages[0].Id);
+                var pDSpec = new PackageAuditSpecification(PackageItemStatus.Cargo_Received, packageItem.Id);
                 var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
 
                 var shipBooking = new BookingShipmentSummeryVM
                 {
                     awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                     bookedDate = (DateTime)booking?.Created,
-                    shipmentStatus = packages[0].PackageItemStatus,
+                    shipmentStatus = packageItem.PackageItemStatus,
                     packageCount = packages.Count,
                     enrouteToWahouse = pRRes?.Created,
                     inOriginWahouse = pDRes?.Created,
