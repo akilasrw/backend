@@ -284,7 +284,7 @@ namespace Aeroclub.Cargo.Application.Services
                         from = shipment.FlightSchedule.OriginAirportName,
                         to = shipment.FlightSchedule.DestinationAirportName,
                         shipmentID = shipment.Id,
-                        shipmentStatus = shipment.PackageItem.PackageItemStatus,
+                        shipmentStatus = packageItem.PackageItemStatus,
                         flightArr = paRes?.Created,
                         flightDate = shipment.FlightSchedule.ScheduledDepartureDateTime,
                         flightDep = pdRes?.Created,
