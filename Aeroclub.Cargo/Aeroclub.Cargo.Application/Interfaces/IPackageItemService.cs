@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IPackageItemService
     {
         Task<PackageItemCreateResponseM> CreateAsync(PackageItemCreateRM packageItem);
+        Task<ServiceResponseStatus> DeletePackage(Guid packageId);
         Task<PackageItemMobileVM> GetAsync(PackageItemRefQM query);
         Task<PackageItemVM> GetAsync(PackageItemQM query);
         Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM packageItem);

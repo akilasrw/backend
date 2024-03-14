@@ -495,6 +495,31 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
+        async public Task<ServiceResponseStatus> DeletePackage(Guid packageId)
+        {
+            try
+            {
+                var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(packageId);
+                if (package != null)
+                {
+                    package.IsDeleted = true;
+                    _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<PackageItem>().Detach(package);
+                    return ServiceResponseStatus.Success;
+                }
+                else
+                {
+                    return ServiceResponseStatus.Failed;
+                }
+            }catch(Exception ex)
+            {
+                return ServiceResponseStatus.Failed;
+            }
+           
+
+
+        }
         async public Task<ServiceResponseStatus> CreateFlightScheduleULDandUpdateStatus(ScanAppThirdStepRM rm)
         {
 
