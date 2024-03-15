@@ -10,7 +10,6 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels
     public class PackageItemListRM
     {
         public string packageItemId { get; set; }
-        public PackageItemStatus status { get; set; }
 
     }
 }

@@ -66,6 +66,18 @@ namespace Aeroclub.Cargo.Application.Services
             return response;
         }
 
+        public async Task<string[]> FilterPackagesAsync(PackageItemStatus status,long awbNum, string[] packages) 
+        {
+            var spec = new ItemStatusSpecification(status, awbNum);
+            var packageList = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(spec);
+
+
+            var res = packages.Except(packageList.Select(x=> x.packageItem.PackageRefNumber)).ToArray();
+
+            return res;
+
+        }
+
         public async Task<PackageItemMobileVM> GetAsync(PackageItemRefQM query)
         {
             var spec = new PackageItemSpecification(query);
@@ -197,12 +209,18 @@ namespace Aeroclub.Cargo.Application.Services
 
         async public Task<ServiceResponseStatus> UpdatePackageStatusAsync(PackageItemStatusUpdateRM rm)
         {
-            foreach (var x in rm.itemList)
+
+            var list = rm.itemList.Select((x)=> x.packageItemId).ToArray();
+
+            var itemList = await FilterPackagesAsync(rm.packageItemStatus, (long)rm.AWBNumber, list);
+
+
+            foreach (var x in itemList)
             {
                 var spec = new PackageItemSpecification(
-                    new PackageItemRefQM
+                    new PackageItemRefQM 
                     {
-                        PackageRefNumber = x.packageItemId.ToString(),
+                        PackageRefNumber = x,
                         AwbNumber = rm.AWBNumber
                     }
 
@@ -211,7 +229,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
                 if (package != null)
                 {
-                    package.PackageItemStatus = x.status;
+                    package.PackageItemStatus = rm.packageItemStatus;
                     _unitOfWork.Repository<PackageItem>().Update(package);
                     await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                     await _unitOfWork.SaveChangesAsync();
@@ -243,8 +261,15 @@ namespace Aeroclub.Cargo.Application.Services
 
         async public Task<ServiceResponseStatus> CreateTruckBookingAWBAndPackages(ScanAppBookingCreateVM rm)
         {
+
             try
             {
+                rm.Packages = await FilterPackagesAsync(PackageItemStatus.Booking_Made, rm.AWBTrackingNumber, rm.Packages);
+
+                if(rm.Packages.Length <= 0)
+                {
+                    return ServiceResponseStatus.Failed;
+                }
 
                 var awbSpec = new AWBNumberStackSpecification(rm.AWBTrackingNumber);
 
@@ -422,6 +447,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             var uldSpecs = new ULDSpecification(rm.uld);
 
+            rm.packageIDs = await FilterPackagesAsync(PackageItemStatus.IndestinationWarehouse, rm.AwbNumber, rm.packageIDs);
+
             var existingUld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(uldSpecs);
 
             if(existingUld == null) {
@@ -528,6 +555,8 @@ namespace Aeroclub.Cargo.Application.Services
             Guid fsId = Guid.NewGuid();
 
             Guid uldId = Guid.NewGuid();
+
+            rm.packageIDs = await FilterPackagesAsync(PackageItemStatus.AcceptedForFLight, rm.AwbNumber, rm.packageIDs);
 
             var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(rm.FlightID);
 
