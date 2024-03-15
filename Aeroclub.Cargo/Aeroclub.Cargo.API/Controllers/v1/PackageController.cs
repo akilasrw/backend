@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.DeletePackageQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
@@ -11,6 +12,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
+using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -119,6 +121,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return response;
             }
         }
+
+        [HttpPost("DeletePackage")]
+        public async Task<ActionResult> DeleteItemById([FromQuery] DeletePackageQM qm)
+        {
+            var response = await _packageItemService.DeletePackage(qm.PackageId);
+            if (response == ServiceResponseStatus.Success)
+            {
+                return NoContent();
+            }
+            return BadRequest("Cannot delete the package according to this ID");
+            
+        }
+
 
         [HttpPost("CreateTruckBookingAWBAndPackages")]
         public async Task<BaseResponse> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
