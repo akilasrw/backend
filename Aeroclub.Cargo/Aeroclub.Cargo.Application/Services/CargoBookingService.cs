@@ -179,34 +179,38 @@ namespace Aeroclub.Cargo.Application.Services
 
             if(rm.AWBNumber != null)
             {
-                var awbSpec = new AWBSpecification(new AWBTrackingQM
+                if(rm.packageID != null)
                 {
-                    AwbTrackingNum = (long)rm.AWBNumber
-                });
-                var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
-                if(awb == null)
-                {
-                    return null;
-                }
-                bookingID = (Guid)awb.CargoBookingId;
-            }
-            else if(rm.packageID != null)
-            {
-                var spec = new PackageItemSpecification(
-                    new PackageItemRefQM
-                    {
-                        PackageRefNumber = rm.packageID
-                    }
+                    var spec = new PackageItemSpecification(
+                        new PackageItemWithAWBQM
+                        {
+                            PackageRefNumber = rm.packageID,
+                            AwbNumber = rm.AWBNumber
+                        }
 
                     );
 
-                var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
-                if (package == null)
-                {
-                    return null;
-                }
+                    var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+                    if (package == null)
+                    {
+                        return null;
+                    }
 
-                bookingID = (Guid)package.CargoBookingId;
+                    bookingID = (Guid)package.CargoBookingId;
+                }
+                else
+                {
+                    var awbSpec = new AWBSpecification(new AWBTrackingQM
+                    {
+                        AwbTrackingNum = (long)rm.AWBNumber
+                    });
+                    var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
+                    if(awb == null)
+                    {
+                        return null;
+                    }
+                    bookingID = (Guid)awb.CargoBookingId;
+                }
             }
 
 
