@@ -23,6 +23,14 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
             AddInclude(x => x.Include(y => y.PackageULDContainers).ThenInclude(z=>z.ULDContainer).ThenInclude(a => a.ULDContainerCargoPositions).ThenInclude(b=>b.CargoPosition));
         }
+        public PackageItemSpecification(PackageItemWithAWBQM query)
+            : base(x => (query.PackageRefNumber == null || (x.PackageRefNumber.ToLower() == query.PackageRefNumber.ToLower() && query.AwbNumber == x.CargoBooking.AWBInformation.AwbTrackingNumber)) && (query.AwbNumber == null || query.AwbNumber == x.CargoBooking.AWBInformation.AwbTrackingNumber))
+        {
+            AddInclude(x => x.Include(y => y.VolumeUnit));
+            AddInclude(x => x.Include(y => y.WeightUnit));
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
+            AddInclude(x => x.Include(y => y.PackageULDContainers).ThenInclude(z=>z.ULDContainer).ThenInclude(a => a.ULDContainerCargoPositions).ThenInclude(b=>b.CargoPosition));
+        }
 
         public PackageItemSpecification(PackageItemByBookingQM query)
                : base(x => x.CargoBookingId == query.BookingID)

@@ -715,11 +715,13 @@ namespace Aeroclub.Cargo.Application.Services
                         flightScheduleID = fId
                     });
 
+                    var shipmentId = Guid.Empty;
+
                     var existingShipment = await _unitOfWork.Repository<Shipment>().GetEntityWithSpecAsync(shipmentSpec);
 
                     if (existingShipment == null)
                     {
-                        await _unitOfWork.Repository<Shipment>().CreateAsync(new Shipment
+                        var shipment = await _unitOfWork.Repository<Shipment>().CreateAsync(new Shipment
                         {
                             bookingID = package.CargoBookingId,
                             flightScheduleID = fId,
@@ -727,6 +729,7 @@ namespace Aeroclub.Cargo.Application.Services
                             packageCount = 1,
                         });
                         await _unitOfWork.SaveChangesAsync();
+                        shipmentId = shipment.Id;
                     }
                     else
                     {
@@ -734,11 +737,12 @@ namespace Aeroclub.Cargo.Application.Services
                         _unitOfWork.Repository<Shipment>().Update(existingShipment);
                         await _unitOfWork.SaveChangesAsync();
                         _unitOfWork.Repository<Shipment>().Detach(existingShipment);
+                        shipmentId = existingShipment.Id;
                     }
 
 
                     package.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
-
+                    package.ShipmentId = shipmentId;
 
 
                     _unitOfWork.Repository<PackageItem>().Update(package);

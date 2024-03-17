@@ -28,6 +28,20 @@ namespace Aeroclub.Cargo.Data
                  .HasForeignKey(t => t.CreatedBy)
                  .OnDelete(DeleteBehavior.Restrict);
 
+            // Configure the relationship between Shipment and PackageItem
+            modelBuilder.Entity<PackageItem>()
+                .HasOne(p => p.Shipment)           // Each PackageItem has one Shipment
+                .WithMany(s => s.PackageItems)     // Each Shipment can have many PackageItems
+                .HasForeignKey(p => p.ShipmentId)
+                .IsRequired(false); // Foreign key property in PackageItem
+
+            // Optionally, specify cascade delete behavior if desired
+            modelBuilder.Entity<PackageItem>()
+                .HasOne(p => p.Shipment)
+                .WithMany(s => s.PackageItems)
+                .HasForeignKey(p => p.ShipmentId)
+                .OnDelete(DeleteBehavior.Restrict); // Or specify other cascade options if needed
+
             modelBuilder.Entity<TruckInfo>()
                 .HasOne(t => t.User)
                 .WithMany()

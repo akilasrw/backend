@@ -20,6 +20,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public string? Description { get; set; }
         public PackageItemCategory? PackageItemCategory { get; set; }
         public Guid CargoBookingId { get; set; }
+        public Guid? ShipmentId { get; set; }
+        public Shipment Shipment { get; set; }
 
         public virtual CargoBooking CargoBooking { get; set; }
         public virtual Unit VolumeUnit { get; set; }

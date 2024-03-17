@@ -16,7 +16,7 @@ namespace Aeroclub.Cargo.Core.Entities
 
         public CargoBooking CargoBooking { get; set; }
         public FlightSchedule FlightSchedule { get; set; }
-
+        public virtual ICollection<PackageItem> PackageItems { get; set; }
         public PackageItem PackageItem { get; set; }
 
 
