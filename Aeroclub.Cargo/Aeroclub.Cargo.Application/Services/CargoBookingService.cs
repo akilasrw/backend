@@ -212,7 +212,7 @@ namespace Aeroclub.Cargo.Application.Services
                         }
                         var pSpec = new PackageItemSpecification(new PackageItemByBookingQM
                         {
-                            BookingID = bookingID,
+                            BookingID = booking.Id,
                         });
                         var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
 
@@ -227,7 +227,7 @@ namespace Aeroclub.Cargo.Application.Services
                             awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                             bookedDate = (DateTime)booking?.Created,
                             shipmentStatus = package.PackageItemStatus,
-                            packageCount = packages.Count,
+                            packageCount = packages.Count(),
                             enrouteToWahouse = pRRes?.Created,
                             inOriginWahouse = pDRes?.Created,
                         };
@@ -238,22 +238,22 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         var shipment = package.Shipment;
                         
-                            var paSpec = new PackageAuditSpecification(PackageItemStatus.Arrived, shipment.packageID);
+                            var paSpec = new PackageAuditSpecification(PackageItemStatus.Arrived, package.Id);
                             var paRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(paSpec);
 
-                            var pdSpec = new PackageAuditSpecification(PackageItemStatus.FlightDispatched, shipment.packageID);
+                            var pdSpec = new PackageAuditSpecification(PackageItemStatus.FlightDispatched, package.Id);
                             var pdRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pdSpec);
 
-                            var pAFSpec = new PackageAuditSpecification(PackageItemStatus.AcceptedForFLight, shipment.packageID);
+                            var pAFSpec = new PackageAuditSpecification(PackageItemStatus.AcceptedForFLight, package.Id);
                             var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pAFSpec);
 
-                            var pDSpec = new PackageAuditSpecification(PackageItemStatus.Deliverd, shipment.packageID);
+                            var pDSpec = new PackageAuditSpecification(PackageItemStatus.Deliverd, package.Id);
                             var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
 
-                            var pIDSpec = new PackageAuditSpecification(PackageItemStatus.IndestinationWarehouse, shipment.packageID);
+                            var pIDSpec = new PackageAuditSpecification(PackageItemStatus.IndestinationWarehouse, package.Id);
                             var pIDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pIDSpec);
 
-                            var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, shipment.packageID);
+                            var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, package.Id);
                             var pRRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pRSpec);
 
                             var shipBooking = new BookingShipmentSummeryVM
@@ -282,9 +282,6 @@ namespace Aeroclub.Cargo.Application.Services
                 }
                 else
                 {
-                    var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM { bookingID = bookingID, userId = isAdmin ? Guid.Empty : userId });
-
-                    var shipments = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shipmentSpec);
                     var awbSpec = new AWBSpecification(new AWBTrackingQM
                     {
                         AwbTrackingNum = (long)rm.AWBNumber
@@ -295,6 +292,26 @@ namespace Aeroclub.Cargo.Application.Services
                         return null;
                     }
                     bookingID = (Guid)awb.CargoBookingId;
+
+                    var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM { bookingID = bookingID, userId = isAdmin ? Guid.Empty : userId });
+
+                    var shipments = await _unitOfWork.Repository<Shipment>().GetListWithSpecAsync(shipmentSpec);
+
+                    var packageStatus = PackageItemStatus.Booking_Made;
+
+                    foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
+                    {
+                        if (awb.CargoBooking.PackageItems.Any(x => x.PackageItemStatus == itemStatus))
+                        {
+                            packageStatus = itemStatus;
+                            break;
+                        }
+                    }
+
+
+
+
+
                     if (shipments.Count == 0)
                     {
 
@@ -312,10 +329,10 @@ namespace Aeroclub.Cargo.Application.Services
                         var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
 
                         var pRSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = booking.Id, status = PackageItemStatus.Booking_Made});
-                        var pRRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pRSpec);
+                        var pRRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
 
                         var pDSpec = new PackageAuditSpecification(new ItemAuditQM { status = PackageItemStatus.Cargo_Received, bookingID = booking.Id});
-                        var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
+                        var pDRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pDSpec);
 
                         var shipBooking = new BookingShipmentSummeryVM
                         {
@@ -323,8 +340,8 @@ namespace Aeroclub.Cargo.Application.Services
                             bookedDate = (DateTime)booking?.Created,
                             shipmentStatus = packageStatus,
                             packageCount = packages.Count,
-                            enrouteToWahouse = pRRes?.Created,
-                            inOriginWahouse = pDRes?.Created,
+                            enrouteToWahouse = pRRes.Count() > 0 ? pRRes[0]?.Created : null,
+                            inOriginWahouse = pDRes.Count() > 0 ? pDRes[0]?.Created : null,
                         };
 
                         shipBookings.Add(shipBooking);
@@ -333,45 +350,52 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         foreach (var shipment in shipments)
                         {
-                            var paSpec = new PackageAuditSpecification(PackageItemStatus.Arrived, shipment.packageID);
-                            var paRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(paSpec);
+                            var paSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Arrived });
+                            var paRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(paSpec);
 
-                            var pdSpec = new PackageAuditSpecification(PackageItemStatus.FlightDispatched, shipment.packageID);
-                            var pdRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pdSpec);
+                            var pdSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.FlightDispatched });
+                            var pdRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pdSpec);
 
-                            var pAFSpec = new PackageAuditSpecification(PackageItemStatus.AcceptedForFLight, shipment.packageID);
-                            var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pAFSpec);
+                            var pAFSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.AcceptedForFLight });
+                            var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pAFSpec);
 
-                            var pDSpec = new PackageAuditSpecification(PackageItemStatus.Deliverd, shipment.packageID);
-                            var pDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pDSpec);
+                            var pDSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Deliverd });
+                            var pDRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pDSpec);
 
-                            var pIDSpec = new PackageAuditSpecification(PackageItemStatus.IndestinationWarehouse, shipment.packageID);
-                            var pIDRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pIDSpec);
+                            var pIDSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.IndestinationWarehouse });
+                            var pIDRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pIDSpec);
 
-                            var pRSpec = new PackageAuditSpecification(PackageItemStatus.Booking_Made, shipment.packageID);
-                            var pRRes = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(pRSpec);
-
-                            var shipBooking = new BookingShipmentSummeryVM
+                            var pRSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Booking_Made });
+                            var pRRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
+                            try
                             {
-                                awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
-                                bookedDate = shipment.CargoBooking.Created,
-                                flightNumber = shipment.FlightSchedule.FlightNumber,
-                                packageCount = shipment.packageCount,
-                                from = shipment.FlightSchedule.OriginAirportName,
-                                to = shipment.FlightSchedule.DestinationAirportName,
-                                shipmentID = shipment.Id,
-                                shipmentStatus = packageStatus,
-                                flightArr = paRes?.Created,
-                                flightDate = shipment.FlightSchedule.ScheduledDepartureDateTime,
-                                flightDep = pdRes?.Created,
-                                inDestinationWahouse = pIDRes?.Created,
-                                acceptedForFLight = pAFRes?.Created,
-                                deliverdToAgent = pDRes?.Created,
-                                enrouteToWahouse = pRRes?.Created,
-                                inOriginWahouse = pDRes?.Created,
-                            };
+                                var shipBooking = new BookingShipmentSummeryVM
+                                {
+                                    awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
+                                    bookedDate = shipment.CargoBooking.Created,
+                                    flightNumber = shipment.FlightSchedule.FlightNumber,
+                                    packageCount = shipment.packageCount,
+                                    from = shipment.FlightSchedule.OriginAirportName,
+                                    to = shipment.FlightSchedule.DestinationAirportName,
+                                    shipmentID = shipment.Id,
+                                    shipmentStatus = packageStatus,
+                                    flightArr = paRes.Count() > 0 ? paRes[0]?.Created : (DateTime?)null,
+                                    flightDate = shipment.FlightSchedule.ScheduledDepartureDateTime,
+                                    flightDep = pdRes.Count() > 0 ? pdRes[0]?.Created : (DateTime?)null,
+                                    inDestinationWahouse = pIDRes.Count() > 0 ? pIDRes[0]?.Created : (DateTime?)null,
+                                    acceptedForFLight = pAFRes.Count() > 0 ? pAFRes[0]?.Created : (DateTime?)null,
+                                    deliverdToAgent = pDRes.Count() > 0 ? pDRes[0]?.Created : (DateTime?)null,
+                                    enrouteToWahouse = pRRes.Count() > 0 ? pRRes[0]?.Created : (DateTime?)null,
+                                    inOriginWahouse = pDRes.Count() > 0 ? pDRes[0]?.Created : (DateTime?)null
+                                };
 
-                            shipBookings.Add(shipBooking);
+                                shipBookings.Add(shipBooking);
+                            }
+                            catch(Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                          
                         }
                     }
 

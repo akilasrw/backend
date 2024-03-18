@@ -28,6 +28,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             AddInclude(x => x.Include(y => y.VolumeUnit));
             AddInclude(x => x.Include(y => y.WeightUnit));
+            AddInclude(x => x.Include(y => y.Shipment).ThenInclude(y => y.CargoBooking).ThenInclude((x) => x.AWBInformation));
+            AddInclude(x => x.Include(y => y.Shipment).ThenInclude(y => y.FlightSchedule));
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.CargoBookingFlightScheduleSectors).ThenInclude(z=>z.FlightScheduleSector));
             AddInclude(x => x.Include(y => y.PackageULDContainers).ThenInclude(z=>z.ULDContainer).ThenInclude(a => a.ULDContainerCargoPositions).ThenInclude(b=>b.CargoPosition));
         }
