@@ -239,6 +239,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
 
+
             var awbSpec = new AWBSpecification(new AWBTrackingQM
             {
                 AwbTrackingNum = (long)rm.AWBNumber
@@ -252,6 +253,36 @@ namespace Aeroclub.Cargo.Application.Services
                        Id = (Guid)awb.CargoBookingId,
                        BookingStatus = (BookingStatus)rm.status
                    });
+
+            if(rm.packageItemStatus == PackageItemStatus.Cargo_Received)
+            {
+                Guid truckId = Guid.Empty;
+
+                var truckSpecs = new TruckSpecifications(rm.TruckNo);
+
+                var truck = await _unitOfWork.Repository<Truck>().GetEntityWithSpecAsync(truckSpecs);
+
+                if (truck != null)
+                {
+                    truckId = truck.Id;
+                    truck.bookingId = (Guid)awb.CargoBookingId;
+                    truck.handOverCount = itemList.Length;
+
+                    _unitOfWork.Repository<Truck>().Update(truck);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<Truck>().Detach(truck);
+                }
+                else
+                {
+                    var newTruck = await _unitOfWork.Repository<Truck>().CreateAsync(new Truck { bookingId = (Guid)awb.CargoBookingId, handOverCount = itemList.Count(), truckNumber = rm.TruckNo });
+                    truckId = newTruck.Id;
+                }
+
+                await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo { bookingId = (Guid)awb.CargoBookingId, handOverCount = rm.itemList.Count(), truckId = truckId });
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            
 
 
             return ServiceResponseStatus.Success;
@@ -316,19 +347,45 @@ namespace Aeroclub.Cargo.Application.Services
 
                     bId = bRes.Id;
                 }
-               
 
-              
 
-                
 
-                var tRes = await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo
+
+
+
+                /*var tRes = await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo
                 {
                     BookingID = bId,
                     TruckID = rm.TruckNo
-                });
+                });*/
 
-                foreach(var i in rm.Packages)
+                Guid truckId = Guid.Empty;
+
+                var truckSpecs = new TruckSpecifications(rm.TruckNo);
+
+                var truck = await _unitOfWork.Repository<Truck>().GetEntityWithSpecAsync(truckSpecs);
+
+                if (truck != null)
+                {
+                    truckId = truck.Id;
+                    truck.bookingId = bId;
+                    truck.pickedUpCount = rm.Packages.Length;
+                    truck.handOverCount = 0;
+
+                     _unitOfWork.Repository<Truck>().Update(truck);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<Truck>().Detach(truck);
+                }
+                else
+                {
+                    var newTruck = await _unitOfWork.Repository<Truck>().CreateAsync(new Truck { bookingId = bId, pickedUpCount = rm.Packages.Count(), truckNumber = rm.TruckNo });
+                    truckId = newTruck.Id;
+                }
+
+                await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo { bookingId = bId, pickedUpCount = rm.Packages.Count(), truckId = truckId });
+
+
+                foreach (var i in rm.Packages)
                 {
                     var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
                     {

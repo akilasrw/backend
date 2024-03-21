@@ -48,14 +48,27 @@ namespace Aeroclub.Cargo.Data
                 .HasForeignKey(t => t.LastModifiedBy)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TruckInfo>()
-                .HasOne(t => t.Booking)
-                .WithMany()
-                .HasForeignKey(t => t.BookingID)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Truck>()
+               .HasOne(t => t.CargoBooking)
+               .WithMany()
+               .HasForeignKey(t => t.bookingId)
+               .IsRequired(false);
 
-          
-        modelBuilder.Entity<Shipment>()
+            modelBuilder.Entity<TruckInfo>()
+                .HasKey(ti => ti.Id);
+
+            modelBuilder.Entity<TruckInfo>()
+                .HasOne(ti => ti.Truck)
+                .WithMany()
+                .HasForeignKey(ti => ti.truckId);
+
+            modelBuilder.Entity<TruckInfo>()
+                .HasOne(ti => ti.Booking)
+                .WithMany()
+                .HasForeignKey(ti => ti.bookingId);
+
+
+            modelBuilder.Entity<Shipment>()
             .HasOne(s => s.CargoBooking)
             .WithMany()
             .HasForeignKey(s => s.bookingID);
@@ -191,7 +204,8 @@ namespace Aeroclub.Cargo.Data
         public DbSet<ULDTracking> ULDTrackings { get; set; } = null!;
         public DbSet<FlightScheduleSectorPallet> FlightScheduleSectorPallets { get; set; } = null!;
         public DbSet<SystemUser> SystemUsers { get; set; } = null!;
-        public DbSet<TruckInfo> TruckInfos { get; set; }
+        public DbSet<TruckInfo> TruckInfos { get; set; } = null!;
+        public DbSet<Truck> truck { get; set; } = null!;
 
 
 
