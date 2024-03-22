@@ -227,7 +227,7 @@ namespace Aeroclub.Cargo.Application.Services
                             awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                             bookedDate = (DateTime)booking?.Created,
                             shipmentStatus = package.PackageItemStatus,
-                            packageCount = packages.Count(),
+                            packageCount = 1,
                             enrouteToWahouse = pRRes?.Created,
                             inOriginWahouse = pDRes?.Created,
                         };
@@ -261,7 +261,7 @@ namespace Aeroclub.Cargo.Application.Services
                                 awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
                                 bookedDate = shipment.CargoBooking.Created,
                                 flightNumber = shipment.FlightSchedule.FlightNumber,
-                                packageCount = shipment.packageCount,
+                                packageCount =  1,
                                 from = shipment.FlightSchedule.OriginAirportName,
                                 to = shipment.FlightSchedule.DestinationAirportName,
                                 shipmentID = shipment.Id,
@@ -299,22 +299,16 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var packageStatus = PackageItemStatus.Booking_Made;
 
-                    foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
-                    {
-                        if (awb.CargoBooking.PackageItems.Any(x => x.PackageItemStatus == itemStatus))
-                        {
-                            packageStatus = itemStatus;
-                            break;
-                        }
-                    }
-
-
-
-
-
                     if (shipments.Count == 0)
                     {
-
+                        foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
+                        {
+                            if (awb.CargoBooking.PackageItems.Any(x => x.PackageItemStatus == itemStatus))
+                            {
+                                packageStatus = itemStatus;
+                                break;
+                            }
+                        }
                         var bSpec = new CargoBookingSpecification(new CargoBookingQM { Id = bookingID, userId = isAdmin ? Guid.Empty : userId });
 
                         var booking = await _unitOfWork.Repository<CargoBooking>().GetEntityWithSpecAsync(bSpec);
@@ -350,6 +344,15 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         foreach (var shipment in shipments)
                         {
+
+                            foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
+                            {
+                                if (shipment.PackageItems.Any(x => x.PackageItemStatus == itemStatus))
+                                {
+                                    packageStatus = itemStatus;
+                                    break;
+                                }
+                            }
                             var paSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Arrived });
                             var paRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(paSpec);
 
