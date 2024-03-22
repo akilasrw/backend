@@ -282,9 +282,6 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
             }
 
-            
-
-
             return ServiceResponseStatus.Success;
            
            
