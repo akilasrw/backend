@@ -370,6 +370,9 @@ namespace Aeroclub.Cargo.Application.Services
 
                             var pRSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Booking_Made });
                             var pRRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
+
+                            var pRWSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Cargo_Received });
+                            var pRWRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
                             try
                             {
                                 var shipBooking = new BookingShipmentSummeryVM
@@ -389,7 +392,7 @@ namespace Aeroclub.Cargo.Application.Services
                                     acceptedForFLight = pAFRes.Count() > 0 ? pAFRes[0]?.Created : (DateTime?)null,
                                     deliverdToAgent = pDRes.Count() > 0 ? pDRes[0]?.Created : (DateTime?)null,
                                     enrouteToWahouse = pRRes.Count() > 0 ? pRRes[0]?.Created : (DateTime?)null,
-                                    inOriginWahouse = pDRes.Count() > 0 ? pDRes[0]?.Created : (DateTime?)null
+                                    inOriginWahouse = pRWRes.Count() > 0 ? pRWRes[0]?.Created : (DateTime?)null
                                 };
 
                                 shipBookings.Add(shipBooking);
