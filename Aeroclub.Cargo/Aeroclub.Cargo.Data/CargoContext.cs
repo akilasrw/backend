@@ -206,6 +206,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<SystemUser> SystemUsers { get; set; } = null!;
         public DbSet<TruckInfo> TruckInfos { get; set; } = null!;
         public DbSet<Truck> truck { get; set; } = null!;
+        public DbSet<DeliveryAudit> deliveryAudit { get; set; } = null!;    
 
 
 

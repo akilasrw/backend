@@ -14,11 +14,24 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http.Features;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
+using Google.Api;
+using Aeroclub.Cargo.Application.Services;
+using Aeroclub.Cargo.Application.Interfaces;
+using Aeroclub.Cargo.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+/*builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
+builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+builder.Services.AddSingleton<JobService>(); // Register your job class here
+builder.Services.AddHostedService<QuartzHostedService>();
+builder.Services.AddSingleton<IJob, JobService>();*/
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.ResolveConflictingActions (apiDescriptions => apiDescriptions.First());
