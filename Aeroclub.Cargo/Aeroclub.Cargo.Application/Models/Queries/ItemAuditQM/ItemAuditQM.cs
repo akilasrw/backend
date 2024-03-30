@@ -11,6 +11,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM
     {
         public Guid? bookingID { get; set; }
         public long? awbNumber { get; set; }
+        public Guid? shipmentID { get; set; }
         public PackageItemStatus? status { get; set; }
     }
 }
