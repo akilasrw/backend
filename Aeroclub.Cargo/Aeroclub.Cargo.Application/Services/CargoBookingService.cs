@@ -117,7 +117,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 PackageItemStatus status = PackageItemStatus.Booking_Made;
 
-                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)))
+                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
                 {
                     if (packages.Any(x => x.PackageItemStatus == itemStatus))
                     {
