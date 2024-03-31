@@ -117,7 +117,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 PackageItemStatus status = PackageItemStatus.Booking_Made;
 
-                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)))
+                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
                 {
                     if (packages.Any(x => x.PackageItemStatus == itemStatus))
                     {
@@ -353,23 +353,26 @@ namespace Aeroclub.Cargo.Application.Services
                                     break;
                                 }
                             }
-                            var paSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Arrived });
+                            var paSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Arrived });
                             var paRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(paSpec);
 
-                            var pdSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.FlightDispatched });
+                            var pdSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.FlightDispatched });
                             var pdRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pdSpec);
 
-                            var pAFSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.AcceptedForFLight });
+                            var pAFSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.AcceptedForFLight });
                             var pAFRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pAFSpec);
 
-                            var pDSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Deliverd });
+                            var pDSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Deliverd });
                             var pDRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pDSpec);
 
-                            var pIDSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.IndestinationWarehouse });
+                            var pIDSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.IndestinationWarehouse });
                             var pIDRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pIDSpec);
 
-                            var pRSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = bookingID, status = PackageItemStatus.Booking_Made });
+                            var pRSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Booking_Made });
                             var pRRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
+
+                            var pRWSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Cargo_Received });
+                            var pRWRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
                             try
                             {
                                 var shipBooking = new BookingShipmentSummeryVM
@@ -389,7 +392,7 @@ namespace Aeroclub.Cargo.Application.Services
                                     acceptedForFLight = pAFRes.Count() > 0 ? pAFRes[0]?.Created : (DateTime?)null,
                                     deliverdToAgent = pDRes.Count() > 0 ? pDRes[0]?.Created : (DateTime?)null,
                                     enrouteToWahouse = pRRes.Count() > 0 ? pRRes[0]?.Created : (DateTime?)null,
-                                    inOriginWahouse = pDRes.Count() > 0 ? pDRes[0]?.Created : (DateTime?)null
+                                    inOriginWahouse = pRWRes.Count() > 0 ? pRWRes[0]?.Created : (DateTime?)null
                                 };
 
                                 shipBookings.Add(shipBooking);
