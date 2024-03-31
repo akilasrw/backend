@@ -26,11 +26,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-/*builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
+builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
 builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 builder.Services.AddSingleton<JobService>(); // Register your job class here
 builder.Services.AddHostedService<QuartzHostedService>();
-builder.Services.AddSingleton<IJob, JobService>();*/
+builder.Services.AddSingleton<IJob, JobService>();
 
 builder.Services.AddSwaggerGen(options =>
 {
