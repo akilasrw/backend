@@ -33,6 +33,11 @@ namespace Aeroclub.Cargo.Application.Services
             return null;
         }
 
+        public async Task<IReadOnlyList<DeliveryAudit>> GetDeliveryAudit()
+        {
+            return await _unitOfWork.Repository<DeliveryAudit>().GetListAsync();
+        }
+
         private CargoBookingLookupVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingLookupVM bookingDetail)
         {
             var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();

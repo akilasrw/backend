@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingLookupQMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs;
+using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
             return Ok(result);
         }
+
+        [HttpGet("DelirveryAudit")]
+        public async Task<ActionResult<DeliveryAudit>> GetDeliveryAudit()
+        {
+           
+
+            var result = await cargoBookingLookupService.GetDeliveryAudit();
+
+            if (result == null)
+                return BadRequest("Invalid reference number.");
+
+            return Ok(result);
+        }
+
 
     }
 }

@@ -9,6 +9,7 @@ namespace Aeroclub.Cargo.Core.Interfaces
     {
         IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
         Task<int> SaveChangesAsync();
+        Task<int> SaveCronChangesAsync();
         IDbContextTransaction BeginTransaction();
     }
 }

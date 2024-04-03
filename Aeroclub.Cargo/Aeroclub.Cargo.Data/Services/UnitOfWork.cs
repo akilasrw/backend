@@ -27,6 +27,11 @@ namespace Aeroclub.Cargo.Data.Services
             return await _context.SaveAuditableChangesAsync(userid);
         }
 
+        public async Task<int> SaveCronChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public IDbContextTransaction BeginTransaction()
         {
             return  _context.Database.BeginTransaction();

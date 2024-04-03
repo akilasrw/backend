@@ -40,6 +40,12 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.CargoBooking));
         }
 
+        public PackageItemSpecification(DateTime date)
+            : base(x =>  (date == null) || (x.Created.Date == date))
+        {
+
+        }
+
         public PackageItemSpecification(PackageListQM query, bool isCount = false)
             :base(x => query.awbNumber == null || query.awbNumber == x.CargoBooking.AWBInformation.AwbTrackingNumber)
         {

@@ -14,25 +14,28 @@ public class QuartzHostedService : IHostedService
 
     public QuartzHostedService(ISchedulerFactory schedulerFactory, IJobFactory jobFactory, JobService jobService)
     {
-        _schedulerFactory = schedulerFactory;
-        _jobFactory = jobFactory;
-        _jobService = jobService;
+        _schedulerFactory = schedulerFactory ?? throw new ArgumentNullException(nameof(schedulerFactory));
+        _jobFactory = jobFactory ?? throw new ArgumentNullException(nameof(jobFactory));
+        _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        IScheduler scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
         scheduler.JobFactory = _jobFactory;
 
-        IJobDetail job = JobBuilder.Create<JobService>()
+        var job = JobBuilder.Create<JobService>()
             .WithIdentity("helloJob", "group1")
             .Build();
 
-        ITrigger trigger = TriggerBuilder.Create()
+        var trigger = TriggerBuilder.Create()
             .WithIdentity("helloTrigger", "group1")
             .StartNow()
+            .StartAt(DateBuilder.TodayAt(16, 32, 0))
             .WithSimpleSchedule(x => x
-                .WithIntervalInSeconds(10) // set interval here
+                .WithIntervalInHours(24)
                 .RepeatForever())
             .Build();
 

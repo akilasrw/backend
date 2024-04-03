@@ -18,6 +18,9 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public AWBNumberStackSpecification(DateTime date)
+        : base(x =>  (date == null)||(x.Created.Date == date)){ }
+
         public AWBNumberStackSpecification(long awbNum)
            : base(x => x.AWBTrackingNumber == awbNum)
         { }
