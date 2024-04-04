@@ -1,7 +1,9 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingLookupQMs;
+using Aeroclub.Cargo.Application.Models.Queries.DeliveryAuditQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.ChartVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -33,9 +35,36 @@ namespace Aeroclub.Cargo.Application.Services
             return null;
         }
 
-        public async Task<IReadOnlyList<DeliveryAudit>> GetDeliveryAudit()
+        public async Task<ChartVM> GetChartData(DeliveryAuditQM query)
         {
-            return await _unitOfWork.Repository<DeliveryAudit>().GetListAsync();
+            var spec = new DeliveryAuditSpecification(query);
+
+            var data = await _unitOfWork.Repository<DeliveryAudit>().GetListWithSpecAsync(spec);
+
+            var chart = new ChartVM { Collected = data.Sum((x) => x.ParcellsCollected), OnHold = data.Sum((x)=> x.ParcellsOnHold), Returned = data.Sum((x)=> x.ParcellsRetured) };
+
+            var deliverd = data.Sum(x => x.ParcellsDeliverd);
+
+            chart.SuccessRate = (deliverd/chart.Collected)*100;
+
+            List<BarData> barData = new List<BarData>();
+
+            foreach (var delivery in data)
+            {
+                barData.Add(new BarData { count = delivery.ParcellsDeliverd, date = delivery.CollectedDate });
+            }
+
+            chart.BarData = barData;
+
+            return chart;
+        }
+
+        public async Task<IReadOnlyList<DeliveryAudit>> GetDeliveryAudit(DeliveryAuditQM query)
+        {
+            
+            var spec = new DeliveryAuditSpecification(query);
+
+            return await _unitOfWork.Repository<DeliveryAudit>().GetListWithSpecAsync(spec);
         }
 
         private CargoBookingLookupVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingLookupVM bookingDetail)

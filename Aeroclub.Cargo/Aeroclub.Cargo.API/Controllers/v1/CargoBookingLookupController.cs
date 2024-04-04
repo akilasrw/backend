@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingLookupQMs;
+using Aeroclub.Cargo.Application.Models.Queries.DeliveryAuditQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -34,11 +35,24 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("DelirveryAudit")]
-        public async Task<ActionResult<DeliveryAudit>> GetDeliveryAudit()
+        public async Task<ActionResult<DeliveryAudit>> GetDeliveryAudit([FromQuery]DeliveryAuditQM query)
         {
            
 
-            var result = await cargoBookingLookupService.GetDeliveryAudit();
+            var result = await cargoBookingLookupService.GetDeliveryAudit(query);
+
+            if (result == null)
+                return BadRequest("Invalid date range.");
+
+            return Ok(result);
+        }
+
+        [HttpGet("ChartDate")]
+        public async Task<ActionResult<DeliveryAudit>> ChatData([FromQuery] DeliveryAuditQM query)
+        {
+
+
+            var result = await cargoBookingLookupService.GetChartData(query);
 
             if (result == null)
                 return BadRequest("Invalid reference number.");
