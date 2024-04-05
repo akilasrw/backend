@@ -16,12 +16,12 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ChartVM
     public class ChartVM
     {
         public double Collected { get; set; }
-        public int Returned { get; set; }
+        public int Deliverd { get; set; }
 
-        public int OnHold { get; set; }
-        public double SuccessRate { get; set; }
+        public int OneDay { get; set; }
+        public double OneAndHalf { get; set; }
 
-        public List<BarData> BarData { get; set; }
+        public double AfterOneAndHalf { get; set; }
 
 
     }

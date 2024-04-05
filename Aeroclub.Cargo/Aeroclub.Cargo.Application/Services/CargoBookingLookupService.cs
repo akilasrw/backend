@@ -41,21 +41,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             var data = await _unitOfWork.Repository<DeliveryAudit>().GetListWithSpecAsync(spec);
 
-            var chart = new ChartVM { Collected = data.Sum((x) => x.ParcellsCollected), OnHold = data.Sum((x)=> x.ParcellsOnHold), Returned = data.Sum((x)=> x.ParcellsRetured) };
-
-            var deliverd = data.Sum(x => x.ParcellsDeliverd);
-
-            chart.SuccessRate = (deliverd/chart.Collected)*100;
-
-            List<BarData> barData = new List<BarData>();
-
-            foreach (var delivery in data)
-            {
-                barData.Add(new BarData { count = delivery.ParcellsDeliverd, date = delivery.CollectedDate });
-            }
-
-            chart.BarData = barData;
-
+            var chart = new ChartVM { Collected = data.Sum((x) => x.ParcellsCollected), OneDay = data.Sum(x => x.OneDay) , Deliverd = data.Sum(x => x.ParcellsDeliverd), OneAndHalf = data.Sum(x => x.OneDayToOneAndHalf), AfterOneAndHalf= data.Sum(x => x.AfterOneAndHalf) };
+           
             return chart;
         }
 

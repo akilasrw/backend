@@ -47,7 +47,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(result);
         }
 
-        [HttpGet("ChartDate")]
+        [HttpGet("ChartData")]
         public async Task<ActionResult<DeliveryAudit>> ChatData([FromQuery] DeliveryAuditQM query)
         {
 

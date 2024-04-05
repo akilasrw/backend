@@ -76,7 +76,16 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 i.OnRoute = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count();
                             }
+
+                            i.ParcellsDeliverd = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count();
+
+                            i.OneDay = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count();
+                            i.AfterOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count();
+                            i.OneDayToOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 10)).Count();
+
                         }
+
+                       
                     }
 
 
