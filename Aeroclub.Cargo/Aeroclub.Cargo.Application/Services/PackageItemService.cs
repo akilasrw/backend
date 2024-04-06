@@ -425,19 +425,23 @@ namespace Aeroclub.Cargo.Application.Services
                 foreach(var x in item)
                 {
                     var package = x.PackageItem;
-                    if (rm.IsArrived)
+
+                    if(package.PackageItemStatus == PackageItemStatus.AcceptedForFLight || package.PackageItemStatus == PackageItemStatus.FlightDispatched)
                     {
-                        package.PackageItemStatus = PackageItemStatus.Arrived;
+                        if (rm.IsArrived)
+                        {
+                            package.PackageItemStatus = PackageItemStatus.Arrived;
+                        }
+                        else
+                        {
+                            package.PackageItemStatus = PackageItemStatus.FlightDispatched;
+                        }
+
+                        _unitOfWork.Repository<PackageItem>().Update(package);
+                        await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<PackageItem>().Detach(package);
                     }
-                    else
-                    {
-                        package.PackageItemStatus = PackageItemStatus.FlightDispatched;
-                    }
-                    
-                    _unitOfWork.Repository<PackageItem>().Update(package);
-                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
-                    await _unitOfWork.SaveChangesAsync();
-                    _unitOfWork.Repository<PackageItem>().Detach(package);
 
 
 
