@@ -33,7 +33,7 @@ public class QuartzHostedService : IHostedService
         var trigger = TriggerBuilder.Create()
             .WithIdentity("helloTrigger", "group1")
             .StartNow()
-            .StartAt(DateBuilder.TodayAt(0, 0, 0))
+            .StartAt(DateBuilder.TodayAt(12, 0, 0))
             .WithSimpleSchedule(x => x
                 .WithIntervalInHours(24)
                 .RepeatForever())
