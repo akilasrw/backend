@@ -77,6 +77,11 @@ namespace Aeroclub.Cargo.Application.Services
                                 i.OnRoute = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count();
                             }
 
+                            if (i.WhRec != 0)
+                            {
+                                i.WhRec = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Cargo_Received).Count();
+                            }
+
                             i.ParcellsDeliverd = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count();
 
                             i.OneDay = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count();
@@ -110,6 +115,7 @@ namespace Aeroclub.Cargo.Application.Services
                         ParcellsRetured = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Returned).Count(),
                         ParcellsOnHold = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Offloaded).Count(),
                         ULDPacked = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count(),
+                        WhRec = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Cargo_Received).Count(),
                         OnRoute = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count(),
                         ParcellsDeliverd = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd).Count(),
                         OneDay = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count(),

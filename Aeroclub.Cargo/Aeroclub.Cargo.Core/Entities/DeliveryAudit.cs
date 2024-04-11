@@ -13,7 +13,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public int AWBs { get; set; }
         public int ParcellsCollected {  get; set; }
         public int ParcellsRetured { get; set; }
-        public int ParcellsOnHold { get; set; } 
+        public int ParcellsOnHold { get; set; }
+        public int WhRec { get; set; }
         public int ULDPacked { get; set; }
         public int OnRoute {  get; set; }
         public int ParcellsDeliverd { get; set; }
