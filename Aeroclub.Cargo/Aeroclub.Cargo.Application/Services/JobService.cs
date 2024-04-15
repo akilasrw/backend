@@ -86,7 +86,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                             i.OneDay = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count();
                             i.AfterOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count();
-                            i.OneDayToOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 10)).Count();
+                            i.OneDayToOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count();
 
                         }
 
@@ -95,9 +95,9 @@ namespace Aeroclub.Cargo.Application.Services
 
 
 
-                    var awbSpec = new AWBNumberStackSpecification(DateTime.Today);
+                    var awbSpec = new AWBNumberStackSpecification(DateTime.Today.AddDays(-1));
 
-                    var packageSpec = new PackageItemSpecification(DateTime.Today);
+                    var packageSpec = new PackageItemSpecification(DateTime.Today.AddDays(-1));
 
                     var packageList = await unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(packageSpec);
 
@@ -120,7 +120,7 @@ namespace Aeroclub.Cargo.Application.Services
                         ParcellsDeliverd = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd).Count(),
                         OneDay = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count(),
                         AfterOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count(),
-                        OneDayToOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 10)).Count()
+                        OneDayToOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count()
                     });
 
                     await unitOfWork.SaveCronChangesAsync();
