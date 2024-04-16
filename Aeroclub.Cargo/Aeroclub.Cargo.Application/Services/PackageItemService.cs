@@ -426,8 +426,6 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     var package = x.PackageItem;
 
-                    if(package.PackageItemStatus == PackageItemStatus.AcceptedForFLight || package.PackageItemStatus == PackageItemStatus.FlightDispatched)
-                    {
                         if (rm.IsArrived)
                         {
                             package.PackageItemStatus = PackageItemStatus.Arrived;
@@ -441,7 +439,6 @@ namespace Aeroclub.Cargo.Application.Services
                         await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                         await _unitOfWork.SaveChangesAsync();
                         _unitOfWork.Repository<PackageItem>().Detach(package);
-                    }
 
 
 
