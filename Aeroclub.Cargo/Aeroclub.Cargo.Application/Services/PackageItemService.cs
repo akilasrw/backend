@@ -247,14 +247,14 @@ namespace Aeroclub.Cargo.Application.Services
 
             var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(awbSpec);
 
-            await _cargoBookingService.UpdateAsync(
+          /*  await _cargoBookingService.UpdateAsync(
                    new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
                    {
                        Id = (Guid)awb.CargoBookingId,
                        BookingStatus = (BookingStatus)rm.status
-                   });
+                   });*/
 
-            if(rm.packageItemStatus == PackageItemStatus.Cargo_Received)
+            if (rm.packageItemStatus == PackageItemStatus.Cargo_Received)
             {
                 Guid truckId = Guid.Empty;
 
