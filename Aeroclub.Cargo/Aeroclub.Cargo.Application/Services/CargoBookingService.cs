@@ -98,7 +98,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach(var d in dtoList)
             {
-                var sSpec = new PackageAuditSpecification(new ItemAuditQM{bookingID = d.Id, status = PackageItemStatus.AcceptedForFLight });
+                var sSpec = new PackageAuditSpecification(new ItemAuditQM{bookingID = d.Id, status = PackageItemStatus.FlightDispatched });
                 var sCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(sSpec);
                 var pSpec = new PackageAuditSpecification(new ItemAuditQM { bookingID = d.Id, status = PackageItemStatus.Booking_Made });
                 var pCount = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pSpec);
