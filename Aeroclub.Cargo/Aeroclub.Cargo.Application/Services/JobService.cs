@@ -62,28 +62,12 @@ namespace Aeroclub.Cargo.Application.Services
 
                             var awbOldList = await unitOfWork.Repository<AWBNumberStack>().GetListWithSpecAsync(awbListSpec);
 
-                         if(i.ParcellsOnHold != 0)
-                            {
-                                i.ParcellsOnHold = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Offloaded).Count();
-                            }
-
-                            if (i.ULDPacked != 0)
-                            {
-                                i.ULDPacked = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count();
-                            }
-
-                            if (i.OnRoute != 0)
-                            {
-                                i.OnRoute = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count();
-                            }
-
-                            if (i.WhRec != 0)
-                            {
-                                i.WhRec = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Cargo_Received).Count();
-                            }
-
-                            i.ParcellsDeliverd = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count();
-
+                           
+                            i.WhRec = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Cargo_Received).Count();
+                            i.ParcellsOnHold = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Offloaded).Count();
+                            i.ULDPacked = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count();
+                            i.OnRoute = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count();
+                            i.ParcellsDeliverd = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd).Count();
                             i.OneDay = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count();
                             i.AfterOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count();
                             i.OneDayToOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count();
@@ -109,7 +93,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     await unitOfWork.Repository<DeliveryAudit>().CreateAsync(new DeliveryAudit
                     {
-                        CollectedDate = DateTime.Now,
+                        CollectedDate = DateTime.Now.AddDays(-1),
                         AWBs = awbList.Count,
                         ParcellsCollected = packageList.Count,
                         ParcellsRetured = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Returned).Count(),
