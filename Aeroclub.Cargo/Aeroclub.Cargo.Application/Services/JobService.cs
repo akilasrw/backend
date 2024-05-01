@@ -69,8 +69,8 @@ namespace Aeroclub.Cargo.Application.Services
                             i.OnRoute = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count();
                             i.ParcellsDeliverd = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd).Count();
                             i.OneDay = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count();
-                            i.AfterOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count();
-                            i.OneDayToOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count();
+                            i.AfterOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count();
+                            i.OneDayToOneAndHalf = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count();
 
                         }
 
@@ -103,8 +103,8 @@ namespace Aeroclub.Cargo.Application.Services
                         OnRoute = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count(),
                         ParcellsDeliverd = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd).Count(),
                         OneDay = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count(),
-                        AfterOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count(),
-                        OneDayToOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count()
+                        AfterOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 10, 1.5)).Count(),
+                        OneDayToOneAndHalf = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1.5, 1)).Count()
                     });
 
                     await unitOfWork.SaveCronChangesAsync();
