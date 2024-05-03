@@ -149,6 +149,17 @@ namespace Aeroclub.Cargo.Application.Services
             return dtoList;
         }
 
+        public async Task<IReadOnlyList<string>> GetListByAwbAndStatus(PackageListByAwbAndStatus query)
+        {
+            var spec = new PackageItemSpecification(query);
+            var packageList = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(spec);
+
+            // Extract packageRefnumber values
+            var packageRefNumbers = packageList.Select(package => package.PackageRefNumber).ToList();
+
+            return packageRefNumbers;
+        }
+
         public async Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm)
         {
             var res = new ServiceResponseCreateStatus();
@@ -887,5 +898,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             return packageAudit;
         }
+
+        
     }
 }

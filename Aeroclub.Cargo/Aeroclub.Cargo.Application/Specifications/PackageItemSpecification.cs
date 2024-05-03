@@ -14,6 +14,11 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
+        public PackageItemSpecification(PackageListByAwbAndStatus query)
+               : base(x => x.CargoBooking.AWBInformation.AwbTrackingNumber == query.awb && query.packageItemStatuses.Contains(x.PackageItemStatus))
+        {
+        }
+
 
         public PackageItemSpecification(PackageItemRefQM query)
                : base(x => (query.PackageRefNumber == null || x.PackageRefNumber.ToLower() == query.PackageRefNumber.ToLower()) && (query.AwbNumber == null || query.AwbNumber == x.CargoBooking.AWBInformation.AwbTrackingNumber))

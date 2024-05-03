@@ -63,6 +63,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _packageItemService.GetFilteredAllListAsync(query));
         }
 
+        [HttpGet("GetListByAwbAndStatus")]
+        public async Task<ActionResult<PackageListItemVM>> GetListByAwbAndStatusAsync([FromQuery] PackageListByAwbAndStatus query)
+        {
+            return Ok(await _packageItemService.GetListByAwbAndStatus(query));
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] PackageItemUpdateRM rm)
         {
