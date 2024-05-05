@@ -26,6 +26,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
 using System.Security.Cryptography;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -901,6 +902,24 @@ namespace Aeroclub.Cargo.Application.Services
             return dtoList;
         }
 
-        
+        public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld(GetPackageByAwbAndUldRM query)
+        {
+            var spec = new ULDContainerSpecification(query);
+            var res = await _unitOfWork.Repository<ULDContainer>().GetListWithSpecAsync(spec);
+
+            List<string> packageList = new List<string>();
+
+            foreach (var item in res)
+            {
+                foreach(var item2 in item.PackageULDContainers)
+                {
+                    packageList.Add(item2.PackageItem.PackageRefNumber);
+                }
+            }
+
+            return packageList;
+
+
+        }
     }
 }

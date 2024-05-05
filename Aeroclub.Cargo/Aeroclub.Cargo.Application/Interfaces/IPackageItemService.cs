@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
@@ -27,6 +28,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<PackageAuditVM>> GetPackageItemAuditByBooking(ItemAuditQM query);
         Task<IReadOnlyList<PackageListItemVM>> GetFilteredAllListAsync(PackageAllListQM query);
         Task<IReadOnlyList<String>> GetListByAwbAndStatus(PackageListByAwbAndStatus query);
+        Task<IReadOnlyList<String>> GetPackagesByAwbAndUld(GetPackageByAwbAndUldRM query);
         Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm);
         Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm);
 
