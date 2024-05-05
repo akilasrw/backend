@@ -71,7 +71,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("GetListByAwbAndStatus")]
-        public async Task<ActionResult<PackageListItemVM>> GetListByAwbAndStatusAsync([FromQuery] PackageListByAwbAndStatus query)
+        public async Task<ActionResult<PackageListItemVM>> GetListByAwbAndStatusAsync([FromBody] PackageListByAwbAndStatus query)
         {
             return Ok(await _packageItemService.GetListByAwbAndStatus(query));
         }
