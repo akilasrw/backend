@@ -10,6 +10,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.PackageQMs
     public class PackageListByAwbAndStatus
     {
         public PackageItemStatus[] packageItemStatuses {  get; set; }
-        public long awb {  get; set; }
+        public long AwbNumber {  get; set; }
     }
 }
