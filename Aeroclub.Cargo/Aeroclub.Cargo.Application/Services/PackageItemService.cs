@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Http;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
 using System.Security.Cryptography;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -890,13 +891,14 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
-        public async Task<IReadOnlyList<ItemStatus>> GetPackageItemAuditByBooking(ItemAuditQM query)
+        public async Task<IReadOnlyList<PackageAuditVM>> GetPackageItemAuditByBooking(ItemAuditQM query)
         {
             var spec = new PackageAuditSpecification(new ItemAuditQM { bookingID = query.bookingID, awbNumber=query.awbNumber, status=query.status});
 
             var packageAudit = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(spec);
+            var dtoList = _mapper.Map<IReadOnlyList<PackageAuditVM>>(packageAudit);
 
-            return packageAudit;
+            return dtoList;
         }
 
         

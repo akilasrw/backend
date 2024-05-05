@@ -61,6 +61,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.SystemUserRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SystemUserVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 
 namespace Aeroclub.Cargo.Application.Helpers
 {
@@ -134,6 +135,16 @@ namespace Aeroclub.Cargo.Application.Helpers
                 //.ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
                 //.ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.PackageItems.ToList()[0].PackageItemStatus))
                 .ForMember(d => d.TotalWeight, o => o.MapFrom(s => s.PackageItems.Sum(x => x.Weight)));
+
+            CreateMap<ItemStatus, PackageAuditVM>()
+                .ForMember(d => d.packageId, o => o.MapFrom(s => s.PackageID))
+                .ForMember(d => d.packageNumber, o => o.MapFrom(s => s.packageItem.PackageRefNumber))
+                .ForMember(d => d.flightNumber, o => o.MapFrom(s => s.packageItem.Shipment.FlightSchedule.FlightNumber))
+                .ForMember(d => d.packageStatus, o => o.MapFrom(s => s.PackageItemStatus))
+                .ForMember(d => d.awb, o => o.MapFrom(s => s.packageItem.CargoBooking.AWBInformation.AwbTrackingNumber))
+                .ForMember(d => d.collectedDate, o => o.MapFrom(s => s.packageItem.Created));
+
+
 
             CreateMap<CargoBookingRM, CargoBooking>();
             CreateMap<CargoBooking, CargoBookingULDVM>()
