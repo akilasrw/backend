@@ -27,6 +27,7 @@ using System.Security.Cryptography;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -918,6 +919,34 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return packageList;
+
+
+        }
+
+        public async Task<HashSet<long>> GetAwbByUldAndFlightSchdule(GetAWBbyUldAndFlightScheduleRM query)
+        {
+
+            var uldContainerSpecs = new ULDContainerSpecification(query);
+            var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
+
+            var specs = new PackageULDContainerSpecification(new Application.Models.Queries.PackageULDContainerQMs.PackageByULDQM
+            {
+                uldContainer = uldContainer.Id
+            });
+
+            var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
+
+            HashSet<long> longList = new HashSet<long>();
+
+            foreach(var x in item)
+            {
+                if (x.PackageItem.CargoBooking.AWBInformation.AwbTrackingNumber != 0)
+                {
+                    longList.Add(x.PackageItem.CargoBooking.AWBInformation.AwbTrackingNumber);
+                }
+            }
+
+            return longList;
 
 
         }

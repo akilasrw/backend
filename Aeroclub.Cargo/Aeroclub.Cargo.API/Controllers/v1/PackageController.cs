@@ -6,6 +6,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
@@ -62,6 +63,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld([FromQuery] GetPackageByAwbAndUldRM query)
         {
             return await _packageItemService.GetPackagesByAwbAndUld(query);
+        }
+
+        [HttpGet("AWBByFlightSheduleAndUld")]
+        public async Task<HashSet<long>> GetAWBByFlightSheduleAndUld([FromQuery] GetAWBbyUldAndFlightScheduleRM query)
+        {
+            return await _packageItemService.GetAwbByUldAndFlightSchdule(query);
         }
 
         [HttpGet("GetFilteredAllList")]

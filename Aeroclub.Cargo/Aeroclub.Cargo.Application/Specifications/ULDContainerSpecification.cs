@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
@@ -16,6 +17,12 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public ULDContainerSpecification(Guid uldId)
             :base(x => x.ULDId == uldId)
+        {
+
+        }
+
+        public ULDContainerSpecification(GetAWBbyUldAndFlightScheduleRM query)
+           : base(x => x.ULD.SerialNumber == query.uld)
         {
 
         }
