@@ -59,7 +59,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("PackageByAwbAndUld")]
-        public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld([FromQuery] GetPackageByAwbAndUldRM query)
+        public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld([FromBody] GetPackageByAwbAndUldRM query)
         {
             return await _packageItemService.GetPackagesByAwbAndUld(query);
         }
