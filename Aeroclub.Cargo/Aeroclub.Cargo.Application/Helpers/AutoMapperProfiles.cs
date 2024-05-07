@@ -142,7 +142,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.flightNumber, o => o.MapFrom(s => s.packageItem.Shipment.FlightSchedule.FlightNumber))
                 .ForMember(d => d.packageStatus, o => o.MapFrom(s => s.PackageItemStatus))
                 .ForMember(d => d.awb, o => o.MapFrom(s => s.packageItem.CargoBooking.AWBInformation.AwbTrackingNumber))
-                .ForMember(d => d.collectedDate, o => o.MapFrom(s => s.packageItem.Created));
+                .ForMember(d => d.collectedDate, o => o.MapFrom(s => s.packageItem.Created))
+                .ForMember(d => d.flightDate, o => o.MapFrom(s => s.packageItem.Shipment.FlightSchedule.ScheduledDepartureDateTime));
 
 
 

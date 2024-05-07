@@ -15,5 +15,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM
         public PackageItemStatus packageStatus { get; set; }
         public long awb {  get; set; }
         public string flightNumber { get; set; }
+        public DateTime flightDate { get; set; }
     }
 }
