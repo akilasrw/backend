@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
+using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Core.Entities;
@@ -49,6 +50,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x =>  (date == null) || (x.Created.Date == date))
         {
 
+        }
+
+        public PackageItemSpecification(ItemsByDateQM query)
+            : base(x =>  (x.Created.Date > query.start && x.Created.Date < query.end))
+        {
+            AddInclude(x => x.Include(y => y.Shipment).ThenInclude(x => x.FlightSchedule));
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.AWBInformation));
         }
 
         public PackageItemSpecification(PackageListQM query, bool isCount = false)

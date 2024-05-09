@@ -28,6 +28,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
+using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -898,6 +899,17 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new PackageAuditSpecification(new ItemAuditQM { bookingID = query.bookingID, awbNumber=query.awbNumber, status=query.status});
 
             var packageAudit = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(spec);
+            var dtoList = _mapper.Map<IReadOnlyList<PackageAuditVM>>(packageAudit);
+
+            return dtoList;
+        }
+
+        public async Task<IReadOnlyList<PackageAuditVM>> GetPackagesByDate(ItemsByDateQM query)
+        {
+            var spec = new PackageItemSpecification(query);
+
+            var packageAudit = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(spec);
+
             var dtoList = _mapper.Map<IReadOnlyList<PackageAuditVM>>(packageAudit);
 
             return dtoList;

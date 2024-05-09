@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Queries.DeletePackageQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
+using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
@@ -11,6 +12,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppSixthStepRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
@@ -57,6 +59,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<ItemStatus>> GetPackageAuditByBooking([FromQuery] ItemAuditQM query)
         {
             return Ok(await _packageItemService.GetPackageItemAuditByBooking(query));
+        }
+
+        [HttpGet("PackageByDate")]
+        public async Task<ActionResult<PackageAuditVM>> GetPackagesByDate([FromQuery] ItemsByDateQM query)
+        {
+            return Ok(await _packageItemService.GetPackagesByDate(query));
         }
 
         [HttpGet("PackageByAwbAndUld")]
