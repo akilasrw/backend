@@ -727,19 +727,19 @@ namespace Aeroclub.Cargo.Application.Services
 
                 }
 
-                await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
+
+                    var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(fsId, uldId));
+                
+                    if(sectorPallet == null)
                 {
-                    FlightScheduleSectorId = fsId,
-                    ULDId = uldId,
-                });
-
-
-
-
-
-
-
-
+                    await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
+                    {
+                        FlightScheduleSectorId = fsId,
+                        ULDId = uldId,
+                    });
+                }
+                   
+                
 
 
                 var uldCId = Guid.NewGuid();

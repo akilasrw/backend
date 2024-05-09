@@ -23,5 +23,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IncludeFlightSchedule)
                 AddInclude(x => x.Include(y => y.FlightScheduleSector));
         }
+
+        public FlightScheduleSectorPalletSpecification(Guid fId, Guid uldId)
+            :base(p => (p.FlightScheduleSectorId == fId && p.ULDId == uldId)) {
+        
+        
+        }
     }
 }
