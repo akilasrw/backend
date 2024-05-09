@@ -61,12 +61,6 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _packageItemService.GetPackageItemAuditByBooking(query));
         }
 
-        [HttpGet("PackageByDate")]
-        public async Task<ActionResult<PackageAuditVM>> GetPackagesByDate([FromQuery] ItemsByDateQM query)
-        {
-            return Ok(await _packageItemService.GetPackagesByDate(query));
-        }
-
         [HttpGet("PackageByAwbAndUld")]
         public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld([FromBody] GetPackageByAwbAndUldRM query)
         {

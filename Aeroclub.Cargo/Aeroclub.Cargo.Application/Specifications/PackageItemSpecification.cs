@@ -53,7 +53,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public PackageItemSpecification(ItemsByDateQM query)
-            : base(x =>  (x.Created.Date > query.start && x.Created.Date < query.end))
+            : base(x =>  (x.Created.Date >= query.start && x.Created.Date <= query.end))
         {
             AddInclude(x => x.Include(y => y.Shipment).ThenInclude(x => x.FlightSchedule));
             AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(x => x.AWBInformation));

@@ -1,7 +1,10 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingLookupQMs;
 using Aeroclub.Cargo.Application.Models.Queries.DeliveryAuditQM;
+using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
+using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +16,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
     public class CargoBookingLookupController : BaseApiController
     {
         private readonly ICargoBookingLookupService cargoBookingLookupService;
-
-        public CargoBookingLookupController(ICargoBookingLookupService _cargoBookingLookupService)
+        private readonly IPackageItemService _packageItemService;
+     
+        public CargoBookingLookupController(ICargoBookingLookupService _cargoBookingLookupService, IPackageItemService packageItemService)
         {
             cargoBookingLookupService = _cargoBookingLookupService;
+            _packageItemService = packageItemService;
         }
 
 
@@ -58,6 +63,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return BadRequest("Invalid reference number.");
 
             return Ok(result);
+        }
+
+        [HttpGet("PackageByDate")]
+        public async Task<ActionResult<PackageAuditVM>> GetPackagesByDate([FromQuery] ItemsByDateQM query)
+        {
+            return Ok(await _packageItemService.GetPackagesByDate(query));
         }
 
 
