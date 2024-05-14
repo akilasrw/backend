@@ -18,7 +18,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public ULDContainerSpecification(Guid uldId)
             :base(x => x.ULDId == uldId)
         {
-
+            AddInclude(y => y.Include(x => x.ULD));
         }
 
         public ULDContainerSpecification(GetAWBbyUldAndFlightScheduleRM query)

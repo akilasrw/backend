@@ -89,6 +89,14 @@ namespace Aeroclub.Cargo.Common.Enums
         Lend = 4,
     }
 
+    public enum ULDStatus
+    {
+        None = 0,
+        ULDPacked = 1,
+        FlightLoaded = 2,
+        ULDUnPacked = 3,
+    }
+
     public enum ULDContainerType
     {
         None = 0,

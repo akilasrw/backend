@@ -430,6 +430,21 @@ namespace Aeroclub.Cargo.Application.Services
                 var uldContainerSpecs = new ULDContainerSpecification(i);
                 var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
 
+                if (rm.IsArrived)
+                {
+                    uldContainer.ULD.Status = ULDStatus.ULDUnPacked;
+                }
+                else
+                {
+                    uldContainer.ULD.Status = ULDStatus.FlightLoaded;
+                }
+
+                _unitOfWork.Repository<ULD>().Update(uldContainer.ULD);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<ULD>().Detach(uldContainer.ULD);
+
+
+
                 var specs = new PackageULDContainerSpecification(new Application.Models.Queries.PackageULDContainerQMs.PackageByULDQM
                 {
                     uldContainer = uldContainer.Id
@@ -708,6 +723,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     uldId = existingUld.Id;
                     existingUld.ULDLocateStatus = ULDLocateStatus.OnBoard;
+                    existingUld.Status = ULDStatus.ULDPacked;
 
                     _unitOfWork.Repository<ULD>().Update(existingUld);
                     await _unitOfWork.SaveChangesAsync();
@@ -719,6 +735,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         SerialNumber = rm.ULDSerialNumber,
                         ULDLocateStatus = ULDLocateStatus.OnBoard,
+                        Status = ULDStatus.ULDPacked,
                         ULDType = ULDType.None,
                     });
                     await _unitOfWork.SaveChangesAsync();
