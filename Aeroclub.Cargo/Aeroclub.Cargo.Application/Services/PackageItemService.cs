@@ -943,7 +943,10 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 foreach(var item2 in item.PackageULDContainers)
                 {
-                    packageList.Add(item2.PackageItem.PackageRefNumber);
+                    if(item2.PackageItem.PackageItemStatus == PackageItemStatus.Arrived)
+                    {
+                        packageList.Add(item2.PackageItem.PackageRefNumber);
+                    }
                 }
             }
 
