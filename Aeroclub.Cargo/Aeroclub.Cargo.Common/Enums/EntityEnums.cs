@@ -146,9 +146,9 @@ namespace Aeroclub.Cargo.Common.Enums
     public enum PackageItemStatus
     {
         Booking_Made = 0,
-        Cargo_Received = 1,
-        AcceptedForFLight = 2,
-        Returned = 3,
+        Returned = 1,
+        Cargo_Received = 2,
+        AcceptedForFLight = 3,
         Offloaded = 4,
         FlightDispatched = 5,
         Arrived = 6,
