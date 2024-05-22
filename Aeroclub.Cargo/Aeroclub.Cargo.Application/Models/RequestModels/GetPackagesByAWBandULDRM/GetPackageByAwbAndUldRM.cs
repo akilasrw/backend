@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULD
 {
     public class GetPackageByAwbAndUldRM
     {
-        public long AwbNumber {  get; set; }
+        public long? AwbNumber {  get; set; }
         public string uld {  get; set; }
     }
 }

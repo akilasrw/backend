@@ -28,9 +28,9 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public ULDContainerSpecification(GetPackageByAwbAndUldRM query)
-            : base(x => x.ULD.SerialNumber == query.uld && x.PackageULDContainers.Any((x) => x.PackageItem.CargoBooking.AWBInformation.AwbTrackingNumber == query.AwbNumber))
+            : base(x => x.ULD.SerialNumber == query.uld && (query.AwbNumber == null || x.PackageULDContainers.Any((x) => x.PackageItem.CargoBooking.AWBInformation.AwbTrackingNumber == query.AwbNumber)))
         {
-            AddInclude(y => y.Include(y => y.PackageULDContainers).ThenInclude(z => z.PackageItem));
+            AddInclude(y => y.Include(y => y.PackageULDContainers).ThenInclude(z => z.PackageItem).ThenInclude(x => x.CargoBooking).ThenInclude(e=> e.AWBInformation));
         }
     }
 }
