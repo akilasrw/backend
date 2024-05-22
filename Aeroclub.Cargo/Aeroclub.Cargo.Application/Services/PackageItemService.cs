@@ -29,6 +29,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -932,12 +933,12 @@ namespace Aeroclub.Cargo.Application.Services
             return dtoList;
         }
 
-        public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld(GetPackageByAwbAndUldRM query)
+        public async Task<IReadOnlyList<PackagesByULDVM>> GetPackagesByAwbAndUld(GetPackageByAwbAndUldRM query)
         {
             var spec = new ULDContainerSpecification(query);
             var res = await _unitOfWork.Repository<ULDContainer>().GetListWithSpecAsync(spec);
 
-            List<string> packageList = new List<string>();
+            List<PackagesByULDVM> packageList = new List<PackagesByULDVM>();
 
             foreach (var item in res)
             {
@@ -945,7 +946,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     if(item2.PackageItem.PackageItemStatus == PackageItemStatus.Arrived)
                     {
-                        packageList.Add(item2.PackageItem.PackageRefNumber);
+                        packageList.Add(new PackagesByULDVM { packageRef = item2.PackageItem.PackageRefNumber , awbNum = item2.PackageItem.CargoBooking.AWBInformation.AwbTrackingNumber});
                     }
                 }
             }

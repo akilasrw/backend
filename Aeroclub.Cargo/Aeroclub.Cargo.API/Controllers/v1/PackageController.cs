@@ -15,6 +15,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.ScanAppThirdStepRM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM;
+using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.ScanAppBookingCreateVM;
 using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Core.Entities;
@@ -62,7 +63,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpGet("PackageByAwbAndUld")]
-        public async Task<IReadOnlyList<string>> GetPackagesByAwbAndUld([FromBody] GetPackageByAwbAndUldRM query)
+        public async Task<IReadOnlyList<PackagesByULDVM>> GetPackagesByAwbAndUld([FromBody] GetPackageByAwbAndUldRM query)
         {
             return await _packageItemService.GetPackagesByAwbAndUld(query);
         }
