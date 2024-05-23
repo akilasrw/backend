@@ -66,6 +66,7 @@ namespace Aeroclub.Cargo.Application.Services
                             i.WhRec = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Cargo_Received).Count();
                             i.ParcellsOnHold = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Offloaded).Count();
                             i.ULDPacked = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count();
+                            i.BookingMade = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Booking_Made).Count();
                             i.OnRoute = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.FlightDispatched || x.PackageItemStatus == PackageItemStatus.Arrived || x.PackageItemStatus == PackageItemStatus.IndestinationWarehouse).Count();
                             i.ParcellsDeliverd = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd).Count();
                             i.OneDay = packageOldList.Where((x) => x.PackageItemStatus == PackageItemStatus.Deliverd && CalculateDifferenceInDays(x.Created, (DateTime)x.LastModified, 1, 0)).Count();
@@ -96,6 +97,7 @@ namespace Aeroclub.Cargo.Application.Services
                         CollectedDate = DateTime.Now.AddDays(-1),
                         AWBs = awbList.Count,
                         ParcellsCollected = packageList.Count,
+                        BookingMade = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Booking_Made).Count(),
                         ParcellsRetured = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Returned).Count(),
                         ParcellsOnHold = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.Offloaded).Count(),
                         ULDPacked = packageList.Where((x) => x.PackageItemStatus == PackageItemStatus.AcceptedForFLight).Count(),
