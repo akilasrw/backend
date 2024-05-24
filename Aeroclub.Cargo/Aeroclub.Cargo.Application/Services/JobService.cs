@@ -48,7 +48,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     var prevRecords = await unitOfWork.Repository<DeliveryAudit>().GetListAsync();
 
-                    var lastRecods = prevRecords.Take(10).ToList();
+                    var lastRecods = prevRecords.Reverse().Take(10).ToList();
 
                     foreach (var i in lastRecods)
                     {
