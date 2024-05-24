@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Core.Entities
     public class DeliveryAudit : BaseEntity
     {
         public DateTime CollectedDate { get; set; }
+        public int BookingMade { get; set; }
         public int AWBs { get; set; }
         public int ParcellsCollected {  get; set; }
         public int ParcellsRetured { get; set; }

@@ -19,5 +19,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.PackageItem).ThenInclude((y)=> y.CargoBooking).ThenInclude(e => e.AWBInformation));
         }
 
+        public PackageULDContainerSpecification(Guid uldContainer)
+            : base(x => (x.ULDContainerId == uldContainer) && (x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.Arrived))
+        {
+            AddInclude(x => x.Include(y => y.PackageItem).ThenInclude((y) => y.CargoBooking).ThenInclude(e => e.AWBInformation));
+        }
+
     }
 }

@@ -529,11 +529,41 @@ namespace Aeroclub.Cargo.Application.Services
 
 
         async public Task<ServiceResponseStatus> UpdateULDandPackageStatus(ScanAppSixthStepRM rm)
-        { 
+        {
+
+            var uldContainerSpecs = new ULDContainerSpecification(rm.uld);
+            var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
+
+        
+
+
+            var specs = new PackageULDContainerSpecification(uldContainer.Id);
+
+            var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
+
+            List<PackageItem> uldPackages = new List<PackageItem>();
+
+            foreach (var itemSpec in item)
+            {
+                uldPackages.Add(itemSpec.PackageItem);
+            }
 
             var uldSpecs = new ULDSpecification(rm.uld);
 
-            rm.packageIDs = await FilterPackagesAsync(PackageItemStatus.IndestinationWarehouse, rm.AwbNumber, rm.packageIDs);
+            uldPackages = uldPackages.Where(x => rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
+
+
+            foreach (var package in uldPackages)
+            {
+                package.PackageItemStatus = PackageItemStatus.IndestinationWarehouse;
+
+                _unitOfWork.Repository<PackageItem>().Update(package);
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+
+                await _unitOfWork.SaveChangesAsync();
+
+                _unitOfWork.Repository<PackageItem>().Detach(package);
+            }
 
             var existingUld = await _unitOfWork.Repository<ULD>().GetEntityWithSpecAsync(uldSpecs);
 
@@ -549,7 +579,7 @@ namespace Aeroclub.Cargo.Application.Services
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<ULD>().Detach(existingUld);
 
-            foreach (var x in rm.packageIDs)
+            /*foreach (var x in rm.packageIDs)
             {
                 var spec = new PackageItemSpecification(
                   new PackageItemRefQM
@@ -578,18 +608,18 @@ namespace Aeroclub.Cargo.Application.Services
 
                
 
-/*
+*//*
                     await _cargoBookingService.UpdateAsync(
              new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
              {
                  Id = package.CargoBookingId,
                  BookingStatus = BookingStatus.IndestinationWarehouse
-             });*/
+             });*//*
 
 
                
 
-            }
+            }*/
 
 
 

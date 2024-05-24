@@ -21,6 +21,12 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(y => y.Include(x => x.ULD));
         }
 
+        public ULDContainerSpecification(string uldSerial)
+            : base(x => x.ULD.SerialNumber == uldSerial)
+        {
+            AddInclude(y => y.Include(x => x.ULD));
+        }
+
         public ULDContainerSpecification(GetAWBbyUldAndFlightScheduleRM query)
            : base(x => x.ULD.SerialNumber == query.uld)
         {
