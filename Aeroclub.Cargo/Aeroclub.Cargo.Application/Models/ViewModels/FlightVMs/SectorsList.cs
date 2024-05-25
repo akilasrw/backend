@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aeroclub.Cargo.Application.Models.ViewModels.LocationsByAWBVM
+namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs
 {
-    public class LocationsByAWBVM
+    public class SectorsList
     {
         public Guid originId { get; set; }
         public string originName { get; set; }
+
         public string originCode { get; set; }
 
         public Guid destinationId { get; set; }

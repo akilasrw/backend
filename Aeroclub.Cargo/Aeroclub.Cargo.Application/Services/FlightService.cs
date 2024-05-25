@@ -177,6 +177,48 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
         }
 
+
+        public async Task<IReadOnlyList<FlightWithSectorsVM>> GetSelectListWithSectorsAsync()
+        {
+     
+            var list = await _unitOfWork.Repository<Flight>().GetListAsync();
+
+            List<FlightWithSectorsVM> flightList = new List<FlightWithSectorsVM>();
+
+            foreach (var flight in list)
+            {
+                
+
+                List<SectorsList> sectorList  = new List<SectorsList>();
+
+                var sectorSpec = new SectorSpecification(flight.Id);
+
+                var sectors = await _unitOfWork.Repository<Sector>().GetListWithSpecAsync(sectorSpec);
+
+                foreach (var sector in sectors)
+                {
+                    sectorList.Add(new SectorsList
+                    {
+                        destinationId = sector.DestinationAirportId,
+                        destinationName = sector.DestinationAirportName,
+                        originId = sector.OriginAirportId,
+                        originName = sector.OriginAirportName,
+                        destinationCode = sector.DestinationAirportCode,
+                        originCode = sector.OriginAirportCode,
+                    });
+                }
+
+                flightList.Add(new FlightWithSectorsVM { destinationCode = flight.DestinationAirportCode,originCode=flight.OriginAirportCode,destinationId = flight.DestinationAirportId, destinationName = flight.DestinationAirportName, flightId = flight.Id, originId = flight.OriginAirportId, flightNumber = flight.FlightNumber, originName = flight.OriginAirportName, sectors = sectorList });
+
+
+            }
+
+
+            
+
+            return flightList;
+        }
+
         private async Task<Flight> MappingFlight(Flight entity)
         {
             var orderedSectorList = entity.FlightSectors.OrderBy(x => x.Sequence);

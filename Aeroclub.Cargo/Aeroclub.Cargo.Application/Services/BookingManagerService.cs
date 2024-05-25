@@ -348,7 +348,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var data = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(specs);
 
-            return new LocationsByAWBVM { destinationId = data.CargoBooking.DestinationAirportId, originId = data.CargoBooking.OriginAirportId, destinationName = data.CargoBooking.DestinationAirport.Name, originName = data.CargoBooking.OriginAirport.Name };
+            return new LocationsByAWBVM { destinationId = data.CargoBooking.DestinationAirportId, originId = data.CargoBooking.OriginAirportId, destinationName = data.CargoBooking.DestinationAirport.Name, originName = data.CargoBooking.OriginAirport.Name, destinationCode = data.CargoBooking.DestinationAirport.Code, originCode = data.CargoBooking.OriginAirport.Code };
            
         }
 
