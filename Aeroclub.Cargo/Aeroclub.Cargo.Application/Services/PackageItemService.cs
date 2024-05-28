@@ -30,6 +30,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
+using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -233,6 +234,10 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var x in itemList)
             {
+
+
+              
+
                 var spec = new PackageItemSpecification(
                     new PackageItemRefQM 
                     {
@@ -243,6 +248,27 @@ namespace Aeroclub.Cargo.Application.Services
                     );
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+
+                if(package.PackageItemStatus == PackageItemStatus.AcceptedForFLight)
+                {
+                    var itemStatusspec = new ItemStatusSpecification(PackageItemStatus.AcceptedForFLight, package.Id);
+                    var item = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(itemStatusspec);
+
+                    item.IsDeleted = true;
+                    _unitOfWork.Repository<ItemStatus>().Update(item);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<ItemStatus>().Detach(item);
+
+
+                    var packageULDSpec = new PackageULDContainerSpecification(new ULDContainerByPackageIdQM{ packageId = package.Id });
+                    var packageULDitem = await _unitOfWork.Repository<PackageULDContainer>().GetEntityWithSpecAsync(packageULDSpec);
+
+
+                    _unitOfWork.Repository<PackageULDContainer>().Delete(packageULDitem);
+                    await _unitOfWork.SaveChangesAsync();
+
+
+                }
                 if (package != null)
                 {
                     package.PackageItemStatus = rm.packageItemStatus;
@@ -828,6 +854,18 @@ namespace Aeroclub.Cargo.Application.Services
                     var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
                     if (package != null)
                     {
+                        var itemStatusspec = new ItemStatusSpecification(PackageItemStatus.Offloaded, package.Id);
+                        var item = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(itemStatusspec);
+
+                        if(item != null)
+                        {
+                            item.IsDeleted = true;
+                            _unitOfWork.Repository<ItemStatus>().Update(item);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<ItemStatus>().Detach(item);
+                        }
+
+                       
                         await _unitOfWork.Repository<PackageULDContainer>().CreateAsync(new PackageULDContainer { PackageItemId = package.Id, ULDContainerId = uldCId });
                         await _unitOfWork.SaveChangesAsync();
                         var shipmentSpec = new ShipmentSpecification(new Models.Queries.ShipmentQM.ShipmentQM

@@ -14,11 +14,11 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class PackageAuditSpecification : BaseSpecification<ItemStatus>
     {
         public PackageAuditSpecification(PackageItemStatus status, Guid packageID)
-         :base(x => x.PackageItemStatus == status && x.PackageID == packageID)
+         :base(x => x.PackageItemStatus == status && x.PackageID == packageID && x.IsDeleted == false)
         { }
 
         public PackageAuditSpecification(ItemAuditQM query)
-         : base(x => (query.status == null || x.PackageItemStatus == query.status) && (query.bookingID == null || x.packageItem.CargoBookingId == query.bookingID) &&(query.awbNumber == null || query.awbNumber == x.packageItem.CargoBooking.AWBInformation.AwbTrackingNumber)&&(query.shipmentID == null || query.shipmentID == x.packageItem.ShipmentId))
+         : base(x => (query.status == null || x.PackageItemStatus == query.status) && (query.bookingID == null || x.packageItem.CargoBookingId == query.bookingID) &&(query.awbNumber == null || query.awbNumber == x.packageItem.CargoBooking.AWBInformation.AwbTrackingNumber)&&(query.shipmentID == null || query.shipmentID == x.packageItem.ShipmentId)&&x.IsDeleted == false)
         {
             AddInclude(x => x.Include(x => x.packageItem).ThenInclude((x)=> x.Shipment).ThenInclude((x)=> x.FlightSchedule));
             AddInclude(x => x.Include(x => x.packageItem).ThenInclude((x) => x.CargoBooking).ThenInclude(x => x.AWBInformation));

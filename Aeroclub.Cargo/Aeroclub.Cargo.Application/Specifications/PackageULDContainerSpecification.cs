@@ -13,6 +13,12 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.ULDContainer));
         }
 
+        public PackageULDContainerSpecification(ULDContainerByPackageIdQM query)
+           : base(x => (query.packageId == Guid.Empty || x.PackageItemId == query.packageId))
+        {
+   
+        }
+
         public PackageULDContainerSpecification(PackageByULDQM query)
             : base(x => (x.ULDContainerId == query.uldContainer)&&(x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.AcceptedForFLight || x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.FlightDispatched))
         {
