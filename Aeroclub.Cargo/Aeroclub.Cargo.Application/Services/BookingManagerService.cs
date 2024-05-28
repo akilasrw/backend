@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoPositionQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
@@ -12,6 +13,7 @@ using Aeroclub.Cargo.Application.Models.Queries.SeatQMs;
 using Aeroclub.Cargo.Application.Models.Queries.ULDContainerQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingFlightScheduleSectorRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.CargoBookingRMs;
+using Aeroclub.Cargo.Application.Models.RequestModels.GetAirportsRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetShipmentsRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageItemRMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.PackageULDContainerRM;
@@ -19,6 +21,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.BookingShipmentSummeryVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
+using Aeroclub.Cargo.Application.Models.ViewModels.LocationsByAWBVM;
 using Aeroclub.Cargo.Application.Specifications;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
@@ -337,6 +340,16 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Pagination<CargoBookingVM>> GetBookingFilteredListAsync(CargoBookingFilteredListQM query)
         {
             return await _cargoBookingService.GetFilteredListAsync(query);
+        }
+
+        public async Task<LocationsByAWBVM> GetLocationsByAWBAsync(GetAirportsRM query)
+        {
+            var specs = new AWBSpecification(query, true);
+
+            var data = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(specs);
+
+            return new LocationsByAWBVM { destinationId = data.CargoBooking.DestinationAirportId, originId = data.CargoBooking.OriginAirportId, destinationName = data.CargoBooking.DestinationAirport.Name, originName = data.CargoBooking.OriginAirport.Name, destinationCode = data.CargoBooking.DestinationAirport.Code, originCode = data.CargoBooking.OriginAirport.Code };
+           
         }
 
         public async Task<IReadOnlyList<CargoBookingULDVM>> GetFreighterBookingListAsync(FlightScheduleSectorBookingListQM query)

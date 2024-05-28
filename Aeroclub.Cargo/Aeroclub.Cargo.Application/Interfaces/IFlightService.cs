@@ -22,6 +22,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<FlightVM> GetDetailAsync(FlightDetailQM query);
         Task<ServiceResponseStatus> UpdateAsync(FlightCreateRM flightRM);
         Task<ServiceResponseStatus> DeleteAsync(Guid Id);
+
+        Task<IReadOnlyList<FlightWithSectorsVM>> GetSelectListWithSectorsAsync();
         // Task<Flight> MappedFlightSectorData(Flight? flight, bool isSavedData = true);
     }
 }

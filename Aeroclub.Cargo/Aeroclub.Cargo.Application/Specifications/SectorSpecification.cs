@@ -2,6 +2,7 @@
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aeroclub.Cargo.Application.Specifications
 {
@@ -32,6 +33,13 @@ namespace Aeroclub.Cargo.Application.Specifications
         public SectorSpecification(SectorSelectListQM query)
             : base(x => (query.SectorType == SectorType.None || x.SectorType == query.SectorType))
         {
+
+        }
+
+        
+        public SectorSpecification(Guid flightId):
+            base(x => x.FlightSectors.Any(x => x.FlightId == flightId))
+        { 
 
         }
 

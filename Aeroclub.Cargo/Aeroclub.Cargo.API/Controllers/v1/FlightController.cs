@@ -9,6 +9,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.FlightRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.SectorVMs;
 using Aeroclub.Cargo.Application.Services;
+using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetSelectListAsync()
         {
             return Ok(await _flightService.GetSelectListAsync());
+        }
+
+        [HttpGet("getSelectListWithSectors")]
+        public async Task<ActionResult<IReadOnlyList<FlightWithSectorsVM>>> GetSelectListWithSectorsAsync()
+        {
+            return Ok(await _flightService.GetSelectListWithSectorsAsync());
         }
 
         [HttpGet()]
