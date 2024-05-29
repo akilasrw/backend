@@ -21,5 +21,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.PackageItem));
             AddInclude(x => x.Include(y => y.PackageItems));
         }
+
+
+        public ShipmentSpecification(Guid bookingID)
+           : base(x => x.bookingID == bookingID)
+        {
+        }
     }
 }

@@ -234,10 +234,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var x in itemList)
             {
-
-
-              
-
                 var spec = new PackageItemSpecification(
                     new PackageItemRefQM 
                     {
@@ -259,15 +255,20 @@ namespace Aeroclub.Cargo.Application.Services
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<ItemStatus>().Detach(item);
 
-
                     var packageULDSpec = new PackageULDContainerSpecification(new ULDContainerByPackageIdQM{ packageId = package.Id });
                     var packageULDitem = await _unitOfWork.Repository<PackageULDContainer>().GetEntityWithSpecAsync(packageULDSpec);
+
+                    var shipmentSpec = new ShipmentSpecification(package.CargoBookingId);
+                    var shipment = await _unitOfWork.Repository<Shipment>().GetEntityWithSpecAsync(shipmentSpec);
+
+                    shipment.packageCount = shipment.packageCount - 1;
+                    _unitOfWork.Repository<Shipment>().Update(shipment);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<Shipment>().Detach(shipment);
 
 
                     _unitOfWork.Repository<PackageULDContainer>().Delete(packageULDitem);
                     await _unitOfWork.SaveChangesAsync();
-
-
                 }
                 if (package != null)
                 {
