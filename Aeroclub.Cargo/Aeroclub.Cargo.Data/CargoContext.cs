@@ -206,7 +206,7 @@ namespace Aeroclub.Cargo.Data
         public DbSet<SystemUser> SystemUsers { get; set; } = null!;
         public DbSet<TruckInfo> TruckInfos { get; set; } = null!;
         public DbSet<Truck> truck { get; set; } = null!;
-        public DbSet<DeliveryAudit> DeliveryAudit { get; set; } = null!;    
+        public DbSet<DeliveryAudit> DeliveryAudit { get; set; } = null!;
 
 
 
@@ -216,7 +216,7 @@ namespace Aeroclub.Cargo.Data
 
         public async Task<int> SaveAuditableChangesAsync(Guid userid, CancellationToken cancellationToken = default)
         {
-            var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && x.State is EntityState.Added or EntityState.Modified);
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
             foreach (var entity in entities)
             {
                 switch (entity.State)
@@ -224,52 +224,95 @@ namespace Aeroclub.Cargo.Data
                     case EntityState.Modified:
                         entity.Property("Created").IsModified = false;
                         entity.Property("CreatedBy").IsModified = false;
-                        ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow;
+                        ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow; // Leave as UTC
                         ((AuditableEntity)entity.Entity).LastModifiedBy = userid;
                         break;
                     case EntityState.Added:
-                        ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow;
-                        if (((AuditableEntity)entity.Entity).CreatedBy == Guid.Empty) {
+                        ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow; // Leave as UTC
+                        if (((AuditableEntity)entity.Entity).CreatedBy == Guid.Empty)
+                        {
                             ((AuditableEntity)entity.Entity).CreatedBy = userid;
                         }
                         break;
                     case EntityState.Detached:
-                        break;
                     case EntityState.Unchanged:
-                        break;
                     case EntityState.Deleted:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            return await base.SaveChangesAsync(true, cancellationToken);
-        }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && x.State is EntityState.Added or EntityState.Modified);
+            // Convert UTC time to Malaysian time (MYT)
+            var mytTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
             foreach (var entity in entities)
             {
                 switch (entity.State)
                 {
                     case EntityState.Modified:
-                        ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow;
+                        ((AuditableEntity)entity.Entity).LastModified = TimeZoneInfo.ConvertTimeFromUtc((DateTime)((AuditableEntity)entity.Entity).LastModified, mytTimeZone);
                         break;
                     case EntityState.Added:
-                        ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow;
+                        ((AuditableEntity)entity.Entity).Created = TimeZoneInfo.ConvertTimeFromUtc(((AuditableEntity)entity.Entity).Created, mytTimeZone);
                         break;
                     case EntityState.Detached:
-                        break;
                     case EntityState.Unchanged:
-                        break;
                     case EntityState.Deleted:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             return await base.SaveChangesAsync(true, cancellationToken);
         }
+
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is AuditableEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+            foreach (var entity in entities)
+            {
+                switch (entity.State)
+                {
+                    case EntityState.Modified:
+                        ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow; // Leave as UTC
+                        break;
+                    case EntityState.Added:
+                        ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow; // Leave as UTC
+                        break;
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                    case EntityState.Deleted:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            // Convert UTC time to Malaysian time (MYT)
+            var mytTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+            foreach (var entity in entities)
+            {
+                switch (entity.State)
+                {
+                    case EntityState.Modified:
+                        ((AuditableEntity)entity.Entity).LastModified = TimeZoneInfo.ConvertTimeFromUtc((DateTime)((AuditableEntity)entity.Entity).LastModified, mytTimeZone);
+                        break;
+                    case EntityState.Added:
+                        ((AuditableEntity)entity.Entity).Created = TimeZoneInfo.ConvertTimeFromUtc(((AuditableEntity)entity.Entity).Created, mytTimeZone);
+                        break;
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                    case EntityState.Deleted:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            return await base.SaveChangesAsync(true, cancellationToken);
+        }
+
     }
 }
