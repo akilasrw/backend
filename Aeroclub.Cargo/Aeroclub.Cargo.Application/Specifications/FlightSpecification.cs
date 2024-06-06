@@ -31,7 +31,8 @@ namespace Aeroclub.Cargo.Application.Specifications
            )
         {
             if (query.IsIncludeFlightSectors)
-                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector).ThenInclude((x)=> x.OriginAirport));
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector).ThenInclude((x) => x.DestinationAirport));
         }
 
         public FlightSpecification(FlightFilterListQM query, bool isCount = false)
