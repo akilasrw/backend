@@ -75,7 +75,9 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Country, BaseSelectListModel>()
                 .ForMember(x => x.Value, x => x.MapFrom(c => c.Name));
             CreateMap<Sector, SectorDto>().ReverseMap();
-            CreateMap<Sector, SectorVM>();
+            CreateMap<Sector, SectorVM>()
+                .ForMember(d => d.DestinationAirportName, x => x.MapFrom(s => s.DestinationAirport.Name))
+                .ForMember(d => d.OriginAirportName, x => x.MapFrom(s => s.OriginAirport.Name));
             CreateMap<Currency, BaseSelectListModel>()
                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
             CreateMap<Flight, FlightVM>();

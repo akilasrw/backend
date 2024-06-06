@@ -28,12 +28,17 @@ namespace Aeroclub.Cargo.Application.Specifications
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);
             }
+
+            AddInclude(x => x.Include(y => y.OriginAirport));
+            AddInclude(x => x.Include(y => y.DestinationAirport));
         }
 
         public SectorSpecification(SectorSelectListQM query)
             : base(x => (query.SectorType == SectorType.None || x.SectorType == query.SectorType))
         {
 
+            AddInclude(x => x.Include(y => y.OriginAirport));
+            AddInclude(x => x.Include(y => y.DestinationAirport));
         }
 
         
