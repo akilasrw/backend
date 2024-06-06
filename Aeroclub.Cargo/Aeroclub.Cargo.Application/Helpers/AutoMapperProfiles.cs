@@ -77,7 +77,9 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Sector, SectorDto>().ReverseMap();
             CreateMap<Sector, SectorVM>()
                 .ForMember(d => d.DestinationAirportName, x => x.MapFrom(s => s.DestinationAirport.Name))
-                .ForMember(d => d.OriginAirportName, x => x.MapFrom(s => s.OriginAirport.Name));
+                .ForMember(d => d.OriginAirportName, x => x.MapFrom(s => s.OriginAirport.Name))
+                .ForMember(d => d.DestinationAirportCode, x => x.MapFrom(s => s.DestinationAirport.Code))
+                .ForMember(d => d.OriginAirportCode, x => x.MapFrom(s => s.OriginAirport.Code));
             CreateMap<Currency, BaseSelectListModel>()
                .ForMember(x => x.Value, x => x.MapFrom(c => c.Code));
             CreateMap<Flight, FlightVM>();
@@ -253,10 +255,10 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<FlightScheduleManagement, FlightScheduleManagementVM>()
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.Flight != null ? s.Flight.FlightNumber : ""))
-                .ForMember(d => d.OriginAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.OriginAirportCode : ""))
-                .ForMember(d => d.OriginAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.OriginAirportName : ""))
-                .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportCode : ""))
-                .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirportName : ""))
+                .ForMember(d => d.OriginAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.OriginAirport.Code : ""))
+                .ForMember(d => d.OriginAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.OriginAirport.Name : ""))
+                .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirport.Code : ""))
+                .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.Flight != null ? s.Flight.DestinationAirport.Name : ""))
                 .ForMember(d => d.AircraftSubType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.Type : AircraftSubTypes.None))
                 .ForMember(d => d.ScheduledTime, o => o.MapFrom(s => (s.Flight != null && s.Flight.FlightSectors != null) ? new DateTime()
                 .Add((TimeSpan)s.Flight.FlightSectors.First(r => r.Sequence == 1).DepartureDateTime) : new DateTime()));

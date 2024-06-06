@@ -18,6 +18,8 @@ namespace Aeroclub.Cargo.Application.Specifications
             {
                 AddInclude(x => x.Include(y => y.FlightSchedules));
                 AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+                AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.DestinationAirport));
+                AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.OriginAirport));
                 AddInclude(x => x.Include(y => y.AircraftSubType));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);

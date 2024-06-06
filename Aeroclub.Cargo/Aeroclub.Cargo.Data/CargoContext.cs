@@ -60,6 +60,18 @@ namespace Aeroclub.Cargo.Data
                 .HasForeignKey(s => s.DestinationAirportId)
                 .OnDelete(DeleteBehavior.Restrict); // or .OnDelete(DeleteBehavior.Cascade) if needed
 
+            modelBuilder.Entity<Flight>()
+               .HasOne(s => s.OriginAirport)
+               .WithMany()
+               .HasForeignKey(s => s.OriginAirportId)
+               .OnDelete(DeleteBehavior.Restrict); // or .OnDelete(DeleteBehavior.Cascade) if needed
+
+            modelBuilder.Entity<Flight>()
+                .HasOne(s => s.DestinationAirport)
+                .WithMany()
+                .HasForeignKey(s => s.DestinationAirportId)
+                .OnDelete(DeleteBehavior.Restrict); // or .OnDelete(DeleteBehavior.Cascade) if needed
+
             modelBuilder.Entity<Truck>()
                .HasOne(t => t.CargoBooking)
                .WithMany()
