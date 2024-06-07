@@ -50,7 +50,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightSpecification(FlightCheckExistsQM query)
-            : base(x => x.FlightNumber.ToUpper() == query.FlightNumber.Trim().ToUpper())
+            : base(x => x.FlightNumber.ToUpper() == query.FlightNumber.Trim().ToUpper() && x.IsDeleted ==false)
         {
 
         }
