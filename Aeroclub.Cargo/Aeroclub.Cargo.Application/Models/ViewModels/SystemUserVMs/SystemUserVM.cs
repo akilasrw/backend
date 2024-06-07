@@ -9,6 +9,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.SystemUserVMs
 {
     public class SystemUserVM
     {
+        public Guid Id { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string City { get; set; } = null!;
