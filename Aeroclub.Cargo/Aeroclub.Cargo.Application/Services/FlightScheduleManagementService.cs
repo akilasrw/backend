@@ -44,6 +44,22 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
 
+        public async Task<bool> CheckSchedule(FlightScheduleManagementRM dto)
+        {
+            var specs = new FlightScheduleManagementSpecification(dto.ScheduleStartDate, dto.ScheduleEndDate, dto.FlightId);
+            var existingSchedule = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(specs);
+
+            if(existingSchedule != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
         {
             var res = new ServiceResponseCreateStatus();

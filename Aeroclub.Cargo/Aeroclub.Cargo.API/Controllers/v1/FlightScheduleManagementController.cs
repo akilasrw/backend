@@ -43,6 +43,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleManagementRM dto)
         {
+            var isExits = await _flightScheduleManagementService.CheckSchedule(dto);
+
+            if(isExits) { 
+                return BadRequest("Flight Schedule Already Exits");
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

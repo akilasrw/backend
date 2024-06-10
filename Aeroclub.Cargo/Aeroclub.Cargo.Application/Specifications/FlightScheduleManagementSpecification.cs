@@ -36,6 +36,11 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+        public FlightScheduleManagementSpecification(DateTime start, DateTime end, Guid flightID)
+         : base(x => x.FlightId == flightID && x.ScheduleStartDate.Date == start.Date && x.ScheduleEndDate.Date == end.Date ) {
+
+        }
+
         public FlightScheduleManagementSpecification(FlightScheduleManagemenLinktFilteredListQM query, bool isCount = false)
             : base(x => (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
         {
