@@ -289,7 +289,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<bool> DeleteAsync(Guid Id)
         {
-            var entity = await _unitOfWork.Repository<FlightScheduleManagement>().GetByIdAsync(Id);
+            var entity = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM { Id = Id}));
             _unitOfWork.Repository<FlightScheduleManagement>().Delete(entity);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightScheduleManagement>().Detach(entity);
