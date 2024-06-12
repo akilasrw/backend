@@ -25,7 +25,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public SystemUserSpecification(SystemUserListQM query, bool isCount = false)
           : base(x => (string.IsNullOrEmpty(query.Name) || x.AppUser.FirstName.Contains(query.Name) || x.AppUser.LastName.Contains(query.Name)) &&
-          (query.Status == UserStatus.None || x.UserStatus == query.Status)
+          (query.Status == UserStatus.None || x.UserStatus == query.Status) && (x.IsDeleted == false)
           )
         {
 

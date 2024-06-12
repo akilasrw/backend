@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoAgentQMs;
 using Aeroclub.Cargo.Application.Models.Queries.SystemUserQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AirportRMs;
@@ -78,6 +79,21 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             await _manageUserService.StatusUpdateAsync(model);
 
             return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            var user = await _manageUserService.GetAsync(new SystemUserQM{ Id=id});
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _manageUserService.DeleteAsync(id);
+            return Ok(result);
         }
 
         [HttpGet("GetFilteredList")]

@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<SystemUserVM> GetAsync(SystemUserQM query);
         Task<ServiceResponseCreateStatus> CreateAsync(SystemUserCreateRM model);
         Task<bool> StatusUpdateAsync(SystemUserStatusUpdateRM rm);
+        Task<bool> DeleteAsync(Guid Id);
         Task<Pagination<SystemUserVM>> GetFilteredListAsync(SystemUserListQM query);
     }
 }

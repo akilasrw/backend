@@ -43,6 +43,14 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<SystemUser, SystemUserVM>(cargoAgent);
         }
 
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            var entity = await _unitOfWork.Repository<SystemUser>().GetByIdAsync(Id, false);
+            entity.IsDeleted = true;
+            return (await _unitOfWork.SaveChangesAsync() > 0);
+        }
+
+
         public async Task<ServiceResponseCreateStatus> CreateAsync(SystemUserCreateRM model)
         {
             SystemUser createdUser;
