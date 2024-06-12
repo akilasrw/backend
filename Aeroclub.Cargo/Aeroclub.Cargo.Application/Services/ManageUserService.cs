@@ -45,7 +45,10 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<bool> DeleteAsync(Guid Id)
         {
-            var entity = await _unitOfWork.Repository<SystemUser>().GetByIdAsync(Id, false);
+            var entity = await _unitOfWork.Repository<SystemUser>().GetEntityWithSpecAsync(new SystemUserSpecification(Id));
+            // need to delete the app suer as well
+            await _userManager.DeleteAsync(entity.AppUser);
+           
             entity.IsDeleted = true;
             return (await _unitOfWork.SaveChangesAsync() > 0);
         }

@@ -22,6 +22,11 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
 
+        public SystemUserSpecification(Guid id)
+            : base(x => (x.Id == id))
+        {
+            AddInclude(y => y.Include(x => x.AppUser).ThenInclude(y => y.UserRoles));
+        }
 
         public SystemUserSpecification(SystemUserListQM query, bool isCount = false)
           : base(x => (string.IsNullOrEmpty(query.Name) || x.AppUser.FirstName.Contains(query.Name) || x.AppUser.LastName.Contains(query.Name)) &&
