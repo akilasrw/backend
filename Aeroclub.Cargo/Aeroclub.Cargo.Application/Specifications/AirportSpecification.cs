@@ -34,7 +34,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AirportSpecification(AirportValidationQM query)
-            : base(x => !string.IsNullOrEmpty(query.AirportCode) && x.Code.ToLower() == query.AirportCode.ToLower())
+            : base(x => !string.IsNullOrEmpty(query.AirportCode) && x.Code.ToLower() == query.AirportCode.ToLower() && x.IsDeleted == false)
         {
 
         }
