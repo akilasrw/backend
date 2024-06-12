@@ -173,7 +173,7 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
         {
-            var list = await _unitOfWork.Repository<Flight>().GetListAsync();
+            var list = await _unitOfWork.Repository<Flight>().GetListWithSpecAsync(new FlightSpecification());
             return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
         }
 

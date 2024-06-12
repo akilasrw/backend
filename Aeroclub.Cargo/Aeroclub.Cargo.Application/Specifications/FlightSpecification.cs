@@ -17,6 +17,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IncludeSectors)
                 AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
         }
+
+        public FlightSpecification()
+        : base(x=>x.IsDeleted == false){ }
         
         public FlightSpecification(FlightListQM query)
         : base(x=> 
