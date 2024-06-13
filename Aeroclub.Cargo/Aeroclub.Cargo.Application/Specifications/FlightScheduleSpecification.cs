@@ -36,8 +36,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         
         public FlightScheduleSpecification(FlightScheduleStandbyQM query)
         : base(x=> 
-            (query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date) &&
-            (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber))
+            ((query.FlightDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date == query.FlightDate.Date) &&
+            (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber))&& x.IsDeleted == false)
         )
         {
                 if (query.IncludeFlightScheduleSectors)
@@ -47,7 +47,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public FlightScheduleSpecification(FlightScheduleQM query)
             : base(x => (query.Id == Guid.Empty || x.Id == query.Id) &&
-            (query.FlightId == Guid.Empty || x.FlightId == query.FlightId))
+            (query.FlightId == Guid.Empty || x.FlightId == query.FlightId) && x.IsDeleted == false)
         {
 
             if (query.IncludeFlightScheduleSectors)

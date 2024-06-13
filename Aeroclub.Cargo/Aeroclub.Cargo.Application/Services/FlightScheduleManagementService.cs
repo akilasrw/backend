@@ -290,7 +290,18 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<bool> DeleteAsync(Guid Id)
         {
             var entity = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM { Id = Id}));
-            _unitOfWork.Repository<FlightScheduleManagement>().Delete(entity);
+
+            foreach (  var item in entity.FlightSchedules)
+            {
+                item.IsDeleted = true;
+                _unitOfWork.Repository<FlightSchedule>().Update(item);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightSchedule>().Detach(item);
+            }
+            
+
+            entity.IsDeleted = true;
+            _unitOfWork.Repository<FlightScheduleManagement>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightScheduleManagement>().Detach(entity);
             return (await _unitOfWork.SaveChangesAsync() > 0);
