@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IManageUserService
     {
         Task<SystemUserVM> GetAsync(SystemUserQM query);
+        Task<ServiceResponseStatus> UpdateAsync(Guid id, SystemUserUpdateRM model);
         Task<ServiceResponseCreateStatus> CreateAsync(SystemUserCreateRM model);
         Task<bool> StatusUpdateAsync(SystemUserStatusUpdateRM rm);
         Task<bool> DeleteAsync(Guid Id);

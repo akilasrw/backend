@@ -149,5 +149,28 @@ namespace Aeroclub.Cargo.Application.Services
             string text = "Dear {0}<br/><br/>,Your login password is <strong>{1}</strong>";
             return string.Format(text, name, password);
         }
+
+        public async Task<ServiceResponseStatus> UpdateAsync(Guid id, SystemUserUpdateRM model)
+        {
+            var user = await _unitOfWork.Repository<SystemUser>().GetByIdAsync(id);
+
+            if(user == null)
+            {
+                return ServiceResponseStatus.Failed;
+            }
+
+            user.CountryId = model.CountryId;
+            user.BaseAirportId = model.BaseAirportId;
+            user.City = model.City;
+            user.AccessPortalLevel = model.AccessPortalLevel;
+            user.UserRole = model.UserRole;
+            user.UserStatus = model.UserStatus;
+
+            _unitOfWork.Repository<SystemUser>().Update(user);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<SystemUser>().Detach(user);
+
+            return ServiceResponseStatus.Success;
+        }
     }
 }

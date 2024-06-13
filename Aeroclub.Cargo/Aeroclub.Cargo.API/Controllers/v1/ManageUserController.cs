@@ -81,6 +81,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UserUpdateAsync(Guid id,[FromBody] SystemUserUpdateRM model)
+        {
+            if (!ModelState.IsValid) return BadRequest("Some fields are missing.");
+
+            await _manageUserService.UpdateAsync(id, model);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
