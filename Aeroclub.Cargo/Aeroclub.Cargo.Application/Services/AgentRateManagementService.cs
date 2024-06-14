@@ -199,9 +199,12 @@ namespace Aeroclub.Cargo.Application.Services
                     ValidEndDate = entity.EndDate, 
                     ValidStartDate = entity.StartDate,
                 });
-                var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
 
-                if (agentRate != null && agentRate.AgentRates != null)
+                //commenting this out to the favor of updating the things like rate type other than rates
+
+                //var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
+
+                /*if (agentRate != null && agentRate.AgentRates != null)
                 {
                     bool isAllRatesSame = true;
 
@@ -219,7 +222,7 @@ namespace Aeroclub.Cargo.Application.Services
                         response.Message = "This record is already available.";
                         return response;
                     }  
-                }
+                }*/
 
                 var originAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(entity.OriginAirportId);
                 var destinationAirport = await _unitOfWork.Repository<Airport>().GetByIdAsync(entity.DestinationAirportId);
