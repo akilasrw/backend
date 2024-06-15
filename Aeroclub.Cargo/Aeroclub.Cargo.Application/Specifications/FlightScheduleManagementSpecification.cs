@@ -9,15 +9,17 @@ namespace Aeroclub.Cargo.Application.Specifications
     {
 
         public FlightScheduleManagementSpecification(FlightScheduleManagementFilteredListQM query, bool isCount = false)
-        : base(x =>(query.OriginAirportId == Guid.Empty || (x.Flight != null && x.Flight.OriginAirportId == query.OriginAirportId)) &&
+        : base(x =>((query.OriginAirportId == Guid.Empty || (x.Flight != null && x.Flight.OriginAirportId == query.OriginAirportId)) &&
        (query.DestinationAirportId == Guid.Empty || (x.Flight != null && x.Flight.DestinationAirportId == query.DestinationAirportId)) &&
-        (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))
+        (string.IsNullOrEmpty(query.FlightNumber) || (x.Flight != null && x.Flight.FlightNumber.Contains(query.FlightNumber))))&& x.IsDeleted == false)
         {
 
             if (!isCount)
             {
                 AddInclude(x => x.Include(y => y.FlightSchedules));
                 AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+                AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.DestinationAirport));
+                AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.OriginAirport));
                 AddInclude(x => x.Include(y => y.AircraftSubType));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);
@@ -31,6 +33,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
             AddInclude(x => x.Include(y => y.AircraftSubType));
             AddInclude(x => x.Include(y => y.FlightSchedules));
+
+        }
+
+        public FlightScheduleManagementSpecification(DateTime start, DateTime end, Guid flightID)
+         : base(x => x.FlightId == flightID && x.ScheduleStartDate.Date == start.Date && x.ScheduleEndDate.Date == end.Date ) {
 
         }
 

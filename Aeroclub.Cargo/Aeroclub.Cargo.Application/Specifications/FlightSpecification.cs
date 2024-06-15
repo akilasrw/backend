@@ -17,6 +17,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (query.IncludeSectors)
                 AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
         }
+
+        public FlightSpecification()
+        : base(x=>x.IsDeleted == false){ }
         
         public FlightSpecification(FlightListQM query)
         : base(x=> 
@@ -31,7 +34,8 @@ namespace Aeroclub.Cargo.Application.Specifications
            )
         {
             if (query.IsIncludeFlightSectors)
-                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector));
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector).ThenInclude((x)=> x.OriginAirport));
+                AddInclude(x => x.Include(y => y.FlightSectors).ThenInclude(z => z.Sector).ThenInclude((x) => x.DestinationAirport));
         }
 
         public FlightSpecification(FlightFilterListQM query, bool isCount = false)
@@ -49,7 +53,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightSpecification(FlightCheckExistsQM query)
-            : base(x => x.FlightNumber.ToUpper() == query.FlightNumber.Trim().ToUpper())
+            : base(x => x.FlightNumber.ToUpper() == query.FlightNumber.Trim().ToUpper() && x.IsDeleted ==false)
         {
 
         }

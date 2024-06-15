@@ -1,9 +1,11 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.AirportQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementVMs;
+using Aeroclub.Cargo.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +45,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FlightScheduleManagementRM dto)
         {
+            var isExits = await _flightScheduleManagementService.CheckSchedule(dto);
+
+            if(isExits) { 
+                return BadRequest("Flight Schedule Already Exits");
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -65,6 +72,22 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return BadRequest(response.Message == null ? "Flight schedule update fails." : response.Message);
 
             return NoContent();
+        }
+
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            var sector = await _flightScheduleManagementService.GetAsync(new FlightScheduleManagementDetailQM{Id = id});
+            if (sector == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _flightScheduleManagementService.DeleteAsync(id);
+            return Ok(result);
         }
 
     }

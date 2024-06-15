@@ -44,6 +44,22 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
 
+        public async Task<bool> CheckSchedule(FlightScheduleManagementRM dto)
+        {
+            var specs = new FlightScheduleManagementSpecification(dto.ScheduleStartDate, dto.ScheduleEndDate, dto.FlightId);
+            var existingSchedule = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(specs);
+
+            if(existingSchedule != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         public async Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto)
         {
             var res = new ServiceResponseCreateStatus();
@@ -273,8 +289,19 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<bool> DeleteAsync(Guid Id)
         {
-            var entity = await _unitOfWork.Repository<FlightScheduleManagement>().GetByIdAsync(Id);
-            _unitOfWork.Repository<FlightScheduleManagement>().Delete(entity);
+            var entity = await _unitOfWork.Repository<FlightScheduleManagement>().GetEntityWithSpecAsync(new FlightScheduleManagementSpecification(new FlightScheduleManagementDetailQM { Id = Id}));
+
+            foreach (  var item in entity.FlightSchedules)
+            {
+                item.IsDeleted = true;
+                _unitOfWork.Repository<FlightSchedule>().Update(item);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightSchedule>().Detach(item);
+            }
+            
+
+            entity.IsDeleted = true;
+            _unitOfWork.Repository<FlightScheduleManagement>().Update(entity);
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<FlightScheduleManagement>().Detach(entity);
             return (await _unitOfWork.SaveChangesAsync() > 0);

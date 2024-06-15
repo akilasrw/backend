@@ -10,6 +10,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
     public interface IFlightScheduleManagementService
     {
         Task<ServiceResponseCreateStatus> CreateAsync(FlightScheduleManagementRM dto);
+        Task<bool> CheckSchedule(FlightScheduleManagementRM dto);
         Task<Pagination<FlightScheduleManagementVM>> GetFilteredListAsync(FlightScheduleManagementFilteredListQM query);
         Task<FlightScheduleManagementVM> GetAsync(FlightScheduleManagementDetailQM query);
         Task<ServiceResponseCreateStatus> UpdateAsync(FlightScheduleManagementUpdateRM dto);

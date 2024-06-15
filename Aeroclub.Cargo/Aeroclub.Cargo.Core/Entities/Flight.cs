@@ -14,6 +14,9 @@ namespace Aeroclub.Cargo.Core.Entities
         public string OriginAirportName { get; set; } = null!;
         public string DestinationAirportName { get; set; } = null!;
 
+        public virtual Airport DestinationAirport { get; set; }
+        public virtual Airport OriginAirport { get; set; }
+
         public virtual ICollection<FlightSector>? FlightSectors { get; set; } = null;
     }
 }

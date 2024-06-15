@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240606123946_SerctorAirportLink")]
+    partial class SerctorAirportLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1129,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "57e2bd94-9e27-44c3-9214-2d557986455f",
+                            ConcurrencyStamp = "53ad1f7a-7fc5-4d3a-902a-1fef829b9436",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1147,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "097d54bd-b417-4ec5-ba4f-eefa7a6255c4",
+                            ConcurrencyStamp = "86f97948-5efc-48ad-83d3-136a3603df3f",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -27447,10 +27449,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DestinationAirportId");
-
-                    b.HasIndex("OriginAirportId");
-
                     b.ToTable("Flights");
                 });
 
@@ -39577,8 +39575,6 @@ namespace Aeroclub.Cargo.Data.Migrations
 
                     b.HasIndex("DestinationAirportId");
 
-                    b.HasIndex("OriginAirportId");
-
                     b.ToTable("Sectors");
                 });
 
@@ -40735,25 +40731,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("ZoneArea");
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Flight", b =>
-                {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "DestinationAirport")
-                        .WithMany()
-                        .HasForeignKey("DestinationAirportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "OriginAirport")
-                        .WithMany()
-                        .HasForeignKey("OriginAirportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("DestinationAirport");
-
-                    b.Navigation("OriginAirport");
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.FlightSchedule", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.Aircraft", "Aircraft")
@@ -41062,21 +41039,13 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Sector", b =>
                 {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "DestinationAirport")
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "Airport")
                         .WithMany()
                         .HasForeignKey("DestinationAirportId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "OriginAirport")
-                        .WithMany()
-                        .HasForeignKey("OriginAirportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("DestinationAirport");
-
-                    b.Navigation("OriginAirport");
+                    b.Navigation("Airport");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Shipment", b =>
