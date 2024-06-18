@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240618174443_AddChildRates")]
+    partial class AddChildRates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,50 +23,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentOtherRates", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ChildCategoryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FixRate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IATACode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MinPreceptionRate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RateDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RateName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RatePerKG")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TrancheRate")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildCategoryID");
-
-                    b.ToTable("AgentOtherRates");
-                });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentRate", b =>
                 {
@@ -1173,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a6c43710-8ee1-491f-b800-8d1c86862e5e",
+                            ConcurrencyStamp = "a831c1ce-3e3f-4ad7-9e58-46365214ddde",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1191,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2495b5c9-0684-43d2-86ad-9bf1cc67c613",
+                            ConcurrencyStamp = "996c0966-807a-4b2a-b692-79bac9ceeb39",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -40822,17 +40780,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentOtherRates", b =>
-                {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.ChildRateCategory", "childCategory")
-                        .WithMany()
-                        .HasForeignKey("ChildCategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("childCategory");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentRate", b =>

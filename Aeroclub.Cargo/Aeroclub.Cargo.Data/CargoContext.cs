@@ -28,6 +28,16 @@ namespace Aeroclub.Cargo.Data
                  .HasForeignKey(t => t.CreatedBy)
                  .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<AgentOtherRates>()
+                 .HasOne(t => t.childCategory)
+                 .WithMany()
+                 .HasForeignKey(t => t.ChildCategoryID);
+
+            modelBuilder.Entity<ChildRateCategory>()
+                .HasOne(t => t.SubRateCategory)
+                .WithMany()
+                .HasForeignKey(t => t.CategoryID);
+
             // Configure the relationship between Shipment and PackageItem
             modelBuilder.Entity<PackageItem>()
                 .HasOne(p => p.Shipment)           // Each PackageItem has one Shipment
@@ -231,6 +241,8 @@ namespace Aeroclub.Cargo.Data
         public DbSet<TruckInfo> TruckInfos { get; set; } = null!;
         public DbSet<Truck> truck { get; set; } = null!;
         public DbSet<DeliveryAudit> DeliveryAudit { get; set; } = null!;
+        public DbSet<SubRateCategory> SubRateCategories { get; set; } = null!;
+        public DbSet<ChildRateCategory> ChildRateCategories { get; set; } = null!;
 
 
 

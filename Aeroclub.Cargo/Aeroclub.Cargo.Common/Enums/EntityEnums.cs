@@ -52,6 +52,13 @@ namespace Aeroclub.Cargo.Common.Enums
         OnTime = 1,
         Delayed = 2
     }
+
+    public enum OtherRateTypes
+    {
+        ExportFees = 0,
+        ImportFees = 1,
+        MiscellaneousFees = 2
+    }
     public enum FlightScheduleOrderStatus
     {
         None = 0,

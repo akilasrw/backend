@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20240618173351_AddSubRates")]
+    partial class AddSubRates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,50 +23,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentOtherRates", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ChildCategoryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FixRate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IATACode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MinPreceptionRate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RateDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RateName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RatePerKG")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TrancheRate")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildCategoryID");
-
-                    b.ToTable("AgentOtherRates");
-                });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentRate", b =>
                 {
@@ -1173,7 +1131,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a6c43710-8ee1-491f-b800-8d1c86862e5e",
+                            ConcurrencyStamp = "4b43e73c-f4a4-4e6d-83e5-5e2c721da170",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1191,7 +1149,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2495b5c9-0684-43d2-86ad-9bf1cc67c613",
+                            ConcurrencyStamp = "d767f23c-8422-4d8c-ad89-d0fbd3a312ec",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -23156,292 +23114,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ChildRateCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryID");
-
-                    b.ToTable("ChildRateCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ca0f0f27-4a9a-4f35-b470-1c09d8f46b63"),
-                            CategoryID = new Guid("49d5d81a-5a16-42b6-909c-917de89efb63"),
-                            CategoryName = "FIXED FEES (INCLUDING STAMP DUTY, FOR ALL PRODUCTS EXCLUDING EXPRESS)"
-                        },
-                        new
-                        {
-                            Id = new Guid("1a65d1d4-cdb6-4f11-849f-90542b621746"),
-                            CategoryID = new Guid("49d5d81a-5a16-42b6-909c-917de89efb63"),
-                            CategoryName = "AWB ISSUING BY AFKL (AF or KL)"
-                        },
-                        new
-                        {
-                            Id = new Guid("b2b7ab59-44b6-4757-8d88-bcda78174c61"),
-                            CategoryID = new Guid("49d5d81a-5a16-42b6-909c-917de89efb63"),
-                            CategoryName = "DOCUMENT AMMENDEMENTS C.C.A."
-                        },
-                        new
-                        {
-                            Id = new Guid("d063c933-8c0e-4557-8b6f-48f3ab4e3d3d"),
-                            CategoryID = new Guid("49d5d81a-5a16-42b6-909c-917de89efb63"),
-                            CategoryName = "PAPER AWB FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("4c9456ce-1013-4b54-93bf-7f625b7ebe59"),
-                            CategoryID = new Guid("49d5d81a-5a16-42b6-909c-917de89efb63"),
-                            CategoryName = "DISBURSEMENT FEES"
-                        },
-                        new
-                        {
-                            Id = new Guid("a11f3c71-7990-4e82-81b0-692f2e8b01a5"),
-                            CategoryID = new Guid("49d5d81a-5a16-42b6-909c-917de89efb63"),
-                            CategoryName = "NON-BOOKED EXPRESS AWB"
-                        },
-                        new
-                        {
-                            Id = new Guid("8f3a5821-cd7b-4172-a1a7-cf7b073b0641"),
-                            CategoryID = new Guid("5e8f8129-4f3e-4821-8c8a-feb1715d6157"),
-                            CategoryName = "EXPORT CONTROL SYSTEM (ECS)"
-                        },
-                        new
-                        {
-                            Id = new Guid("8fc65d06-48ae-4561-83bf-59c7c730b4b7"),
-                            CategoryID = new Guid("5e8f8129-4f3e-4821-8c8a-feb1715d6157"),
-                            CategoryName = "T1 HANDLING FEES"
-                        },
-                        new
-                        {
-                            Id = new Guid("f0d8c994-69ff-4751-8e4c-5e2c71c33d38"),
-                            CategoryID = new Guid("5e8f8129-4f3e-4821-8c8a-feb1715d6157"),
-                            CategoryName = "HOUSE AIR WAYBILL DATA TRANSMISSION"
-                        },
-                        new
-                        {
-                            Id = new Guid("d1dfc468-dc9b-4745-bf85-0ac7e10490b4"),
-                            CategoryID = new Guid("5e8f8129-4f3e-4821-8c8a-feb1715d6157"),
-                            CategoryName = "PROCESSING FEES (for private person)"
-                        },
-                        new
-                        {
-                            Id = new Guid("0818f5c0-3151-4585-9b99-e5bf655a742a"),
-                            CategoryID = new Guid("b76e546b-50e5-4a88-8a1a-4fa485b845e0"),
-                            CategoryName = "SECURED SHIPMENTS"
-                        },
-                        new
-                        {
-                            Id = new Guid("ee3478a5-57a3-41ed-8c9c-801b38506f3f"),
-                            CategoryID = new Guid("b76e546b-50e5-4a88-8a1a-4fa485b845e0"),
-                            CategoryName = "NON-SECURED SHIPMENTS"
-                        },
-                        new
-                        {
-                            Id = new Guid("b94f6213-e5f3-41a2-9c9e-4aaf2ec4292e"),
-                            CategoryID = new Guid("b76e546b-50e5-4a88-8a1a-4fa485b845e0"),
-                            CategoryName = "DOG SECURITY INSPECTION"
-                        },
-                        new
-                        {
-                            Id = new Guid("e8e823d5-5b34-4095-98e2-1c070bc13612"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "LOADING/UNLOADING"
-                        },
-                        new
-                        {
-                            Id = new Guid("8f2e86a1-8c7b-40c7-80d7-6d8ee2c5b968"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "SHIPMENT NOT READY FOR CARRIAGE"
-                        },
-                        new
-                        {
-                            Id = new Guid("292b3e9b-5f7a-46f0-a8b3-3a116a0bf6f2"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "STORAGE FEES"
-                        },
-                        new
-                        {
-                            Id = new Guid("5f265175-ffcc-4bf4-876a-9c5043a9aacc"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "INTERNAL DELIVERY"
-                        },
-                        new
-                        {
-                            Id = new Guid("11e831a1-68f8-47ea-9d1c-32c90202b92f"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "SPECIAL OPENING OF CENTRES"
-                        },
-                        new
-                        {
-                            Id = new Guid("a2b956d3-ecdc-4e4b-8b6e-1e11847fda59"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "IMPROPERLY LOADED ULD � RECONTOURING"
-                        },
-                        new
-                        {
-                            Id = new Guid("5d180c4d-1a90-4e82-b37f-011b5dbd0a0f"),
-                            CategoryID = new Guid("feef71f5-4a5e-4a3c-a1be-7c5995702e50"),
-                            CategoryName = "DIRECT PICK-UP - DPU"
-                        },
-                        new
-                        {
-                            Id = new Guid("f383ae0b-6f1d-4852-9335-678f52c1f8c1"),
-                            CategoryID = new Guid("43d8d8b8-732b-4b24-8e1d-4e3b78767b7c"),
-                            CategoryName = "DANGEROUS GOODS CHARGES"
-                        },
-                        new
-                        {
-                            Id = new Guid("69287538-ff9f-417e-9e1c-1797599d5248"),
-                            CategoryID = new Guid("43d8d8b8-732b-4b24-8e1d-4e3b78767b7c"),
-                            CategoryName = "DANGEROUS GOODS CHARGES � LIGHT �"
-                        },
-                        new
-                        {
-                            Id = new Guid("5d02ec69-6f31-4f49-a101-d60f7856690b"),
-                            CategoryID = new Guid("43d8d8b8-732b-4b24-8e1d-4e3b78767b7c"),
-                            CategoryName = "NON CONFORM DANGEROUS GOODS"
-                        },
-                        new
-                        {
-                            Id = new Guid("2e88b5d8-df28-41d1-b46f-6dfe4e9e235d"),
-                            CategoryID = new Guid("f12d77b4-2c5b-4c15-81d4-e67cb9a65847"),
-                            CategoryName = "FIXED CHARGE"
-                        },
-                        new
-                        {
-                            Id = new Guid("c515b6f0-ec85-4c17-b1aa-4765a4a15023"),
-                            CategoryID = new Guid("f12d77b4-2c5b-4c15-81d4-e67cb9a65847"),
-                            CategoryName = "FUNERAL CHAMBER FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("6f76e90c-4cd0-4f4e-bccf-0b6f4518d1d1"),
-                            CategoryID = new Guid("a46a62bc-2b2d-4a95-9170-b6ea9cb1d1ec"),
-                            CategoryName = "CHECK-LIST FEES"
-                        },
-                        new
-                        {
-                            Id = new Guid("94f53f4f-eaa0-44bc-94c2-48e7eaf8e8a6"),
-                            CategoryID = new Guid("a46a62bc-2b2d-4a95-9170-b6ea9cb1d1ec"),
-                            CategoryName = "CONTAINERS FEES"
-                        },
-                        new
-                        {
-                            Id = new Guid("416f1f1e-4b05-4607-9e7a-4a416fe5a5b0"),
-                            CategoryID = new Guid("a46a62bc-2b2d-4a95-9170-b6ea9cb1d1ec"),
-                            CategoryName = "PIVOT WEIGHT"
-                        },
-                        new
-                        {
-                            Id = new Guid("be4c0414-41a7-4ef8-875e-2a937d4416b2"),
-                            CategoryID = new Guid("f9e1f7e9-5d5c-4ba0-98b5-91889fbac282"),
-                            CategoryName = "FIX RATE"
-                        },
-                        new
-                        {
-                            Id = new Guid("c7c5f4f3-9b13-4a9b-8978-5a9ae7c53c60"),
-                            CategoryID = new Guid("f9e1f7e9-5d5c-4ba0-98b5-91889fbac282"),
-                            CategoryName = "FRAIS DE MISE � DISPOSITION"
-                        },
-                        new
-                        {
-                            Id = new Guid("1b4265c0-90f4-47a7-a8d8-31dfec3ec15f"),
-                            CategoryID = new Guid("adf8d68a-7af5-49a7-bd7e-d5096a6d3d6d"),
-                            CategoryName = "IMPORT HANDOVER CHARGES"
-                        },
-                        new
-                        {
-                            Id = new Guid("21fbd3f2-735c-4e56-86fe-67b32e1e5266"),
-                            CategoryID = new Guid("adf8d68a-7af5-49a7-bd7e-d5096a6d3d6d"),
-                            CategoryName = "PROOF OF DELIVERY (P.O.D.)"
-                        },
-                        new
-                        {
-                            Id = new Guid("2c00f7a0-4b1f-4da4-916b-3f8829f6700c"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "STORAGE FEES including EXPRESS product"
-                        },
-                        new
-                        {
-                            Id = new Guid("a332f91a-721e-4b9a-a3e3-bcd474a2f252"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "URGENT BREAK DOWN"
-                        },
-                        new
-                        {
-                            Id = new Guid("caebd6ef-3ef0-434e-9a32-54c9b0a8892e"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "B.U.P. BREAK DOWN"
-                        },
-                        new
-                        {
-                            Id = new Guid("f5a27c7c-5341-4417-bd4f-18f9a5a0bf9a"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "TEMPORARY WAREHOUSE STORAGE FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("95f97b97-ec63-4a35-b1a7-8e764c5c3c9a"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "DESTRUCTION FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("4cf2bf89-78fb-43a7-9a5b-0de974a6cdd8"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "PERISHABLES TERMINAL HANDLING FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("f587d3e2-0b16-4d69-b2f0-21e3c8ab76c2"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "COLD ROOM STORAGE FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("ef7c2138-bba3-48b6-bbbd-6f61a3fa13f8"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "REWEIGHING"
-                        },
-                        new
-                        {
-                            Id = new Guid("b2f239e8-6e4e-4673-a7a8-5a5ba3f620dc"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "DEMURRAGE FEE"
-                        },
-                        new
-                        {
-                            Id = new Guid("8b10ea2a-1ff8-4df7-8d7e-c2f16d97bb02"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "UNIT LOAD DEVICE CHARGES"
-                        },
-                        new
-                        {
-                            Id = new Guid("7b1f42c8-9d5b-4e9d-a7b8-04bae2b892bc"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "DTA (Direct To Agent) DIRECT DELIVERY SERVICE"
-                        },
-                        new
-                        {
-                            Id = new Guid("5c79243c-16a2-4bf7-bd8e-aa29f1417808"),
-                            CategoryID = new Guid("6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1"),
-                            CategoryName = "STOPPED IN TRANSIT SHIPMENTS"
-                        });
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Country", b =>
                 {
                     b.Property<Guid>("Id")
@@ -40824,17 +40496,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentOtherRates", b =>
-                {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.ChildRateCategory", "childCategory")
-                        .WithMany()
-                        .HasForeignKey("ChildCategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("childCategory");
-                });
-
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.AgentRate", b =>
                 {
                     b.HasOne("Aeroclub.Cargo.Core.Entities.AgentRateManagement", "AgentRateManagement")
@@ -41166,17 +40827,6 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Navigation("Seat");
 
                     b.Navigation("ZoneArea");
-                });
-
-            modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ChildRateCategory", b =>
-                {
-                    b.HasOne("Aeroclub.Cargo.Core.Entities.SubRateCategory", "SubRateCategory")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubRateCategory");
                 });
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.Flight", b =>

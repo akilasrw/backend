@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.AgentRateManagementRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.AgentRateManagementVMs;
 using Aeroclub.Cargo.Common.Enums;
+using Aeroclub.Cargo.Core.Entities;
 using Google.Type;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,15 +48,43 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _agentRateManagementService.GetFilteredListAsync(query));
         }
 
+        [HttpGet("GetOtherSubRates/{id}")]
+        public async Task<ActionResult<SubRateCategory>> GetOtherSubRates(OtherRateTypes id)
+        {
+            return Ok(await _agentRateManagementService.GetOtherSubRates(id));
+        }
+
+        [HttpGet("GetOtherChildRates/{id}")]
+        public async Task<ActionResult<ChildRateCategory>> GetOtherChildRates(Guid id)
+        {
+            return Ok(await _agentRateManagementService.GetChildRates(id));
+        }
+
+        [HttpGet("GetAgentOtherRates/{id}")]
+        public async Task<ActionResult<AgentOtherRates>> GetAgentOtherRates(Guid id)
+        {
+            return Ok(await _agentRateManagementService.FilterOtherRates(id));
+        }
+
+
+
+
+        [HttpPost("CreateOtherRate")]
+        public async Task<ActionResult<AgentOtherRates>> CreateOtherRate([FromBody] AgentOtherRatesRM model)
+        {
+            return Ok(await _agentRateManagementService.CreateOtherRates(model));
+        }
+
+
         [HttpPost()]
         public async Task<IActionResult> CreateAsync([FromBody] AgentRateManagementListRM dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(dto.AgentRateManagements == null) return BadRequest(ModelState);
+            if (dto.AgentRateManagements == null) return BadRequest(ModelState);
 
-            foreach(var rate in dto.AgentRateManagements)
+            foreach (var rate in dto.AgentRateManagements)
             {
                 if (rate.RateType == RateType.ContractRate && rate.CargoAgentId == Guid.Empty) return BadRequest();
             }
@@ -82,7 +111,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _agentRateManagementService.UpdateAsync(dto);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest( response.Message);
+                return BadRequest(response.Message);
 
             if (response.StatusCode == ServiceResponseStatus.Failed)
                 return BadRequest("Rate update fails.");
@@ -117,7 +146,7 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _agentRateManagementService.DeleteAsync(id);
 
             if (response.StatusCode == ServiceResponseStatus.ValidationError)
-                return BadRequest( response.Message );
+                return BadRequest(response.Message);
 
             if (response.StatusCode == ServiceResponseStatus.Success)
                 return Ok(new { message = "Rate deleted successfully." });

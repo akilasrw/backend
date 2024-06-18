@@ -1,0 +1,62 @@
+[
+  {
+    "id": "49d5d81a-5a16-42b6-909c-917de89efb63",
+    "CategoryName": "DOCUMENT CHARGES",
+    "CategoryType": 0
+  },
+  {
+    "id": "5e8f8129-4f3e-4821-8c8a-feb1715d6157",
+    "CategoryName": "CUSTOMS CHARGES",
+    "CategoryType": 0
+  },
+  {
+    "id": "b76e546b-50e5-4a88-8a1a-4fa485b845e0",
+    "CategoryName": "AIRFREIGHT SECURITY CHARGE",
+    "CategoryType": 0
+  },
+  {
+    "id": "feef71f5-4a5e-4a3c-a1be-7c5995702e50",
+    "CategoryName": "PHYSICAL HANDLING",
+    "CategoryType": 0
+  },
+  {
+    "id": "43d8d8b8-732b-4b24-8e1d-4e3b78767b7c",
+    "CategoryName": "DANGEROUS GOODS CHARGES",
+    "CategoryType": 0
+  },
+  {
+    "id": "f12d77b4-2c5b-4c15-81d4-e67cb9a65847",
+    "CategoryName": "HUMAN REMAINS FEES",
+    "CategoryType": 0
+  },
+  {
+    "id": "a46a62bc-2b2d-4a95-9170-b6ea9cb1d1ec",
+    "CategoryName": "PHARMACEUTICAL SHIPMENTS",
+    "CategoryType": 0
+  },
+  {
+    "id": "f9e1f7e9-5d5c-4ba0-98b5-91889fbac282",
+    "CategoryName": "ARRIVAL FEES",
+    "CategoryType": 1
+  },
+  {
+    "id": "adf8d68a-7af5-49a7-bd7e-d5096a6d3d6d",
+    "CategoryName": "DOCUMENT CHARGES",
+    "CategoryType": 1
+  },
+  {
+    "id": "6c8d5c28-aba7-426f-90db-5f6b9f4b8ff1",
+    "CategoryName": "PHYSICAL HANDLING",
+    "CategoryType": 1
+  },
+  {
+    "id": "bf6b5e9b-8502-4d97-90fc-0b6a1fc2f6ae",
+    "CategoryName": "LIVE ANIMALS CHARGES",
+    "CategoryType": 2
+  },
+  {
+    "id": "cf8692e7-bb99-4bc1-849b-5c2a228a8f8c",
+    "CategoryName": "VALUABLE GOODS CHARGES",
+    "CategoryType": 2
+  }
+]
