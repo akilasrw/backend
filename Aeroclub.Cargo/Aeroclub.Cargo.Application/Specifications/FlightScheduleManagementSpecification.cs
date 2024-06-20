@@ -37,7 +37,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleManagementSpecification(DateTime start, DateTime end, Guid flightID)
-         : base(x => x.FlightId == flightID && x.ScheduleStartDate.Date == start.Date && x.ScheduleEndDate.Date == end.Date ) {
+         : base(x => x.FlightId == flightID && x.ScheduleStartDate.Date == start.Date && x.ScheduleEndDate.Date == end.Date && x.IsDeleted ==false ) {
 
         }
 
