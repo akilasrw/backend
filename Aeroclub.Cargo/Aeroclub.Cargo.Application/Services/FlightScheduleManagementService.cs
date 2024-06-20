@@ -103,16 +103,14 @@ namespace Aeroclub.Cargo.Application.Services
             dto.IsFlightScheduleGenerated = true;
             var flightScheduleManagementEntity = _mapper.Map<FlightScheduleManagement>(dto);
 
-            _unitOfWork.Repository<FlightScheduleManagement>().Update(flightScheduleManagementEntity);
-            await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<FlightScheduleManagement>().Detach(flightScheduleManagementEntity);
-
             var flightScheduleManagementDto = _mapper.Map<FlightScheduleManagementRM>(dto);
 
             var flightScheduleResponse = await CreateFlightSchedule(flightScheduleManagementDto, flightScheduleManagementEntity.Id);
-            if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Failed || flightScheduleResponse.StatusCode == ServiceResponseStatus.ValidationError)
+            if (flightScheduleResponse.StatusCode == ServiceResponseStatus.Success)
             {
-                await DeleteAsync(flightScheduleManagementEntity.Id);
+                _unitOfWork.Repository<FlightScheduleManagement>().Update(flightScheduleManagementEntity);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightScheduleManagement>().Detach(flightScheduleManagementEntity);
             }
             return flightScheduleResponse;
         }
@@ -132,6 +130,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var countSpec = new FlightScheduleManagementSpecification(query, true);
             var totalCount = await _unitOfWork.Repository<FlightScheduleManagement>().CountAsync(countSpec);
+
 
             //foreach (var mgt in flightScheduleManagementList)
             //{
