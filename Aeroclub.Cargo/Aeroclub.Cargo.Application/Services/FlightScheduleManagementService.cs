@@ -198,7 +198,7 @@ namespace Aeroclub.Cargo.Application.Services
                                 };
                             }*/
 
-                            var scheduled = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(new FlightScheduleSpecification(day.Date, dto.FlightId, dto.AircraftSubTypeId));
+                            var scheduled = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(new FlightScheduleSpecification(day.Date, dto.FlightId));
 
                             if (scheduled != null)
                             {
