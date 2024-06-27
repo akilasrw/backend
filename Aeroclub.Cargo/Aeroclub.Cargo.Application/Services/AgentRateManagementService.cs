@@ -20,7 +20,7 @@ namespace Aeroclub.Cargo.Application.Services
         private readonly IUserResolverService _userResolverService;
         private readonly IUserService _userService;
 
-        public AgentRateManagementService(IUnitOfWork unitOfWork, IMapper mapper,IUserResolverService userResolverService, IUserService userService) : base(unitOfWork, mapper)
+        public AgentRateManagementService(IUnitOfWork unitOfWork, IMapper mapper, IUserResolverService userResolverService, IUserService userService) : base(unitOfWork, mapper)
         {
             _userResolverService = userResolverService;
             _userService = userService;
@@ -39,24 +39,79 @@ namespace Aeroclub.Cargo.Application.Services
             return new Pagination<AgentRateManagementVM>(query.PageIndex, query.PageSize, totalCount, dtoList);
         }
 
+        public async Task<IReadOnlyList<SubRateCategory>> GetOtherSubRates(OtherRateTypes id)
+        {
+            var spec = new SubRatesSpecification(id);
+            var subCategoryList = await _unitOfWork.Repository<SubRateCategory>().GetListWithSpecAsync(spec);
+
+            return subCategoryList;
+
+        }
+
+        public async Task<IReadOnlyList<ChildRateCategory>> GetChildRates(Guid subTypeID)
+        {
+            var spec = new ChildRatesSpecification(subTypeID);
+            var childCategoryList = await _unitOfWork.Repository<ChildRateCategory>().GetListWithSpecAsync(spec);
+
+            return childCategoryList;
+
+        }
+
+        public async Task<IReadOnlyList<AgentOtherRates>> FilterOtherRates(Guid childTypeID)
+        {
+            var spec = new AgentOtherRateSpecification(childTypeID);
+            var otherRateList = await _unitOfWork.Repository<AgentOtherRates>().GetListWithSpecAsync(spec);
+
+            return otherRateList;
+
+        }
+
+        public async Task<AgentOtherRates> CreateOtherRates(AgentOtherRatesRM model)
+        {
+            var otherRate = new AgentOtherRates
+            {
+                ChildCategoryID = model.SubCategoryID,
+                RateName = model.RateName,
+                Description = model.Description,
+                RateDescription = model.RateDescription,
+                MinPreceptionRate = model.MinPreceptionRate,
+                RatePerKG = model.RatePerKG,
+                FixRate = model.FixRate,
+                TrancheRate = model.TrancheRate,
+                IATACode = model.IATACode
+            };
+            var createdOtherRate = await _unitOfWork.Repository<AgentOtherRates>().CreateAsync(otherRate);
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return createdOtherRate;
+
+        }
+
         public async Task<ServiceResponseCreateStatus> CreateAsync(AgentRateManagementListRM dto)
         {
             var response = new ServiceResponseCreateStatus();
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-              
+
                 if (dto == null || (dto != null && dto.AgentRateManagements.Count < 1))
                 {
                     transaction.Rollback();
                     response.StatusCode = ServiceResponseStatus.Failed;
                     return response;
                 }
-                             
+
                 foreach (var item in dto!.AgentRateManagements)
                 {
 
-                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM 
+                    var spec = new AgentRateManagementSpecification(new AgentRateManagementValidationQM
                     {
                         IncludeAgentRates = false,
                         CargoAgentId = item.CargoAgentId,
@@ -74,7 +129,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         transaction.Rollback();
                         response.StatusCode = ServiceResponseStatus.ValidationError;
-                        response.Message = string.Format("{0} and {1} already exist for selected user and selected dates ({2} - {3})", 
+                        response.Message = string.Format("{0} and {1} already exist for selected user and selected dates ({2} - {3})",
                             agentRate.OriginAirportCode, agentRate.DestinationAirportCode, agentRate.StartDate.ToShortDateString(), agentRate.EndDate.ToShortDateString());
                         return response;
                     }
@@ -137,12 +192,12 @@ namespace Aeroclub.Cargo.Application.Services
 
             using (var transaction = _unitOfWork.BeginTransaction())
             {
-                
+
                 var rateManagement = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(new AgentRateManagementQM { Id = Id, IncludeCargoAgent = false }));
                 if (rateManagement == null)
                 {
                     transaction.Rollback();
-                    response.StatusCode= ServiceResponseStatus.ValidationError;
+                    response.StatusCode = ServiceResponseStatus.ValidationError;
                     response.Message = "Record not found";
                     return response;
                 }
@@ -158,7 +213,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 foreach (var rateItem in rateManagement.AgentRates)
                 {
-                   _unitOfWork.Repository<AgentRate>().Delete(rateItem);
+                    _unitOfWork.Repository<AgentRate>().Delete(rateItem);
                     await _unitOfWork.SaveChangesAsync();
                     _unitOfWork.Repository<AgentRate>().Detach(rateItem);
                 }
@@ -196,7 +251,7 @@ namespace Aeroclub.Cargo.Application.Services
                     CargoAgentId = entity.CargoAgentId,
                     DestinationAirportId = entity.DestinationAirportId,
                     OriginAirportId = entity.OriginAirportId,
-                    ValidEndDate = entity.EndDate, 
+                    ValidEndDate = entity.EndDate,
                     ValidStartDate = entity.StartDate,
                 });
 
@@ -257,7 +312,7 @@ namespace Aeroclub.Cargo.Application.Services
                 entity.DestinationAirportCode = destinationAirport.Code;
                 entity.DestinationAirportName = destinationAirport.Name;
 
-                foreach(var rateItem in entity.AgentRates)
+                foreach (var rateItem in entity.AgentRates)
                 {
                     _unitOfWork.Repository<AgentRate>().Update(rateItem);
                     await _unitOfWork.SaveChangesAsync();
@@ -282,7 +337,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             if (currentUser == null || rateManagement == null || (rateManagement != null && rateManagement.AgentRates == null))
                 return ServiceResponseStatus.Failed;
-            
+
 
             foreach (var rateItem in rateManagement.AgentRates)
             {
@@ -300,7 +355,7 @@ namespace Aeroclub.Cargo.Application.Services
                 if (createdHistory == null)
                     return ServiceResponseStatus.Failed;
             }
-            
+
             return ServiceResponseStatus.Success;
         }
 
@@ -330,7 +385,7 @@ namespace Aeroclub.Cargo.Application.Services
                 return response;
             }
 
-            rateManagement.IsActive= dto.IsActive;
+            rateManagement.IsActive = dto.IsActive;
 
             _unitOfWork.Repository<AgentRateManagement>().Update(rateManagement);
             await _unitOfWork.SaveChangesAsync();

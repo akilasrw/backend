@@ -34,7 +34,9 @@ namespace Aeroclub.Cargo.Data.Extensions
             SeedPackageContainer(modelBuilder, basePath);
             SeedAircraftType(modelBuilder, basePath);
             SeedAircraftSubType(modelBuilder, basePath);
-            SeedAircraftLayoutMapping(modelBuilder, basePath);            
+            SeedAircraftLayoutMapping(modelBuilder, basePath);
+            SeedSubRates(modelBuilder, basePath);
+            SeedChildRates(modelBuilder, basePath);
         }
 
         private static void SeedCountries(ModelBuilder modelBuilder, string basePath)
@@ -52,6 +54,23 @@ namespace Aeroclub.Cargo.Data.Extensions
             if (airports != null)
                 modelBuilder.Entity<Airport>().HasData(airports);
         }
+
+        private static void SeedSubRates(ModelBuilder modelBuilder, string basePath)
+        {
+            var subRates =
+                JsonConvert.DeserializeObject<SubRateCategory[]>(File.ReadAllText(Path.Combine(basePath, "SubRateData.json")));
+            if (subRates != null)
+                modelBuilder.Entity<SubRateCategory>().HasData(subRates);
+        }
+
+        private static void SeedChildRates(ModelBuilder modelBuilder, string basePath)
+        {
+            var childRates =
+                JsonConvert.DeserializeObject<ChildRateCategory[]>(File.ReadAllText(Path.Combine(basePath, "ChildRateData.json")));
+            if (childRates != null)
+                modelBuilder.Entity<ChildRateCategory>().HasData(childRates);
+        }
+
 
         private static void SeedSectors(ModelBuilder modelBuilder, string basePath)
         {

@@ -33,6 +33,9 @@ namespace Aeroclub.Cargo.Application.Specifications
             }
 
         } 
+
+        public FlightScheduleSpecification(DateTime date, Guid flightId)
+        : base(x => x.ScheduledDepartureDateTime.Date == date.Date && x.FlightId == flightId && x.IsDeleted == false){ }
         
         public FlightScheduleSpecification(FlightScheduleStandbyQM query)
         : base(x=> 
