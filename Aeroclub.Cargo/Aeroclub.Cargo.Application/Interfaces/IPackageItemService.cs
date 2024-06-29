@@ -28,6 +28,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<PackageItemVM> GetAsync(PackageItemQM query);
         Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM packageItem);
         Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query);
+        Task<ServiceResponseStatus> UpdateDetailsAsync(PackageDetailsUpdateRM rm, Guid id);
         Task<IReadOnlyList<PackageAuditVM>> GetPackageItemAuditByBooking(ItemAuditQM query);
         Task<IReadOnlyList<PackageListItemVM>> GetFilteredAllListAsync(PackageAllListQM query);
         Task<IReadOnlyList<String>> GetListByAwbAndStatus(PackageListByAwbAndStatus query);

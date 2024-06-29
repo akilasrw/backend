@@ -108,7 +108,26 @@ namespace Aeroclub.Cargo.Application.Services
 
             return ServiceResponseStatus.Success;
         }
-        
+
+
+        public async Task<ServiceResponseStatus> UpdateDetailsAsync(PackageDetailsUpdateRM rm, Guid id)
+        {
+
+            var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(id);
+
+            package.Width = rm.width;
+            package.Height = rm.height;
+            package.Weight = rm.weight;
+            package.Length = rm.length;
+            package.PackageRefNumber = rm.refNo;
+            
+            _unitOfWork.Repository<PackageItem>().Update(package);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Repository<PackageItem>().Detach(package);
+
+            return ServiceResponseStatus.Success;
+        }
+
         public async Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm)
         {
             var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
@@ -165,6 +184,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             return packageRefNumbers;
         }
+
+
 
         public async Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm)
         {

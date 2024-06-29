@@ -96,6 +96,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("UpdateDetails/{id}")]
+        public async Task<ActionResult> UpdateDetails(Guid id,[FromBody] PackageDetailsUpdateRM query)
+        {
+            return Ok(await _packageItemService.UpdateDetailsAsync(query, id));
+        }
+
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm)
         {
