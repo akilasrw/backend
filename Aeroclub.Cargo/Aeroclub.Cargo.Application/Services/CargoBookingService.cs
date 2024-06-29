@@ -420,24 +420,55 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new CargoBookingFlightScheduleSectorSpecification(query);
             var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
 
-            List<CargoBookingMobileVM> list = new List<CargoBookingMobileVM>();
+            var list = new List<CargoBookingMobileVM>();
 
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
+                // Ensure sectorBooking and its properties are not null
+                if (sectorBooking == null || sectorBooking.CargoBooking == null || sectorBooking.FlightScheduleSector == null)
+                {
+                    continue; // Skip this iteration if any of these are null
+                }
+
                 var booking = sectorBooking.CargoBooking;
-                var mappedBooking = await MappedListAsync(booking);
+
+                // Use try-catch to handle any potential errors in the asynchronous method
+                CargoBookingListVM mappedBooking;
+                try
+                {
+                    mappedBooking = await MappedListAsync(booking);
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception and skip this iteration
+                    Console.WriteLine($"Error mapping booking: {ex.Message}");
+                    continue;
+                }
+
                 var mobBooking = _mapper.Map<CargoBookingMobileVM>(mappedBooking);
                 mobBooking.Origin = sectorBooking.FlightScheduleSector.OriginAirportCode;
                 mobBooking.Destination = sectorBooking.FlightScheduleSector.DestinationAirportCode;
                 mobBooking.FlightNumber = sectorBooking.FlightScheduleSector.FlightNumber;
-                mobBooking.CutoffTimeMin = sectorBooking.FlightScheduleSector.FlightSchedule.CutoffTimeMin;
+                mobBooking.CutoffTimeMin = sectorBooking.FlightScheduleSector.FlightSchedule?.CutoffTimeMin ?? 0; // Handle null FlightSchedule
                 mobBooking.ScheduledDepartureDateTime = sectorBooking.FlightScheduleSector.ScheduledDepartureDateTime;
-                if (sectorBooking.FlightScheduleSector.AircraftSubType != null && sectorBooking.FlightScheduleSector.AircraftSubType.AircraftType != null)
+
+                // Check if AircraftSubType and AircraftType are not null before accessing Name
+                if (sectorBooking.FlightScheduleSector.AircraftSubType?.AircraftType != null)
+                {
                     mobBooking.AircraftSubTypeName = sectorBooking.FlightScheduleSector.AircraftSubType.AircraftType.Name;
-                mobBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
+                }
+
+                // Map package items with null checks
+                mobBooking.PackageItems = sectorBooking.CargoBooking.PackageItems != null
+                    ? _mapper.Map<IReadOnlyList<PackageMobileVMs>>(sectorBooking.CargoBooking.PackageItems)
+                    : new List<PackageMobileVMs>();
+
                 list.Add(mobBooking);
             }
-            
+
+
+
+
             return list.Count > 0? list.DistinctBy(x => x.Id).ToList().FirstOrDefault(): new CargoBookingMobileVM();
         }
 
@@ -668,18 +699,35 @@ namespace Aeroclub.Cargo.Application.Services
 
         private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)
         {
-            var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();
-            var lastCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.Last();
-            bookingDetail.DestinationAirportCode = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportCode;
-            bookingDetail.DestinationAirportId = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportId;
-            bookingDetail.DestinationAirportName = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportName;
-            bookingDetail.ScheduledDepartureDateTime = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightSchedule.ScheduledDepartureDateTime;
-            bookingDetail.FlightNumber = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightNumber;
+            if (cargoBooking?.CargoBookingFlightScheduleSectors == null || !cargoBooking.CargoBookingFlightScheduleSectors.Any())
+            {
+                // Handle the case when there are no flight schedule sectors
+                return bookingDetail;
+            }
 
-            var firstCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.First();
-            bookingDetail.OriginAirportCode = firstCrgoBookingFlightScheduleSector.FlightScheduleSector.OriginAirportCode;
+            var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors
+                .OrderBy(x => x.FlightScheduleSector?.SequenceNo)
+                .ToList();
+
+            var lastCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.LastOrDefault();
+            if (lastCrgoBookingFlightScheduleSector?.FlightScheduleSector != null)
+            {
+                bookingDetail.DestinationAirportCode = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportCode;
+                bookingDetail.DestinationAirportId = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportId;
+                bookingDetail.DestinationAirportName = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportName;
+                bookingDetail.ScheduledDepartureDateTime = (DateTime)(lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightSchedule?.ScheduledDepartureDateTime);
+                bookingDetail.FlightNumber = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightNumber;
+            }
+
+            var firstCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.FirstOrDefault();
+            if (firstCrgoBookingFlightScheduleSector?.FlightScheduleSector != null)
+            {
+                bookingDetail.OriginAirportCode = firstCrgoBookingFlightScheduleSector.FlightScheduleSector.OriginAirportCode;
+            }
+
             return bookingDetail;
         }
+
 
         public async Task<IReadOnlyList<CargoBookingListVM>> GetOnlyAssignedListAsync(AssignedCargoQM query)
         {

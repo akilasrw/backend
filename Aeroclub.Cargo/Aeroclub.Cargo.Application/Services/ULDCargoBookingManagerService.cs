@@ -546,7 +546,20 @@ namespace Aeroclub.Cargo.Application.Services
                 { 
                     PackageItemId = bookingAssignment.PackageId 
                 });
+
+                
             var packageULDContainers = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(spec);
+
+
+            foreach(var packageULDContainer in packageULDContainers)
+            {
+                packageULDContainer.PackageItem.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
+                _unitOfWork.Repository<PackageItem>().Update(packageULDContainer.PackageItem);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<PackageItem>().Detach(packageULDContainer.PackageItem);
+            }
+
+
 
             return await _uldContainerService.UpdateUldIdAsync(
                 new ULDContainerUpdateRM() 
