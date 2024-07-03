@@ -54,6 +54,7 @@ namespace Aeroclub.Cargo.Application.Services
             ReferenceNumberSingletonService b1 = ReferenceNumberSingletonService.GetInstance(packageCount, CargoReferenceNumberType.Package);
             var package = _mapper.Map<PackageItem>(packageItem);
             package.PackageRefNumber = b1.GetNextRefNumber();
+            package.PackageItemStatus = PackageItemStatus.Booking_Made;
 
             var createdPackage =await _unitOfWork.Repository<PackageItem>().CreateAsync(package);
             await _unitOfWork.SaveChangesAsync();
@@ -448,6 +449,11 @@ namespace Aeroclub.Cargo.Application.Services
 
                 foreach (var i in rm.Packages)
                 {
+                    var existingPackage = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(i));
+                    if(existingPackage != null)
+                    {
+                        continue;
+                    }
                     var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
                     {
                         CargoBookingId= bId,
