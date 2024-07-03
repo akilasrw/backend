@@ -359,10 +359,7 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 rm.Packages = await FilterPackagesAsync(PackageItemStatus.Booking_Made, rm.AWBTrackingNumber, rm.Packages);
 
-                if(rm.Packages.Length <= 0)
-                {
-                    return ServiceResponseStatus.Failed;
-                }
+               
 
                 var awbSpec = new AWBNumberStackSpecification(rm.AWBTrackingNumber);
 
@@ -420,53 +417,56 @@ namespace Aeroclub.Cargo.Application.Services
                     BookingID = bId,
                     TruckID = rm.TruckNo
                 });*/
-
-                Guid truckId = Guid.Empty;
-
-                var truckSpecs = new TruckSpecifications(rm.TruckNo);
-
-                var truck = await _unitOfWork.Repository<Truck>().GetEntityWithSpecAsync(truckSpecs);
-
-                if (truck != null)
+                if (rm.Packages.Length > 0)
                 {
-                    truckId = truck.Id;
-                    truck.bookingId = bId;
-                    truck.pickedUpCount = rm.Packages.Length;
-                    truck.handOverCount = 0;
+                    Guid truckId = Guid.Empty;
 
-                     _unitOfWork.Repository<Truck>().Update(truck);
-                    await _unitOfWork.SaveChangesAsync();
-                    _unitOfWork.Repository<Truck>().Detach(truck);
-                }
-                else
-                {
-                    var newTruck = await _unitOfWork.Repository<Truck>().CreateAsync(new Truck { bookingId = bId, pickedUpCount = rm.Packages.Count(), truckNumber = rm.TruckNo });
-                    truckId = newTruck.Id;
-                }
+                    var truckSpecs = new TruckSpecifications(rm.TruckNo);
 
-                await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo { bookingId = bId, pickedUpCount = rm.Packages.Count(), truckId = truckId });
+                    var truck = await _unitOfWork.Repository<Truck>().GetEntityWithSpecAsync(truckSpecs);
 
-
-                foreach (var i in rm.Packages)
-                {
-                    var existingPackage = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(i));
-                    if(existingPackage != null)
+                    if (truck != null)
                     {
-                        continue;
+                        truckId = truck.Id;
+                        truck.bookingId = bId;
+                        truck.pickedUpCount = rm.Packages.Length;
+                        truck.handOverCount = 0;
+
+                        _unitOfWork.Repository<Truck>().Update(truck);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<Truck>().Detach(truck);
                     }
-                    var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
+                    else
                     {
-                        CargoBookingId= bId,
-                        PackageRefNumber = i,
-                        Description = "",
-                        PackageItemCategory = PackageItemCategory.None,
-                        PackagePriorityType = PackagePriorityType.None,
-                    });
+                        var newTruck = await _unitOfWork.Repository<Truck>().CreateAsync(new Truck { bookingId = bId, pickedUpCount = rm.Packages.Count(), truckNumber = rm.TruckNo });
+                        truckId = newTruck.Id;
+                    }
 
-                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                    await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo { bookingId = bId, pickedUpCount = rm.Packages.Count(), truckId = truckId });
+
+
+                    foreach (var i in rm.Packages)
+                    {
+                        var existingPackage = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(i));
+                        if (existingPackage != null)
+                        {
+                            continue;
+                        }
+                        var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
+                        {
+                            CargoBookingId = bId,
+                            PackageRefNumber = i,
+                            Description = "",
+                            PackageItemCategory = PackageItemCategory.None,
+                            PackagePriorityType = PackagePriorityType.None,
+                        });
+
+                        await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
                 }
-
-                await _unitOfWork.SaveChangesAsync();
+               
 
             }
             catch (Exception ex)
