@@ -62,6 +62,7 @@ namespace Aeroclub.Cargo.Application.Services
             var response = new PackageItemCreateResponseM();
             if (createdPackage != null)
             {
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                 response.StatusCode = ServiceResponseStatus.Success;
                 response.Id = createdPackage.Id;
             }
