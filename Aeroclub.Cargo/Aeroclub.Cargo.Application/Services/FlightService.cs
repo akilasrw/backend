@@ -181,7 +181,7 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<IReadOnlyList<FlightWithSectorsVM>> GetSelectListWithSectorsAsync()
         {
      
-            var list = await _unitOfWork.Repository<Flight>().GetListAsync();
+            var list = await _unitOfWork.Repository<Flight>().GetListWithSpecAsync(new FlightSpecification());
 
             List<FlightWithSectorsVM> flightList = new List<FlightWithSectorsVM>();
 

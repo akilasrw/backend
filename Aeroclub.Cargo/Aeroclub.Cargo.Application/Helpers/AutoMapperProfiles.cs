@@ -134,7 +134,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.AWBNumber, o => o.MapFrom(s => s.AWBInformation.AwbTrackingNumber))
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.DestinationAirport.Code))
                 //.ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.FlightNumber:""))
-                .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count()>0 ? s.CargoBookingFlightScheduleSectors.FirstOrDefault(x => x.FlightScheduleSector.SequenceNo == 1)!.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
+                .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count()>0 ? s.CargoBookingFlightScheduleSectors.LastOrDefault(x => x.FlightScheduleSector.SequenceNo == 1)!.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
                 .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.AircraftSubType.ConfigType: AircraftConfigType.None))
                 //.ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
                 //.ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.PackageItems.ToList()[0].PackageItemStatus))
