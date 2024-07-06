@@ -102,7 +102,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(ULDByFlightScheduleRM query)
-            : base(x =>(query.flightNumber == x.FlightNumber && query.scheduledDepartureDateTime == x.ScheduledDepartureDateTime))
+            : base(x =>(query.flightNumber == x.FlightNumber && query.scheduledDepartureDateTime.Date == x.ScheduledDepartureDateTime.Date))
         {
             AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.FlightScheduleSectorPallets).ThenInclude(a => a.ULD));
         }
