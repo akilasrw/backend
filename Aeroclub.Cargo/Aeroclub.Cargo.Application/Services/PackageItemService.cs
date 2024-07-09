@@ -358,7 +358,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             try
             {
-                rm.Packages = await FilterPackagesAsync(PackageItemStatus.Booking_Made, rm.AWBTrackingNumber, rm.Packages);
+                rm.Packages = await FilterPackagesAsync(PackageItemStatus.PickedUp, rm.AWBTrackingNumber, rm.Packages);
 
                
 
@@ -448,7 +448,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     foreach (var i in rm.Packages)
                     {
-                        var existingPackage = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(i));
+                        var existingPackage = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(i,rm.AWBTrackingNumber));
                         if (existingPackage != null)
                         {
                             continue;
@@ -457,6 +457,7 @@ namespace Aeroclub.Cargo.Application.Services
                         {
                             CargoBookingId = bId,
                             PackageRefNumber = i,
+                            PackageItemStatus = PackageItemStatus.PickedUp,
                             Description = "",
                             PackageItemCategory = PackageItemCategory.None,
                             PackagePriorityType = PackagePriorityType.None,

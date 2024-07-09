@@ -15,8 +15,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
-        public PackageItemSpecification(string refNum)
-               : base(x => x.PackageRefNumber == refNum)
+        public PackageItemSpecification(string refNum, long awb)
+               : base(x => x.PackageRefNumber == refNum && x.CargoBooking.AWBInformation.AwbTrackingNumber == awb)
         {
         }
 
