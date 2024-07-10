@@ -173,6 +173,7 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
             // await _unitOfWork.Repository<FlightScheduleSector>().GetByIdAsync(flightScheduleSectorId);
 
+
             var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
             {
                 AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId

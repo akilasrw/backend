@@ -451,6 +451,11 @@ namespace Aeroclub.Cargo.Application.Services
                         var existingPackage = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(i,rm.AWBTrackingNumber));
                         if (existingPackage != null)
                         {
+                            existingPackage.PackageItemStatus = PackageItemStatus.PickedUp;
+                            _unitOfWork.Repository<PackageItem>().Update(existingPackage);
+                            await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = existingPackage.Id, PackageItemStatus = PackageItemStatus.PickedUp });
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<PackageItem>().Detach(existingPackage);
                             continue;
                         }
                         var package = await _unitOfWork.Repository<PackageItem>().CreateAsync(new PackageItem
@@ -463,6 +468,7 @@ namespace Aeroclub.Cargo.Application.Services
                             PackagePriorityType = PackagePriorityType.None,
                         });
 
+                        await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = PackageItemStatus.Booking_Made });
                         await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                     }
 
