@@ -375,6 +375,11 @@ namespace Aeroclub.Cargo.Application.Services
                         AwbTrackingNum = (long)rm.AWBTrackingNumber
                     });
                     var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(bSpec);
+
+                    existingAwb.IsUsed = true;
+                    _unitOfWork.Repository<AWBNumberStack>().Update(existingAwb);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<AWBNumberStack>().Detach(existingAwb);
                     
                     bId = (Guid)awb.CargoBookingId;
                 }
@@ -396,6 +401,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         AWBTrackingNumber = rm.AWBTrackingNumber,
                         CargoAgentId = rm.CargoAgent,
+                        IsUsed = true
                     });
 
                     var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
