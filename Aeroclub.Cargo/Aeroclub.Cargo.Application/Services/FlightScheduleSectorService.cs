@@ -18,6 +18,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using System.Collections.ObjectModel;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -174,12 +175,20 @@ namespace Aeroclub.Cargo.Application.Services
             // await _unitOfWork.Repository<FlightScheduleSector>().GetByIdAsync(flightScheduleSectorId);
 
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
+            List<CargoPosition> cargoPositionsList = new List<CargoPosition> { };
 
-            var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            IReadOnlyList<CargoPosition> cargoPositions = new ReadOnlyCollection<CargoPosition>(cargoPositionsList);
+
+
+            if (flightScheduleSector.LoadPlan != null)
+            {
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
+
+                cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            }
 
             var groupedCargoPositions = cargoPositions.GroupBy(item => item.CargoPositionType,
                     (key, group) => new { CargoPositionType = key, Items = group.ToList() })
