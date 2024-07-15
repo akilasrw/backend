@@ -70,8 +70,6 @@ namespace Aeroclub.Cargo.Application.Services
         {
             double availableWeight = 0;
 
-
-
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
                 Id = flightScheduleSectorId,
@@ -93,8 +91,6 @@ namespace Aeroclub.Cargo.Application.Services
 
                 availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
             }
-
-            
             return availableWeight;
         }
 
@@ -106,22 +102,26 @@ namespace Aeroclub.Cargo.Application.Services
                 IncludeLoadPlan = true,
             });
 
+            double availableVolume = 0;
+
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+
+            if(flightScheduleSector != null)
             {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
 
-            var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+                var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-            double availableVolume = 0;
-
-            foreach (var position in positions)
-            {
-                var remainingVolume = position.MaxVolume - position.CurrentVolume;
-                availableVolume += remainingVolume;
+                foreach (var position in positions)
+                {
+                    var remainingVolume = position.MaxVolume - position.CurrentVolume;
+                    availableVolume += remainingVolume;
+                }
             }
 
             return availableVolume;
