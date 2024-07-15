@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             (query.FlightToDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date <= query.FlightToDate.Date) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) && 
-                x.ActualArrivalDateTime == null // no history
+                x.ActualArrivalDateTime == null && x.IsDeleted == false // no history
         )
         {
             if (!isCount)
