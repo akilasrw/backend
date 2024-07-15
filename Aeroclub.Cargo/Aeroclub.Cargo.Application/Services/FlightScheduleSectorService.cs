@@ -68,6 +68,10 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId) // Checking only Main Deck
         {
+            double availableWeight = 0;
+
+
+
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
                 Id = flightScheduleSectorId,
@@ -77,14 +81,20 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+
+            if(flightScheduleSector != null)
             {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
 
-            var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
+                var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
 
-            var availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+                availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+            }
+
+            
             return availableWeight;
         }
 
