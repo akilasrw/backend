@@ -491,5 +491,52 @@ namespace Aeroclub.Cargo.Application.Services
         {
             return _cargoBookingService.GetOnlyAssignedListAsync(query);
         }
+
+        public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type)
+        {
+            var specs = new CargoBookingSpecification(type);
+            var bookings = await _unitOfWork.Repository<CargoBooking>().GetListWithSpecAsync(specs);
+
+
+            List<CargoBookingStandByCargoVM> list = new List<CargoBookingStandByCargoVM>();
+
+            foreach (var booking in bookings)
+            {
+
+                var agentSpecs = new CargoAgentSpecification(new Models.Queries.CargoAgentQMs.CargoAgentQM { AppUserId = booking.CreatedBy});
+
+                var agent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(agentSpecs);
+
+                PackageItemStatus status = PackageItemStatus.Booking_Made;
+
+                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
+                {
+                    if (booking.PackageItems.Any(x => x.PackageItemStatus == itemStatus))
+                    {
+                        status = itemStatus;
+                        break;
+                    }
+                };
+
+                
+
+                var cargoBooking = new CargoBookingStandByCargoVM();
+                cargoBooking.BookingStatus = status;
+                cargoBooking.Id = booking.Id;
+                cargoBooking.AWBNumber = booking.AWBInformation.AwbTrackingNumber.ToString();
+                cargoBooking.BookingNumber = booking.BookingNumber;
+                cargoBooking.NumberOfRecBoxes = booking.PackageItems.Count();
+                cargoBooking.BookingAgent = agent.AgentName;
+                cargoBooking.Origin = booking.OriginAirport.Code;
+                cargoBooking.Destination = booking.DestinationAirport.Code;
+                cargoBooking.BookingDate = booking.BookingDate;
+                list.Add(cargoBooking);
+                
+            }
+
+            
+
+            return list;
+        }
     }
 }

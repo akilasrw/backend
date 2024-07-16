@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -89,6 +90,16 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => x.Created.Year == query.Year && x.Created.Month == query.Month)
         {
 
+        }
+
+        public CargoBookingSpecification(PackageItemStatus type)
+            : base(x =>  (type == PackageItemStatus.Offloaded && x.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Offloaded)) || (type == PackageItemStatus.PickedUp && (x.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.PickedUp) || x.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Booking_Made))  ) )
+        {
+            ApplyPaging(0, 10);
+            AddInclude(x => x.Include((y) => y.AWBInformation));
+            AddInclude(x => x.Include((y) => y.PackageItems));
+            AddInclude(x => x.Include(y => y.OriginAirport));
+            AddInclude(x => x.Include(y => y.DestinationAirport));
         }
 
     }
