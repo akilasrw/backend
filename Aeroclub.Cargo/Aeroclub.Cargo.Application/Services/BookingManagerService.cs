@@ -525,7 +525,15 @@ namespace Aeroclub.Cargo.Application.Services
                 cargoBooking.Id = booking.Id;
                 cargoBooking.AWBNumber = booking.AWBInformation.AwbTrackingNumber.ToString();
                 cargoBooking.BookingNumber = booking.BookingNumber;
-                cargoBooking.NumberOfRecBoxes = booking.PackageItems.Count();
+                if(type == PackageItemStatus.PickedUp)
+                {
+                    cargoBooking.NumberOfRecBoxes = booking.PackageItems.Where(x => (x.PackageItemStatus == PackageItemStatus.PickedUp || x.PackageItemStatus == PackageItemStatus.Booking_Made)).Count();
+                }
+                else
+                {
+                    cargoBooking.NumberOfRecBoxes = booking.PackageItems.Where(x => x.PackageItemStatus == PackageItemStatus.Offloaded).Count();
+                }
+                
                 cargoBooking.BookingAgent = agent.AgentName;
                 cargoBooking.Origin = booking.OriginAirport.Code;
                 cargoBooking.Destination = booking.DestinationAirport.Code;
