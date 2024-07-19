@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
@@ -492,13 +493,18 @@ namespace Aeroclub.Cargo.Application.Services
             return _cargoBookingService.GetOnlyAssignedListAsync(query);
         }
 
-        public async Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type)
+        public async Task<Pagination<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type, BasePaginationQM query)
         {
-            var specs = new CargoBookingSpecification(type);
+            var specs = new CargoBookingSpecification(type, query, false);
             var bookings = await _unitOfWork.Repository<CargoBooking>().GetListWithSpecAsync(specs);
 
 
             List<CargoBookingStandByCargoVM> list = new List<CargoBookingStandByCargoVM>();
+
+
+            var countSpecs = new CargoBookingSpecification(type, query, true);
+
+            var totalCount = await _unitOfWork.Repository<CargoBooking>().CountAsync(countSpecs);
 
             foreach (var booking in bookings)
             {
@@ -542,9 +548,10 @@ namespace Aeroclub.Cargo.Application.Services
                 
             }
 
-            
 
-            return list;
+            IReadOnlyList<CargoBookingStandByCargoVM> readOnlyList = new ReadOnlyCollection<CargoBookingStandByCargoVM>(list);
+
+            return new Pagination<CargoBookingStandByCargoVM>(query.PageIndex, query.PageSize, totalCount,  readOnlyList);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
+﻿using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
@@ -92,14 +93,18 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
-        public CargoBookingSpecification(PackageItemStatus type)
+        public CargoBookingSpecification(PackageItemStatus type, BasePaginationQM query, bool isCount)
             : base(x =>  (type == PackageItemStatus.Offloaded && x.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Offloaded)) || (type == PackageItemStatus.PickedUp && (x.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.PickedUp) || x.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Booking_Made))  ) )
         {
-            ApplyPaging(0, 10);
-            AddInclude(x => x.Include((y) => y.AWBInformation));
-            AddInclude(x => x.Include((y) => y.PackageItems));
-            AddInclude(x => x.Include(y => y.OriginAirport));
-            AddInclude(x => x.Include(y => y.DestinationAirport));
+            if (!isCount)
+            {
+                ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
+                AddInclude(x => x.Include((y) => y.AWBInformation));
+                AddInclude(x => x.Include((y) => y.PackageItems));
+                AddInclude(x => x.Include(y => y.OriginAirport));
+                AddInclude(x => x.Include(y => y.DestinationAirport));
+            }
+          
         }
 
     }

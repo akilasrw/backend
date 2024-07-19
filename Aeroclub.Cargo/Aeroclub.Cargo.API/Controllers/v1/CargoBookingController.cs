@@ -108,9 +108,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpGet("GetBookingByPackageStatus/{type}")]
-        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetBookingByPackageStatus(PackageItemStatus type)
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetBookingByPackageStatus(PackageItemStatus type, [FromQuery] BasePaginationQM query)
         {
-            return Ok(await _bookingManagerService.GetBookingByPackageStatus(type));
+            return Ok(await _bookingManagerService.GetBookingByPackageStatus(type, query));
         }
 
         [HttpGet("GetVerifyBookingList")]
