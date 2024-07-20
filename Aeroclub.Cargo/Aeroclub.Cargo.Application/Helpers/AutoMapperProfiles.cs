@@ -222,7 +222,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.CargoAgentName, o => o.MapFrom(s => s.CargoAgent != null ? s.CargoAgent.AgentName : ""));
 
             CreateMap<CargoAgent, BaseSelectListModel>()
-               .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
+               .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName))
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.AppUserId));
 
             CreateMap<AWBUpdateRM, AWBInformation>();
 

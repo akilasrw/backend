@@ -34,7 +34,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> UpdateDeleteListAsync(IEnumerable<CargoBookingUpdateRM> list);
         Task<ServiceResponseStatus> UpdateStandByStatusAsync(CargoBookingStatusUpdateListRM rm);
         Task<IReadOnlyList<CargoBookingStandByCargoVM>> GetStandByCargoListAsync(FlightScheduleSectorBookingListQM query);
-        Task<Pagination<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type, BasePaginationQM query);
+        Task<Pagination<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type, StandbyCargoBookingsQM query);
         Task<IReadOnlyList<CargoBookingListVM>> GetVerifyBookingListAsync(FlightScheduleSectorVerifyBookingListQM query);
         Task<CargoBookingMobileVM> GetMobileBookingAsync(FlightScheduleSectorMobileQM query);
         Task<IReadOnlyList<BookingShipmentSummeryVM>> GetShipmentByAWB(GetShipmentsRM query, Guid userId, bool isAdmin = false);

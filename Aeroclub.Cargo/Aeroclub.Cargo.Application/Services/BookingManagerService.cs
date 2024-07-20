@@ -493,7 +493,7 @@ namespace Aeroclub.Cargo.Application.Services
             return _cargoBookingService.GetOnlyAssignedListAsync(query);
         }
 
-        public async Task<Pagination<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type, BasePaginationQM query)
+        public async Task<Pagination<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type, StandbyCargoBookingsQM query)
         {
             var specs = new CargoBookingSpecification(type, query, false);
             var bookings = await _unitOfWork.Repository<CargoBooking>().GetListWithSpecAsync(specs);
