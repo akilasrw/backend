@@ -48,6 +48,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(d => d.Include(s => s.AppUser));
         }
 
+
+        public CargoAgentSpecification(Guid id)
+            : base(x => x.AppUserId == id)
+        {
+          
+        }
+
     }
     
 }
