@@ -94,7 +94,13 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public CargoBookingSpecification(PackageItemStatus type, StandbyCargoBookingsQM query, bool isCount)
-            : base(y => (query.CargoAgent == Guid.Empty || (query.CargoAgent == y.CreatedBy)) && (query.CargoBooking == null || (query.CargoBooking == y.BookingNumber)) && (type == PackageItemStatus.Offloaded && y.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Offloaded)) || (type == PackageItemStatus.PickedUp && (y.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.PickedUp) || y.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Booking_Made))))
+            : base(y => (query.CargoAgent == Guid.Empty || 
+            (query.CargoAgent == y.CreatedBy)) && (query.CargoBooking == null || 
+            (query.CargoBooking == y.BookingNumber)) && 
+            (
+            (type == PackageItemStatus.Offloaded && y.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Offloaded)) || 
+            (type == PackageItemStatus.PickedUp && (y.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.PickedUp) || y.PackageItems.Any((x) => x.PackageItemStatus == Common.Enums.PackageItemStatus.Booking_Made))))
+            )
         {
             if (!isCount)
             {
