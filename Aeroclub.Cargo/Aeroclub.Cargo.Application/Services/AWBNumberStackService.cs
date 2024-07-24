@@ -38,7 +38,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             var entity = _mapper.Map<AWBNumberStack>(dto);
 
-            var agent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification());
+            var agent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification(entity.CargoAgentId));
 
             entity.CargoAgentId = agent.Id;
 
