@@ -104,6 +104,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
             if (!isCount)
             {
+                AddOrderByDescending(c => c.Created);
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddInclude(x => x.Include((y) => y.AWBInformation));
                 AddInclude(x => x.Include((y) => y.PackageItems));
