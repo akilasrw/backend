@@ -46,7 +46,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public PackageItemSpecification(PackageItemByBookingQM query)
-               : base(x => x.CargoBookingId == query.BookingID)
+               : base(x => x.CargoBookingId == query.BookingID && (query.PackageItemStatus == null || x.PackageItemStatus == query.PackageItemStatus))
         {
             AddInclude(x => x.Include(y => y.CargoBooking));
         }

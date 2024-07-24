@@ -319,6 +319,7 @@ namespace Aeroclub.Cargo.Application.Services
                         var pSpec = new PackageItemSpecification(new PackageItemByBookingQM
                         {
                             BookingID = bookingID,
+                            PackageItemStatus = packageStatus
                         });
                         var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
 
@@ -333,7 +334,7 @@ namespace Aeroclub.Cargo.Application.Services
                             awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                             bookedDate = (DateTime)booking?.Created,
                             shipmentStatus = packageStatus,
-                            packageCount = packages.Count,
+                            packageCount = packages.Count(),
                             enrouteToWahouse = pRRes.Count() > 0 ? pRRes[0]?.Created : null,
                             inOriginWahouse = pDRes.Count() > 0 ? pDRes[0]?.Created : null,
                         };
@@ -373,6 +374,15 @@ namespace Aeroclub.Cargo.Application.Services
 
                             var pRWSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Cargo_Received });
                             var pRWRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
+
+
+                            var pSpec = new PackageItemSpecification(new PackageItemByBookingQM
+                            {
+                                BookingID = bookingID,
+                                PackageItemStatus = packageStatus
+                            });
+
+                            var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
                             try
                             {
                                 var shipBooking = new BookingShipmentSummeryVM
@@ -380,7 +390,7 @@ namespace Aeroclub.Cargo.Application.Services
                                     awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
                                     bookedDate = shipment.CargoBooking.Created,
                                     flightNumber = shipment.FlightSchedule.FlightNumber,
-                                    packageCount = shipment.packageCount,
+                                    packageCount = packages.Count(),
                                     from = shipment.FlightSchedule.OriginAirportName,
                                     to = shipment.FlightSchedule.DestinationAirportName,
                                     shipmentID = shipment.Id,
