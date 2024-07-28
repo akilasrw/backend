@@ -103,8 +103,13 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseStatus> UpdateAsync(PackageItemUpdateRM rm)
         {
             var package = _mapper.Map<PackageItemUpdateRM, PackageItem>(rm);
+            package.ChargeableWeight = package.Weight;
+            var p = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
             _unitOfWork.Repository<PackageItem>().Update(package);
-            await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+            if(p.PackageItemStatus != rm.PackageItemStatus)
+            {
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+            }
             await _unitOfWork.SaveChangesAsync();
             _unitOfWork.Repository<PackageItem>().Detach(package);
 
@@ -133,7 +138,7 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm)
         {
             var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
-            if (package != null)
+            if (package != null && package.PackageItemStatus != rm.PackageItemStatus)
             {
                 package.PackageItemStatus = rm.PackageItemStatus;
                 _unitOfWork.Repository<PackageItem>().Update(package);
