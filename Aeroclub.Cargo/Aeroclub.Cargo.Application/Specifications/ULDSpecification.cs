@@ -17,6 +17,8 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(y => y.Include(z => z.ULDMetaData));
         }
 
+
+
         public ULDSpecification(ULDListQM query, bool isCount = false)
             :base(x => (string.IsNullOrEmpty(query.ULDNumber) || x.SerialNumber.Contains(query.ULDNumber) ) && !x.IsDeleted)
         {
@@ -37,6 +39,12 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public ULDSpecification(string ULDNumber)
             :base(x => (string.IsNullOrEmpty(ULDNumber) || x.SerialNumber.Contains(ULDNumber) ) && !x.IsDeleted)
+        {
+
+        }
+
+        public ULDSpecification(ULDStatus status)
+            : base(x => x.Status == status &&  !x.IsDeleted)
         {
 
         }
