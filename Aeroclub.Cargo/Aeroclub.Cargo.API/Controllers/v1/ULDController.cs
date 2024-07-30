@@ -32,10 +32,10 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
 
-        [HttpGet("UldByStatus/{status}")]
-        public async Task<ActionResult<Pagination<ULDFilteredListVM>>> UldByStatus(ULDStatus status)
+        [HttpGet("UldByStatus")]
+        public async Task<ActionResult<Pagination<ULDFilteredListVM>>> UldByStatus()
         {
-            return Ok(await _uLDService.GetULDByStatus(status));
+            return Ok(await _uLDService.GetULDByStatus());
         }
 
 

@@ -212,9 +212,9 @@ namespace Aeroclub.Cargo.Application.Services
             return false;
         }
 
-        public async Task<IReadOnlyList<ULD>> GetULDByStatus(ULDStatus status)
+        public async Task<IReadOnlyList<ULD>> GetULDByStatus()
         {
-            var specs = new ULDSpecification(status);
+            var specs = new ULDSpecification();
 
             var list = await  _unitOfWork.Repository<ULD>().GetListWithSpecAsync(specs);
             return list;

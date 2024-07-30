@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> UpdateAsync(ULDUpdateRM ULDDto);
         Task<Pagination<ULDFilteredListVM>> GetFilteredListAsync(ULDListQM query);
         Task<List<ULD>> GetULDByFlightSchedule(ULDByFlightScheduleRM rm);
-        Task<IReadOnlyList<ULD>> GetULDByStatus(ULDStatus status);
+        Task<IReadOnlyList<ULD>> GetULDByStatus();
         Task<ULDDto> GetAsync(ULDQM query);
     }
 }
