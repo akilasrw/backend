@@ -42,7 +42,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public ULDSpecification()
-            : base(x => x.Status == ULDStatus.None || x.Status == ULDStatus.ULDUnPacked &&  !x.IsDeleted)
+            : base(x => (x.Status == ULDStatus.None || x.Status == ULDStatus.ULDUnPacked) &&  !x.IsDeleted)
         {
 
         }
