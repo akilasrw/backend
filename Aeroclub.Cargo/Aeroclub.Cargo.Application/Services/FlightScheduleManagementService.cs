@@ -375,6 +375,18 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (  var item in entity.FlightSchedules)
             {
+                foreach(var sec in item.FlightScheduleSectors)
+                {
+                    sec.IsDeleted = true;
+                    _unitOfWork.Repository<FlightScheduleSector>().Update(sec);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightScheduleSector>().Detach(sec);
+
+                    sec.Sector.IsDeleted = true;
+                    _unitOfWork.Repository<Sector>().Update(sec.Sector);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<Sector>().Detach(sec.Sector);
+                }
                 item.IsDeleted = true;
                 _unitOfWork.Repository<FlightSchedule>().Update(item);
                 await _unitOfWork.SaveChangesAsync();
