@@ -650,11 +650,25 @@ namespace Aeroclub.Cargo.Application.Services
             
             }
 
-            existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
+            var uldItems = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
 
-            _unitOfWork.Repository<ULD>().Update(existingUld);
-            await _unitOfWork.SaveChangesAsync();
-            _unitOfWork.Repository<ULD>().Detach(existingUld);
+            foreach (var itemSpec in uldItems)
+            {
+                uldPackages.Add(itemSpec.PackageItem);
+            }
+
+
+            if(uldPackages.Where((x)=> x.PackageItemStatus != PackageItemStatus.IndestinationWarehouse).ToList().Count == 0)
+            {
+                existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
+
+                _unitOfWork.Repository<ULD>().Update(existingUld);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<ULD>().Detach(existingUld);
+            }
+
+
+           
 
             /*foreach (var x in rm.packageIDs)
             {
