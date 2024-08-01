@@ -31,6 +31,7 @@ using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightSchedu
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
+using Aeroclub.Cargo.Core.Entities.Core;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -47,32 +48,35 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
         public async Task<PackageItemCreateResponseM> CreateAsync(PackageItemCreateRM packageItem)
-        {
-            var spec = new PackageItemSpecification(new PackageItemCountQM() { Year = DateTime.Now.Year, Month = DateTime.Now.Month });
-            var packageCount = await _unitOfWork.Repository<PackageItem>().CountAsync(spec);
+{
+    var singaporeTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+    DateTime date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, singaporeTimeZone);
 
-            ReferenceNumberSingletonService b1 = ReferenceNumberSingletonService.GetInstance(packageCount, CargoReferenceNumberType.Package);
-            var package = _mapper.Map<PackageItem>(packageItem);
-            package.PackageRefNumber = b1.GetNextRefNumber();
-            package.PackageItemStatus = PackageItemStatus.Booking_Made;
+    var spec = new PackageItemSpecification(new PackageItemCountQM() { Year = date.Year, Month = date.Month });
+    var packageCount = await _unitOfWork.Repository<PackageItem>().CountAsync(spec);
 
-            var createdPackage =await _unitOfWork.Repository<PackageItem>().CreateAsync(package);
-            await _unitOfWork.SaveChangesAsync();
+    ReferenceNumberSingletonService b1 = ReferenceNumberSingletonService.GetInstance(packageCount, CargoReferenceNumberType.Package);
+    var package = _mapper.Map<PackageItem>(packageItem);
+    package.PackageRefNumber = b1.GetNextRefNumber();
+    package.PackageItemStatus = PackageItemStatus.Booking_Made;
 
-            var response = new PackageItemCreateResponseM();
-            if (createdPackage != null)
-            {
-                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
-                response.StatusCode = ServiceResponseStatus.Success;
-                response.Id = createdPackage.Id;
-            }
-            else
-            {
-                response.StatusCode = ServiceResponseStatus.Failed;
-            }
+    var createdPackage = await _unitOfWork.Repository<PackageItem>().CreateAsync(package);
+    await _unitOfWork.SaveChangesAsync();
 
-            return response;
-        }
+    var response = new PackageItemCreateResponseM();
+    if (createdPackage != null)
+    {
+        await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+        response.StatusCode = ServiceResponseStatus.Success;
+        response.Id = createdPackage.Id;
+    }
+    else
+    {
+        response.StatusCode = ServiceResponseStatus.Failed;
+    }
+
+    return response;
+}
 
         public async Task<string[]> FilterPackagesAsync(PackageItemStatus status,long awbNum, string[] packages) 
         {
