@@ -331,48 +331,40 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in flightScheduleSectors)
             {
-                if (flightScheduleSector == null)
+                if (flightScheduleSector == null ||
+                    (query.ExcludeFinalizedSchedules && flightScheduleSector.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized))
                 {
-                    continue; // Skip if the flightScheduleSector is null
-                }
-
-                if (query.ExcludeFinalizedSchedules && flightScheduleSector.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized)
-                {
-                    continue; // Skip finalized schedules if the query specifies to exclude them
+                    continue;
                 }
 
                 var fs = _mapper.Map<FlightScheduleSectorUldPositionVM>(flightScheduleSector);
+
                 if (flightScheduleSector.LoadPlan != null)
                 {
+                    fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
+
                     var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                     {
                         AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
                     });
-                    fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
+
+                    try
+                    {
+                        var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+                        fs.ULDPositionCount = cargoPositions.Count();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the exception and skip this iteration
+                        Console.WriteLine($"Error fetching cargo positions: {ex.Message}");
+                        continue;
+                    }
                 }
 
                 fs.AircraftType = flightScheduleSector.Aircraft?.AircraftType;
 
-                List<CargoPosition> cargoPositions;
-                try
-                {
-                    var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-                    {
-                        AircraftLayoutId = flightScheduleSector.LoadPlan?.AircraftLayoutId ?? Guid.Empty // Provide a default value if null
-                    });
-                    cargoPositions = (List<CargoPosition>)await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception and skip this iteration
-                    Console.WriteLine($"Error fetching cargo positions: {ex.Message}");
-                    continue;
-                }
-
-                fs.ULDPositionCount = cargoPositions.Count;
-
-                fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets
-                    ?.Count(f => f.ULD?.ULDLocateStatus == ULDLocateStatus.OnGround) ?? 0;
+                fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets?
+                    .Count(f => f.ULD?.ULDLocateStatus == ULDLocateStatus.OnGround) ?? 0;
 
                 fs.CutoffTime = flightScheduleSector.CutoffTimeMin.HasValue
                     ? flightScheduleSector.ScheduledDepartureDateTime.AddMinutes(-flightScheduleSector.CutoffTimeMin.Value)
@@ -382,8 +374,8 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
             return list;
-
         }
+
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
         {
