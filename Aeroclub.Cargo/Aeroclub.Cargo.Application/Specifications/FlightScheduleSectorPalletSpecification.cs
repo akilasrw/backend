@@ -29,5 +29,13 @@ namespace Aeroclub.Cargo.Application.Specifications
         
         
         }
+
+
+        public FlightScheduleSectorPalletSpecification(Guid uldId)
+          : base(p => (p.ULDId == uldId && p.IsDeleted == false))
+        {
+
+
+        }
     }
 }

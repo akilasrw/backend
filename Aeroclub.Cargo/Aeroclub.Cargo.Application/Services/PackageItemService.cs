@@ -511,6 +511,13 @@ namespace Aeroclub.Cargo.Application.Services
                 if (rm.IsArrived)
                 {
                     uldContainer.ULD.Status = ULDStatus.ULDUnPacked;
+                    var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(i));
+
+                    sectorPallet.IsDeleted = true;
+                    _unitOfWork.Repository<FlightScheduleSectorPallet>().Update(sectorPallet);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
+
                 }
                 else
                 {
@@ -760,6 +767,8 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 Guid fId = Guid.NewGuid();
 
+                ULDStatus status = ULDStatus.None;
+
                 Guid fsId = Guid.NewGuid();
 
                 Guid uldId = Guid.NewGuid();
@@ -843,6 +852,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                 if (existingUld != null)
                 {
+                    status = existingUld.Status;
                     uldId = existingUld.Id;
                     existingUld.ULDLocateStatus = ULDLocateStatus.OnBoard;
                     existingUld.Status = ULDStatus.ULDPacked;
@@ -867,8 +877,16 @@ namespace Aeroclub.Cargo.Application.Services
                 }
 
 
-                    var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(fsId, uldId));
+                    var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(uldId));
+
+
+                    if(sectorPallet != null && sectorPallet.FlightScheduleSectorId != fsId) {
+
+                    return ServiceResponseStatus.Failed;
                 
+                    }
+
+                    
                     if(sectorPallet == null)
                 {
                     await _unitOfWork.Repository<FlightScheduleSectorPallet>().CreateAsync(new FlightScheduleSectorPallet
