@@ -144,13 +144,15 @@ namespace Aeroclub.Cargo.Application.Services
             var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
             if (package != null && package.PackageItemStatus != rm.PackageItemStatus)
             {
-                package.PackageItemStatus = rm.PackageItemStatus;
-                _unitOfWork.Repository<PackageItem>().Update(package);
-                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                
                 if(rm.PackageItemStatus == PackageItemStatus.Cargo_Received && package.PackageItemStatus == PackageItemStatus.Booking_Made)
                 {
                     await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = PackageItemStatus.PickedUp });
                 }
+
+                package.PackageItemStatus = rm.PackageItemStatus;
+                _unitOfWork.Repository<PackageItem>().Update(package);
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<PackageItem>().Detach(package);
 
