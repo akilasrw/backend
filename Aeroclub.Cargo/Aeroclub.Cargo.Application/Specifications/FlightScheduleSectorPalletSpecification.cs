@@ -37,5 +37,12 @@ namespace Aeroclub.Cargo.Application.Specifications
 
 
         }
+
+        public FlightScheduleSectorPalletSpecification(string uld)
+          : base(p => (p.ULD.SerialNumber == uld && p.IsDeleted == false))
+        {
+
+
+        }
     }
 }

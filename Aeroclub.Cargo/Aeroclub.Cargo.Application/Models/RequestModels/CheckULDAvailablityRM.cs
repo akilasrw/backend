@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels
 {
     public class CheckULDAvailablityRM
     {
-        public Guid ULD { get; set; }
+        public string ULD { get; set; }
         public string FlightNum { get; set; }
         public DateTime FlightDate { get; set; }
     }
