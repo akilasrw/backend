@@ -741,6 +741,33 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
+
+        async public Task<ServiceResponseStatus> CheckULDAvailabiliy(CheckULDAvailablityRM rm)
+        {
+            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = rm.FlightDate, FlightNumber = rm.FlightNum, IncludeFlightScheduleSectors = true });
+
+            var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
+
+            Guid fsId = Guid.NewGuid();
+
+            if(existingSchedule != null)
+            {
+                fsId = existingSchedule.FlightScheduleSectors.FirstOrDefault().Id;
+            }
+
+
+            var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(rm.ULD));
+
+            if(sectorPallet != null && sectorPallet.FlightScheduleSectorId != fsId)
+            {
+                return ServiceResponseStatus.Failed;
+            }
+
+
+            return ServiceResponseStatus.Success;
+
+        }
+
         async public Task<ServiceResponseStatus> DeletePackage(Guid packageId)
         {
             try

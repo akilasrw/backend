@@ -164,6 +164,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
 
+        [HttpPost("CheckAvailability")]
+        public async Task<ActionResult> CheckAvailability([FromBody] CheckULDAvailablityRM rm)
+        {
+            var response = await _packageItemService.CheckULDAvailabiliy(rm);
+            if (response == ServiceResponseStatus.Success)
+            {
+                return NoContent();
+            }
+            return BadRequest("Request Failed");
+
+        }
+
+
         [HttpPost("CreateTruckBookingAWBAndPackages")]
         public async Task<BaseResponse> CreateTruckBookingAWBAndPackages([FromBody] ScanAppBookingCreateVM rm)
         {
