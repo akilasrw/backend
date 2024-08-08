@@ -350,11 +350,12 @@ namespace Aeroclub.Cargo.Application.Services
 
                     try
                     {
-                        //var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+                        var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-                        var sectorPallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetListWithSpecAsync(new FlightScheduleSectorPalletSpecification(flightScheduleSector.Id));
+                        var sectorPallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetListWithSpecAsync(new FlightScheduleSectorPalletSpecification(flightScheduleSector.Id, true));
 
-                        fs.ULDPositionCount = sectorPallets.Count();
+                        fs.ULDPositionCount = cargoPositions.Count();
+                        fs.ULDCount = sectorPallets.Count();
                     }
                     catch (Exception ex)
                     {
