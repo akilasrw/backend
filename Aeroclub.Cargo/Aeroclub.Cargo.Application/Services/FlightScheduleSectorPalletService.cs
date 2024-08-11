@@ -9,6 +9,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleSectorPalletRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
@@ -99,7 +100,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var pallet in pallets.ToList())
             {
-                if (palletFilter.ULDLocateStatus == null || pallet.ULD.ULDLocateStatus == palletFilter.ULDLocateStatus) {
+                if (palletFilter.ULDLocateStatus == null || pallet.ULD.ULDLocateStatus == ULDLocateStatus.OnBoard || pallet.ULD.ULDLocateStatus == palletFilter.ULDLocateStatus) {
                     if (!allocatedUldList.Any(excluded => excluded.Id == pallet.ULD.Id))
                     {
                         allocatedUldList.Add(pallet.ULD);
