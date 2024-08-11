@@ -518,7 +518,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     uldContainer.ULD.Status = ULDStatus.ULDUnPacked;
                     var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(i));
-                    uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.OnGround;
+                    uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.None;
                     sectorPallet.IsDeleted = true;
                     _unitOfWork.Repository<FlightScheduleSectorPallet>().Update(sectorPallet);
                     await _unitOfWork.SaveChangesAsync();
@@ -888,7 +888,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     status = existingUld.Status;
                     uldId = existingUld.Id;
-                    existingUld.ULDLocateStatus = ULDLocateStatus.OnBoard;
+                    existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
                     existingUld.Status = ULDStatus.ULDPacked;
 
                     _unitOfWork.Repository<ULD>().Update(existingUld);
@@ -900,7 +900,7 @@ namespace Aeroclub.Cargo.Application.Services
                     var uld = await _unitOfWork.Repository<ULD>().CreateAsync(new ULD
                     {
                         SerialNumber = rm.ULDSerialNumber,
-                        ULDLocateStatus = ULDLocateStatus.OnBoard,
+                        ULDLocateStatus = ULDLocateStatus.OnGround,
                         Status = ULDStatus.ULDPacked,
                         ULDType = ULDType.None,
                     });
