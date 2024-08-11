@@ -99,7 +99,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var pallet in pallets.ToList())
             {
-                if (palletFilter.ULDLocateStatus == null || pallet.ULD.ULDLocateStatus == palletFilter.ULDLocateStatus) {
+                if (palletFilter.ULDLocateStatus == null ||  pallet.ULD.ULDLocateStatus == Common.Enums.ULDLocateStatus.None || pallet.ULD.ULDLocateStatus == palletFilter.ULDLocateStatus) {
                     if (!allocatedUldList.Any(excluded => excluded.Id == pallet.ULD.Id))
                     {
                         allocatedUldList.Add(pallet.ULD);
