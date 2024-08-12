@@ -165,14 +165,14 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpPost("CheckAvailability")]
-        public async Task<ActionResult> CheckAvailability([FromBody] CheckULDAvailablityRM rm)
+        public async Task<bool> CheckAvailability([FromBody] CheckULDAvailablityRM rm)
         {
             var response = await _packageItemService.CheckULDAvailabiliy(rm);
             if (response == ServiceResponseStatus.Success)
             {
-                return NoContent();
+                return true;
             }
-            return BadRequest("Request Failed");
+            return false;
 
         }
 
