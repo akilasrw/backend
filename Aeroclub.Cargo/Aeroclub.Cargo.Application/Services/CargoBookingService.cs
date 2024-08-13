@@ -798,7 +798,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         PackageItemId = package.Id,
                     }));
-                    if (packageUldcontainer.ULDContainer.ULDId == query.UldId)
+                    if (packageUldcontainer != null && packageUldcontainer.ULDContainer.ULDId == query.UldId)
                     {
                         filteredPackages.Add(package);
                     }
