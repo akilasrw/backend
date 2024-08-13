@@ -563,11 +563,30 @@ namespace Aeroclub.Cargo.Application.Services
             vm.CargoHandlingInstruction = booking.CargoHandlingInstruction;
             vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
             vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-            vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
-            (_baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId).Result *
-             _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId).Result *
-             _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId).Result
-            ));
+            if (booking.PackageItems != null && booking.PackageItems.Any() && false)
+            {
+                vm.TotalVolume = await Task.WhenAll(booking.PackageItems.Select(async x =>
+                {
+                    // Check for null values and use 0 as the default for the dimensions
+                    double height = (x.Height != null)
+                                    ? await _baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId)
+                                    : 0.0;
+
+                    double width = (x.Width != null)
+                                   ? await _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId)
+                                   : 0.0;
+
+                    double length = (x.Length != null)
+                                    ? await _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId)
+                                    : 0.0;
+
+                    return height * width * length;
+                })).ContinueWith(t => t.Result.Sum());
+            }
+            else
+            {
+                vm.TotalVolume = 0.0;
+            }
 
             if (booking.PackageItems != null)
             {
