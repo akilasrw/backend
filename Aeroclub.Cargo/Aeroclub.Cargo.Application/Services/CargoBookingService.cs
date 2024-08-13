@@ -109,6 +109,18 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                      d.FlightNumber = shList[0].FlightSchedule.FlightNumber;
                 }
+                else
+                {
+                    var cbSpec = new CargoBookingFlightScheduleSectorSpecification(d.Id);
+                    var bsRes = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetEntityWithSpecAsync(cbSpec);
+
+                    if(bsRes != null)
+                    {
+                        d.FlightNumber = bsRes.FlightScheduleSector.FlightNumber;
+                    }
+
+                    
+                }
 
 
 
