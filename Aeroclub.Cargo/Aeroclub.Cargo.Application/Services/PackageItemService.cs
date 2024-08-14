@@ -517,13 +517,7 @@ namespace Aeroclub.Cargo.Application.Services
                 if (rm.IsArrived)
                 {
                     uldContainer.ULD.Status = ULDStatus.ULDUnPacked;
-                    var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(i));
                     uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.None;
-                    sectorPallet.IsDeleted = true;
-                    _unitOfWork.Repository<FlightScheduleSectorPallet>().Update(sectorPallet);
-                    await _unitOfWork.SaveChangesAsync();
-                    _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
-
                 }
                 else
                 {
@@ -641,7 +635,12 @@ namespace Aeroclub.Cargo.Application.Services
 
             var uldSpecs = new ULDSpecification(rm.uld);
 
+            uldPackages = uldPackages.Where(x => x.PackageItemStatus == PackageItemStatus.Arrived).ToList();
+
             uldPackages = uldPackages.Where(x => rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
+
+            var missingPackges = uldPackages.Where(x => rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
+
 
 
             foreach (var package in uldPackages)
@@ -663,6 +662,18 @@ namespace Aeroclub.Cargo.Application.Services
                 return ServiceResponseStatus.Failed;
             
             }
+
+
+            if(missingPackges.Count() <=0 ) {
+                var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(existingUld.Id));
+                sectorPallet.IsDeleted = true;
+                _unitOfWork.Repository<FlightScheduleSectorPallet>().Update(sectorPallet);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
+
+            }
+
+          
 
             var uldItems = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
 
