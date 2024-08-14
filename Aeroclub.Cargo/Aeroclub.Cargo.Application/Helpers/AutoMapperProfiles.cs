@@ -333,7 +333,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.MaxVolume, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.MaxVolume : 0))
                 .ForMember(d => d.Length, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Length : 0))
                 .ForMember(d => d.Width, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Width : 0))
-                .ForMember(d => d.ULDLocateStatus, o => o.MapFrom(s => s.Status))
+                .ForMember(d => d.ULDLocateStatus, o => o.MapFrom(s => s.ULDLocateStatus))
                 .ForMember(d => d.Height, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Height : 0))
                 .ForMember(d => d.LastUsedDate, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedDate : DateTime.MinValue))
                 .ForMember(d => d.LastUsedFlightNumber, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedFlightNumber : ""))
