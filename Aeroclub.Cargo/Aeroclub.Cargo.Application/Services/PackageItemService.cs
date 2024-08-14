@@ -635,11 +635,13 @@ namespace Aeroclub.Cargo.Application.Services
 
             var uldSpecs = new ULDSpecification(rm.uld);
 
+            var missingPackges = uldPackages.Where(x => !rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
+
             uldPackages = uldPackages.Where(x => x.PackageItemStatus == PackageItemStatus.Arrived).ToList();
 
             uldPackages = uldPackages.Where(x => rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
 
-            var missingPackges = uldPackages.Where(x => rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
+            
 
 
 
