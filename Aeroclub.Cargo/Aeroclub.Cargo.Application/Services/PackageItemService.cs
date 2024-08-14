@@ -517,7 +517,7 @@ namespace Aeroclub.Cargo.Application.Services
                 if (rm.IsArrived)
                 {
                     uldContainer.ULD.Status = ULDStatus.ULDUnPacked;
-                    uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.None;
+                    //uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.None;
                 }
                 else
                 {
@@ -673,6 +673,12 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
 
+                existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
+
+                _unitOfWork.Repository<ULD>().Update(existingUld);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<ULD>().Detach(existingUld);
+
             }
 
           
@@ -685,15 +691,7 @@ namespace Aeroclub.Cargo.Application.Services
             }
 
 
-            if(uldPackages.Where((x)=> x.PackageItemStatus != PackageItemStatus.IndestinationWarehouse).ToList().Count == 0)
-            {
-                existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
-
-                _unitOfWork.Repository<ULD>().Update(existingUld);
-                await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Repository<ULD>().Detach(existingUld);
-            }
-
+       
 
            
 
