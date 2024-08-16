@@ -554,6 +554,7 @@ namespace Aeroclub.Cargo.Application.Services
             foreach(var packageULDContainer in packageULDContainers)
             {
                 packageULDContainer.PackageItem.PackageItemStatus = PackageItemStatus.AcceptedForFLight;
+                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = bookingAssignment.PackageId, PackageItemStatus = PackageItemStatus.AcceptedForFLight });
                 _unitOfWork.Repository<PackageItem>().Update(packageULDContainer.PackageItem);
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<PackageItem>().Detach(packageULDContainer.PackageItem);
