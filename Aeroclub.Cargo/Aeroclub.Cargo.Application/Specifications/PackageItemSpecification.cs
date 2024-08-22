@@ -15,6 +15,11 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
+        public PackageItemSpecification(string refNum, long awb)
+               : base(x => x.PackageRefNumber == refNum && x.CargoBooking.AWBInformation.AwbTrackingNumber == awb)
+        {
+        }
+
         public PackageItemSpecification(PackageListByAwbAndStatus query)
                : base(x => x.CargoBooking.AWBInformation.AwbTrackingNumber == query.AwbNumber && query.packageItemStatuses.Contains(x.PackageItemStatus))
         {
@@ -41,7 +46,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public PackageItemSpecification(PackageItemByBookingQM query)
-               : base(x => x.CargoBookingId == query.BookingID)
+               : base(x => x.CargoBookingId == query.BookingID && (query.PackageItemStatus == null || x.PackageItemStatus == query.PackageItemStatus))
         {
             AddInclude(x => x.Include(y => y.CargoBooking));
         }

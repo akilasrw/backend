@@ -109,6 +109,18 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                      d.FlightNumber = shList[0].FlightSchedule.FlightNumber;
                 }
+                else
+                {
+                    var cbSpec = new CargoBookingFlightScheduleSectorSpecification(d.Id);
+                    var bsRes = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetEntityWithSpecAsync(cbSpec);
+
+                    if(bsRes != null)
+                    {
+                        d.FlightNumber = bsRes.FlightScheduleSector.FlightNumber;
+                    }
+
+                    
+                }
 
 
 
@@ -319,6 +331,7 @@ namespace Aeroclub.Cargo.Application.Services
                         var pSpec = new PackageItemSpecification(new PackageItemByBookingQM
                         {
                             BookingID = bookingID,
+                            PackageItemStatus = packageStatus
                         });
                         var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
 
@@ -333,7 +346,7 @@ namespace Aeroclub.Cargo.Application.Services
                             awbNumber = (long)booking?.AWBInformation?.AwbTrackingNumber,
                             bookedDate = (DateTime)booking?.Created,
                             shipmentStatus = packageStatus,
-                            packageCount = packages.Count,
+                            packageCount = packages.Count(),
                             enrouteToWahouse = pRRes.Count() > 0 ? pRRes[0]?.Created : null,
                             inOriginWahouse = pDRes.Count() > 0 ? pDRes[0]?.Created : null,
                         };
@@ -373,6 +386,15 @@ namespace Aeroclub.Cargo.Application.Services
 
                             var pRWSpec = new PackageAuditSpecification(new ItemAuditQM { shipmentID = shipment.Id, status = PackageItemStatus.Cargo_Received });
                             var pRWRes = await _unitOfWork.Repository<ItemStatus>().GetListWithSpecAsync(pRSpec);
+
+
+                            var pSpec = new PackageItemSpecification(new PackageItemByBookingQM
+                            {
+                                BookingID = bookingID,
+                                PackageItemStatus = packageStatus
+                            });
+
+                            var packages = await _unitOfWork.Repository<PackageItem>().GetListWithSpecAsync(pSpec);
                             try
                             {
                                 var shipBooking = new BookingShipmentSummeryVM
@@ -380,7 +402,7 @@ namespace Aeroclub.Cargo.Application.Services
                                     awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
                                     bookedDate = shipment.CargoBooking.Created,
                                     flightNumber = shipment.FlightSchedule.FlightNumber,
-                                    packageCount = shipment.packageCount,
+                                    packageCount = packages.Count(),
                                     from = shipment.FlightSchedule.OriginAirportName,
                                     to = shipment.FlightSchedule.DestinationAirportName,
                                     shipmentID = shipment.Id,
@@ -420,24 +442,55 @@ namespace Aeroclub.Cargo.Application.Services
             var spec = new CargoBookingFlightScheduleSectorSpecification(query);
             var bookingFlightScheduleSectorList = await _unitOfWork.Repository<CargoBookingFlightScheduleSector>().GetListWithSpecAsync(spec);
 
-            List<CargoBookingMobileVM> list = new List<CargoBookingMobileVM>();
+            var list = new List<CargoBookingMobileVM>();
 
             foreach (var sectorBooking in bookingFlightScheduleSectorList)
             {
+                // Ensure sectorBooking and its properties are not null
+                if (sectorBooking == null || sectorBooking.CargoBooking == null || sectorBooking.FlightScheduleSector == null)
+                {
+                    continue; // Skip this iteration if any of these are null
+                }
+
                 var booking = sectorBooking.CargoBooking;
-                var mappedBooking = await MappedListAsync(booking);
+
+                // Use try-catch to handle any potential errors in the asynchronous method
+                CargoBookingListVM mappedBooking;
+                try
+                {
+                    mappedBooking = await MappedListAsync(booking);
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception and skip this iteration
+                    Console.WriteLine($"Error mapping booking: {ex.Message}");
+                    continue;
+                }
+
                 var mobBooking = _mapper.Map<CargoBookingMobileVM>(mappedBooking);
                 mobBooking.Origin = sectorBooking.FlightScheduleSector.OriginAirportCode;
                 mobBooking.Destination = sectorBooking.FlightScheduleSector.DestinationAirportCode;
                 mobBooking.FlightNumber = sectorBooking.FlightScheduleSector.FlightNumber;
-                mobBooking.CutoffTimeMin = sectorBooking.FlightScheduleSector.FlightSchedule.CutoffTimeMin;
+                mobBooking.CutoffTimeMin = sectorBooking.FlightScheduleSector.FlightSchedule?.CutoffTimeMin ?? 0; // Handle null FlightSchedule
                 mobBooking.ScheduledDepartureDateTime = sectorBooking.FlightScheduleSector.ScheduledDepartureDateTime;
-                if (sectorBooking.FlightScheduleSector.AircraftSubType != null && sectorBooking.FlightScheduleSector.AircraftSubType.AircraftType != null)
+
+                // Check if AircraftSubType and AircraftType are not null before accessing Name
+                if (sectorBooking.FlightScheduleSector.AircraftSubType?.AircraftType != null)
+                {
                     mobBooking.AircraftSubTypeName = sectorBooking.FlightScheduleSector.AircraftSubType.AircraftType.Name;
-                mobBooking.PackageItems = _mapper.Map<IReadOnlyList<PackageMobileVMs>>(booking.PackageItems);
+                }
+
+                // Map package items with null checks
+                mobBooking.PackageItems = sectorBooking.CargoBooking.PackageItems != null
+                    ? _mapper.Map<IReadOnlyList<PackageMobileVMs>>(sectorBooking.CargoBooking.PackageItems)
+                    : new List<PackageMobileVMs>();
+
                 list.Add(mobBooking);
             }
-            
+
+
+
+
             return list.Count > 0? list.DistinctBy(x => x.Id).ToList().FirstOrDefault(): new CargoBookingMobileVM();
         }
 
@@ -510,11 +563,30 @@ namespace Aeroclub.Cargo.Application.Services
             vm.CargoHandlingInstruction = booking.CargoHandlingInstruction;
             vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
             vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-            vm.TotalVolume = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x =>
-            (_baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId).Result *
-             _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId).Result *
-             _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId).Result
-            ));
+            if (booking.PackageItems != null && booking.PackageItems.Any() && false)
+            {
+                vm.TotalVolume = await Task.WhenAll(booking.PackageItems.Select(async x =>
+                {
+                    // Check for null values and use 0 as the default for the dimensions
+                    double height = (x.Height != null)
+                                    ? await _baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId)
+                                    : 0.0;
+
+                    double width = (x.Width != null)
+                                   ? await _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId)
+                                   : 0.0;
+
+                    double length = (x.Length != null)
+                                    ? await _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId)
+                                    : 0.0;
+
+                    return height * width * length;
+                })).ContinueWith(t => t.Result.Sum());
+            }
+            else
+            {
+                vm.TotalVolume = 0.0;
+            }
 
             if (booking.PackageItems != null)
             {
@@ -668,18 +740,35 @@ namespace Aeroclub.Cargo.Application.Services
 
         private CargoBookingDetailVM GetCargoBookingSectorInfo(CargoBooking cargoBooking, CargoBookingDetailVM bookingDetail)
         {
-            var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors.OrderBy(x => x.FlightScheduleSector.SequenceNo).ToList();
-            var lastCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.Last();
-            bookingDetail.DestinationAirportCode = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportCode;
-            bookingDetail.DestinationAirportId = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportId;
-            bookingDetail.DestinationAirportName = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportName;
-            bookingDetail.ScheduledDepartureDateTime = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightSchedule.ScheduledDepartureDateTime;
-            bookingDetail.FlightNumber = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightNumber;
+            if (cargoBooking?.CargoBookingFlightScheduleSectors == null || !cargoBooking.CargoBookingFlightScheduleSectors.Any())
+            {
+                // Handle the case when there are no flight schedule sectors
+                return bookingDetail;
+            }
 
-            var firstCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.First();
-            bookingDetail.OriginAirportCode = firstCrgoBookingFlightScheduleSector.FlightScheduleSector.OriginAirportCode;
+            var orderedCrgoBookingFlightScheduleSectors = cargoBooking.CargoBookingFlightScheduleSectors
+                .OrderBy(x => x.FlightScheduleSector?.SequenceNo)
+                .ToList();
+
+            var lastCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.LastOrDefault();
+            if (lastCrgoBookingFlightScheduleSector?.FlightScheduleSector != null)
+            {
+                bookingDetail.DestinationAirportCode = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportCode;
+                bookingDetail.DestinationAirportId = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportId;
+                bookingDetail.DestinationAirportName = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.DestinationAirportName;
+                bookingDetail.ScheduledDepartureDateTime = (DateTime)(lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightSchedule?.ScheduledDepartureDateTime);
+                bookingDetail.FlightNumber = lastCrgoBookingFlightScheduleSector.FlightScheduleSector.FlightNumber;
+            }
+
+            var firstCrgoBookingFlightScheduleSector = orderedCrgoBookingFlightScheduleSectors.FirstOrDefault();
+            if (firstCrgoBookingFlightScheduleSector?.FlightScheduleSector != null)
+            {
+                bookingDetail.OriginAirportCode = firstCrgoBookingFlightScheduleSector.FlightScheduleSector.OriginAirportCode;
+            }
+
             return bookingDetail;
         }
+
 
         public async Task<IReadOnlyList<CargoBookingListVM>> GetOnlyAssignedListAsync(AssignedCargoQM query)
         {
@@ -709,7 +798,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         PackageItemId = package.Id,
                     }));
-                    if (packageUldcontainer.ULDContainer.ULDId == query.UldId)
+                    if (packageUldcontainer != null && packageUldcontainer.ULDContainer.ULDId == query.UldId)
                     {
                         filteredPackages.Add(package);
                     }

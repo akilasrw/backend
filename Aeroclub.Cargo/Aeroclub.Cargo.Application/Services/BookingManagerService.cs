@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
@@ -490,6 +491,67 @@ namespace Aeroclub.Cargo.Application.Services
         public Task<IReadOnlyList<CargoBookingListVM>> GetAssignedCargoList(AssignedCargoQM query)
         {
             return _cargoBookingService.GetOnlyAssignedListAsync(query);
+        }
+
+        public async Task<Pagination<CargoBookingStandByCargoVM>> GetBookingByPackageStatus(PackageItemStatus type, StandbyCargoBookingsQM query)
+        {
+            var specs = new CargoBookingSpecification(type, query, false);
+            var bookings = await _unitOfWork.Repository<CargoBooking>().GetListWithSpecAsync(specs);
+
+
+            List<CargoBookingStandByCargoVM> list = new List<CargoBookingStandByCargoVM>();
+
+
+            var countSpecs = new CargoBookingSpecification(type, query, true);
+
+            var totalCount = await _unitOfWork.Repository<CargoBooking>().CountAsync(countSpecs);
+
+            foreach (var booking in bookings)
+            {
+
+                var agentSpecs = new CargoAgentSpecification(new Models.Queries.CargoAgentQMs.CargoAgentQM { AppUserId = booking.CreatedBy});
+
+                var agent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(agentSpecs);
+
+                PackageItemStatus status = PackageItemStatus.Booking_Made;
+
+                foreach (PackageItemStatus itemStatus in Enum.GetValues(typeof(PackageItemStatus)).Cast<PackageItemStatus>().Reverse())
+                {
+                    if (booking.PackageItems.Any(x => x.PackageItemStatus == itemStatus))
+                    {
+                        status = itemStatus;
+                        break;
+                    }
+                };
+
+                
+
+                var cargoBooking = new CargoBookingStandByCargoVM();
+                cargoBooking.BookingStatus = status;
+                cargoBooking.Id = booking.Id;
+                cargoBooking.AWBNumber = booking.AWBInformation.AwbTrackingNumber.ToString();
+                cargoBooking.BookingNumber = booking.BookingNumber;
+                if(type == PackageItemStatus.PickedUp)
+                {
+                    cargoBooking.NumberOfRecBoxes = booking.PackageItems.Where(x => (x.PackageItemStatus == PackageItemStatus.PickedUp || x.PackageItemStatus == PackageItemStatus.Booking_Made)).Count();
+                }
+                else
+                {
+                    cargoBooking.NumberOfRecBoxes = booking.PackageItems.Where(x => x.PackageItemStatus == PackageItemStatus.Offloaded).Count();
+                }
+                
+                cargoBooking.BookingAgent = agent.AgentName;
+                cargoBooking.Origin = booking.OriginAirport.Code;
+                cargoBooking.Destination = booking.DestinationAirport.Code;
+                cargoBooking.BookingDate = booking.BookingDate;
+                list.Add(cargoBooking);
+                
+            }
+
+
+            IReadOnlyList<CargoBookingStandByCargoVM> readOnlyList = new ReadOnlyCollection<CargoBookingStandByCargoVM>(list);
+
+            return new Pagination<CargoBookingStandByCargoVM>(query.PageIndex, query.PageSize, totalCount,  readOnlyList);
         }
     }
 }

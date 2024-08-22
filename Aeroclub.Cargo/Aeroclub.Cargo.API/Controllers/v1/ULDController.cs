@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ULDQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDByFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
+using Aeroclub.Cargo.Common.Enums;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,16 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _uLDService.GetFilteredListAsync(query));
         }
+
+
+        [HttpGet("UldByStatus")]
+        public async Task<ActionResult<Pagination<ULDFilteredListVM>>> UldByStatus()
+        {
+            return Ok(await _uLDService.GetULDByStatus());
+        }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] ULDCreateRM uldDto)

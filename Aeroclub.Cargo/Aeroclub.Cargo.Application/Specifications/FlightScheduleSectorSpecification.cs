@@ -24,7 +24,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSectorSpecification(FlightScheduleSectorQM query)
-            : base(x => (query.Id == Guid.Empty || x.Id == query.Id))
+            : base(x => (query.Id == Guid.Empty || x.Id == query.Id) && x.FlightSchedule.IsDeleted == false)
         {
             if(query.IncludeULDContaines)
                 AddInclude(y=> y.Include(x=> x.LoadPlan.ULDContaines).ThenInclude(y=>y.ULDContainerCargoPositions).ThenInclude(z=>z.CargoPosition));
@@ -58,7 +58,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x=> ((query.ScheduledDepartureStartDateTime == DateTime.MinValue &&
                   query.ScheduledDepartureEndDateTime == DateTime.MinValue)
                  || (query.ScheduledDepartureStartDateTime.Date <= x.ScheduledDepartureDateTime.Date) &&
-                 (query.ScheduledDepartureEndDateTime >= x.ScheduledDepartureDateTime.Date)))
+                 (query.ScheduledDepartureEndDateTime >= x.ScheduledDepartureDateTime.Date)) && x.IsDeleted == false)
         {
             AddInclude(y => y.Include(x => x.LoadPlan));
             AddInclude(y => y.Include(x => x.LoadPlan.ULDContaines).ThenInclude(y => y.ULDContainerCargoPositions).ThenInclude(z => z.CargoPosition));

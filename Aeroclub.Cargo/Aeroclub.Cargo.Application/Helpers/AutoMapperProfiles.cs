@@ -134,7 +134,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.AWBNumber, o => o.MapFrom(s => s.AWBInformation.AwbTrackingNumber))
                 .ForMember(d => d.DestinationAirportCode, o => o.MapFrom(s => s.DestinationAirport.Code))
                 //.ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.FlightNumber:""))
-                .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count()>0 ? s.CargoBookingFlightScheduleSectors.FirstOrDefault(x => x.FlightScheduleSector.SequenceNo == 1)!.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
+                .ForMember(d => d.FlightDate, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count()>0 ? s.CargoBookingFlightScheduleSectors.LastOrDefault(x => x.FlightScheduleSector.SequenceNo == 1)!.FlightScheduleSector.ScheduledDepartureDateTime : DateTime.MinValue))
                 .ForMember(d => d.AircraftConfigType, o => o.MapFrom(s => s.CargoBookingFlightScheduleSectors.Count() > 0 ? s.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.AircraftSubType.ConfigType: AircraftConfigType.None))
                 //.ForMember(d => d.NumberOfBoxes, o => o.MapFrom(s => s.PackageItems.Count))
                 //.ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.PackageItems.ToList()[0].PackageItemStatus))
@@ -222,7 +222,8 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.CargoAgentName, o => o.MapFrom(s => s.CargoAgent != null ? s.CargoAgent.AgentName : ""));
 
             CreateMap<CargoAgent, BaseSelectListModel>()
-               .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName));
+               .ForMember(d => d.Value, o => o.MapFrom(s => s.AgentName))
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.AppUserId));
 
             CreateMap<AWBUpdateRM, AWBInformation>();
 
@@ -332,6 +333,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.MaxVolume, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.MaxVolume : 0))
                 .ForMember(d => d.Length, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Length : 0))
                 .ForMember(d => d.Width, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Width : 0))
+                .ForMember(d => d.ULDLocateStatus, o => o.MapFrom(s => s.ULDLocateStatus))
                 .ForMember(d => d.Height, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Height : 0))
                 .ForMember(d => d.LastUsedDate, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedDate : DateTime.MinValue))
                 .ForMember(d => d.LastUsedFlightNumber, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedFlightNumber : ""))

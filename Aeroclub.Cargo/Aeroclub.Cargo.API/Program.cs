@@ -24,6 +24,14 @@ using Aeroclub.Cargo.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Kestrel Server Configuration with Timeout settings
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2); // Example setting for KeepAlive timeout
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(30); // Example setting for request headers timeout
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
@@ -74,6 +82,8 @@ builder.Services.AddApiVersioning(options =>
     options.DefaultApiVersion = ApiVersion.Default;
     options.ReportApiVersions = true;
 });
+
+
 
 builder.Services.AddIdentityCore<AppUser>(options =>
     {

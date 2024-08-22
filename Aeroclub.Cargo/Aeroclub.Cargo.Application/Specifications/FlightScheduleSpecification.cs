@@ -19,7 +19,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             (query.FlightToDate == DateTime.MinValue || x.ScheduledDepartureDateTime.Date <= query.FlightToDate.Date) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) && 
-                x.ActualArrivalDateTime == null // no history
+                x.ActualArrivalDateTime == null && x.IsDeleted == false // no history
         )
         {
             if (!isCount)
@@ -102,7 +102,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(ULDByFlightScheduleRM query)
-            : base(x =>(query.flightNumber == x.FlightNumber && query.scheduledDepartureDateTime == x.ScheduledDepartureDateTime))
+            : base(x =>(query.flightNumber == x.FlightNumber && query.scheduledDepartureDateTime.Date == x.ScheduledDepartureDateTime.Date))
         {
             AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.FlightScheduleSectorPallets).ThenInclude(a => a.ULD));
         }

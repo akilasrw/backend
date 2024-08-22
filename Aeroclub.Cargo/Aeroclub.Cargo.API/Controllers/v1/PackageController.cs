@@ -96,6 +96,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NoContent();
         }
 
+        [HttpPut("UpdateDetails/{id}")]
+        public async Task<ActionResult> UpdateDetails(Guid id,[FromBody] PackageDetailsUpdateRM query)
+        {
+            return Ok(await _packageItemService.UpdateDetailsAsync(query, id));
+        }
+
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm)
         {
@@ -155,6 +161,19 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             }
             return BadRequest("Cannot delete the package according to this ID");
             
+        }
+
+
+        [HttpPost("CheckAvailability")]
+        public async Task<bool> CheckAvailability([FromBody] CheckULDAvailablityRM rm)
+        {
+            var response = await _packageItemService.CheckULDAvailabiliy(rm);
+            if (response == ServiceResponseStatus.Success)
+            {
+                return true;
+            }
+            return false;
+
         }
 
 

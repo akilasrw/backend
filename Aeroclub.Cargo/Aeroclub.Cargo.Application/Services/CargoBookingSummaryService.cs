@@ -65,7 +65,12 @@ namespace Aeroclub.Cargo.Application.Services
 
                     positionSummary.TotalBookedWeight = totalAvailableWeight;
                     positionSummary.TotalWeight = totalWeight;
-                    positionSummary.WeightPercentage = Math.Round((decimal)positionSummary.TotalBookedWeight / (decimal)positionSummary.TotalWeight, 3);
+
+                    positionSummary.WeightPercentage =
+    (positionSummary.TotalBookedWeight != null && positionSummary.TotalWeight != null && positionSummary.TotalWeight != 0)
+        ? Math.Round((decimal)positionSummary.TotalBookedWeight / (decimal)positionSummary.TotalWeight, 3)
+        : 0m;
+
 
                     positionSummary.TotalBookedVolume = totalAvailableVolume;
                     positionSummary.TotalVolume = totalVolume;
@@ -116,16 +121,31 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+
+            var bookedWeight = 0.00;
+
+            var weight = 0.00;
+
+            if (flightScheduleSector != null && flightScheduleSector.LoadPlan != null)
             {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
 
-            var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
+                });
 
-            var bookedWeight = position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+                var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
 
-            var weight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
+                bookedWeight = position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+
+                weight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
+
+            }
+
+
+         
+
+          
 
             return new Tuple<double, double>(bookedWeight, weight);
         }
@@ -141,21 +161,32 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
-
-            var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-
             double bookedVolume = 0;
             double volume = 0;
 
-            foreach (var position in positions)
+
+            if(flightScheduleSector != null && flightScheduleSector.LoadPlan != null)
             {
-                bookedVolume += position.CurrentVolume;
-                volume += position.MaxVolume;
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
+
+                var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+                foreach (var position in positions)
+                {
+                    bookedVolume += position.CurrentVolume;
+                    volume += position.MaxVolume;
+                }
+
             }
+
+          
+
+           
+
+           
 
             return new Tuple<double, double>(bookedVolume, volume);
         }
@@ -173,33 +204,39 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+
+            if(flightScheduleSector != null && flightScheduleSector.LoadPlan !=null)
             {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
-
-            var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-
-            foreach (var position in positions)
-            {
-                var cargoPosition = new CargoPositionDetailVM();
-                var uld = await _uLDService.GetAsync(new ULDQM() { PositionId = position.Id });
-
-                if (uld != null && uld.ULDMetaData != null)
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                 {
-                    cargoPosition.IsPalletAssigned = true;
-                    cargoPosition.ULDNumber = uld.SerialNumber;
-                    cargoPosition.Dimention = string.Format("{0} x {1} x {2}", uld.ULDMetaData.Length, uld.ULDMetaData.Width, uld.ULDMetaData.Height);
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
+
+                var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+                foreach (var position in positions)
+                {
+                    var cargoPosition = new CargoPositionDetailVM();
+                    var uld = await _uLDService.GetAsync(new ULDQM() { PositionId = position.Id });
+
+                    if (uld != null && uld.ULDMetaData != null)
+                    {
+                        cargoPosition.IsPalletAssigned = true;
+                        cargoPosition.ULDNumber = uld.SerialNumber;
+                        cargoPosition.Dimention = string.Format("{0} x {1} x {2}", uld.ULDMetaData.Length, uld.ULDMetaData.Width, uld.ULDMetaData.Height);
+                    }
+                    int val;
+                    cargoPosition.Id = position.Id;
+                    cargoPosition.MaxWeight = position.MaxWeight;
+                    cargoPosition.Weight = position.CurrentWeight;
+                    cargoPosition.MaxVolume = position.MaxVolume;
+                    cargoPosition.Volume = position.CurrentVolume;
+                    cargoPosition.Position = int.TryParse(position.Name, out val) ? int.Parse(position.Name) : 0;
+                    list.Add(cargoPosition);
                 }
-                int val;
-                cargoPosition.Id = position.Id;
-                cargoPosition.MaxWeight = position.MaxWeight;
-                cargoPosition.Weight = position.CurrentWeight;
-                cargoPosition.MaxVolume = position.MaxVolume;
-                cargoPosition.Volume = position.CurrentVolume;
-                cargoPosition.Position = int.TryParse(position.Name, out val) ? int.Parse(position.Name) : 0;
-                list.Add(cargoPosition);
             }
+
+         
 
             return list.OrderBy(x => x.Position).ToList();
         }

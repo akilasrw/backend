@@ -153,15 +153,16 @@ namespace Aeroclub.Cargo.Common.Enums
     public enum PackageItemStatus
     {
         Booking_Made = 0,
-        Returned = 1,
-        Cargo_Received = 2,
-        AcceptedForFLight = 3,
-        Offloaded = 4,
-        FlightDispatched = 5,
-        Arrived = 6,
-        IndestinationWarehouse = 7,
-        TruckForDelivery = 8,
-        Deliverd = 9,
+        PickedUp = 1,
+        Returned = 2,
+        Cargo_Received = 3,
+        AcceptedForFLight = 4,
+        Offloaded = 5,
+        FlightDispatched = 6,
+        Arrived = 7,
+        IndestinationWarehouse = 8,
+        TruckForDelivery = 9,
+        Deliverd = 10,
     }
 
     public enum AWBStatus

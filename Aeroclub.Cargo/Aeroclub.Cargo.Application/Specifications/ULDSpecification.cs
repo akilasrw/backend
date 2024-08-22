@@ -40,5 +40,11 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
 
         }
+
+        public ULDSpecification()
+            : base(x => !x.IsDeleted)
+        {
+
+        }
     }
 }

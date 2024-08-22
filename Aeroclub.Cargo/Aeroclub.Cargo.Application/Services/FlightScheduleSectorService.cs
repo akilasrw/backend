@@ -18,6 +18,7 @@ using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using System.Collections.ObjectModel;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -67,6 +68,8 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<double> GetAircraftAvailableWeight(Guid flightScheduleSectorId) // Checking only Main Deck
         {
+            double availableWeight = 0;
+
             var spec = new FlightScheduleSectorSpecification(new FlightScheduleSectorQM
             {
                 Id = flightScheduleSectorId,
@@ -76,14 +79,18 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+
+            if(flightScheduleSector != null)
             {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
 
-            var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
+                var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
 
-            var availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+                availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+            }
             return availableWeight;
         }
 
@@ -95,22 +102,26 @@ namespace Aeroclub.Cargo.Application.Services
                 IncludeLoadPlan = true,
             });
 
+            double availableVolume = 0;
+
             var flightScheduleSector =
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+
+            if(flightScheduleSector != null)
             {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
 
-            var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+                var positions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
 
-            double availableVolume = 0;
-
-            foreach (var position in positions)
-            {
-                var remainingVolume = position.MaxVolume - position.CurrentVolume;
-                availableVolume += remainingVolume;
+                foreach (var position in positions)
+                {
+                    var remainingVolume = position.MaxVolume - position.CurrentVolume;
+                    availableVolume += remainingVolume;
+                }
             }
 
             return availableVolume;
@@ -127,35 +138,40 @@ namespace Aeroclub.Cargo.Application.Services
 
             var flightScheduleSector = await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
-
-            var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-
-            var groupedCargoPositions = cargoPositions.GroupBy(item => item.CargoPositionType,
-                  (key, group) => new { CargoPositionType = key, Items = group.ToList() })
-              .ToList();
-
             var flightScheduleSectorCargoPositionsList = new List<FlightScheduleSectorCargoPosition>();
 
-            foreach (var flightScheduleSectorCargoPosition in from groupedCargoPosition in groupedCargoPositions
-                                                              let totalCount = groupedCargoPosition.Items.Count
-                                                              let cargoPositionType = groupedCargoPosition.CargoPositionType
-                                                             
-                                                              let occupiedCount = groupedCargoPosition.Items.Count(x => 
-                                                              (x.CurrentWeight >= x.MaxWeight) ||(x.CurrentVolume >= x.MaxVolume) 
-                                                              )
-                       
-                                                              select new FlightScheduleSectorCargoPosition
-                                                              {
-                                                                  CargoPositionType = groupedCargoPosition.CargoPositionType,
-                                                                  AvailableSpaceCount = totalCount - occupiedCount
-                                                              })
+            if (flightScheduleSector != null)
             {
-                flightScheduleSectorCargoPositionsList.Add(flightScheduleSectorCargoPosition);
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
+
+                var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+                var groupedCargoPositions = cargoPositions.GroupBy(item => item.CargoPositionType,
+                      (key, group) => new { CargoPositionType = key, Items = group.ToList() })
+                  .ToList();
+
+                foreach (var flightScheduleSectorCargoPosition in from groupedCargoPosition in groupedCargoPositions
+                                                                  let totalCount = groupedCargoPosition.Items.Count
+                                                                  let cargoPositionType = groupedCargoPosition.CargoPositionType
+
+                                                                  let occupiedCount = groupedCargoPosition.Items.Count(x =>
+                                                                  (x.CurrentWeight >= x.MaxWeight) || (x.CurrentVolume >= x.MaxVolume)
+                                                                  )
+
+                                                                  select new FlightScheduleSectorCargoPosition
+                                                                  {
+                                                                      CargoPositionType = groupedCargoPosition.CargoPositionType,
+                                                                      AvailableSpaceCount = totalCount - occupiedCount
+                                                                  })
+                {
+                    flightScheduleSectorCargoPositionsList.Add(flightScheduleSectorCargoPosition);
+                }
             }
+
+           
 
             return flightScheduleSectorCargoPositionsList;
         }
@@ -173,12 +189,21 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.Repository<FlightScheduleSector>().GetEntityWithSpecAsync(spec);
             // await _unitOfWork.Repository<FlightScheduleSector>().GetByIdAsync(flightScheduleSectorId);
 
-            var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-            {
-                AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-            });
 
-            var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            List<CargoPosition> cargoPositionsList = new List<CargoPosition> { };
+
+            IReadOnlyList<CargoPosition> cargoPositions = new ReadOnlyCollection<CargoPosition>(cargoPositionsList);
+
+
+            if (flightScheduleSector.LoadPlan != null)
+            {
+                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                {
+                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                });
+
+                cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+            }
 
             var groupedCargoPositions = cargoPositions.GroupBy(item => item.CargoPositionType,
                     (key, group) => new { CargoPositionType = key, Items = group.ToList() })
@@ -306,30 +331,55 @@ namespace Aeroclub.Cargo.Application.Services
 
             foreach (var flightScheduleSector in flightScheduleSectors)
             {
-                if (query.ExcludeFinalizedSchedules && flightScheduleSector?.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized)
+                if (flightScheduleSector == null ||
+                    (query.ExcludeFinalizedSchedules && flightScheduleSector.LoadPlan?.LoadPlanStatus == LoadPlanStatus.Finalized))
                 {
                     continue;
                 }
-                var fs = _mapper.Map<FlightScheduleSectorUldPositionVM>(flightScheduleSector);
-                var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
-                {
-                    AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
-                });
-                fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
-                fs.AircraftType = flightScheduleSector.Aircraft != null
-                ? flightScheduleSector.Aircraft.AircraftType
-                : null;
-                var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
-                fs.ULDPositionCount = cargoPositions.Count;
-                fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets.Count(f => f.ULD.ULDLocateStatus == ULDLocateStatus.OnGround);
-                fs.CutoffTime = flightScheduleSector.CutoffTimeMin == null ? flightScheduleSector.ScheduledDepartureDateTime
-                    : flightScheduleSector.ScheduledDepartureDateTime.AddHours(-flightScheduleSector.CutoffTimeMin.Value);
-                list.Add(fs);
 
+                var fs = _mapper.Map<FlightScheduleSectorUldPositionVM>(flightScheduleSector);
+
+                if (flightScheduleSector.LoadPlan != null)
+                {
+                    fs.AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId;
+
+                    var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
+                    {
+                        AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
+                    });
+
+                    try
+                    {
+                        var cargoPositions = await _unitOfWork.Repository<CargoPosition>().GetListWithSpecAsync(cargoPositionSpec);
+
+                        var sectorPallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetListWithSpecAsync(new FlightScheduleSectorPalletSpecification(flightScheduleSector.Id, true));
+
+                        fs.ULDPositionCount = cargoPositions.Count();
+                        fs.ULDCount = sectorPallets.Count();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the exception and skip this iteration
+                        Console.WriteLine($"Error fetching cargo positions: {ex.Message}");
+                        continue;
+                    }
+                }
+
+                fs.AircraftType = flightScheduleSector.Aircraft?.AircraftType;
+
+                fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets?
+                    .Count(f => f.ULD?.ULDLocateStatus == ULDLocateStatus.OnGround) ?? 0;
+
+                fs.CutoffTime = flightScheduleSector.CutoffTimeMin.HasValue
+                    ? flightScheduleSector.ScheduledDepartureDateTime.AddMinutes(-flightScheduleSector.CutoffTimeMin.Value)
+                    : flightScheduleSector.ScheduledDepartureDateTime;
+
+                list.Add(fs);
             }
 
             return list;
         }
+
 
         private async Task<AircraftLayoutMapping> GetAircraftLayoutMappingAsync(Guid subTypeId)
         {

@@ -31,6 +31,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => x.Id == query.Id && !x.IsDeleted)
         {
             AddInclude(x => x.Include(y => y.Flight).ThenInclude(z => z.FlightSectors));
+            AddInclude(x => x.Include(y => y.FlightSchedules).ThenInclude(z => z.FlightScheduleSectors).ThenInclude((r)=> r.Sector));
             AddInclude(x => x.Include(y => y.AircraftSubType));
             AddInclude(x => x.Include(y => y.FlightSchedules));
 

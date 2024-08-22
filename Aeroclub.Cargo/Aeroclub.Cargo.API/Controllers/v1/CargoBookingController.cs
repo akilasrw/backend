@@ -11,6 +11,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.BookingShipmentSummeryVM;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingSummaryVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.LocationsByAWBVM;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -104,7 +105,14 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         {
             return Ok(await _bookingManagerService.GetStandByCargoListAsync(query));
         }
-        
+
+
+        [HttpGet("GetBookingByPackageStatus/{type}")]
+        public async Task<ActionResult<Pagination<CargoBookingVM>>> GetBookingByPackageStatus(PackageItemStatus type, [FromQuery] StandbyCargoBookingsQM query)
+        {
+            return Ok(await _bookingManagerService.GetBookingByPackageStatus(type, query));
+        }
+
         [HttpGet("GetVerifyBookingList")]
         public async Task<ActionResult<Pagination<CargoBookingVM>>> GetVerifyBookingListAsync([FromQuery] FlightScheduleSectorVerifyBookingListQM query)
         {

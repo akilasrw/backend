@@ -9,6 +9,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.AirportVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoAgentVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Common.Extentions;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
@@ -209,6 +210,14 @@ namespace Aeroclub.Cargo.Application.Services
             if (uld == null) return true;
 
             return false;
+        }
+
+        public async Task<IReadOnlyList<ULD>> GetULDByStatus()
+        {
+            var specs = new ULDSpecification();
+
+            var list = await  _unitOfWork.Repository<ULD>().GetListWithSpecAsync(specs);
+            return list;
         }
     }
 }
