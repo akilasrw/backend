@@ -170,9 +170,9 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var response = await _packageItemService.CheckULDAvailabiliy(rm);
             if (response == ServiceResponseStatus.Success)
             {
-                return true;
+                return false;
             }
-            return false;
+            return true;
 
         }
 
