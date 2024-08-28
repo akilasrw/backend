@@ -782,20 +782,14 @@ namespace Aeroclub.Cargo.Application.Services
         }
 
 
-        async public Task<ServiceResponseStatus> CheckPackageAvailabiliy(CheckPackageAvailabilityRM rm)
+        async public Task<PackageItem> CheckPackageAvailabiliy(CheckPackageAvailabilityRM rm)
         {
             var specs = new PackageItemSpecification(rm);
 
             var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(specs);
 
 
-            if (package != null)
-            {
-                return ServiceResponseStatus.Success;
-            }
-
-
-            return ServiceResponseStatus.Failed;
+            return package;
 
         }
 

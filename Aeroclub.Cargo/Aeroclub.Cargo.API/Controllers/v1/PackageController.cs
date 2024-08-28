@@ -178,14 +178,21 @@ namespace Aeroclub.Cargo.API.Controllers.v1
 
 
         [HttpPost("CheckPackageAvailability")]
-        public async Task<bool> CheckPackageAvailability([FromBody] CheckPackageAvailabilityRM rm)
+        public async Task<ActionResult> CheckPackageAvailability([FromBody] CheckPackageAvailabilityRM rm)
         {
-            var response = await _packageItemService.CheckPackageAvailabiliy(rm);
-            if (response == ServiceResponseStatus.Success)
-            {
-                return false;
+
+            
+            var res = await _packageItemService.CheckPackageAvailabiliy(rm);
+
+
+            if(res != null) { 
+                return Ok(res);
+
             }
-            return true;
+
+            return NotFound();
+           
+            
 
         }
 
