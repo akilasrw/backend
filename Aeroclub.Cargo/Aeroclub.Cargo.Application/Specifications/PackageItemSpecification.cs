@@ -20,6 +20,12 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
+
+        public PackageItemSpecification(CheckPackageAvailabilityRM rm)
+              : base(x => x.PackageRefNumber == rm.PackageRef && x.CargoBooking.AWBInformation.AwbTrackingNumber == rm.AwbNumber && (x.PackageItemStatus == Common.Enums.PackageItemStatus.Offloaded || x.PackageItemStatus == Common.Enums.PackageItemStatus.Returned || x.PackageItemStatus == Common.Enums.PackageItemStatus.AcceptedForFLight || x.PackageItemStatus == Common.Enums.PackageItemStatus.PickedUp || x.PackageItemStatus == Common.Enums.PackageItemStatus.Booking_Made || x.PackageItemStatus == Common.Enums.PackageItemStatus.Cargo_Received))
+        {
+        }
+
         public PackageItemSpecification(PackageListByAwbAndStatus query)
                : base(x => x.CargoBooking.AWBInformation.AwbTrackingNumber == query.AwbNumber && query.packageItemStatuses.Contains(x.PackageItemStatus))
         {
