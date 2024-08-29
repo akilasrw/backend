@@ -23,6 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             if (!isCount)
             {
                 AddInclude(x => x.Include(y => y.ULDMetaData));
+                AddInclude(x => x.Include(y => y.Airport));
                 AddInclude(x => x.Include(y => y.ULDTrackings));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);

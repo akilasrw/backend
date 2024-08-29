@@ -23,6 +23,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
         public string? LastUsedFlightNumber { get; set; }
         public string? LastLocatedAirportCode { get; set; }
         public double Width { get; set; }
+        public string Station { get; set; }
         public double Length { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }

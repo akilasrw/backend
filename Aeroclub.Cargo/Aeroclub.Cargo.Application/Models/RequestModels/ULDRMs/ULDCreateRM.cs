@@ -20,6 +20,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs
         [Required(ErrorMessage = "ULD locate status required")]
         public ULDLocateStatus ULDLocateStatus { get; set; }
         public string? LendAirlineCode { get; set; }
+        public Guid? AirportID { get; set; }
 
         public ULDMetaDataCreateRM ULDMetaData { get; set; }
     }

@@ -12,7 +12,10 @@ namespace Aeroclub.Cargo.Core.Entities
         public ULDLocateStatus ULDLocateStatus { get; set; }
         public string? LendAirlineCode { get; set; }
         public Guid? ULDMetaDataId { get; set; }
+        public Guid? AirportID { get; set; }
         public ULDStatus Status { get; set; }
+
+        public Airport Airport { get; set; }
 
         public ULDMetaData ULDMetaData { get; set; }
         public ULDCargoPosition ULDCargoPosition { get; set; }
