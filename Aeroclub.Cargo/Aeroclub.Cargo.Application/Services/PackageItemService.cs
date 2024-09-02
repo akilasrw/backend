@@ -673,6 +673,7 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
 
+                existingUld.AirportID = sectorPallet.FlightScheduleSector.DestinationAirportId;
                 existingUld.ULDLocateStatus = ULDLocateStatus.None;
 
                 _unitOfWork.Repository<ULD>().Update(existingUld);
