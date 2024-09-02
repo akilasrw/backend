@@ -74,6 +74,15 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         }
 
+
+        public AgentRateManagementSpecification()
+           : base(x => x.CargoAgentId == null)
+        {
+
+            AddInclude(x => x.Include(y => y.AgentRates));
+
+        }
+
     }
 
 }

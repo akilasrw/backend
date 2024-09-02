@@ -5,9 +5,11 @@ using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingVMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.ChartVM;
 using Aeroclub.Cargo.Application.Specifications;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Interfaces;
 using AutoMapper;
+using Google.Type;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -30,7 +32,50 @@ namespace Aeroclub.Cargo.Application.Services
 
                     mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
 
-                    return mappedEntity;
+                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification());
+
+                var weight = mappedEntity.PackageItems.Sum(x => x.Weight);
+
+                AgentRate rate = null;
+
+                if (weight < 45)
+                {
+                    rate = rates.AgentRates
+                                .FirstOrDefault(x => x.WeightType == WeightType.Minus45K);
+                }
+                else if (weight >= 45 && weight < 100)
+                {
+                    rate = rates.AgentRates
+                                .FirstOrDefault(x => x.WeightType == WeightType.Plus45K);
+                }
+                else if (weight >= 100 && weight < 300)
+                {
+                    rate = rates.AgentRates
+                                .FirstOrDefault(x => x.WeightType == WeightType.Plus100K);
+                }
+                else if (weight >= 300 && weight < 500)
+                {
+                    rate = rates.AgentRates
+                                .FirstOrDefault(x => x.WeightType == WeightType.Plus300K);
+                }
+                else if (weight >= 500 && weight < 1000)
+                {
+                    rate = rates.AgentRates
+                                .FirstOrDefault(x => x.WeightType == WeightType.Plus500K);
+                }
+                else if (weight >= 1000)
+                {
+                    rate = rates.AgentRates
+                                .FirstOrDefault(x => x.WeightType == WeightType.Plus1000K);
+                }
+
+
+                mappedEntity.AWBInformation.RateCharge = weight * rate.Rate;
+
+
+
+
+                return mappedEntity;
                 }
             return null;
         }
