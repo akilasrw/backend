@@ -123,6 +123,11 @@ namespace Aeroclub.Cargo.Application.Services
                         RateType = item.RateType
 
                     });
+
+                    var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification(dto.AgentRateManagements[0].CargoAgentId));
+
+                    dto.AgentRateManagements[0].CargoAgentId = cargoAgent.Id;
+
                     var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
 
                     if (agentRate != null)
@@ -161,7 +166,14 @@ namespace Aeroclub.Cargo.Application.Services
 
 
                     var createdAgentRate = await _unitOfWork.Repository<AgentRateManagement>().CreateAsync(entity);
-                    await _unitOfWork.SaveChangesAsync();
+           
+                        await _unitOfWork.SaveChangesAsync();
+
+                    
+
+                    
+                   
+                   
 
                     if (createdAgentRate == null)
                     {
