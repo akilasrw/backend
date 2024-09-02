@@ -70,7 +70,10 @@ namespace Aeroclub.Cargo.Application.Services
                 }
 
 
-                mappedEntity.AWBInformation.RateCharge = weight * rate.Rate;
+                mappedEntity.AWBInformation.RateCharge = rate.Rate;
+                mappedEntity.AWBInformation.Weight = weight;
+                mappedEntity.AWBInformation.Total = weight * rate.Rate;
+
 
 
 
