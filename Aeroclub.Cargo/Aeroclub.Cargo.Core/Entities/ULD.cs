@@ -14,7 +14,8 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid? ULDMetaDataId { get; set; }
         public Guid? AirportID { get; set; }
         public ULDStatus Status { get; set; }
-
+        public DateTime? LastUsed { get; set; }
+        public string? LastFlight { get; set; }
         public Airport Airport { get; set; }
 
         public ULDMetaData ULDMetaData { get; set; }

@@ -19,8 +19,8 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
         public string? OwnerAirlineCode { get; set; }
         public ULDLocateStatus ULDLocateStatus { get; set; }
         public string? LendAirlineCode { get; set; }
-        public DateTime LastUsedDate { get; set; }
-        public string? LastUsedFlightNumber { get; set; }
+        public DateTime? LastUsed { get; set; }
+        public string? LastFlight { get; set; }
         public string? LastLocatedAirportCode { get; set; }
         public double Width { get; set; }
         public string Station { get; set; }

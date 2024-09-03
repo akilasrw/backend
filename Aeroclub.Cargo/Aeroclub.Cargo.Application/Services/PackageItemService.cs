@@ -673,6 +673,9 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
 
+
+                existingUld.LastFlight = sectorPallet.FlightScheduleSector.FlightNumber;
+                existingUld.LastUsed = sectorPallet.FlightScheduleSector.ScheduledDepartureDateTime;
                 existingUld.AirportID = sectorPallet.FlightScheduleSector.DestinationAirportId;
                 existingUld.ULDLocateStatus = ULDLocateStatus.None;
 

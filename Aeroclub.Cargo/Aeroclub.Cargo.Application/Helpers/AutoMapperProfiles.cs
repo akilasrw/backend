@@ -336,8 +336,9 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.ULDLocateStatus, o => o.MapFrom(s => s.ULDLocateStatus))
                 .ForMember(d => d.Height, o => o.MapFrom(s => s.ULDMetaData != null ? s.ULDMetaData.Height : 0))
                 .ForMember(d => d.Station, o => o.MapFrom(s => s.Airport.Code))
-                .ForMember(d => d.LastUsedDate, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedDate : DateTime.MinValue))
-                .ForMember(d => d.LastUsedFlightNumber, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastUsedFlightNumber : ""))
+                .ForMember(d => d.LastFlight, o => o.MapFrom(s => s.LastFlight))
+                .ForMember(d => d.LastUsed, o => o.MapFrom(s => s.LastUsed))
+
                 .ForMember(d => d.LastLocatedAirportCode, o => o.MapFrom(s => s.ULDTrackings != null && s.ULDTrackings.Count() > 0 ? s.ULDTrackings.LastOrDefault().LastLocatedAirportCode : ""));
             CreateMap <LIRFileUploadDto, LIRFileUpload>().ReverseMap();
 
