@@ -187,7 +187,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<Unit, UnitDto>();
 
             CreateMap<PackageItem, PackageListItemVM>()
-                .ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingStatus : 0))
+                .ForMember(d => d.BookingStatus, o => o.MapFrom(s => s.CargoBooking != null ? s.PackageItemStatus : 0))
                 .ForMember(d => d.BookingDate, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.BookingDate : DateTime.MinValue))
                 .ForMember(d => d.FlightNumber, o => o.MapFrom(s => s.CargoBooking != null ? s.CargoBooking.CargoBookingFlightScheduleSectors.Count()>0?s.CargoBooking.CargoBookingFlightScheduleSectors.First().FlightScheduleSector.FlightNumber:"" : ""));
 
