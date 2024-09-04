@@ -13,6 +13,7 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.ULDRMs
         public ULDLocateStatus ULDLocateStatus { get; set; }
         public string? LendAirlineCode { get; set; }
 
+        public Guid? AirportID { get; set; }
         public Guid ULDMetaDataId { get; set; }
 
         public ULDMetaDataUpdateRM ULDMetaData { get; set; }
