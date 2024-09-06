@@ -834,6 +834,9 @@ namespace Aeroclub.Cargo.Application.Services
 
                 Guid uldId = Guid.NewGuid();
 
+                string lastFlight = string.Empty;
+                DateTime lastUsed = DateTime.MinValue;
+
                 rm.packageIDs = await FilterPackagesAsync(PackageItemStatus.AcceptedForFLight, rm.AwbNumber, rm.packageIDs);
 
                 var flight = await _unitOfWork.Repository<Flight>().GetByIdAsync(rm.FlightID);
@@ -866,6 +869,8 @@ namespace Aeroclub.Cargo.Application.Services
                     var flightSchedule = existingSchedule;
                     fId = flightSchedule.Id;
                     fsId = flightSchedule.FlightScheduleSectors.FirstOrDefault().Id;
+                    lastFlight = existingSchedule.FlightNumber;
+                    lastUsed = existingSchedule.ScheduledDepartureDateTime;
                 }
                 else
                 {
@@ -882,6 +887,9 @@ namespace Aeroclub.Cargo.Application.Services
                         OriginAirportId = flight.OriginAirportId,
                         FlightNumber = flight.FlightNumber
                     });
+
+                    lastFlight = flightSchedule.FlightNumber;
+                    lastUsed = flightSchedule.ScheduledDepartureDateTime;
 
                     fId = flightSchedule.Id;
 
@@ -917,6 +925,8 @@ namespace Aeroclub.Cargo.Application.Services
                     uldId = existingUld.Id;
                     existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
                     existingUld.Status = ULDStatus.ULDPacked;
+                    existingUld.LastFlight = lastFlight;
+                    existingUld.LastUsed = lastUsed;
 
                     _unitOfWork.Repository<ULD>().Update(existingUld);
                     await _unitOfWork.SaveChangesAsync();
@@ -930,6 +940,8 @@ namespace Aeroclub.Cargo.Application.Services
                         ULDLocateStatus = ULDLocateStatus.OnGround,
                         Status = ULDStatus.ULDPacked,
                         ULDType = ULDType.None,
+                        LastUsed = lastUsed,
+                        LastFlight = lastFlight,
                     });
                     await _unitOfWork.SaveChangesAsync();
                     uldId = uld.Id;
