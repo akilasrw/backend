@@ -678,7 +678,7 @@ namespace Aeroclub.Cargo.Application.Services
                 existingUld.LastFlight = sectorPallet.FlightScheduleSector.FlightNumber;
                 existingUld.LastUsed = sectorPallet.FlightScheduleSector.ScheduledDepartureDateTime;
                 existingUld.AirportID = sectorPallet.FlightScheduleSector.DestinationAirportId;
-                existingUld.ULDLocateStatus = ULDLocateStatus.None;
+                existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
 
                 _unitOfWork.Repository<ULD>().Update(existingUld);
                 await _unitOfWork.SaveChangesAsync();
