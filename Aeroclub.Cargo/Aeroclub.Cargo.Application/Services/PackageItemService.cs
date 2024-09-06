@@ -523,7 +523,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     uldContainer.ULD.Status = ULDStatus.FlightLoaded;
                     uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.OnBoard;
-                    uldContainer.ULD.AirportID = null;
+                    //uldContainer.ULD.AirportID = null;
                 }
 
                 _unitOfWork.Repository<ULD>().Update(uldContainer.ULD);
