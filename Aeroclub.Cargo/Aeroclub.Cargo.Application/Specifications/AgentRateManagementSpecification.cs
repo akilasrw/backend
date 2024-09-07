@@ -23,7 +23,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public AgentRateManagementSpecification(AgentRateManagementRateListQM query, bool isCount = false)
-        : base(x => (x.CargoAgent != null &&  x.CargoAgent.AppUserId == query.UserId )&&
+        : base(x => (x.CargoAgent == null ||  x.CargoAgent.AppUserId == query.UserId )&&
         (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&
         (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
         !x.IsDeleted)
