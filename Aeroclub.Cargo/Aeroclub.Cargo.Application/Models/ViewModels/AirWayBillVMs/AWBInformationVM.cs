@@ -29,6 +29,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs
         public long AwbTrackingNumber { get; set; }
         public double RateCharge { get; set; }
         public double Weight { get; set; }
+        public int NumOfPackages { get; set; }
         public double Total { get; set; }
         public string? NatureAndQualityOfGoods { get; set; }
 
