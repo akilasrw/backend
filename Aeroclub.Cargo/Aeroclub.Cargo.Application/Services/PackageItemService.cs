@@ -32,6 +32,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Core.Entities.Core;
+using System.Linq;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -308,6 +309,7 @@ namespace Aeroclub.Cargo.Application.Services
                     _unitOfWork.Repository<PackageULDContainer>().Delete(packageULDitem);
                     await _unitOfWork.SaveChangesAsync();
                 }
+
                 if (package != null)
                 {
                     package.PackageItemStatus = rm.packageItemStatus;
@@ -539,11 +541,20 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
 
-                foreach(var x in item)
+                var processedPackageIds = new HashSet<Guid>();
+
+                foreach (var x in item)
                 {
                     var package = x.PackageItem;
 
-                        if (rm.IsArrived)
+                    if (processedPackageIds.Contains(package.Id))
+                    {
+                        continue; 
+                    }
+
+                    processedPackageIds.Add(package.Id);
+
+                    if (rm.IsArrived)
                         {
                             package.PackageItemStatus = PackageItemStatus.Arrived;
                         }
