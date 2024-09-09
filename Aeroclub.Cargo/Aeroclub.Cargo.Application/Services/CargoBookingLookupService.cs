@@ -34,6 +34,8 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification());
 
+                mappedEntity.PackageItems = mappedEntity.PackageItems.Where(x => x.PackageItemStatus != PackageItemStatus.Returned).ToList();
+
                 var weight = mappedEntity.PackageItems.Sum(x => x.Weight);
 
                 AgentRate rate = null;
