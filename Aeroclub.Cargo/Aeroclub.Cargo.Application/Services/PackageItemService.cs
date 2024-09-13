@@ -33,6 +33,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Core.Entities.Core;
 using System.Linq;
+using Aeroclub.Cargo.Application.Models.Queries;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -203,6 +204,22 @@ namespace Aeroclub.Cargo.Application.Services
             return packageRefNumbers;
         }
 
+        public async Task<bool> CheckAWB(CheckAwbQM qm) 
+        {
+            var specs = new AWBSpecification(qm);
+            var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(specs);
+
+            if(awb == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
 
 
         public async Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm)
@@ -369,6 +386,9 @@ namespace Aeroclub.Cargo.Application.Services
            
            
         }
+
+
+
 
         async public Task<ServiceResponseStatus> CreateTruckBookingAWBAndPackages(ScanAppBookingCreateVM rm)
         {
@@ -833,6 +853,22 @@ namespace Aeroclub.Cargo.Application.Services
            
 
 
+        }
+
+        async public Task <bool> CheckFlightSchedule(CheckFlightScheduleQM qm)
+        {
+            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = qm.Date, FlightNumber = qm.FlightNum});
+
+            var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
+
+            if(existingSchedule != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         async public Task<ServiceResponseStatus> CreateFlightScheduleULDandUpdateStatus(ScanAppThirdStepRM rm)
         {

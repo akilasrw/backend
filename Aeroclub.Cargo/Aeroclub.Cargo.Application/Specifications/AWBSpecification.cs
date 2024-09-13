@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries;
+using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAirportsRM;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
@@ -19,6 +20,12 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
 
                 AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.PackageItems));
+        }
+
+        public AWBSpecification(CheckAwbQM qm)
+            : base((x) => x.AwbTrackingNumber == qm.awb && x.CargoBooking.CreatedBy == qm.agentId)
+        {
+
         }
 
         public AWBSpecification(GetAirportsRM query, bool includeLocations)

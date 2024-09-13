@@ -1,5 +1,6 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
@@ -24,6 +25,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
     {
         Task<PackageItemCreateResponseM> CreateAsync(PackageItemCreateRM packageItem);
         Task<PackageItem> CheckPackageAvailabiliy(CheckPackageAvailabilityRM rm);
+        Task<bool> CheckFlightSchedule(CheckFlightScheduleQM qm);
+        Task<bool> CheckAWB(CheckAwbQM qm);
         Task<ServiceResponseStatus> DeletePackage(Guid packageId);
         Task<PackageItemMobileVM> GetAsync(PackageItemRefQM query);
         Task<PackageItemVM> GetAsync(PackageItemQM query);
