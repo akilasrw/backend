@@ -206,8 +206,8 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<bool> CheckAWB(CheckAwbQM qm) 
         {
-            var specs = new AWBSpecification(qm);
-            var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(specs);
+            var specs = new AWBNumberStackSpecification(qm);
+            var awb = await _unitOfWork.Repository<AWBNumberStack>().GetEntityWithSpecAsync(specs);
 
             if(awb == null)
             {

@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.AWBNumberStackQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries;
+using Aeroclub.Cargo.Application.Models.Queries.AWBNumberStackQMs;
 using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
@@ -23,6 +24,11 @@ namespace Aeroclub.Cargo.Application.Specifications
 
         public AWBNumberStackSpecification(long awbNum)
            : base(x => x.AWBTrackingNumber == awbNum)
+        { }
+
+
+        public AWBNumberStackSpecification(CheckAwbQM qm)
+         : base(x => x.AWBTrackingNumber == qm.awb && x.CargoAgentId == qm.agentId)
         { }
 
         public AWBNumberStackSpecification(AvailableAWBNumberStackQM query)

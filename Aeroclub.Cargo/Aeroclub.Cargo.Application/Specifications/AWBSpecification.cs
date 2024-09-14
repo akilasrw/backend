@@ -22,12 +22,6 @@ namespace Aeroclub.Cargo.Application.Specifications
                 AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.PackageItems));
         }
 
-        public AWBSpecification(CheckAwbQM qm)
-            : base((x) => x.AwbTrackingNumber == qm.awb && x.CargoBooking.CreatedBy == qm.agentId)
-        {
-
-        }
-
         public AWBSpecification(GetAirportsRM query, bool includeLocations)
            : base(x => (x.AwbTrackingNumber == query.AwbTrackingNum))
         {
