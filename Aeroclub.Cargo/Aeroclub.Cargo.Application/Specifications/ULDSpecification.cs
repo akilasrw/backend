@@ -18,7 +18,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public ULDSpecification(ULDListQM query, bool isCount = false)
-            :base(x => (string.IsNullOrEmpty(query.ULDNumber) || x.SerialNumber.Contains(query.ULDNumber) ) && !x.IsDeleted)
+            :base(x => (string.IsNullOrEmpty(query.ULDNumber) || x.SerialNumber.Contains(query.ULDNumber) ) &&  ( string.IsNullOrEmpty(query.Station) || query.Station == x.Airport.Code)&& !x.IsDeleted)
         {
             if (!isCount)
             {

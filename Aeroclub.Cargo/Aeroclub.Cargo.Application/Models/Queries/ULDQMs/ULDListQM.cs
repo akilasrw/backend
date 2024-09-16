@@ -5,5 +5,6 @@ namespace Aeroclub.Cargo.Application.Models.Queries.ULDQMs
     public class ULDListQM: BasePaginationQM
     {
         public string? ULDNumber { get; set; }
+        public string? Station { get; set;}
     }
 }
