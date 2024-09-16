@@ -76,7 +76,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
 
         public AgentRateManagementSpecification(Guid origin, Guid destination, DateTime start )
-           : base(x => x.CargoAgentId == null && x.OriginAirportId == origin && x.DestinationAirportId == destination && x.StartDate == start)
+           : base(x => x.CargoAgentId == null && x.OriginAirportId == origin && x.DestinationAirportId == destination && (x.StartDate.Date <= start && x.EndDate >= start))
         {
 
             AddInclude(x => x.Include(y => y.AgentRates));

@@ -38,38 +38,44 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var weight = mappedEntity.PackageItems.Sum(x => x.Weight);
 
-                AgentRate rate = null;
+                AgentRate rate = new AgentRate { Rate =  0};
 
-                if (weight < 45)
+
+                if(rates != null)
                 {
-                    rate = rates.AgentRates
-                                .FirstOrDefault(x => x.WeightType == WeightType.Minus45K);
+                    if (weight < 45)
+                    {
+                        rate = rates.AgentRates
+                                    .FirstOrDefault(x => x.WeightType == WeightType.Minus45K);
+                    }
+                    else if (weight >= 45 && weight < 100)
+                    {
+                        rate = rates.AgentRates
+                                    .FirstOrDefault(x => x.WeightType == WeightType.Plus45K);
+                    }
+                    else if (weight >= 100 && weight < 300)
+                    {
+                        rate = rates.AgentRates
+                                    .FirstOrDefault(x => x.WeightType == WeightType.Plus100K);
+                    }
+                    else if (weight >= 300 && weight < 500)
+                    {
+                        rate = rates.AgentRates
+                                    .FirstOrDefault(x => x.WeightType == WeightType.Plus300K);
+                    }
+                    else if (weight >= 500 && weight < 1000)
+                    {
+                        rate = rates.AgentRates
+                                    .FirstOrDefault(x => x.WeightType == WeightType.Plus500K);
+                    }
+                    else if (weight >= 1000)
+                    {
+                        rate = rates.AgentRates
+                                    .FirstOrDefault(x => x.WeightType == WeightType.Plus1000K);
+                    }
                 }
-                else if (weight >= 45 && weight < 100)
-                {
-                    rate = rates.AgentRates
-                                .FirstOrDefault(x => x.WeightType == WeightType.Plus45K);
-                }
-                else if (weight >= 100 && weight < 300)
-                {
-                    rate = rates.AgentRates
-                                .FirstOrDefault(x => x.WeightType == WeightType.Plus100K);
-                }
-                else if (weight >= 300 && weight < 500)
-                {
-                    rate = rates.AgentRates
-                                .FirstOrDefault(x => x.WeightType == WeightType.Plus300K);
-                }
-                else if (weight >= 500 && weight < 1000)
-                {
-                    rate = rates.AgentRates
-                                .FirstOrDefault(x => x.WeightType == WeightType.Plus500K);
-                }
-                else if (weight >= 1000)
-                {
-                    rate = rates.AgentRates
-                                .FirstOrDefault(x => x.WeightType == WeightType.Plus1000K);
-                }
+
+             
 
 
                 mappedEntity.AWBInformation.RateCharge = rate.Rate;
