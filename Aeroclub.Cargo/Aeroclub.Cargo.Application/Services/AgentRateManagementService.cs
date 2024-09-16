@@ -29,8 +29,14 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<Pagination<AgentRateManagementVM>> GetFilteredListAsync(AgentRateManagementListQM query)
         {
             var specs = new CargoAgentSpecification(query.CargoAgentId);
-            var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(specs);
-            query.CargoAgentId = cargoAgent.Id;
+
+            if(query.CargoAgentId != Guid.Empty)
+            {
+                var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(specs);
+                query.CargoAgentId = cargoAgent.Id;
+            }
+
+          
 
 
             var spec = new AgentRateManagementSpecification(query);
