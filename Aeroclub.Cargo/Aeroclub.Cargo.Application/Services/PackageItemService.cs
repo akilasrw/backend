@@ -413,12 +413,42 @@ namespace Aeroclub.Cargo.Application.Services
                     });
                     var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(bSpec);
 
-                    existingAwb.IsUsed = true;
-                    _unitOfWork.Repository<AWBNumberStack>().Update(existingAwb);
-                    await _unitOfWork.SaveChangesAsync();
-                    _unitOfWork.Repository<AWBNumberStack>().Detach(existingAwb);
-                    
-                    bId = (Guid)awb.CargoBookingId;
+
+                    if(awb != null)
+                    {
+                        existingAwb.IsUsed = true;
+                        _unitOfWork.Repository<AWBNumberStack>().Update(existingAwb);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<AWBNumberStack>().Detach(existingAwb);
+
+
+                        bId = (Guid)awb.CargoBookingId;
+                    }
+                    else
+                    {
+                        var bRes = await _unitOfWork.Repository<CargoBooking>().CreateAsync(new CargoBooking
+                        {
+                            AWBStatus = AWBStatus.AddedAWB,
+                            BookingDate = DateTime.Now,
+                            BookingNumber = rm.AWBTrackingNumber.ToString(),
+                            BookingStatus = BookingStatus.Booking_Made,
+                            DestinationAirportId = rm.Destination,
+                            OriginAirportId = rm.Origin,
+                            CreatedBy = rm.CargoAgentAppUserId,
+                            Created = DateTime.Now
+                        });
+
+                        var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
+                        {
+                            AwbTrackingNumber = rm.AWBTrackingNumber,
+                            CargoBookingId = bRes.Id,
+                            RequestedFlightDate = DateTime.Now,
+                        });
+
+                        bId = bRes.Id;
+                    }
+
+                 
                 }
                 else
                 {
