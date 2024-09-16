@@ -32,7 +32,7 @@ namespace Aeroclub.Cargo.Application.Services
 
                     mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
 
-                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification());
+                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime));
 
                 mappedEntity.PackageItems = mappedEntity.PackageItems.Where(x => x.PackageItemStatus != PackageItemStatus.Returned).ToList();
 
