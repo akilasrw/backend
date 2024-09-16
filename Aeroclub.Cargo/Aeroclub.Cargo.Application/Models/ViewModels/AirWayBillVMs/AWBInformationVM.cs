@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.AirWayBillVMs
         public string? RequestedRouting { get; set; } = null;
         public string? RoutingAndDestinationTo { get; set; } = null;
         public string? RoutingAndDestinationBy { get; set; } = null;
+        public string? CargoHandlingInstruction { get; set; }
         public DateTime RequestedFlightDate { get; set; }
         public Guid DestinationAirportId { get; set; }
         public string? DestinationAirportName { get; set; } = null;

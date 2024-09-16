@@ -73,6 +73,7 @@ namespace Aeroclub.Cargo.Application.Services
 
 
                 mappedEntity.AWBInformation.RateCharge = rate.Rate;
+                mappedEntity.AWBInformation.CargoHandlingInstruction = entity.CargoHandlingInstruction;
                 mappedEntity.AWBInformation.Weight = weight;
                 mappedEntity.AWBInformation.Total = weight * rate.Rate;
                 mappedEntity.AWBInformation.NumOfPackages = mappedEntity.PackageItems.Count();

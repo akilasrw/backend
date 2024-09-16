@@ -18,6 +18,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.CargoBookingLookupVMs
         public string OriginAirportCode { get; set; } = null!;
         public string DestinationAirportCode { get; set; } = null!;
         public DateTime ScheduledDepartureDateTime { get; set; }
+        public string? CargoHandlingInstruction { get; set; }
         public AWBInformationVM? AWBInformation { get; set; }
         public IReadOnlyList<PackageItemVM> PackageItems { get; set; }
     }
