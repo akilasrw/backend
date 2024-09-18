@@ -49,7 +49,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
 
-        public CargoAgentSpecification(Guid id)
+        public CargoAgentSpecification(Guid? id)
             : base(x => x.AppUserId == id)
         {
           

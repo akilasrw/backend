@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageListItemVM
         public string PackageRefNumber { get; set; } = null!;
         public string FlightNumber { get; set; }
         public DateTime BookingDate { get; set; }
-        public BookingStatus BookingStatus { get; set; }
+        public PackageItemStatus packageItemStatus { get; set; }
         public double Height { get; set; }
         public double Width { get; set; }
         public double Length { get; set; }

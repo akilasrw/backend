@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
+using Aeroclub.Cargo.Application.Models.Queries;
 using Aeroclub.Cargo.Application.Models.Queries.DeletePackageQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
@@ -173,6 +174,43 @@ namespace Aeroclub.Cargo.API.Controllers.v1
                 return false;
             }
             return true;
+
+        }
+
+
+        [HttpPost("CheckPackageAvailability")]
+        public async Task<ActionResult> CheckPackageAvailability([FromBody] CheckPackageAvailabilityRM rm)
+        {
+
+            
+            var res = await _packageItemService.CheckPackageAvailabiliy(rm);
+
+
+            if(res != null) { 
+                return Ok(res);
+
+            }
+
+            return NotFound();
+           
+            
+
+        }
+
+        [HttpPost("CheckAWB")]
+        public async Task<bool> CheckAWB([FromBody] CheckAwbQM rm)
+        {
+
+            return await _packageItemService.CheckAWB(rm);
+
+        }
+
+
+        [HttpPost("CheckFlightSchedule")]
+        public async Task<bool> CheckSchedule([FromBody] CheckFlightScheduleQM rm)
+        {
+
+            return await _packageItemService.CheckFlightSchedule(rm);
 
         }
 

@@ -28,6 +28,17 @@ namespace Aeroclub.Cargo.Application.Services
 
         public async Task<Pagination<AgentRateManagementVM>> GetFilteredListAsync(AgentRateManagementListQM query)
         {
+            var specs = new CargoAgentSpecification(query.CargoAgentId);
+
+            if(query.CargoAgentId != Guid.Empty)
+            {
+                var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(specs);
+                query.CargoAgentId = cargoAgent.Id;
+            }
+
+          
+
+
             var spec = new AgentRateManagementSpecification(query);
             var agentRateList = await _unitOfWork.Repository<AgentRateManagement>().GetListWithSpecAsync(spec);
 
@@ -123,6 +134,20 @@ namespace Aeroclub.Cargo.Application.Services
                         RateType = item.RateType
 
                     });
+
+
+                    if (dto.AgentRateManagements[0].CargoAgentId == null)
+                    {
+                        dto.AgentRateManagements[0].CargoAgentId = null;
+                    }
+                    else
+                    {
+                        var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification(dto.AgentRateManagements[0].CargoAgentId));
+                        dto.AgentRateManagements[0].CargoAgentId = cargoAgent.Id;
+                    }
+
+                    
+
                     var agentRate = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(spec);
 
                     if (agentRate != null)
@@ -161,7 +186,14 @@ namespace Aeroclub.Cargo.Application.Services
 
 
                     var createdAgentRate = await _unitOfWork.Repository<AgentRateManagement>().CreateAsync(entity);
-                    await _unitOfWork.SaveChangesAsync();
+           
+                        await _unitOfWork.SaveChangesAsync();
+
+                    
+
+                    
+                   
+                   
 
                     if (createdAgentRate == null)
                     {

@@ -18,11 +18,12 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public ULDSpecification(ULDListQM query, bool isCount = false)
-            :base(x => (string.IsNullOrEmpty(query.ULDNumber) || x.SerialNumber.Contains(query.ULDNumber) ) && !x.IsDeleted)
+            :base(x => (string.IsNullOrEmpty(query.ULDNumber) || x.SerialNumber.Contains(query.ULDNumber) ) &&  ( string.IsNullOrEmpty(query.Station) || query.Station == x.Airport.Code)&& !x.IsDeleted)
         {
             if (!isCount)
             {
                 AddInclude(x => x.Include(y => y.ULDMetaData));
+                AddInclude(x => x.Include(y => y.Airport));
                 AddInclude(x => x.Include(y => y.ULDTrackings));
                 ApplyPaging(query.PageSize * (query.PageIndex - 1), query.PageSize);
                 AddOrderByDescending(x => x.Created);

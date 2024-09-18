@@ -28,6 +28,9 @@ namespace Aeroclub.Cargo.Data
                  .HasForeignKey(t => t.CreatedBy)
                  .OnDelete(DeleteBehavior.Restrict);
 
+
+
+
             modelBuilder.Entity<AgentOtherRates>()
                  .HasOne(t => t.childCategory)
                  .WithMany()
@@ -57,6 +60,11 @@ namespace Aeroclub.Cargo.Data
                 .WithMany()
                 .HasForeignKey(t => t.LastModifiedBy)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ULD>()
+               .HasOne(t => t.Airport)
+               .WithMany()
+               .HasForeignKey(t => t.AirportID);
 
             modelBuilder.Entity<Sector>()
                 .HasOne(s => s.OriginAirport)

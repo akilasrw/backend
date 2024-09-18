@@ -34,8 +34,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         public FlightScheduleSectorPalletSpecification(Guid uldId)
           : base(p => (p.ULDId == uldId && p.IsDeleted == false))
         {
-
-
+            AddInclude(x => x.Include( y => y.FlightScheduleSector));
         }
 
         public FlightScheduleSectorPalletSpecification(Guid fsId, bool fs)

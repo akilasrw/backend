@@ -1173,7 +1173,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "35361bb9-0ff0-453a-8d92-4d7a882960ea",
+                            ConcurrencyStamp = "25fb3542-df56-4777-954c-7fcd84288d63",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1191,7 +1191,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bb2bb46e-ab61-481f-bab8-759d36f01ff2",
+                            ConcurrencyStamp = "80409bc1-410c-4463-aaad-1b544739bb18",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -40214,6 +40214,10 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AirportID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -40226,11 +40230,17 @@ namespace Aeroclub.Cargo.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LastFlight")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("LastUsed")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LendAirlineCode")
                         .HasColumnType("varchar(2)");
@@ -40258,6 +40268,8 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AirportID");
 
                     b.HasIndex("ULDMetaDataId");
 
@@ -41621,9 +41633,17 @@ namespace Aeroclub.Cargo.Data.Migrations
 
             modelBuilder.Entity("Aeroclub.Cargo.Core.Entities.ULD", b =>
                 {
+                    b.HasOne("Aeroclub.Cargo.Core.Entities.Airport", "Airport")
+                        .WithMany()
+                        .HasForeignKey("AirportID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Aeroclub.Cargo.Core.Entities.ULDMetaData", "ULDMetaData")
                         .WithMany("ULDs")
                         .HasForeignKey("ULDMetaDataId");
+
+                    b.Navigation("Airport");
 
                     b.Navigation("ULDMetaData");
                 });

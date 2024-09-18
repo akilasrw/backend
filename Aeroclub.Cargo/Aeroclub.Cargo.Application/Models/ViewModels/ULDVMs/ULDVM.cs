@@ -14,7 +14,6 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
         public string? OwnerAirlineCode { get; set; }
         public ULDLocateStatus ULDLocateStatus { get; set; }
         public string? LendAirlineCode { get; set; }
-
         public ULDMetaDataVM ULDMetaData { get; set; }
     }
 }

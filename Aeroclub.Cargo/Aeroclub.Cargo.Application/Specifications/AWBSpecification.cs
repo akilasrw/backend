@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
+﻿using Aeroclub.Cargo.Application.Models.Queries;
+using Aeroclub.Cargo.Application.Models.Queries.AirWayBillQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAirportsRM;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;

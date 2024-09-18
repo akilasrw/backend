@@ -32,6 +32,8 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.ViewModels.PackagesByULDVM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Core.Entities.Core;
+using System.Linq;
+using Aeroclub.Cargo.Application.Models.Queries;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -202,6 +204,22 @@ namespace Aeroclub.Cargo.Application.Services
             return packageRefNumbers;
         }
 
+        public async Task<bool> CheckAWB(CheckAwbQM qm) 
+        {
+            var specs = new AWBNumberStackSpecification(qm);
+            var awb = await _unitOfWork.Repository<AWBNumberStack>().GetEntityWithSpecAsync(specs);
+
+            if(awb == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
 
 
         public async Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm)
@@ -308,6 +326,7 @@ namespace Aeroclub.Cargo.Application.Services
                     _unitOfWork.Repository<PackageULDContainer>().Delete(packageULDitem);
                     await _unitOfWork.SaveChangesAsync();
                 }
+
                 if (package != null)
                 {
                     package.PackageItemStatus = rm.packageItemStatus;
@@ -368,6 +387,9 @@ namespace Aeroclub.Cargo.Application.Services
            
         }
 
+
+
+
         async public Task<ServiceResponseStatus> CreateTruckBookingAWBAndPackages(ScanAppBookingCreateVM rm)
         {
 
@@ -391,12 +413,42 @@ namespace Aeroclub.Cargo.Application.Services
                     });
                     var awb = await _unitOfWork.Repository<AWBInformation>().GetEntityWithSpecAsync(bSpec);
 
-                    existingAwb.IsUsed = true;
-                    _unitOfWork.Repository<AWBNumberStack>().Update(existingAwb);
-                    await _unitOfWork.SaveChangesAsync();
-                    _unitOfWork.Repository<AWBNumberStack>().Detach(existingAwb);
-                    
-                    bId = (Guid)awb.CargoBookingId;
+
+                    if(awb != null)
+                    {
+                        existingAwb.IsUsed = true;
+                        _unitOfWork.Repository<AWBNumberStack>().Update(existingAwb);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<AWBNumberStack>().Detach(existingAwb);
+
+
+                        bId = (Guid)awb.CargoBookingId;
+                    }
+                    else
+                    {
+                        var bRes = await _unitOfWork.Repository<CargoBooking>().CreateAsync(new CargoBooking
+                        {
+                            AWBStatus = AWBStatus.AddedAWB,
+                            BookingDate = DateTime.Now,
+                            BookingNumber = rm.AWBTrackingNumber.ToString(),
+                            BookingStatus = BookingStatus.Booking_Made,
+                            DestinationAirportId = rm.Destination,
+                            OriginAirportId = rm.Origin,
+                            CreatedBy = rm.CargoAgentAppUserId,
+                            Created = DateTime.Now
+                        });
+
+                        var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
+                        {
+                            AwbTrackingNumber = rm.AWBTrackingNumber,
+                            CargoBookingId = bRes.Id,
+                            RequestedFlightDate = DateTime.Now,
+                        });
+
+                        bId = bRes.Id;
+                    }
+
+                 
                 }
                 else
                 {
@@ -523,6 +575,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
                     uldContainer.ULD.Status = ULDStatus.FlightLoaded;
                     uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.OnBoard;
+                    //uldContainer.ULD.AirportID = null;
                 }
 
                 _unitOfWork.Repository<ULD>().Update(uldContainer.ULD);
@@ -538,11 +591,20 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
 
-                foreach(var x in item)
+                var processedPackageIds = new HashSet<Guid>();
+
+                foreach (var x in item)
                 {
                     var package = x.PackageItem;
 
-                        if (rm.IsArrived)
+                    if (processedPackageIds.Contains(package.Id))
+                    {
+                        continue; 
+                    }
+
+                    processedPackageIds.Add(package.Id);
+
+                    if (rm.IsArrived)
                         {
                             package.PackageItemStatus = PackageItemStatus.Arrived;
                         }
@@ -673,7 +735,11 @@ namespace Aeroclub.Cargo.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
 
-                existingUld.ULDLocateStatus = ULDLocateStatus.None;
+
+                existingUld.LastFlight = sectorPallet.FlightScheduleSector.FlightNumber;
+                existingUld.LastUsed = sectorPallet.FlightScheduleSector.ScheduledDepartureDateTime;
+                existingUld.AirportID = sectorPallet.FlightScheduleSector.DestinationAirportId;
+                existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
 
                 _unitOfWork.Repository<ULD>().Update(existingUld);
                 await _unitOfWork.SaveChangesAsync();
@@ -781,6 +847,18 @@ namespace Aeroclub.Cargo.Application.Services
 
         }
 
+
+        async public Task<PackageItem> CheckPackageAvailabiliy(CheckPackageAvailabilityRM rm)
+        {
+            var specs = new PackageItemSpecification(rm);
+
+            var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(specs);
+
+
+            return package;
+
+        }
+
         async public Task<ServiceResponseStatus> DeletePackage(Guid packageId)
         {
             try
@@ -806,6 +884,22 @@ namespace Aeroclub.Cargo.Application.Services
 
 
         }
+
+        async public Task <bool> CheckFlightSchedule(CheckFlightScheduleQM qm)
+        {
+            var specs = new FlightScheduleSpecification(new FlightScheduleStandbyQM { FlightDate = qm.Date, FlightNumber = qm.FlightNum});
+
+            var existingSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(specs);
+
+            if(existingSchedule != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         async public Task<ServiceResponseStatus> CreateFlightScheduleULDandUpdateStatus(ScanAppThirdStepRM rm)
         {
             try
@@ -817,6 +911,9 @@ namespace Aeroclub.Cargo.Application.Services
                 Guid fsId = Guid.NewGuid();
 
                 Guid uldId = Guid.NewGuid();
+
+                string lastFlight = string.Empty;
+                DateTime lastUsed = DateTime.MinValue;
 
                 rm.packageIDs = await FilterPackagesAsync(PackageItemStatus.AcceptedForFLight, rm.AwbNumber, rm.packageIDs);
 
@@ -850,6 +947,8 @@ namespace Aeroclub.Cargo.Application.Services
                     var flightSchedule = existingSchedule;
                     fId = flightSchedule.Id;
                     fsId = flightSchedule.FlightScheduleSectors.FirstOrDefault().Id;
+                    lastFlight = existingSchedule.FlightNumber;
+                    lastUsed = existingSchedule.ScheduledDepartureDateTime;
                 }
                 else
                 {
@@ -866,6 +965,9 @@ namespace Aeroclub.Cargo.Application.Services
                         OriginAirportId = flight.OriginAirportId,
                         FlightNumber = flight.FlightNumber
                     });
+
+                    lastFlight = flightSchedule.FlightNumber;
+                    lastUsed = flightSchedule.ScheduledDepartureDateTime;
 
                     fId = flightSchedule.Id;
 
@@ -901,6 +1003,8 @@ namespace Aeroclub.Cargo.Application.Services
                     uldId = existingUld.Id;
                     existingUld.ULDLocateStatus = ULDLocateStatus.OnGround;
                     existingUld.Status = ULDStatus.ULDPacked;
+                    existingUld.LastFlight = lastFlight;
+                    existingUld.LastUsed = lastUsed;
 
                     _unitOfWork.Repository<ULD>().Update(existingUld);
                     await _unitOfWork.SaveChangesAsync();
@@ -914,6 +1018,8 @@ namespace Aeroclub.Cargo.Application.Services
                         ULDLocateStatus = ULDLocateStatus.OnGround,
                         Status = ULDStatus.ULDPacked,
                         ULDType = ULDType.None,
+                        LastUsed = lastUsed,
+                        LastFlight = lastFlight,
                     });
                     await _unitOfWork.SaveChangesAsync();
                     uldId = uld.Id;
