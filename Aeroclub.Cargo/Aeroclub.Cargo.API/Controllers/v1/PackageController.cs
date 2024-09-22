@@ -103,6 +103,13 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _packageItemService.UpdateDetailsAsync(query, id));
         }
 
+
+        [HttpGet("GetPackageByAWBAndRef")]
+        public async Task<ActionResult> GetPackageByAWBAndRef([FromQuery] GetPackageByAWBAndRefQM query)
+        {
+            return Ok(await _packageItemService.GetPackageByAWBAndRef(query));
+        }
+
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm)
         {

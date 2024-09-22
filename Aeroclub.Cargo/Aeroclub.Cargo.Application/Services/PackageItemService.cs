@@ -1288,5 +1288,16 @@ namespace Aeroclub.Cargo.Application.Services
 
 
         }
+
+        public async Task<PackageItem> GetPackageByAWBAndRef(GetPackageByAWBAndRefQM qm)
+        {
+            var specs = new PackageItemSpecification(qm);
+
+            var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(specs);
+
+            return package;
+
+
+        }
     }
 }
