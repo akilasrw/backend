@@ -438,11 +438,14 @@ namespace Aeroclub.Cargo.Application.Services
                             Created = DateTime.Now
                         });
 
+                        var cargoAgent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification(rm.CargoAgentAppUserId));
+
                         var res = await _unitOfWork.Repository<AWBInformation>().CreateAsync(new AWBInformation
                         {
                             AwbTrackingNumber = rm.AWBTrackingNumber,
                             CargoBookingId = bRes.Id,
                             RequestedFlightDate = DateTime.Now,
+                            AgentName = cargoAgent.AgentName
                         });
 
                         bId = bRes.Id;
