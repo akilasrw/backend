@@ -88,19 +88,35 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] PackageItemUpdateRM rm)
+        public async Task<BaseResponse> UpdateAsync([FromBody] PackageItemUpdateRM rm)
         {
             var res = await _packageItemService.UpdateAsync(rm);
+            var response = new BaseResponse();
+           
+                if (res == ServiceResponseStatus.Failed)
+                {
+                    response.status = 400;
+                    response.message = "Request Failed";
+                    return response;
+                }
 
-            if (res == ServiceResponseStatus.Failed) return BadRequest("Update failed.");
+                response.status = 200;
+                response.message = "Request success";
 
-            return NoContent();
+                return response;
         }
 
         [HttpPut("UpdateDetails/{id}")]
         public async Task<ActionResult> UpdateDetails(Guid id,[FromBody] PackageDetailsUpdateRM query)
         {
             return Ok(await _packageItemService.UpdateDetailsAsync(query, id));
+        }
+
+
+        [HttpGet("GetPackageByAWBAndRef")]
+        public async Task<ActionResult> GetPackageByAWBAndRef([FromBody] GetPackageByAWBAndRefQM query)
+        {
+            return Ok(await _packageItemService.GetPackageByAWBAndRef(query));
         }
 
         [HttpPut("UpdateStatus")]

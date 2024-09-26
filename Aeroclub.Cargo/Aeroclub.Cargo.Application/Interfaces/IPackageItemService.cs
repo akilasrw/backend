@@ -26,6 +26,8 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<PackageItemCreateResponseM> CreateAsync(PackageItemCreateRM packageItem);
         Task<PackageItem> CheckPackageAvailabiliy(CheckPackageAvailabilityRM rm);
         Task<bool> CheckFlightSchedule(CheckFlightScheduleQM qm);
+
+        Task<PackageItem> GetPackageByAWBAndRef(GetPackageByAWBAndRefQM qm);
         Task<bool> CheckAWB(CheckAwbQM qm);
         Task<ServiceResponseStatus> DeletePackage(Guid packageId);
         Task<PackageItemMobileVM> GetAsync(PackageItemRefQM query);

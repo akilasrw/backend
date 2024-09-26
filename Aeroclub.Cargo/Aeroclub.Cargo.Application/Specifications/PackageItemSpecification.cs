@@ -1,4 +1,5 @@
-﻿using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
+﻿using Aeroclub.Cargo.Application.Models.Queries;
+using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels;
@@ -12,6 +13,11 @@ namespace Aeroclub.Cargo.Application.Specifications
     {
         public PackageItemSpecification(PackageItemCountQM query)
                : base(x => x.Created.Year == query.Year && x.Created.Month == query.Month)
+        {
+        }
+
+        public PackageItemSpecification(GetPackageByAWBAndRefQM query)
+              : base(x => x.PackageRefNumber == query.packageNum && x.CargoBooking.AWBInformation.AwbTrackingNumber == query.awb)
         {
         }
 
