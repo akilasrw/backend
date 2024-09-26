@@ -114,7 +114,8 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleQuery = new FlightScheduleListQM()
             {
                 OriginAirportId = query.OriginAirportId,
-                FlightFromDate = query.ScheduledDepartureFromDate,
+                FlightFromDate = string.IsNullOrEmpty(_configuration["Booking:BookingCutoffTimeHrs"]) ?
+                            query.ScheduledDepartureFromDate : query.ScheduledDepartureFromDate.AddHours(int.Parse(_configuration["Booking:BookingCutoffTimeHrs"])),
                 FlightToDate = query.ScheduledDepartureToDate,
                 IncludeAircraftSubType = true,
                 IncludeFlightScheduleSectors = true
