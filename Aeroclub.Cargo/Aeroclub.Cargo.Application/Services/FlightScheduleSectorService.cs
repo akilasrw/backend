@@ -82,6 +82,10 @@ namespace Aeroclub.Cargo.Application.Services
 
             if(flightScheduleSector != null)
             {
+                var flightScheduleSectorPalletSpec = new FlightScheduleSectorPalletSpecification(flightScheduleSectorId, true);
+
+                var flightScheduleSectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetListWithSpecAsync(flightScheduleSectorPalletSpec);
+
                 var cargoPositionSpec = new CargoPositionSpecification(new CargoPositionListQM
                 {
                     AircraftLayoutId = flightScheduleSector.LoadPlan.AircraftLayoutId
@@ -89,7 +93,20 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var position = await _unitOfWork.Repository<CargoPosition>().GetEntityWithSpecAsync(cargoPositionSpec);
 
-                availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight - position.ZoneArea.AircraftCabin.AircraftDeck.CurrentWeight;
+                availableWeight = position.ZoneArea.AircraftCabin.AircraftDeck.MaxWeight;
+
+                foreach (var i in flightScheduleSectorPallet)
+                {
+
+                    var packageULDSpec = new PackageULDContainerSpecification(i.ULD.SerialNumber);
+
+                    var packageList = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(packageULDSpec);
+                    foreach(var item in packageList)
+                    {
+                        availableWeight -=  item.PackageItem.Weight;
+                    }
+
+                }
             }
             return availableWeight;
         }

@@ -32,5 +32,11 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.PackageItem).ThenInclude((y) => y.CargoBooking).ThenInclude(e => e.AWBInformation));
         }
 
+        public PackageULDContainerSpecification (string uld)
+            :base(x => x.ULDContainer.ULD.SerialNumber == uld && x.IsDeleted == false)
+        {
+            AddInclude(x => x.Include(y => y.PackageItem));
+        }
+
     }
 }
