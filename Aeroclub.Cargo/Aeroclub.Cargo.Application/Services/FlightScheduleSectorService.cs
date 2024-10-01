@@ -103,7 +103,10 @@ namespace Aeroclub.Cargo.Application.Services
                     var packageList = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(packageULDSpec);
                     foreach(var item in packageList)
                     {
-                        availableWeight -=  item.PackageItem.Weight;
+                        if(item.PackageItem.PackageItemStatus != PackageItemStatus.Offloaded)
+                        {
+                            availableWeight -= item.PackageItem.Weight;
+                        }
                     }
 
                 }
