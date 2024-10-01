@@ -111,6 +111,13 @@ namespace Aeroclub.Cargo.Application.Services
         {
             var flightScheduleDtos = new List<FlightScheduleSearchVM>();
 
+            var malaysiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+            var currentMalaysiaTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, malaysiaTimeZone);
+
+            query.ScheduledDepartureFromDate = query.ScheduledDepartureFromDate.Date
+                                   .Add(currentMalaysiaTime.TimeOfDay);
+
+
             var flightScheduleQuery = new FlightScheduleListQM()
             {
                 OriginAirportId = query.OriginAirportId,
