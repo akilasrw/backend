@@ -121,8 +121,7 @@ namespace Aeroclub.Cargo.Application.Services
             var flightScheduleQuery = new FlightScheduleListQM()
             {
                 OriginAirportId = query.OriginAirportId,
-                FlightFromDate = string.IsNullOrEmpty(_configuration["Booking:BookingCutoffTimeHrs"]) ?
-                            query.ScheduledDepartureFromDate : query.ScheduledDepartureFromDate.AddHours(int.Parse(_configuration["Booking:BookingCutoffTimeHrs"])),
+                FlightFromDate =  query.ScheduledDepartureFromDate,
                 FlightToDate = query.ScheduledDepartureToDate,
                 IncludeAircraftSubType = true,
                 IncludeFlightScheduleSectors = true
@@ -163,8 +162,7 @@ namespace Aeroclub.Cargo.Application.Services
                         flightScheduleSearch.AcceptanceCutoffTime = string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]) ?
                             flightSchedule.ScheduledDepartureDateTime : flightSchedule.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]));
 
-                        flightScheduleSearch.BookingCutoffTime = string.IsNullOrEmpty(_configuration["Booking:BookingCutoffTimeHrs"]) ?
-                            flightSchedule.ScheduledDepartureDateTime : flightSchedule.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:BookingCutoffTimeHrs"]));
+                        flightScheduleSearch.BookingCutoffTime = flightSchedule.ScheduledDepartureDateTime.AddHours(-flightSchedule.CutoffTimeMin);
 
                         var firstFlightSector = flightSchedule.FlightScheduleSectors.First();
                         if (flightScheduleSearch.AircraftConfigType == AircraftConfigType.Freighter)
