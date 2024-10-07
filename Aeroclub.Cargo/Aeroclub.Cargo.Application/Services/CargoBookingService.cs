@@ -800,7 +800,12 @@ namespace Aeroclub.Cargo.Application.Services
                     }));
                     if (packageUldcontainer != null && packageUldcontainer.ULDContainer.ULDId == query.UldId)
                     {
-                        filteredPackages.Add(package);
+                        if(package.PackageItemStatus != PackageItemStatus.Offloaded)
+                        {
+                            filteredPackages.Add(package);
+
+                        }
+                       
                     }
                 }
 

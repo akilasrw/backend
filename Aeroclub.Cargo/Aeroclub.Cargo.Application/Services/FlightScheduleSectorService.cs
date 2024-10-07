@@ -385,7 +385,7 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                 }
 
-                fs.AircraftType = flightScheduleSector.Aircraft?.AircraftType;
+                fs.AircraftType = flightScheduleSector.AircraftSubType.AircraftType.Type;
 
                 fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets?
                     .Count(f => f.ULD?.ULDLocateStatus == ULDLocateStatus.OnGround) ?? 0;

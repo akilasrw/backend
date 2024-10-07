@@ -39,7 +39,8 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpGet("GetFilteredList")]
         public async Task<ActionResult<Pagination<CargoBookingSummaryVM>>> GetFilteredListAsync([FromQuery] CargoBookingSummaryFilteredListQM query)
         {
-            return Ok(await _cargoBookingSummaryService.GetFilteredListAsync(query));
+            var S = await _cargoBookingSummaryService.GetFilteredListAsync(query);
+            return Ok(S);
         }
     }
 }

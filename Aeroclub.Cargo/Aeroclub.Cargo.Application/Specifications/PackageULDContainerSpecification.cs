@@ -8,7 +8,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     public class PackageULDContainerSpecification : BaseSpecification<PackageULDContainer>
     {
         public PackageULDContainerSpecification(PackageULDContainerListQM query)
-            :base(x => (query.PackageItemId == Guid.Empty || x.PackageItemId == query.PackageItemId))
+            :base(x => (x.ULDContainer.ULDId != null && (query.PackageItemId == Guid.Empty || x.PackageItemId == query.PackageItemId)))
         {
             AddInclude(x => x.Include(y => y.ULDContainer));
             AddInclude(x => x.Include(y => y.PackageItem));
