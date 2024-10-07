@@ -27,7 +27,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid? AircraftScheduleId { get; set; }
         public bool IsHistory { get; set; } = false; // this will be true when updated 'ActualDepartureDateTime'
         public bool IsDispatched { get; set; } = false;
-        public double? CutoffTimeMin { get; set; }
+        public double CutoffTimeMin { get; set; } = 12.00;
 
         public virtual Airport? OriginAirport { get; set; }
         public virtual Airport? DestinationAirport { get; set; }
