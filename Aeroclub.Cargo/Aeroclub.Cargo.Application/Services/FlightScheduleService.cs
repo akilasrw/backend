@@ -162,7 +162,7 @@ namespace Aeroclub.Cargo.Application.Services
                         flightScheduleSearch.AcceptanceCutoffTime = string.IsNullOrEmpty(_configuration["Booking:AcceptanceCutoffTimeHrs"]) ?
                             flightSchedule.ScheduledDepartureDateTime : flightSchedule.ScheduledDepartureDateTime.AddHours(-int.Parse(_configuration["Booking:AcceptanceCutoffTimeHrs"]));
 
-                        flightScheduleSearch.BookingCutoffTime = flightSchedule.ScheduledDepartureDateTime.AddHours(-flightSchedule.CutoffTimeMin);
+                        flightScheduleSearch.BookingCutoffTime = flightSchedule.ScheduledDepartureDateTime.AddMinutes(-flightSchedule.CutoffTimeMin);
 
                         var firstFlightSector = flightSchedule.FlightScheduleSectors.First();
                         if (flightScheduleSearch.AircraftConfigType == AircraftConfigType.Freighter)

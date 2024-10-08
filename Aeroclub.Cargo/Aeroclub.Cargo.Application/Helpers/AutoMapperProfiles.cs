@@ -106,7 +106,7 @@ namespace Aeroclub.Cargo.Application.Helpers
             CreateMap<FlightScheduleVM, FlightScheduleUpdateRM>();
             CreateMap<FlightSchedule, CargoBookingSummaryVM>()
                 .ForMember(d => d.AircraftConfigurationType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.ConfigType : AircraftConfigType.None))
-                .ForMember(d => d.CutoffTime, o => o.MapFrom(s => s.CutoffTimeMin != null ? s.ScheduledDepartureDateTime.AddHours(-s.CutoffTimeMin) : s.ScheduledDepartureDateTime))
+                             .ForMember(d => d.CutoffTime, o => o.MapFrom(s => s.CutoffTimeMin != null ? s.ScheduledDepartureDateTime.AddMinutes(-s.CutoffTimeMin) : s.ScheduledDepartureDateTime))
                 .ForMember(d => d.AircraftSubTypeName, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Name : ""));
             CreateMap<FlightSchedule, CargoBookingSummaryDetailVM>()
                .ForMember(d => d.AircraftSubType, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.Type : AircraftSubTypes.None))
