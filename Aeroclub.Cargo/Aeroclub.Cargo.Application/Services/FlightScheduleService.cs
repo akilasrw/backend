@@ -114,8 +114,8 @@ namespace Aeroclub.Cargo.Application.Services
             var malaysiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
             var currentMalaysiaTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, malaysiaTimeZone);
 
-            query.ScheduledDepartureFromDate = query.ScheduledDepartureFromDate.Date
-                                   .Add(currentMalaysiaTime.TimeOfDay);
+            // Set the ScheduledDepartureFromDate to current Malaysia date and time
+            query.ScheduledDepartureFromDate = currentMalaysiaTime.Date.Add(currentMalaysiaTime.TimeOfDay);
 
 
             var flightScheduleQuery = new FlightScheduleListQM()
