@@ -295,36 +295,23 @@ namespace Aeroclub.Cargo.Application.Services
             double destinationBlockTimeMin = lastSector.DestinationBlockTimeMin != null ? lastSector.DestinationBlockTimeMin.Value : 0;
 
             // Get master schedule time from Aircraft Schedule according to times of Flight sector  (Only Extracly matched/ between).
-            /* var specAircraftSc = new AircraftScheduleSpecification(flightSchedule.ScheduledDepartureDateTime.AddMinutes(-originBlockTimeMin), flightSchedule.ScheduledDepartureDateTime.Date.AddMinutes(destinationBlockTimeMin) + arrTime);
-             var allMatchingAircratSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(specAircraftSc);
-
-             // logic
-             foreach (var aircraftSchedule in allMatchingAircratSchedule)
-             {
-                 var avaialbleAircraft = filteredAircraftlist.Where(x => x.Id == aircraftSchedule.AircraftId).FirstOrDefault();
-
-                 if (avaialbleAircraft != null)
-                     if (!list.Any(x => x.Id == avaialbleAircraft.Id)) // check already exists to avoid duplicates values in the aircraft list.                     
-                     {
-                         var mappedAricraft = _mapper.Map<Aircraft, AircraftDto>(avaialbleAircraft);
-                         mappedAricraft.AircraftScheduleId = aircraftSchedule.Id;
-                         list.Add(mappedAricraft);
-                     }
-             }
-             return list;*/
-
-            // Loop through the filtered aircraft and map them, returning as a list
-            foreach (var aircraft in filteredAircraftlist)
+            var specAircraftSc = new AircraftScheduleSpecification(flightSchedule.ScheduledDepartureDateTime.AddMinutes(-originBlockTimeMin), flightSchedule.ScheduledDepartureDateTime.Date.AddMinutes(destinationBlockTimeMin) + arrTime);
+            var allMatchingAircratSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(specAircraftSc);
+            // logic
+            foreach (var aircraftSchedule in allMatchingAircratSchedule)
             {
-                
+                var avaialbleAircraft = filteredAircraftlist.Where(x => x.Id == aircraftSchedule.AircraftId).FirstOrDefault();
 
-               
-                    var mappedAircraft = _mapper.Map<Aircraft, AircraftDto>(aircraft);
-                    list.Add(mappedAircraft);
-               
+                if (avaialbleAircraft != null)
+                    if (!list.Any(x => x.Id == avaialbleAircraft.Id)) // check already exists to avoid duplicates values in the aircraft list.                     
+                    {
+                        var mappedAricraft = _mapper.Map<Aircraft, AircraftDto>(avaialbleAircraft);
+                        mappedAricraft.AircraftScheduleId = aircraftSchedule.Id;
+                        list.Add(mappedAricraft);
+                    }
             }
-
             return list;
+
 
         }
 
