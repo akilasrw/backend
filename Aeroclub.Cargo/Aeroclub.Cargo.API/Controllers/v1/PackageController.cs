@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDUnloadQM;
 using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
@@ -210,6 +211,20 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return NotFound();
            
             
+
+        }
+
+        [HttpPost("UldUnload")]
+        public async Task<ActionResult> UldUnload([FromBody] ULDUnloadQM rm)
+        {
+
+
+            var res = await _packageItemService.ULDUnload(rm);
+
+
+            return Ok(res);
+
+
 
         }
 

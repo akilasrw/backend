@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Queries.ItemAuditQM;
 using Aeroclub.Cargo.Application.Models.Queries.ItemsByDateQM;
 using Aeroclub.Cargo.Application.Models.Queries.PackageItemQMs;
 using Aeroclub.Cargo.Application.Models.Queries.PackageQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDUnloadQM;
 using Aeroclub.Cargo.Application.Models.RequestModels;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetAWBbyUldAndFlightScheduleRM;
 using Aeroclub.Cargo.Application.Models.RequestModels.GetPackagesByAWBandULDRM;
@@ -29,6 +30,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
 
         Task<PackageItem> GetPackageByAWBAndRef(GetPackageByAWBAndRefQM qm);
         Task<bool> CheckAWB(CheckAwbQM qm);
+        Task<bool> ULDUnload(ULDUnloadQM qm);
         Task<ServiceResponseStatus> DeletePackage(Guid packageId);
         Task<PackageItemMobileVM> GetAsync(PackageItemRefQM query);
         Task<PackageItemVM> GetAsync(PackageItemQM query);

@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
+using Aeroclub.Cargo.Application.Models.Queries.ULDUnloadQM;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,13 @@ namespace Aeroclub.Cargo.Application.Specifications
             : base(x => (x.ULDContainerId == uldContainer) && (x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.Arrived))
         {
             AddInclude(x => x.Include(y => y.PackageItem).ThenInclude((y) => y.CargoBooking).ThenInclude(e => e.AWBInformation));
+        }
+
+
+        public PackageULDContainerSpecification(Guid uldContainer, bool isUnload)
+           : base(x => (x.ULDContainerId == uldContainer) && (x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.AcceptedForFLight))
+        {
+            AddInclude(x => x.Include(y => y.PackageItem));
         }
 
         public PackageULDContainerSpecification (string uld)

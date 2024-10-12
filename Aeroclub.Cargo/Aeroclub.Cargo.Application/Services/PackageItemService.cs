@@ -34,6 +34,7 @@ using Aeroclub.Cargo.Application.Models.Queries.PackageULDContainerQMs;
 using Aeroclub.Cargo.Core.Entities.Core;
 using System.Linq;
 using Aeroclub.Cargo.Application.Models.Queries;
+using Aeroclub.Cargo.Application.Models.Queries.ULDUnloadQM;
 
 namespace Aeroclub.Cargo.Application.Services
 {
@@ -1299,6 +1300,62 @@ namespace Aeroclub.Cargo.Application.Services
             var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(specs);
 
             return package;
+
+
+        }
+
+        public async Task<bool> ULDUnload(ULDUnloadQM qm)
+        {
+
+
+            try
+            {
+                var uldContainerSpecs = new ULDContainerSpecification(qm.ULDNum);
+                var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
+
+                var specs = new PackageULDContainerSpecification(uldContainer.Id, false);
+
+                var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
+
+                List<PackageItem> uldPackages = new List<PackageItem>();
+
+                foreach (var itemSpec in item)
+                {
+                    uldPackages.Add(itemSpec.PackageItem);
+                }
+
+
+
+                var sectorPallet = await _unitOfWork.Repository<FlightScheduleSectorPallet>().GetEntityWithSpecAsync(new FlightScheduleSectorPalletSpecification(uldContainer.ULD.Id));
+                sectorPallet.IsDeleted = true;
+                _unitOfWork.Repository<FlightScheduleSectorPallet>().Update(sectorPallet);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightScheduleSectorPallet>().Detach(sectorPallet);
+
+
+                foreach (var package in uldPackages)
+                {
+                    package.PackageItemStatus = PackageItemStatus.Offloaded;
+
+                    _unitOfWork.Repository<PackageItem>().Update(package);
+                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    _unitOfWork.Repository<PackageItem>().Detach(package);
+                }
+
+
+                return true;
+            }
+            catch(Exception ex) {
+
+
+                return false;
+            
+            }
+            
+            
 
 
         }
