@@ -665,11 +665,17 @@ namespace Aeroclub.Cargo.Application.Services
             if (flightSchedule == null)
                 return FlightScheduleResponseStatus.ValidationError;
 
-            if (flightSchedule.ScheduledDepartureDateTime <= updateCutOffRM.CutOffTime)
+            var cutoffTimeAsDateTime = DateTime.Today.AddMinutes(flightSchedule.CutoffTimeMin);
+            var totalmin = (updateCutOffRM.CutOffTime.Hour * 60) + updateCutOffRM.CutOffTime.Minute;
+
+            if (flightSchedule.CutoffTimeMin <= totalmin)
                 return FlightScheduleResponseStatus.MaxTimeError;
 
-            TimeSpan ts = flightSchedule.ScheduledDepartureDateTime - updateCutOffRM.CutOffTime;
-            flightSchedule.CutoffTimeMin = Math.Round(ts.TotalMinutes, 0);
+            TimeSpan ts = TimeSpan.FromMinutes(flightSchedule.CutoffTimeMin) - TimeSpan.FromMinutes(totalmin);
+
+            flightSchedule.CutoffTimeMin = Math.Round((double)(updateCutOffRM.CutOffTime.Hour * 60) + updateCutOffRM.CutOffTime.Minute, 0);
+
+            //flightSchedule.CutoffTimeMin = Math.Round(ts.TotalMinutes, 0);
 
             _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
             await _unitOfWork.SaveChangesAsync();
@@ -677,7 +683,6 @@ namespace Aeroclub.Cargo.Application.Services
 
             return FlightScheduleResponseStatus.Success;
         }
-
         private async Task<ServiceResponseStatus> UpdateAync(FlightSchedule flightSchedule, UpdateATARM? updateATARM = null,UpdateCutOffTimeRM ? updateCutOffTimeRM = null)
         {
             using (var transaction = _unitOfWork.BeginTransaction())
