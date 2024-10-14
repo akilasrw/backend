@@ -81,8 +81,8 @@ namespace Aeroclub.Cargo.Application.Services
                 var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
                 if (existing != null)
                 {
-                    res.StatusCode = ServiceResponseStatus.Failed;
-                    res.Message = "Position or ULD is already assigned";
+                    _unitOfWork.Repository<ULDCargoPosition>().Delete(existing);
+                    await _unitOfWork.SaveChangesAsync();
                 }
 
                 await _unitOfWork.Repository<ULDCargoPosition>().CreateAsync(model);
