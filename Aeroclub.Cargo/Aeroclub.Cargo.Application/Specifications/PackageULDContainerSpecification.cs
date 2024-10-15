@@ -35,7 +35,7 @@ namespace Aeroclub.Cargo.Application.Specifications
 
 
         public PackageULDContainerSpecification(Guid uldContainer, bool isUnload)
-           : base(x => (x.ULDContainerId == uldContainer) && (x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.AcceptedForFLight))
+           : base(x => (x.ULDContainerId == uldContainer) && (x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.AcceptedForFLight || x.PackageItem.PackageItemStatus == Common.Enums.PackageItemStatus.FlightDispatched))
         {
             AddInclude(x => x.Include(y => y.PackageItem));
         }
