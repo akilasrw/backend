@@ -135,7 +135,7 @@ namespace Aeroclub.Cargo.Application.Services
                     {
                         foreach(var sectorPallet in scheduleSector.FlightScheduleSectorPallets)
                         {
-                            if (sectorPallet.ULD != null)
+                            if (sectorPallet.ULD != null && sectorPallet.IsDeleted == false)
                             {
                                 ulds.Add(sectorPallet.ULD);
                             }

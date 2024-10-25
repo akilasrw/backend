@@ -17,5 +17,11 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
 
         }
+
+        public ULDCargoPositionSpecification(Guid uldId)
+          : base(x => x.ULDId == uldId)
+        {
+
+        }
     }
 }

@@ -301,7 +301,7 @@ namespace Aeroclub.Cargo.Application.Services
             foreach (var aircraftSchedule in allMatchingAircratSchedule)
             {
                 var avaialbleAircraft = filteredAircraftlist.Where(x => x.Id == aircraftSchedule.AircraftId).FirstOrDefault();
-
+              
                 if (avaialbleAircraft != null)
                     if (!list.Any(x => x.Id == avaialbleAircraft.Id)) // check already exists to avoid duplicates values in the aircraft list.                     
                     {

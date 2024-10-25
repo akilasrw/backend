@@ -1317,6 +1317,18 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
 
+                var uldCargoPositionSPecs = new ULDCargoPositionSpecification(uldContainer.ULD.Id);
+
+                var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(uldCargoPositionSPecs);
+
+                if (existing != null) {
+                
+                    _unitOfWork.Repository<ULDCargoPosition>().Delete(existing);
+                    await _unitOfWork.SaveChangesAsync();
+                
+                
+                }
+
                 List<PackageItem> uldPackages = new List<PackageItem>();
 
                 foreach (var itemSpec in item)
@@ -1338,11 +1350,53 @@ namespace Aeroclub.Cargo.Application.Services
                     package.PackageItemStatus = PackageItemStatus.Offloaded;
 
                     _unitOfWork.Repository<PackageItem>().Update(package);
-                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                    var itemStatusspec = new ItemStatusSpecification(PackageItemStatus.AcceptedForFLight, package.Id);
+                    var itemStatus = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(itemStatusspec);
 
-                    await _unitOfWork.SaveChangesAsync();
+                    var itemDispatchStatusspec = new ItemStatusSpecification(PackageItemStatus.FlightDispatched, package.Id);
+                    var itemDispatchStatus = await _unitOfWork.Repository<ItemStatus>().GetEntityWithSpecAsync(itemDispatchStatusspec);
 
-                    _unitOfWork.Repository<PackageItem>().Detach(package);
+
+
+                    try
+                    {
+
+                        if(itemDispatchStatus != null)
+                        {
+
+                            itemDispatchStatus.IsDeleted = true;
+                            _unitOfWork.Repository<ItemStatus>().Update(itemDispatchStatus);
+                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.Repository<ItemStatus>().Detach(itemDispatchStatus);
+                        }
+
+                        var shipmentSpec = new ShipmentSpecification(package.CargoBookingId);
+                        var shipment = await _unitOfWork.Repository<Shipment>().GetEntityWithSpecAsync(shipmentSpec);
+
+                        shipment.packageCount = shipment.packageCount - 1;
+                        _unitOfWork.Repository<Shipment>().Update(shipment);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<Shipment>().Detach(shipment);
+
+
+                        itemStatus.IsDeleted = true;
+                        _unitOfWork.Repository<ItemStatus>().Update(itemStatus);
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<ItemStatus>().Detach(itemStatus);
+                        await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+
+                        await _unitOfWork.SaveChangesAsync();
+
+                        _unitOfWork.Repository<PackageItem>().Detach(package);
+                    }
+                    catch (Exception ex) {
+                    
+                          Console.WriteLine(ex.ToString());
+                    
+                    
+                    }
+
+                   
                 }
 
 

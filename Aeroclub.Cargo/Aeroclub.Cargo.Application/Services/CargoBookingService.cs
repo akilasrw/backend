@@ -402,7 +402,7 @@ namespace Aeroclub.Cargo.Application.Services
                                     awbNumber = shipment.CargoBooking.AWBInformation.AwbTrackingNumber,
                                     bookedDate = shipment.CargoBooking.Created,
                                     flightNumber = shipment.FlightSchedule.FlightNumber,
-                                    packageCount = packages.Count(),
+                                    packageCount = shipment.packageCount,
                                     from = shipment.FlightSchedule.OriginAirportName,
                                     to = shipment.FlightSchedule.DestinationAirportName,
                                     shipmentID = shipment.Id,

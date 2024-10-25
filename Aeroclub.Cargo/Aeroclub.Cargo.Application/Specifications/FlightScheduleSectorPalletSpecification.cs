@@ -15,7 +15,7 @@ namespace Aeroclub.Cargo.Application.Specifications
     {
         public FlightScheduleSectorPalletSpecification(FlightScheduleSectorPalletQuery query)
             : base(p => (query.FlightScheduleSectorId == Guid.Empty || p.FlightScheduleSectorId == query.FlightScheduleSectorId) &&
-            (query.ULDId == Guid.Empty || p.ULDId == query.ULDId))
+            (query.ULDId == Guid.Empty || p.ULDId == query.ULDId) && p.IsDeleted == false)
         {
             if (query.IncludeUld)
                 AddInclude(x => x.Include(y => y.ULD).ThenInclude(i=> i.ULDMetaData));

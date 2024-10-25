@@ -388,7 +388,7 @@ namespace Aeroclub.Cargo.Application.Services
                 fs.AircraftType = flightScheduleSector.AircraftSubType.AircraftType.Type;
 
                 fs.ULDCount = flightScheduleSector.FlightScheduleSectorPallets?
-                    .Count(f => f.ULD?.ULDLocateStatus == ULDLocateStatus.OnGround) ?? 0;
+                    .Count(f => f.IsDeleted == false && f.ULD?.ULDLocateStatus == ULDLocateStatus.OnGround) ?? 0;
 
                 fs.CutoffTime = flightScheduleSector.CutoffTimeMin.HasValue
                     ? flightScheduleSector.ScheduledDepartureDateTime.AddMinutes(-flightScheduleSector.CutoffTimeMin.Value)
