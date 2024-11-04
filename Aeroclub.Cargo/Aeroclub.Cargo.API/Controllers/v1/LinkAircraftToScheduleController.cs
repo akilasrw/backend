@@ -33,7 +33,10 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             var res = await _linkAircraftToScheduleService.CreateAsync(query);
             if (res == Application.Enums.ServiceResponseStatus.ValidationError)
                 return BadRequest(new { message = "Aircraft is not available. Please select another one." });
-           
+
+            if (res == Application.Enums.ServiceResponseStatus.Failed)
+                return BadRequest( "Cannot assign this aircraft" );
+
             return Ok(res);
         }
 

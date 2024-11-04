@@ -183,7 +183,7 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync()
         {
             var list = await _unitOfWork.Repository<Aircraft>().GetListAsync();
-            return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list);
+            return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list.Where((x)=> x.Status != AircraftStatus.Maintenance));
         }
 
 

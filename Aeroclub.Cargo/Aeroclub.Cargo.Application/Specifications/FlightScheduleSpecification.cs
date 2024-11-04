@@ -115,6 +115,14 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.AircraftSchedule));
         }
 
+        public FlightScheduleSpecification(Guid aircraftScheduleId, bool aircraft)
+           : base(x => x.AircraftId == aircraftScheduleId)
+        {
+            AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.Flight).ThenInclude(p => p.FlightSectors));
+            AddInclude(x => x.Include(y => y.Aircraft));
+            AddInclude(x => x.Include(y => y.AircraftSchedule));
+        }
+
         public FlightScheduleSpecification(FlightScheduleReportQM query)
             : base(x=> query.StartDate == null || (x.ScheduledDepartureDateTime.Date >= new DateTime(query.StartDate.Value.Year, query.StartDate.Value.Month,1).Date) &&
                  query.EndDate == null || (x.ScheduledDepartureDateTime.Date <= new DateTime(query.EndDate.Value.Year, query.EndDate.Value.Month, DateTime.DaysInMonth(query.EndDate.Value.Year, query.EndDate.Value.Month)).Date) &&
@@ -127,7 +135,7 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
         public FlightScheduleSpecification(FlightScheduleManagemenLinktFilteredListQM query, bool isCount = false)
-            : base(x => (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
+            : base(x => x.IsDeleted ==false && (string.IsNullOrEmpty(query.FlightNumber) || x.FlightNumber.Contains(query.FlightNumber)) &&
            (query.FlightDate == null || query.FlightDate == DateTime.MinValue || query.FlightDate == x.ScheduledDepartureDateTime.Date) &&
             (query.DestinationAirportId == Guid.Empty || x.DestinationAirportId == query.DestinationAirportId) &&
             (query.OriginAirportId == Guid.Empty || x.OriginAirportId == query.OriginAirportId) &&

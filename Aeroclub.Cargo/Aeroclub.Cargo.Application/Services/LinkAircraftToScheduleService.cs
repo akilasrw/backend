@@ -65,6 +65,17 @@ namespace Aeroclub.Cargo.Application.Services
                 bool edited = false;
                 var spec = new FlightScheduleSpecification(new FlightScheduleLinkQM { FlightScheduleId = query.FlightScheduleId, IncludeFlightScheduleSectors = true, IncludeAircrafts = true });
                 var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(spec);
+
+                var lastSchedule = await _unitOfWork.Repository<FlightSchedule>().GetEntityWithSpecAsync(new FlightScheduleSpecification(query.AircraftId, true));
+
+
+                if (lastSchedule != null && flightSchedule.OriginAirportCode != lastSchedule.DestinationAirportCode && query.StepCount == 1) {
+
+                    return ServiceResponseStatus.Failed;
+
+                }
+
+
                 if (flightSchedule != null)
                 {
 

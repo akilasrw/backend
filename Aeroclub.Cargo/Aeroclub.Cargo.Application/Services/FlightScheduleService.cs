@@ -295,7 +295,7 @@ namespace Aeroclub.Cargo.Application.Services
             double destinationBlockTimeMin = lastSector.DestinationBlockTimeMin != null ? lastSector.DestinationBlockTimeMin.Value : 0;
 
             // Get master schedule time from Aircraft Schedule according to times of Flight sector  (Only Extracly matched/ between).
-            var specAircraftSc = new AircraftScheduleSpecification(flightSchedule.ScheduledDepartureDateTime.AddMinutes(-originBlockTimeMin), flightSchedule.ScheduledDepartureDateTime.Date.AddMinutes(destinationBlockTimeMin) + arrTime);
+            var specAircraftSc = new AircraftScheduleSpecification(flightSchedule.ScheduledDepartureDateTime.AddMinutes(-originBlockTimeMin), flightSchedule.ScheduledDepartureDateTime.Date.AddMinutes(-destinationBlockTimeMin) + arrTime);
             var allMatchingAircratSchedule = await _unitOfWork.Repository<AircraftSchedule>().GetListWithSpecAsync(specAircraftSc);
             // logic
             foreach (var aircraftSchedule in allMatchingAircratSchedule)
