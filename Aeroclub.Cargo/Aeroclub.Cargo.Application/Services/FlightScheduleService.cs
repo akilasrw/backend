@@ -3,6 +3,7 @@ using Aeroclub.Cargo.Application.Extensions;
 using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingQMs;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
@@ -593,6 +594,34 @@ namespace Aeroclub.Cargo.Application.Services
                 fSector.ArrivalDateTime = await GetMappedTimeAsync(fSector.ArrivalDateTime, fSector.SectorId, false, isSavedData);
             }
             return flight;
+        }
+
+        public async Task<bool> Update(Guid FlightScheduleID, FlightScheduleUpdateQM qm) 
+        {
+
+            var flightSchedule = await _unitOfWork.Repository<FlightSchedule>().GetByIdAsync(FlightScheduleID);
+
+            if(flightSchedule != null)
+            {
+                flightSchedule.ScheduledDepartureDateTime = qm.scheduledDepartureDateTime;
+                flightSchedule.ActualArrivalDateTime = qm.actualArrivalDateTime;
+                flightSchedule.ActualDepartureDateTime = qm.actualDepartureDateTime;
+
+
+                _unitOfWork.Repository<FlightSchedule>().Update(flightSchedule);
+                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.Repository<FlightSchedule>().Detach(flightSchedule);
+
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+
+
+
         }
 
         public async Task<ServiceResponseStatus> UpdateATAAsync(UpdateATARM updateATARM)

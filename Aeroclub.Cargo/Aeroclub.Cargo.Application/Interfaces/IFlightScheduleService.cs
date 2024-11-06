@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Enums;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleVMs;
@@ -20,6 +21,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<Pagination<FlightScheduleSearchVM>> GetFilteredListAsync(FlightScheduleFilteredListQM query);
         Task<bool> DeleteAsync(Guid Id);
         Task<ServiceResponseStatus> UpdateATAAsync(UpdateATARM updateATARM);
+        Task<bool> Update(Guid FlightScheduleID, FlightScheduleUpdateQM qm);
         Task<FlightScheduleResponseStatus> UpdateCutOffTimeAsync(UpdateCutOffTimeRM updateCutOffRM);
     }
 }

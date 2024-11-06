@@ -1,6 +1,7 @@
 ﻿using Aeroclub.Cargo.Application.Interfaces;
 using Aeroclub.Cargo.Application.Models.Core;
 using Aeroclub.Cargo.Application.Models.Dtos;
+using Aeroclub.Cargo.Application.Models.Queries;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleRMs;
 using Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleSectorVMs;
@@ -51,6 +52,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         public async Task<ActionResult<FlightScheduleLinkVM>> GetByIdAsync([FromQuery] FlightScheduleLinkQM query)
         {
             return Ok(await _flightScheduleService.GetByIdAsync(query));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<bool>> Update(Guid id, [FromBody] FlightScheduleUpdateQM query)
+        {
+            return Ok(await _flightScheduleService.Update(id, query));
         }
 
         [HttpPost]
