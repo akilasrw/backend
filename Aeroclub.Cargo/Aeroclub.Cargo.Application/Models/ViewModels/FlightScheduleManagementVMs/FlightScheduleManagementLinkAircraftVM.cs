@@ -12,6 +12,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementV
         public DateTime? EstimatedDepartureDateTime { get; set; }
         public DateTime? EstimatedArrivalDateTime { get; set; }
         public DateTime ActualDepartureDateTime { get; set; }
+        public DateTime ActualDepartureDateTimeOpposite { get; set; }
         public DateTime? ActualArrivalDateTime { get; set; }
         public string? AircraftRegNo { get; set; } = null;
         public double? BlockHrs { get; set; }

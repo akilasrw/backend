@@ -270,6 +270,7 @@ namespace Aeroclub.Cargo.Application.Helpers
                 .ForMember(d => d.AircraftSubTypeName, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Name : ""))
                 .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.FlightScheduleSectors.LastOrDefault().Flight != null ? s.FlightScheduleSectors.LastOrDefault().Flight.DestinationAirportCode : ""))
                 .ForMember(d => d.OriginAirportName, o => o.MapFrom(s => s.FlightScheduleSectors.FirstOrDefault().Flight != null ? s.FlightScheduleSectors.FirstOrDefault().Flight.OriginAirportCode : ""))
+                .ForMember(d => d.ActualDepartureDateTimeOpposite, o => o.MapFrom(s => s.ActualDepartureDateTimeOtherSide))
                 .ForMember(d=> d.ScheduledArrivalDateTime, o => o.MapFrom(s=> new DateTime()
                     .Add((TimeSpan)s.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault(r => r.Sequence == 1).ArrivalDateTime)));
 

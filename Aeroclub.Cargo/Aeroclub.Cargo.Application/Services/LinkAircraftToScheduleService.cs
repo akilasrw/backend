@@ -98,6 +98,8 @@ namespace Aeroclub.Cargo.Application.Services
                     else if (query.StepCount == 2)
                     {
                         flightSchedule.ActualDepartureDateTime = fs.Date.Add(TimeSpan.Parse(query.ActualDepartureDateTime));
+                        flightSchedule.ActualDepartureDateTimeOtherSide = fs.Date.Add(TimeSpan.Parse(query.ActualDepartureDateTimeOtherSide));
+
                         flightSchedule.IsDispatched = query.IsDispatched.Value;
                         await CreateNotification(flightSchedule);
                         foreach (var sector in flightSchedule.FlightScheduleSectors)
@@ -136,6 +138,7 @@ namespace Aeroclub.Cargo.Application.Services
                                 sector.EstimatedDepartureDateTime = flightSchedule.EstimatedDepartureDateTime;
                             if (query.StepCount == 2)
                                 sector.ActualDepartureDateTime = flightSchedule.ActualDepartureDateTime;
+                                
                         }
 
                         if (flightScheduleSectors.Count == sectorCount && query.StepCount == 1)

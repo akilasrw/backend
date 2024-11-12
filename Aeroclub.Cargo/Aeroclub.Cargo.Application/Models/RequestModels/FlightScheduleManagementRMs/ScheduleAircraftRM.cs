@@ -17,6 +17,8 @@ namespace Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManageme
         public string? EstimatedDepartureDateTime { get; set; }
         public string? EstimatedArrivalDateTime { get; set; }
         public string? ActualDepartureDateTime { get; set; }
+        public string? ActualDepartureDateTimeOtherSide { get; set; }
+
         public byte? StepCount { get; set; }
         public bool? IsDispatched { get; set; }
     }
