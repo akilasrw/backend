@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Application.Models.Dtos;
 using Aeroclub.Cargo.Application.Models.Queries.CargoBookingSummaryQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleManagementQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs;
+using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorPalletQMs;
 using Aeroclub.Cargo.Application.Models.Queries.FlightScheduleSectorQMs;
 using Aeroclub.Cargo.Application.Models.Queries.LIRFileUploadQMs;
 using Aeroclub.Cargo.Application.Models.RequestModels.FlightScheduleManagementRMs;
@@ -202,11 +203,21 @@ namespace Aeroclub.Cargo.Application.Services
             var countSpec = new FlightScheduleSpecification(query, true);
             var totalCount = await _unitOfWork.Repository<FlightSchedule>().CountAsync(countSpec);
 
+           
+
+
             var dtoList = _mapper.Map<IReadOnlyList<FlightScheduleLinkAircraftVM>>(flightScheduleList);
             foreach (var fs in dtoList)
             {
+
+                var pallets = await _unitOfWork.Repository<FlightScheduleSectorPallet>()
+              .GetListWithSpecAsync(new FlightScheduleSectorPalletSpecification(fs.Id, 1));
+
                 var sum = await _cargoBookingSummaryService.GetAsync(new CargoBookingSummaryDetailQM() { Id = fs.Id, IsIncludeFlightScheduleSectors = true });
-                fs.TotalWeight = sum.CargoPositionSummary.TotalBookedWeight;
+                foreach(var y in pallets)
+                {
+                    fs.TotalWeight += y.ULD.FinalWeight;
+                }
                 fs.OffLoadCount = sum.BookingSummaryDetailFigures.OffLoadCount;
                 fs.ActualLoadCount = sum.BookingSummaryDetailFigures.ActualLoadCount;
             }

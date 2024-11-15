@@ -172,10 +172,21 @@ namespace Aeroclub.Cargo.Application.Services
 
                     
 
+
                     var b = await _cargoBookingService.GetOnlyAssignedListAsync(q);
+                    
                     var totWeight = b.Sum(x => x.TotalWeight);
                     var totVol = b.Sum(x => x.TotalVolume);
-                    item.Weight += totWeight;
+
+                    if(item.FinalWeight == 0) {
+                        item.Weight += totWeight;
+                    }
+                    else
+                    {
+                        item.Weight = item.FinalWeight;
+                    }
+
+                    
                     item.Volume += totVol;
                     
                     

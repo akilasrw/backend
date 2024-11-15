@@ -5,7 +5,7 @@ namespace Aeroclub.Cargo.Core.Entities
 {
     public class FlightSchedule : AuditableEntity
     {
-        public Guid? FlightId { get; set; } 
+        public Guid FlightId { get; set; } 
         public string? FlightNumber { get; set; } = null;
         public DateTime ScheduledDepartureDateTime { get; set; }
         public DateTime? EstimatedDepartureDateTime { get; set; }

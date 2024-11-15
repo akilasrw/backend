@@ -76,6 +76,16 @@ namespace Aeroclub.Cargo.Application.Services
                     CargoPositionId = x.CargoPositionId
                 });
 
+                var uld = await _unitOfWork.Repository<ULD>().GetByIdAsync(x.ULDId);
+
+                if (uld != null)
+                {
+                    uld.FinalWeight = x.Weight;
+                    _unitOfWork.Repository<ULD>().Update(uld);
+                    await _unitOfWork.SaveChangesAsync();
+                    _unitOfWork.Repository<ULD>().Detach(uld);
+                }
+
 
 
                 var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);

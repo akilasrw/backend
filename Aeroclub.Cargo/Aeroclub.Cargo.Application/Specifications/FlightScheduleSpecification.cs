@@ -121,6 +121,7 @@ namespace Aeroclub.Cargo.Application.Specifications
             AddInclude(x => x.Include(y => y.FlightScheduleSectors).ThenInclude(f => f.Flight).ThenInclude(p => p.FlightSectors));
             AddInclude(x => x.Include(y => y.Aircraft));
             AddInclude(x => x.Include(y => y.AircraftSchedule));
+            AddOrderByDescending(x => x.LastModified);
         }
 
         public FlightScheduleSpecification(FlightScheduleReportQM query)

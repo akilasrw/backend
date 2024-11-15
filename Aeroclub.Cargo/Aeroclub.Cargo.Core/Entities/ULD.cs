@@ -17,6 +17,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public DateTime? LastUsed { get; set; }
         public string? LastFlight { get; set; }
         public Airport Airport { get; set; }
+        public double FinalWeight { get; set; } = 0;
 
         public ULDMetaData ULDMetaData { get; set; }
         public ULDCargoPosition ULDCargoPosition { get; set; }

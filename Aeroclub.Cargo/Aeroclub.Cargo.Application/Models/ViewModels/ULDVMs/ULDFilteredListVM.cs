@@ -27,6 +27,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.ULDVMs
         public double Length { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
+        public double FinalWeight { get; set; }
         public double MaxWeight { get; set; }
         public double MaxVolume { get; set; }
         public Guid ULDMetaDataId { get; set; }

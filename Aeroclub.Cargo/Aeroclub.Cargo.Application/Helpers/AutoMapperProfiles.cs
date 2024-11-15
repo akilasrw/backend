@@ -268,6 +268,7 @@ namespace Aeroclub.Cargo.Application.Helpers
 
             CreateMap<FlightSchedule, FlightScheduleLinkAircraftVM>()
                 .ForMember(d => d.AircraftSubTypeName, o => o.MapFrom(s => s.AircraftSubType != null ? s.AircraftSubType.AircraftType.Name : ""))
+                .ForMember(d => d.BlockHrs, o => o.MapFrom(s => s.FlightScheduleSectors.ToArray()[0].Flight.FlightSectors.ToArray()[0].OriginBlockTimeMin + s.FlightScheduleSectors.ToArray()[0].Flight.FlightSectors.ToArray()[0].DestinationBlockTimeMin))
                 .ForMember(d => d.DestinationAirportName, o => o.MapFrom(s => s.FlightScheduleSectors.LastOrDefault().Flight != null ? s.FlightScheduleSectors.LastOrDefault().Flight.DestinationAirportCode : ""))
                 .ForMember(d => d.OriginAirportName, o => o.MapFrom(s => s.FlightScheduleSectors.FirstOrDefault().Flight != null ? s.FlightScheduleSectors.FirstOrDefault().Flight.OriginAirportCode : ""))
                 .ForMember(d => d.ActualDepartureDateTimeOpposite, o => o.MapFrom(s => s.ActualDepartureDateTimeOtherSide))
