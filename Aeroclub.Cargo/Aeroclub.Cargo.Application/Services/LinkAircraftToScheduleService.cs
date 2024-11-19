@@ -94,6 +94,7 @@ namespace Aeroclub.Cargo.Application.Services
                         flightSchedule.EstimatedArrivalDateTime = fs.Date.Add(TimeSpan.Parse(query.EstimatedArrivalDateTime));
                         flightSchedule.IsHistory = flightSchedule.ActualArrivalDateTime == null ? false : true;
                         edited = true;
+                        flightSchedule.IsDelayed = query.IsDelayed;
 
                     }
                     else if (query.StepCount == 2)
