@@ -14,6 +14,12 @@ namespace Aeroclub.Cargo.Application.Specifications
                 
         }
 
+        public AircraftScheduleSpecification(Guid aircraftID, DateTime date)
+            : base(x => x.AircraftId == aircraftID && x.ScheduleStartDateTime.Date == date)
+        {
+
+        }
+
         public AircraftScheduleSpecification(AircraftScheduleListQM query)
             : base(x=> x.ScheduleStartDateTime.Date == query.ScheduleStartDate.Date || (query.ScheduleStartDate.Date > x.ScheduleStartDateTime.Date && query.ScheduleStartDate.Date <= x.ScheduleEndDateTime.Date))
         {

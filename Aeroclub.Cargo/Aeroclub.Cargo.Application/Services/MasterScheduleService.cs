@@ -75,6 +75,12 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 var departureDate = firsrFlightScheduleSector.ScheduledDepartureDateTime.Date;
                                 var departureDateTime = departureDate + flightSector.DepartureDateTime;
+
+                                if (firsrFlightScheduleSector.IsDelayed && firsrFlightScheduleSector.ActualDepartureDateTime != null && firsrFlightScheduleSector.ActualDepartureDateTime != DateTime.MinValue)
+                                {
+                                    departureDateTime = firsrFlightScheduleSector.ActualDepartureDateTime;
+                                }
+
                                 var actualDepartureDateTime = (flightSector.OriginBlockTimeMin != null) ? departureDateTime?.AddMinutes(-(double)flightSector.OriginBlockTimeMin) : departureDateTime;
                                 flight.FlightScheduleStartDateTime = (DateTime)actualDepartureDateTime;
                             }
@@ -88,6 +94,12 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 var arrivalDate = lastFlightScheduleSector.ScheduledDepartureDateTime.Date;
                                 var arrivalDateTime = arrivalDate + flightSector.ArrivalDateTime;
+
+                                if(lastFlightScheduleSector.ActualArrivalDateTime != null &&  lastFlightScheduleSector.ActualArrivalDateTime != DateTime.MinValue)
+                                {
+                                    arrivalDateTime = lastFlightScheduleSector.ActualArrivalDateTime;
+                                }
+
                                 arrivalDateTime = (flightSector.DestinationBlockTimeMin != null) ? arrivalDateTime?.AddMinutes((double)flightSector.DestinationBlockTimeMin) : arrivalDateTime;
                                 flight.FlightScheduleEndDateTime = (DateTime)arrivalDateTime;
                             }

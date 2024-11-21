@@ -94,7 +94,7 @@ namespace Aeroclub.Cargo.Application.Services
                         flightSchedule.EstimatedArrivalDateTime = fs.Date.Add(TimeSpan.Parse(query.EstimatedArrivalDateTime));
                         flightSchedule.IsHistory = flightSchedule.ActualArrivalDateTime == null ? false : true;
                         edited = true;
-                        flightSchedule.IsDelayed = query.IsDelayed;
+                        flightSchedule.IsDelayed = query.FlightDelayed;
 
                     }
                     else if (query.StepCount == 2)
@@ -138,6 +138,7 @@ namespace Aeroclub.Cargo.Application.Services
                         {
                             if (query.StepCount == 1)
                                 sector.EstimatedDepartureDateTime = flightSchedule.EstimatedDepartureDateTime;
+                                sector.IsDelayed = flightSchedule.IsDelayed;
                             if (query.StepCount == 2)
                                 sector.ActualDepartureDateTime = flightSchedule.ActualDepartureDateTime;
                                 

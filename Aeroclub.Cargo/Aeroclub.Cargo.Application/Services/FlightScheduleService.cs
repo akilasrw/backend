@@ -464,7 +464,11 @@ namespace Aeroclub.Cargo.Application.Services
                                             TimeSpan aircrafScheduleDiff = TimeSpan.Zero;
 
                                             var startTime = fs.ScheduledDepartureDateTime.Date + tsDeparture;
-                                            var endTime = fs.ScheduledDepartureDateTime.Date + tsArrival;
+                                            DateTime endTime =  (fs.ActualArrivalDateTime != null && fs.ActualArrivalDateTime != DateTime.MinValue)? (DateTime)fs.ActualArrivalDateTime : fs.ScheduledDepartureDateTime.Date + tsArrival;
+
+                                           
+
+                                           
 
                                             scheduleTimes.Add(new ScheduleTimeVM() { StartTime = startTime, EndTime = endTime });
 
@@ -556,7 +560,22 @@ namespace Aeroclub.Cargo.Application.Services
                             }
 
                             var numberOfHoursTimeSpan = TimeSpan.FromMinutes(query.FlightScheduleReportType == FlightScheduleReportType.Idle ? idleTimeMin : allocatedTime);
-                            double numberOfHours = (numberOfHoursTimeSpan.Days * 24) + numberOfHoursTimeSpan.Hours + (numberOfHoursTimeSpan.Minutes / 60.0);
+
+                            var aircraftScheduleObject = await _unitOfWork.Repository<AircraftSchedule>().GetEntityWithSpecAsync(new AircraftScheduleSpecification(group.Key.Value,date.Date));
+
+
+                            double numberOfHours = 0;
+
+                            if (aircraftScheduleObject != null) {
+
+
+                                numberOfHours = (aircraftScheduleObject.ScheduleEndDateTime - aircraftScheduleObject.ScheduleStartDateTime).TotalHours;
+
+
+                            }
+
+
+
 
                             var totalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? ((TimeSpan.FromMinutes(totalFlightTime).Days * 24) + TimeSpan.FromMinutes(totalFlightTime).Hours + (TimeSpan.FromMinutes(totalFlightTime).Minutes / 60.0)) : 0);
 
@@ -564,7 +583,7 @@ namespace Aeroclub.Cargo.Application.Services
                             {
                                 Day = date.Day,
                                 Month = date.Month,
-                                NoOfHours = numberOfHours,
+                                NoOfHours =  numberOfHours,
                                 AircraftId = group.Key.Value,
                                 AircraftRegNo = await _aircraftService.GetAircraftRegNo(group.Key.Value),
                                 TotalFlightTimeHrs = totalFlightTimeHrs,

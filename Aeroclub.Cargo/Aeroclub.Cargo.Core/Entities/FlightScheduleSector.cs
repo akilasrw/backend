@@ -26,6 +26,7 @@ namespace Aeroclub.Cargo.Core.Entities
         public Guid? AircraftId { get; set; } = null;
         public Guid? AircraftSubTypeId { get; set; }
         public double? CutoffTimeMin { get; set; }
+        public bool IsDelayed { get; set; } = false;
 
         public virtual Flight Flight { get; set; }
         public virtual Sector Sector { get; set; }
