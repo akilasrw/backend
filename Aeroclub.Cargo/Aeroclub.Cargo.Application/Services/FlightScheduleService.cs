@@ -564,12 +564,62 @@ namespace Aeroclub.Cargo.Application.Services
                             var aircraftScheduleObject = await _unitOfWork.Repository<AircraftSchedule>().GetEntityWithSpecAsync(new AircraftScheduleSpecification(group.Key.Value,date.Date));
 
 
+                            double usedHours = 0;
+
+                          
+                            if(date.Day == 25)
+                            {
+                                Console.WriteLine("Hit");
+                            }
+
+
                             double numberOfHours = 0;
 
                             if (aircraftScheduleObject != null) {
 
+                                foreach (var schedule in aircraftScheduleObject.FlightSchedules)
+                                {
 
-                                numberOfHours = (aircraftScheduleObject.ScheduleEndDateTime - aircraftScheduleObject.ScheduleStartDateTime).TotalHours;
+                                    if (schedule?.ActualArrivalDateTime != null &&
+      schedule.ActualArrivalDateTime != DateTime.MinValue &&
+      schedule?.ScheduledDepartureDateTime != null &&
+      schedule.FlightScheduleSectors?.FirstOrDefault()?.Flight?.FlightSectors?.FirstOrDefault() != null)
+                                    {
+                                        var firstSector = schedule.FlightScheduleSectors.FirstOrDefault().Flight.FlightSectors.FirstOrDefault();
+
+                                        // Get block times in minutes and convert them to hours
+                                        double originBlockTimeHours = (firstSector?.OriginBlockTimeMin ?? 0.0) / 60.0;
+                                        double destinationBlockTimeHours = (firstSector?.DestinationBlockTimeMin ?? 0.0) / 60.0;
+
+                                        
+
+                                        usedHours += ((DateTime)schedule.ActualArrivalDateTime - (DateTime)schedule.ActualDepartureDateTimeOtherSide).TotalHours + originBlockTimeHours + destinationBlockTimeHours;
+
+
+
+
+
+                                        
+                                    }
+                                    else
+                                    {
+                                        usedHours = 0; // Default value or alternative logic
+                                    }
+
+                                }
+
+                                if(query.FlightScheduleReportType == FlightScheduleReportType.Idle)
+                                {
+                                    numberOfHours = (aircraftScheduleObject.ScheduleEndDateTime - aircraftScheduleObject.ScheduleStartDateTime).TotalHours - usedHours;
+                                }
+
+                                if(query.FlightScheduleReportType == FlightScheduleReportType.Running)
+                                {
+                                    numberOfHours = usedHours;
+                                }
+
+
+                               
 
 
                             }
@@ -577,7 +627,14 @@ namespace Aeroclub.Cargo.Application.Services
 
 
 
+
+
                             var totalFlightTimeHrs = (query.FlightScheduleReportType == FlightScheduleReportType.Idle ? ((TimeSpan.FromMinutes(totalFlightTime).Days * 24) + TimeSpan.FromMinutes(totalFlightTime).Hours + (TimeSpan.FromMinutes(totalFlightTime).Minutes / 60.0)) : 0);
+
+                            if (numberOfHours < 0)
+                            {
+                                numberOfHours = 0;
+                            }
 
                             aircraftIdleReports.Add(new AircraftIdleReportVM()
                             {
@@ -597,11 +654,19 @@ namespace Aeroclub.Cargo.Application.Services
 
                     }
 
+
+
             }
             catch (Exception ex)
             {
                 throw;
             }
+
+            if(query.AircraftID != null)
+            {
+             aircraftIdleReports = aircraftIdleReports.Where((x) => x.AircraftId == query.AircraftID).ToList();
+            }
+
             return aircraftIdleReports.OrderBy(z => z.Day).ToList();
         }
 

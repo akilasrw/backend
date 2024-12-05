@@ -14,10 +14,20 @@ namespace Aeroclub.Cargo.Application.Specifications
                 
         }
 
-        public AircraftScheduleSpecification(Guid aircraftID, DateTime date)
-            : base(x => x.AircraftId == aircraftID && x.ScheduleStartDateTime.Date == date)
+        public AircraftScheduleSpecification(Guid AircraftID)
+            : base(x => x.AircraftId == AircraftID && !x.IsDeleted)
         {
 
+        }
+
+        public AircraftScheduleSpecification(Guid aircraftID, DateTime date)
+     : base(x => x.AircraftId == aircraftID && x.ScheduleStartDateTime.Date == date)
+        {
+            AddInclude(x => x.Include(y => y.FlightSchedules)
+                             .ThenInclude(fs => fs.FlightScheduleSectors)
+                             .ThenInclude(fs => fs.Flight)
+                             .ThenInclude(fs => fs.FlightSectors));
+               
         }
 
         public AircraftScheduleSpecification(AircraftScheduleListQM query)

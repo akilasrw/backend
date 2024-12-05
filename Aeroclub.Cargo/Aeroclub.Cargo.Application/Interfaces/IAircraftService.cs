@@ -17,6 +17,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<ServiceResponseStatus> UpdateAsync(AircaftUpdateRM dto);
         Task<Pagination<AircraftVM>> GetFilteredListAsync(AircraftListQM query);
         Task<IReadOnlyList<BaseSelectListModel>> GetSelectListAsync();
+        Task<IReadOnlyList<BaseSelectListModel>> GetAssignedListAsync();
 
     }
 }

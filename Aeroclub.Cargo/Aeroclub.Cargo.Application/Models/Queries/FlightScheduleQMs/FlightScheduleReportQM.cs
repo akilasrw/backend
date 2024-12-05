@@ -9,6 +9,7 @@ namespace Aeroclub.Cargo.Application.Models.Queries.FlightScheduleQMs
 {
     public class FlightScheduleReportQM
     {
+        public Guid? AircraftID { get; set; }
         public int? Month { get; set; }
         public int? Year { get; set; }
         public DateTime? StartDate { get; set; }

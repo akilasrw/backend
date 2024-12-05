@@ -186,6 +186,32 @@ namespace Aeroclub.Cargo.Application.Services
             return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(list.Where((x)=> x.Status != AircraftStatus.Maintenance));
         }
 
+        public async Task<IReadOnlyList<BaseSelectListModel>> GetAssignedListAsync()
+        {
+            // Retrieve the list of Aircraft
+            var list = await _unitOfWork.Repository<Aircraft>().GetListAsync();
+
+            // Filter the list by excluding items with null schedules
+            var filteredList = new List<Aircraft>();
+
+            foreach (var x in list)
+            {
+                var schedule = await _unitOfWork.Repository<AircraftSchedule>()
+                    .GetEntityWithSpecAsync(new AircraftScheduleSpecification(x.Id));
+
+                if (schedule != null)
+                {
+                    filteredList.Add(x); // Add to filtered list only if schedule is not null
+                }
+            }
+
+            // Return only items that are not in maintenance
+            return _mapper.Map<IReadOnlyList<BaseSelectListModel>>(
+                filteredList.Where(x => x.Status != AircraftStatus.Maintenance)
+            );
+        }
+
+
 
     }
 }

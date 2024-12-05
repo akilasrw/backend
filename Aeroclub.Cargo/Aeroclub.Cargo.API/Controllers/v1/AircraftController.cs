@@ -28,6 +28,12 @@ namespace Aeroclub.Cargo.API.Controllers.v1
             return Ok(await _aircraftService.GetSelectListAsync());
         }
 
+        [HttpGet("getAssignedList")]
+        public async Task<ActionResult<IReadOnlyList<BaseSelectListModel>>> GetAssigendListAsync()
+        {
+            return Ok(await _aircraftService.GetAssignedListAsync());
+        }
+
         [HttpGet()]
         [ActionName(nameof(GetAsync))]
         public async Task<ActionResult<IReadOnlyList<AircraftVM>>> GetAsync([FromQuery] AircraftQM query)
