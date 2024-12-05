@@ -5,6 +5,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.FlightScheduleManagementV
     public class FlightScheduleLinkAircraftVM
     {
         public Guid Id { get; set; }
+        public Guid SectorID { get; set; }
         public string? FlightNumber { get; set; } = null;
         public Guid? AircraftId { get; set; }
         public DateTime ScheduledDepartureDateTime { get; set; }
