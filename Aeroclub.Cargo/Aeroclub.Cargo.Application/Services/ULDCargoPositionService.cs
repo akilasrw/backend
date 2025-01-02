@@ -38,7 +38,8 @@ namespace Aeroclub.Cargo.Application.Services
                 var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto
                 {
                     ULDId = x.ULDId,
-                    CargoPositionId = x.CargoPositionId
+                    CargoPositionId = x.CargoPositionId,
+                    FlightScheduleSectorId = x.FlightScheduleSectorId
                 });
 
                 var existing = await _unitOfWork.Repository<ULDCargoPosition>().GetEntityWithSpecAsync(spec);
@@ -73,8 +74,12 @@ namespace Aeroclub.Cargo.Application.Services
                 var spec = new ULDCargoPositionSpecification(new ULDCargoPositionDto
                 {
                     ULDId = x.ULDId,
-                    CargoPositionId = x.CargoPositionId
+                    CargoPositionId = x.CargoPositionId,
+                    FlightScheduleSectorId = x.FlightScheduleSectorId
                 });
+
+
+              
 
                 var uld = await _unitOfWork.Repository<ULD>().GetByIdAsync(x.ULDId);
 

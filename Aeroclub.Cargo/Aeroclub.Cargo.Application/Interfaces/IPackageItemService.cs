@@ -44,7 +44,7 @@ namespace Aeroclub.Cargo.Application.Interfaces
         Task<IReadOnlyList<PackagesByULDVM>> GetPackagesByAwbAndUld(GetPackageByAwbAndUldRM query);
         Task<HashSet<long>> GetAwbByUldAndFlightSchdule(GetAWBbyUldAndFlightScheduleRM query);
         Task<ServiceResponseCreateStatus> PackageULDContainerCreate(PackageULDContainerRM rm);
-        Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm);
+        Task<ServiceResponseStatus> UpdateStatusAsync(List<PackageItemUpdateStatusRM> rm);
 
         Task<ServiceResponseStatus> UpdateULDandPackageStatus(ScanAppSixthStepRM rm);
 

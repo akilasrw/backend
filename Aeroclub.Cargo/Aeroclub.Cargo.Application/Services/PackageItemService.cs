@@ -142,30 +142,65 @@ namespace Aeroclub.Cargo.Application.Services
             return ServiceResponseStatus.Success;
         }
 
-        public async Task<ServiceResponseStatus> UpdateStatusAsync(PackageItemUpdateStatusRM rm)
+        public async Task<ServiceResponseStatus> UpdateStatusAsync(List<PackageItemUpdateStatusRM> rm)
         {
-            var package = await _unitOfWork.Repository<PackageItem>().GetByIdAsync(rm.Id);
-            if (package != null && package.PackageItemStatus != rm.PackageItemStatus)
+            try
             {
-                
-                if(rm.PackageItemStatus == PackageItemStatus.Cargo_Received && package.PackageItemStatus == PackageItemStatus.Booking_Made)
+                int count = 0;
+                long awb = new long();
+                Guid agent = Guid.Empty;
+
+                foreach (var p in rm)
                 {
-                    await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = PackageItemStatus.PickedUp });
+                    var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(new PackageItemSpecification(p.Id));
+                    if (package != null && package.PackageItemStatus != p.PackageItemStatus)
+                    {
+
+                        count += 1;
+                        awb = package.CargoBooking.AWBInformation.AwbTrackingNumber;
+                        agent = package.CreatedBy;
+
+                        if (p.PackageItemStatus == PackageItemStatus.Cargo_Received && package.PackageItemStatus == PackageItemStatus.Booking_Made)
+                        {
+                            await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = PackageItemStatus.PickedUp });
+                        }
+
+                        package.PackageItemStatus = p.PackageItemStatus;
+                        _unitOfWork.Repository<PackageItem>().Update(package);
+                        await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
+                        await _unitOfWork.SaveChangesAsync();
+                        _unitOfWork.Repository<PackageItem>().Detach(package);
+
+                        await UpdateBookingStatusAsync(package.CargoBookingId);// update cargo booking status when all package items are received.
+                    }
+                    else
+                    {
+                        return ServiceResponseStatus.Failed;
+                    }
+
+                    
+
                 }
 
-                package.PackageItemStatus = rm.PackageItemStatus;
-                _unitOfWork.Repository<PackageItem>().Update(package);
-                await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
-                await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Repository<PackageItem>().Detach(package);
 
-                await UpdateBookingStatusAsync(package.CargoBookingId);// update cargo booking status when all package items are received.
+                Notification notification = new Notification();
+
+                notification.Body = "AWB Number " +  awb  + " " + " Received " + count + " " + " Packages ";
+                notification.NotificationType = NotificationType.Cargo_Received;
+                notification.Title = "Received";
+                notification.UserId = agent;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                await _unitOfWork.SaveChangesAsync();
                 return ServiceResponseStatus.Success;
             }
-            else
+            catch(Exception ex)
             {
                 return ServiceResponseStatus.Failed;
             }
+            
+
         }
     
         public async Task<Pagination<PackageListItemVM>> GetFilteredListAsync(PackageListQM query)
@@ -249,14 +284,13 @@ namespace Aeroclub.Cargo.Application.Services
             if (acceptedCount > 0 && acceptedCount == bookings.PackageItems.Count)
             {
                 await _cargoBookingService.UpdateAsync(
-                    new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM 
-                    { 
+                    new Models.RequestModels.CargoBookingRMs.CargoBookingUpdateRM
+                    {
                         Id = BookingId,
                         BookingStatus = BookingStatus.Cargo_Received
                     });
-                
+
             }
-            await CreateNotification(bookings);
         }
         async Task CreateNotification(CargoBooking cargoBooking)
         {
@@ -288,6 +322,8 @@ namespace Aeroclub.Cargo.Application.Services
 
             var itemList = await FilterPackagesAsync(rm.packageItemStatus, (long)rm.AWBNumber, list);
 
+            int count = 0;
+
 
             foreach (var x in itemList)
             {
@@ -301,6 +337,13 @@ namespace Aeroclub.Cargo.Application.Services
                     );
 
                 var package = await _unitOfWork.Repository<PackageItem>().GetEntityWithSpecAsync(spec);
+
+                if(package.PackageItemStatus != PackageItemStatus.PickedUp && rm.packageItemStatus == PackageItemStatus.Cargo_Received)
+                {
+                    continue;
+                }
+
+                count+=1;
 
                 if(package.PackageItemStatus == PackageItemStatus.AcceptedForFLight)
                 {
@@ -379,9 +422,62 @@ namespace Aeroclub.Cargo.Application.Services
                     truckId = newTruck.Id;
                 }
 
+                Notification notification = new Notification();
+
+                notification.Body = "AWB Number " + rm.AWBNumber + " " + " Received " + count + " " + " Packages ";
+                notification.NotificationType = NotificationType.Cargo_Received;
+                notification.Title = "Received";
+                notification.UserId = awb.CargoBooking.CreatedBy;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                await _unitOfWork.SaveChangesAsync();
+
                 await _unitOfWork.Repository<TruckInfo>().CreateAsync(new TruckInfo { bookingId = (Guid)awb.CargoBookingId, handOverCount = rm.itemList.Count(), truckId = truckId });
                 await _unitOfWork.SaveChangesAsync();
             }
+
+
+            if(rm.packageItemStatus == PackageItemStatus.Returned)
+            {
+                Notification notification = new Notification();
+
+                notification.Body = "AWB Number " + rm.AWBNumber + " " + " Returned " + count + " " + " Packages ";
+                notification.NotificationType = NotificationType.Cargo_Received;
+                notification.Title = "Returned";
+                notification.UserId = awb.CargoBooking.CreatedBy;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+            }
+
+            if (rm.packageItemStatus == PackageItemStatus.Offloaded)
+            {
+                Notification notification = new Notification();
+
+                notification.Body = "AWB Number " + rm.AWBNumber + " " + " Offloaded " + count + " " + " Packages ";
+                notification.NotificationType = NotificationType.Cargo_Received;
+                notification.Title = "Offloaded";
+                notification.UserId = awb.CargoBooking.CreatedBy;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+            }
+
+            if (rm.packageItemStatus == PackageItemStatus.Deliverd)
+            {
+                Notification notification = new Notification();
+
+                notification.Body = "AWB Number " + rm.AWBNumber + " " + " Deliverd " + count + " " + " Packages ";
+                notification.NotificationType = NotificationType.Cargo_Received;
+                notification.Title = "Deliverd";
+                notification.UserId = awb.CargoBooking.CreatedBy;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
 
             return ServiceResponseStatus.Success;
            
@@ -554,7 +650,23 @@ namespace Aeroclub.Cargo.Application.Services
 
                     await _unitOfWork.SaveChangesAsync();
                 }
-               
+
+
+                Notification notification = new Notification();
+
+
+                notification.Body = "AWB Number " + rm.AWBTrackingNumber + " " + " PickedUp " + rm.Packages.Length + " " + " Packages ";
+                notification.NotificationType = NotificationType.Booking_Made;
+                notification.Title = "Picked Up";
+                notification.UserId = rm.CargoAgentAppUserId;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                await _unitOfWork.SaveChangesAsync();
+
+
+
+
 
             }
             catch (Exception ex)
@@ -573,13 +685,71 @@ namespace Aeroclub.Cargo.Application.Services
                 var uldContainerSpecs = new ULDContainerSpecification(i);
                 var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
 
+
+                var specs = new PackageULDContainerSpecification(new Application.Models.Queries.PackageULDContainerQMs.PackageByULDQM
+                {
+                    uldContainer = uldContainer.Id
+                });
+
+                var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
+
+                var uniqueCreatedBy = item
+    .Select(i => i.PackageItem)
+    .Select(x => x.CargoBooking)
+    .Select(x => x.CreatedBy)
+    .Distinct()               
+    .ToArray();
+
+
+
                 if (rm.IsArrived)
                 {
                     uldContainer.ULD.Status = ULDStatus.ULDUnPacked;
+
+
+                    foreach(var a in uniqueCreatedBy)
+                    {
+                        Notification notification = new Notification();
+
+                        notification.Body = "ULD " + uldContainer.ULD.SerialNumber + " Arrived";
+                        notification.NotificationType = NotificationType.Cargo_Received;
+                        notification.Title = "Arrived";
+                        notification.UserId = a;
+
+
+                        await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                    
+
+                    
                     //uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.None;
                 }
                 else
                 {
+
+
+                    foreach (var a in uniqueCreatedBy)
+                    {
+                        Notification notification = new Notification();
+
+                        notification.Body = "ULD " + uldContainer.ULD.SerialNumber + " Dispatched";
+                        notification.NotificationType = NotificationType.Cargo_Received;
+                        notification.Title = "Dispatched";
+                        notification.UserId = a;
+
+
+                        await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                        try
+                        {
+                            await _unitOfWork.SaveChangesAsync();
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                    }
                     uldContainer.ULD.Status = ULDStatus.FlightLoaded;
                     uldContainer.ULD.ULDLocateStatus = ULDLocateStatus.OnBoard;
                     //uldContainer.ULD.AirportID = null;
@@ -591,12 +761,6 @@ namespace Aeroclub.Cargo.Application.Services
 
 
 
-                var specs = new PackageULDContainerSpecification(new Application.Models.Queries.PackageULDContainerQMs.PackageByULDQM
-                {
-                    uldContainer = uldContainer.Id
-                });
-
-                var item = await _unitOfWork.Repository<PackageULDContainer>().GetListWithSpecAsync(specs);
 
                 var processedPackageIds = new HashSet<Guid>();
 
@@ -710,8 +874,26 @@ namespace Aeroclub.Cargo.Application.Services
 
             uldPackages = uldPackages.Where(x => rm.packageIDs.Contains(x.PackageRefNumber)).ToList();
 
-            
+            var agentList = uldPackages.Select((x) => x.CargoBooking).Select(x => x.CreatedBy).Distinct().ToArray();
 
+
+            Notification notification = new Notification();
+
+            foreach(var a in agentList)
+            {
+                notification.Body = "ULD Number " + rm.uld + " " + " Unpacked " + uldPackages.Count() + " " + " Packages ";
+                notification.NotificationType = NotificationType.Booking_Made;
+                notification.Title = "Unpacked";
+                notification.UserId = a;
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                await _unitOfWork.SaveChangesAsync();
+
+            }
+
+
+
+           
 
 
             foreach (var package in uldPackages)
@@ -1188,7 +1370,16 @@ namespace Aeroclub.Cargo.Application.Services
 
                 }
 
+                Notification notification = new Notification();
 
+                notification.Body = "AWB Number " + rm.AwbNumber + " " + " ULD Packed " + rm.packageIDs.Count() + " " + " Packages ";
+                notification.NotificationType = NotificationType.Cargo_Received;
+                notification.Title = "Packed";
+                notification.UserId = packageItem.CargoBooking.CreatedBy;
+
+
+                await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                await _unitOfWork.SaveChangesAsync();
 
 
                 try
@@ -1310,6 +1501,7 @@ namespace Aeroclub.Cargo.Application.Services
 
             try
             {
+                int count = 0;
                 var uldContainerSpecs = new ULDContainerSpecification(qm.ULDNum);
                 var uldContainer = await _unitOfWork.Repository<ULDContainer>().GetEntityWithSpecAsync(uldContainerSpecs);
 
@@ -1384,7 +1576,7 @@ namespace Aeroclub.Cargo.Application.Services
                         await _unitOfWork.SaveChangesAsync();
                         _unitOfWork.Repository<ItemStatus>().Detach(itemStatus);
                         await _unitOfWork.Repository<ItemStatus>().CreateAsync(new ItemStatus { PackageID = package.Id, PackageItemStatus = package.PackageItemStatus });
-
+                        count += 1;
                         await _unitOfWork.SaveChangesAsync();
 
                         _unitOfWork.Repository<PackageItem>().Detach(package);
@@ -1398,6 +1590,23 @@ namespace Aeroclub.Cargo.Application.Services
 
                    
                 }
+
+
+                var agentList = uldPackages.Select((x) => x.CargoBooking).Select(x => x.CreatedBy).Distinct().ToArray();
+                foreach(var agent in agentList)
+                {
+                    Notification notification = new Notification();
+
+                    notification.Body = "ULD Number " + qm.ULDNum  + " " + " Unloaded with " + count + " " + " Packages ";
+                    notification.NotificationType = NotificationType.Cargo_Received;
+                    notification.Title = "Unloaded";
+                    notification.UserId = agent;
+
+
+                    await _unitOfWork.Repository<Notification>().CreateAsync(notification);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                
 
 
                 return true;

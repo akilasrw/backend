@@ -7,6 +7,7 @@ using Aeroclub.Cargo.Application.Models.ViewModels.PackageAuditVM;
 using Aeroclub.Cargo.Application.Services;
 using Aeroclub.Cargo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aeroclub.Cargo.API.Controllers.v1
@@ -28,15 +29,39 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         [HttpGet]
         public async Task<ActionResult<CargoBookingLookupVM>> GetAsync([FromQuery]CargoBookingLookupQM query)
         {
-            if (string.IsNullOrEmpty(query.ReferenceNumber) && query.AWBNumber == null)
-                return BadRequest("Please enter booking number or package number.");
 
-            var result = await cargoBookingLookupService.GetAsync(query);
+            try
+            {
+                if (string.IsNullOrEmpty(query.ReferenceNumber) && query.AWBNumber == null)
+                    return BadRequest("Please enter booking number or package number.");
 
-            if (result == null)
-                return BadRequest("Invalid reference number.");
 
-            return Ok(result);
+
+    
+
+                  
+                     
+
+                        var result = await cargoBookingLookupService.GetAsync(query);
+
+
+
+                        if (result == null)
+                            return BadRequest("Invalid reference number.");
+
+                        return Ok(result);
+
+                
+                    
+
+
+               
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
 
         [HttpGet("DelirveryAudit")]

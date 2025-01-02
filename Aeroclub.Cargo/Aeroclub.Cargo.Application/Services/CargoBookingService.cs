@@ -449,7 +449,7 @@ namespace Aeroclub.Cargo.Application.Services
                 // Ensure sectorBooking and its properties are not null
                 if (sectorBooking == null || sectorBooking.CargoBooking == null || sectorBooking.FlightScheduleSector == null)
                 {
-                    continue; // Skip this iteration if any of these are null
+                   continue; // Skip this iteration if any of these are null
                 }
 
                 var booking = sectorBooking.CargoBooking;
@@ -560,7 +560,7 @@ namespace Aeroclub.Cargo.Application.Services
             vm.CargoHandlingInstruction = booking.CargoHandlingInstruction;
             vm.NumberOfBoxes = booking.PackageItems == null ? 0 : booking.PackageItems.Count();
             vm.TotalWeight = booking.PackageItems == null ? 0 : booking.PackageItems.Sum(x => x.Weight);
-            if (booking.PackageItems != null && booking.PackageItems.Any() && false)
+            if (booking.PackageItems != null && booking.PackageItems.Any())
             {
                 vm.TotalVolume = await Task.WhenAll(booking.PackageItems.Select(async x =>
                 {

@@ -5,6 +5,7 @@ using Aeroclub.Cargo.Core.Interfaces;
 using Aeroclub.Cargo.Infrastructure.TwilioChat.Interfaces;
 using Aeroclub.Cargo.Infrastructure.TwilioChat.Models;
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Twilio.Base;
@@ -79,11 +80,21 @@ namespace Aeroclub.Cargo.Application.Services
         public async Task<IReadOnlyList<TwillioUser>> GetUsersAsync()
         {
             List<TwillioUser> list = new List<TwillioUser>();
-            var users = await _conversationService.ReadUserServicesAsync(1000);
-            foreach (var user in users) 
+
+            try
             {
-                list.Add(new TwillioUser { Identity = user.Identity, Sid = user.Sid, ChatServiceSid = user.ChatServiceSid }); 
+               var users = await _conversationService.ReadUserServicesAsync(1000);
+
+                foreach (var user in users)
+                {
+                    list.Add(new TwillioUser { Identity = user.Identity, Sid = user.Sid, ChatServiceSid = user.ChatServiceSid });
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
             return list;
 
         } 

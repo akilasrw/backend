@@ -121,10 +121,11 @@ namespace Aeroclub.Cargo.API.Controllers.v1
         }
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatusAsync([FromBody] PackageItemUpdateStatusRM rm)
+        public async Task<IActionResult> UpdateStatusAsync([FromBody] List<PackageItemUpdateStatusRM> rm)
         {
             try
             {
+
                 var res = await _packageItemService.UpdateStatusAsync(rm);
 
                 if (res == ServiceResponseStatus.Failed)

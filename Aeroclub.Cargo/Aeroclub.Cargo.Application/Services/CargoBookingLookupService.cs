@@ -32,13 +32,34 @@ namespace Aeroclub.Cargo.Application.Services
 
                     mappedEntity = GetCargoBookingSectorInfo(entity, mappedEntity);
 
-                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime));
+                var agent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification(entity.CreatedBy));
+
+                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification( agent.Id, entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime));
+
+
+
+
+                if(rates == null)
+                {
+                    rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(null, entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime));
+                }
+
 
                 mappedEntity.PackageItems = mappedEntity.PackageItems.Where(x => x.PackageItemStatus != PackageItemStatus.Returned).ToList();
 
                 var weight = mappedEntity.PackageItems.Sum(x => x.Weight);
 
                 AgentRate rate = new AgentRate { Rate =  0};
+
+                if(weight == null || weight == 0)
+                {
+                    throw new Exception("Please add weight");
+                }
+
+                if(rates == null)
+                {
+                    throw new Exception("Please add a rate");
+                }
 
 
                 if(rates != null)
@@ -75,13 +96,20 @@ namespace Aeroclub.Cargo.Application.Services
                     }
                 }
 
+               
+
+
              
 
 
                 mappedEntity.AWBInformation.RateCharge = rate.Rate;
                 mappedEntity.AWBInformation.CargoHandlingInstruction = entity.CargoHandlingInstruction;
                 mappedEntity.AWBInformation.Weight = weight;
-                mappedEntity.AWBInformation.Total = weight * rate.Rate;
+                if(rates != null)
+                {
+                    mappedEntity.AWBInformation.Total = weight * rate.Rate < rates.AgentRates.FirstOrDefault(x => x.WeightType == WeightType.M).Rate ? rates.AgentRates.FirstOrDefault(x => x.WeightType == WeightType.M).Rate : weight * rate.Rate;
+                }
+                
                 mappedEntity.AWBInformation.NumOfPackages = mappedEntity.PackageItems.Count();
 
 

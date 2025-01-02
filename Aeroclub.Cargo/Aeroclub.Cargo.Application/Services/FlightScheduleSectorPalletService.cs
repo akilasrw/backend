@@ -152,6 +152,7 @@ namespace Aeroclub.Cargo.Application.Services
                 var specs = new ULDCargoPositionSpecification(new ULDCargoPositionDto
                 {
                     ULDId = item.Id,
+                    FlightScheduleSectorId = palletFilter.FlightScheduleId
                 });
 
 

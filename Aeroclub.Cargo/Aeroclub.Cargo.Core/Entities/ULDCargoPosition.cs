@@ -11,8 +11,10 @@ namespace Aeroclub.Cargo.Core.Entities
     {
         public Guid ULDId { get; set; }
         public Guid CargoPositionId { get; set; }
+        public Guid FlightScheduleSectorId { get; set; }
 
         public CargoPosition CargoPosition { get; set; }
+        public FlightScheduleSector FlightScheduleSector { get; set; }
         public ULD ULD { get; set; }
     }
 }

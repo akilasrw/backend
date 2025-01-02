@@ -4,6 +4,7 @@ using Aeroclub.Cargo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aeroclub.Cargo.Data.Migrations
 {
     [DbContext(typeof(CargoContext))]
-    partial class CargoContextModelSnapshot : ModelSnapshot
+    [Migration("20241210112804_cargo-position-assign-table-update")]
+    partial class cargopositionassigntableupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1173,7 +1175,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("6062fc9c-6298-43b2-99f5-d56077ab813f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b87ab0a5-1362-4680-b8f3-53be3845eaef",
+                            ConcurrencyStamp = "3cbb58db-5805-4c64-a1db-327fb3190974",
                             Email = "bookingadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Booking",
@@ -1191,7 +1193,7 @@ namespace Aeroclub.Cargo.Data.Migrations
                         {
                             Id = new Guid("b1fabea9-7111-4e8d-b0a4-16e55ad6106f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0f9d6e9a-7e46-47a8-b795-dfb119cc473c",
+                            ConcurrencyStamp = "5ff7f1fe-1d8c-47fd-ab66-f2fe28bc3c6a",
                             Email = "backofficeadmin@yopmail.com",
                             EmailConfirmed = true,
                             FirstName = "Back Office",
@@ -40658,6 +40660,9 @@ namespace Aeroclub.Cargo.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("FlightScheduleSectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SectorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ULDId")

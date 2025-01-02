@@ -16,6 +16,13 @@ namespace Aeroclub.Cargo.Application.Specifications
         {
         }
 
+
+        public PackageItemSpecification(Guid id)
+              : base(x => x.Id == id)
+        {
+            AddInclude(x => x.Include(y => y.CargoBooking).ThenInclude(y => y.AWBInformation));
+        }
+
         public PackageItemSpecification(GetPackageByAWBAndRefQM query)
               : base(x => x.PackageRefNumber == query.packageNum && x.CargoBooking.AWBInformation.AwbTrackingNumber == query.awb)
         {
