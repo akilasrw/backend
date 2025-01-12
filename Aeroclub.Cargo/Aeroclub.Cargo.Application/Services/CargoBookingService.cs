@@ -564,20 +564,8 @@ namespace Aeroclub.Cargo.Application.Services
             {
                 vm.TotalVolume = await Task.WhenAll(booking.PackageItems.Select(async x =>
                 {
-                    // Check for null values and use 0 as the default for the dimensions
-                    double height = (x.Height != null)
-                                    ? await _baseUnitConverter.VolumeCalculatorAsync(x.Height, (Guid)x.VolumeUnitId)
-                                    : 0.0;
-
-                    double width = (x.Width != null)
-                                   ? await _baseUnitConverter.VolumeCalculatorAsync(x.Width, (Guid)x.VolumeUnitId)
-                                   : 0.0;
-
-                    double length = (x.Length != null)
-                                    ? await _baseUnitConverter.VolumeCalculatorAsync(x.Length, (Guid)x.VolumeUnitId)
-                                    : 0.0;
-
-                    return height * width * length;
+                    
+                    return x.Height * x.Width * x.Length;
                 })).ContinueWith(t => t.Result.Sum());
             }
             else

@@ -20,7 +20,7 @@ namespace Aeroclub.Cargo.Application.Models.ViewModels.PackageItemVMs
         public PackageItemCategory PackageItemType { get; set; }
         public Guid ULDContainerId { get; set; }
         public PackagePriorityType PackagePriorityType { get; set; }
-        public PackageItemCategory PackageItemCategory { get; set; }
+        public CargoType PackageItemCategory { get; set; }
         public Guid CargoBookingId { get; set; }
         public Guid? CargoPositionId { get; set; }
 

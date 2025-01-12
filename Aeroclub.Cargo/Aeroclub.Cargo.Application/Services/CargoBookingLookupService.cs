@@ -34,14 +34,14 @@ namespace Aeroclub.Cargo.Application.Services
 
                 var agent = await _unitOfWork.Repository<CargoAgent>().GetEntityWithSpecAsync(new CargoAgentSpecification(entity.CreatedBy));
 
-                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification( agent.Id, entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime));
+                var rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification( agent.Id, entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime, mappedEntity.PackageItems.FirstOrDefault().PackageItemCategory));
 
 
 
 
                 if(rates == null)
                 {
-                    rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(null, entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime));
+                    rates = await _unitOfWork.Repository<AgentRateManagement>().GetEntityWithSpecAsync(new AgentRateManagementSpecification(null, entity.OriginAirportId, entity.DestinationAirportId, mappedEntity.ScheduledDepartureDateTime, mappedEntity.PackageItems.FirstOrDefault().PackageItemCategory));
                 }
 
 

@@ -1,4 +1,5 @@
 ﻿using Aeroclub.Cargo.Application.Models.Queries.AgentRateManagementQMs;
+using Aeroclub.Cargo.Common.Enums;
 using Aeroclub.Cargo.Core.Entities;
 using Aeroclub.Cargo.Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -75,8 +76,8 @@ namespace Aeroclub.Cargo.Application.Specifications
         }
 
 
-        public AgentRateManagementSpecification(Guid? AgentID,Guid origin, Guid destination, DateTime start )
-           : base(x => (x.CargoAgentId == AgentID) && x.OriginAirportId == origin && x.DestinationAirportId == destination && (x.StartDate.Date <= start && x.EndDate >= start) && x.IsActive == true)
+        public AgentRateManagementSpecification(Guid? AgentID,Guid origin, Guid destination, DateTime start, CargoType itemCategory)
+           : base(x => (x.CargoAgentId == AgentID) && x.CargoType == itemCategory && x.OriginAirportId == origin && x.DestinationAirportId == destination && (x.StartDate.Date <= start && x.EndDate >= start) && x.IsActive == true)
         {
 
             AddInclude(x => x.Include(y => y.AgentRates));

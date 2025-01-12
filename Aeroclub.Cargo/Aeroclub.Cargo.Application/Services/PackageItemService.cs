@@ -640,7 +640,7 @@ namespace Aeroclub.Cargo.Application.Services
                             PackageRefNumber = i,
                             PackageItemStatus = PackageItemStatus.PickedUp,
                             Description = "",
-                            PackageItemCategory = PackageItemCategory.None,
+                            PackageItemCategory = CargoType.None,
                             PackagePriorityType = PackagePriorityType.None,
                         });
 

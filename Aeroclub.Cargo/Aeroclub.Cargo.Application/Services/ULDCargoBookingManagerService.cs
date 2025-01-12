@@ -153,9 +153,7 @@ namespace Aeroclub.Cargo.Application.Services
                 {
 
                     //Package volume calculation
-                    package.Length = await _baseUnitConverter.VolumeCalculatorAsync(package.Length, package.VolumeUnitId);
-                    package.Width = await _baseUnitConverter.VolumeCalculatorAsync(package.Width, package.VolumeUnitId);
-                    package.Height = await _baseUnitConverter.VolumeCalculatorAsync(package.Height, package.VolumeUnitId);
+
                     package.Volume = (package.Length * package.Width * package.Height);
 
                     //Package weight calculation
